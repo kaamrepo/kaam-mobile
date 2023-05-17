@@ -1,22 +1,36 @@
 import 'react-native-gesture-handler';
-import {StyleSheet, Text, View} from 'react-native';
-import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { StyleSheet } from 'react-native';
+import React, { useEffect } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from './src/screens/login/Login';
 import HomeScreen from './src/screens/home/Home';
+
+import SplashScreen from 'react-native-splash-screen'
+
+
 const Stack = createNativeStackNavigator();
 
-const App = () => {
-  return (  
-    // <Stack.Navigator>
-    //   <Stack.Screen name="login_route" component={LoginScreen} />
-    //   <Stack.Screen name="home_route" component={HomeScreen} />
-    // </Stack.Navigator>
+const App = () =>
+{
+  useEffect(() =>
+  {
+    setTimeout(() =>
+    {
+      SplashScreen.hide()
+    }, 1000);
+  }, [])
+
+  return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="login_route" title="testing" component={LoginScreen} />
-        <Stack.Screen name="home_route" component={HomeScreen} />
+        <Stack.Screen name="Login" component={LoginScreen}
+          options={{
+            title: 'Kaam',
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen name="Home" component={HomeScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
