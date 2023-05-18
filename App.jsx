@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from './src/screens/login/Login';
 import HomeScreen from './src/screens/home/Home';
+import IntroScreen1 from './src/screens/intro/IntroScreen1';
 
 import SplashScreen from 'react-native-splash-screen'
 
@@ -23,8 +24,8 @@ const App = () =>
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Login" component={LoginScreen}
+      <Stack.Navigator initialRouteName='IntroScreen1'>
+        <Stack.Screen name="IntroScreen1" component={IntroScreen1}
           options={{
             title: 'Kaam',
             headerShown: false,
