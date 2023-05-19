@@ -12,10 +12,8 @@ const Login = () =>
       <GeneralStatusBar backgroundColor={theme.dark} />
       <View >
         <AppTitle title="Kaam" titleColor={theme.light} bottomBorderColor={theme.light} />
-
         <Icons name={"caret-up"} type={"button"} onPress={() => { }} shape={"round"} size={10} />
         <Icons name={"caret-up"} type={"button"} onPress={() => { }} shape={"round"} />
-
       </View>
     </View>
   )
