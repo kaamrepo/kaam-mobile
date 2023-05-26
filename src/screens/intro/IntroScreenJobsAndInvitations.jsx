@@ -10,7 +10,7 @@ const Intro_Jobs_and_Invitations = ({ navigate }) =>
                 <Image
                     style={{
                         marginTop: '-10%',
-                        height: 430,
+                        height: '110%',
                         width: '100%'
                     }}
                     resizeMode='cover'
