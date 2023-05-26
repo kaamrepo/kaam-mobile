@@ -1,83 +1,69 @@
 import React from 'react';
-import {View, Image, Text, TouchableOpacity, StyleSheet} from 'react-native';
-
-const Intro_job_search = () => {
+import {
+  View,
+  Image,
+  Text,
+  Pressable,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
+import tw from 'twrnc';
+const Intro_job_search = ({navigation}) => {
   return (
-    <View style={styles.container}>
-      <View style={styles.imageContainer}>
+    <View style={tw`flex-1`}>
+      <View style={tw`w-full h-[60%]`}>
         <Image
           source={require('../../assets/images/search-dream-job.png')}
           style={styles.image}
-          // resizeMode="cover"
+          resizeMode="cover"
         />
       </View>
-      <View style={styles.contentContainer}>
-        <Text style={styles.heading}>Search your dream job fast and ease</Text>
+      <View style={tw`w-full px-10 py-3`}>
+        <Text style={tw`font-bold text-black text-4xl`}>
+          Search your dream job fast and ease
+        </Text>
       </View>
-      <View style={styles.subContentContainer}>
+      <View style={tw`px-10 py-2 text-sm leading-relaxed text-gray-600`}>
         <Text>Figure out your top five priorities -- </Text>
         <Text>whether it is company culture, salary</Text>
         <Text>or a specific job position</Text>
       </View>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Skip</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Next</Text>
-        </TouchableOpacity>
+      <View style={tw`flex flex-row px-10 h-14  mt-10 `}>
+        <Pressable
+          onPress={() => {}}
+          style={({pressed}) => [
+            {
+              backgroundColor: pressed ? '#d7dbd8' : 'transparent',
+            },
+            tw`w-1/2 items-center justify-center rounded-2xl`,
+          ]}>
+          {({pressed}) => (
+            <Text style={tw`text-gray-600 text-[15px] font-medium`}>Skip</Text>
+          )}
+        </Pressable>
+        <Pressable
+          onPress={() => {
+            navigation.navigate('IntroScreenJobsAndInvitations');
+          }}
+          style={({pressed}) => [
+            {
+              backgroundColor: pressed ? '#418c4d' : '#4A9D58',
+            },
+            tw`w-1/2 items-center justify-center rounded-2xl`,
+          ]}>
+          {({pressed}) => (
+            <Text style={tw`text-white text-[15px] font-medium`}>Next</Text>
+          )}
+        </Pressable>
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    border:'1px solid black'
-  },
-  imageContainer: {
-    borderWidth: 2,          // Border width
-    borderColor: 'black',   // Border color
-    flex: 3,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   image: {
     width: '100%',
     height: '100%',
-  },
-  contentContainer: {
-    paddingTop:10,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    borderWidth: 2,          // Border width
-    borderColor: 'black',   // Border color
-  },
-  subContentContainer: {
-    alignItems: 'center',
-  },
-  heading: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-  },
-  button: {
-    backgroundColor: 'blue',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
   },
 });
 

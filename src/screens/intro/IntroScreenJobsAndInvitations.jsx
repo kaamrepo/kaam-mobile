@@ -1,7 +1,9 @@
-import { StyleSheet, Image, Text, View, Pressable } from 'react-native'
+import { StyleSheet, Image, Text, View, Pressable,Button } from 'react-native'
 import React from 'react'
 import IntroScreenJobsAndInvitations from "../../assets/images/IntroScreenJobsAndInvitations.png"
 import tw from "twrnc"
+// import { useNavigation } from '@react-navigation/native';
+import Intro_job_search from './Intro_job_search'
 const Intro_Jobs_and_Invitations = ({ navigate }) =>
 {
     return (

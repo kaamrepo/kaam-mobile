@@ -25,7 +25,7 @@ const App = () =>
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName='IntroScreenJobsAndInvitations'>
+      <Stack.Navigator initialRouteName='Intro_job_search'>
         <Stack.Screen name="IntroScreen1" component={IntroScreen1}
           options={{
             title: 'Kaam',
