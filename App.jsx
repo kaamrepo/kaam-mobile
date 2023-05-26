@@ -6,6 +6,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from './src/screens/login/Login';
 import HomeScreen from './src/screens/home/Home';
 import IntroScreen1 from './src/screens/intro/IntroScreen1';
+import IntroScreenJobsAndInvitations from './src/screens/intro/IntroScreenJobsAndInvitations';
 
 import SplashScreen from 'react-native-splash-screen'
 
@@ -24,7 +25,7 @@ const App = () =>
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName='IntroScreen1'>
+      <Stack.Navigator initialRouteName='IntroScreenJobsAndInvitations'>
         <Stack.Screen name="IntroScreen1" component={IntroScreen1}
           options={{
             title: 'Kaam',
@@ -32,7 +33,10 @@ const App = () =>
           }}
         />
         <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="IntroScreenJobsAndInvitations"
+          component={IntroScreenJobsAndInvitations}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
