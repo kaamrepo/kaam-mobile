@@ -1,8 +1,17 @@
-import { Image, StyleSheet, ScrollView,FlatList, Text, TouchableOpacity, View, SafeAreaView, useColorScheme, Modal, ToastAndroid } from 'react-native'
-import React, { useState } from 'react';
+import { Button,Image, StyleSheet, ScrollView,FlatList, Text, TouchableOpacity, View, SafeAreaView, useColorScheme, Modal, ToastAndroid } from 'react-native'
+import { useState } from 'react';
+import Intro_job_search from './Intro_job_search';
 import tw from 'twrnc';
 import Languages from '../../components/Languages.json'
+import { useNavigation } from '@react-navigation/native';
+  // Function to handle button press and navigate to DetailScreen
+
 const IntroScreen1 = () => {
+  const navigation = useNavigation();
+  const handleButtonPress = () => {
+    navigation.navigate('Intro_job_search');
+  };
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedOption, setSelectedOption] = useState('English');
   const toggleModal = () => {
@@ -61,6 +70,9 @@ const IntroScreen1 = () => {
             </TouchableOpacity>
           </View>
         </View>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Button title="Go to Detail" onPress={handleButtonPress} />
+    </View>
       </View>
     </SafeAreaView>
   )
