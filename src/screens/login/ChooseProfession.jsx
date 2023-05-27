@@ -37,7 +37,7 @@ const ChooseProfession = () => {
         >
           <Image
             source={require('../../assets/images/profession-employee.png')}
-            style={tw`w-30 h-50 object-contain`}
+            style={tw`w-30 h-50`}
           />
           <Text style={tw`mt-5 font-bold text-black text-xl`}>Employee</Text>
           <View style={tw`text-sm leading-relaxed text-gray-600`}>
@@ -56,7 +56,7 @@ const ChooseProfession = () => {
         >
           <Image
             source={require('../../assets/images/profession-employee.png')}
-            style={tw`w-30 h-50 object-contain`}
+            style={tw`w-30 h-50`}
           />
           <Text style={tw`mt-5 font-bold text-black text-xl`}>Employer</Text>
           <View style={tw`text-sm leading-relaxed text-gray-600`}>
@@ -71,7 +71,7 @@ const ChooseProfession = () => {
               <Pressable
                 onPress={() =>
                 {
-                  navigation.navigate('IntroJobSearch');
+                  navigation.navigate('Dashboard');
                 }}
                 style={({ pressed }) => [
                   {

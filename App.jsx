@@ -12,7 +12,7 @@ import VerifyCode from './src/screens/login/VerifyCode';
 import ChooseProfession from './src/screens/login/ChooseProfession';
 import SplashScreen from 'react-native-splash-screen'
 import IntroScreenBrowseJobs from './src/screens/intro/IntroScreenBrowseJobs';
-
+import Dashboard from './src/screens/dashboard/Dashboard';
 import LoginScreen from "./src/screens/login/Login"
 const Stack = createNativeStackNavigator();
 
@@ -62,6 +62,10 @@ const App = () =>
         />
         <Stack.Screen name="ChooseProfession"
           component={ChooseProfession}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen name="Dashboard"
+          component={Dashboard}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
