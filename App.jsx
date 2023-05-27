@@ -3,12 +3,11 @@ import { StyleSheet } from 'react-native';
 import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import LoginScreen from './src/screens/login/Login';
+import RegisterScreen from './src/screens/login/RegisterScreen';
 import HomeScreen from './src/screens/home/Home';
 import IntroSelectLanguage from './src/screens/intro/IntroSelectLanguage';
 import IntroScreenJobsAndInvitations from './src/screens/intro/IntroScreenJobsAndInvitations';
 import Intro_job_search from './src/screens/intro/Intro_job_search';
-
 import SplashScreen from 'react-native-splash-screen'
 const Stack = createNativeStackNavigator();
 
@@ -38,6 +37,10 @@ const App = () =>
         }} />
         <Stack.Screen name="IntroScreenJobsAndInvitations"
           component={IntroScreenJobsAndInvitations}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen name="registerScreen"
+          component={RegisterScreen}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

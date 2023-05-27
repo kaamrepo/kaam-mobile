@@ -4,7 +4,7 @@ import IntroScreenJobsAndInvitations from "../../assets/images/IntroScreenJobsAn
 import tw from "twrnc"
 // import { useNavigation } from '@react-navigation/native';
 import Intro_job_search from './Intro_job_search'
-const Intro_Jobs_and_Invitations = ({ navigate }) =>
+const Intro_Jobs_and_Invitations = ({ navigation }) =>
 {
     return (
         <View style={tw`flex-1`}>
@@ -41,6 +41,7 @@ const Intro_Jobs_and_Invitations = ({ navigate }) =>
                     <Pressable
                         onPress={() =>
                         {
+                            navigation.navigate('registerScreen')
                         }}
                         style={({ pressed }) => [
                             {
