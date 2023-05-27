@@ -37,14 +37,9 @@ const Intro_job_search = ({ navigation }) =>
 
           <View style={tw`flex flex-row gap-4 h-14 mb-3`}>
             <Pressable
-              onPress={() =>
-              {
-              }}
+              onPress={() => { }}
               style={({ pressed }) => [
-                {
-                  backgroundColor: pressed ? '#d7dbd8' : 'transparent',
-                },
-                tw`w-1/2 items-center justify-center rounded-2xl`
+                tw`w-1/2 items-start justify-center rounded-2xl`
               ]}>
               {({ pressed }) => (
                 <Text style={tw`text-gray-600 text-[15px] font-medium`}>Skip</Text>
