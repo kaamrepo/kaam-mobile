@@ -2,6 +2,7 @@ import { Image, StyleSheet, Pressable, FlatList, Text, TouchableOpacity, View, S
 import React, { useState } from 'react';
 import tw from 'twrnc';
 import Languages from '../../components/Languages.json'
+import GeneralStatusBar from '../../components/GeneralStatusBar';
 const IntroSelectLanguage = ({ navigation }) =>
 {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -31,6 +32,7 @@ const IntroSelectLanguage = ({ navigation }) =>
   );
   return (
     <SafeAreaView style={{ flex: 1 }}>
+      <GeneralStatusBar backgroundColor={"#F2BB13"} />
       <View style={styles.container}>
         <View style={styles.topPanel}>
           <Image source={require('../../assets/images/select_lnguage.png')} style={styles.image} />
