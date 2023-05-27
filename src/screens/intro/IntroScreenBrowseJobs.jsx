@@ -1,14 +1,14 @@
 import { Image, Text, View, Pressable, SafeAreaView } from 'react-native'
 import React from 'react'
-import IntroScreenJobsAndInvitations from "../../assets/images/IntroScreenJobsAndInvitations.png"
+import BrowseJobsImage from "../../assets/images/browse-jobs.png"
 import tw from "twrnc"
 import GeneralStatusBar from '../../components/GeneralStatusBar'
-const Intro_Jobs_and_Invitations = ({ navigation }) =>
+const IntroScreenBrowseJobs = ({ navigation }) =>
 {
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <View style={tw`flex-1`}>
-                <GeneralStatusBar backgroundColor={"#f77278"} />
+                <GeneralStatusBar backgroundColor={"#5386E4"} />
                 <View style={tw`w-full h-[60%]`}>
                     <Image
                         style={{
@@ -17,14 +17,17 @@ const Intro_Jobs_and_Invitations = ({ navigation }) =>
                             width: '100%'
                         }}
                         resizeMode='stretch'
-                        source={IntroScreenJobsAndInvitations}
+                        source={BrowseJobsImage}
                     />
                 </View>
                 <View style={tw`w-full h-[40%] px-10 py-3 justify-between`}>
                     <View>
-                        <Text style={[{ fontFamily: "Poppins-SemiBold" }, tw`text-black text-3xl`]}>Apply to fitted jobs & get invitations</Text>
-                        <Text style={[tw`py-2 text-sm text-gray-600`, { fontFamily: 'Poppins-Regular' }]}>You will ask to attend interviews to various companies and get your job proposals after that process.</Text>
+                        <Text style={[tw`text-black text-3xl`, { fontFamily: "Poppins-SemiBold" }]}>Browse the perfect jobs from the list</Text>
+                        <Text style={[tw`py-2 text-sm text-gray-600`, { fontFamily: 'Poppins-Regular' }]}>
+                            Our best jobs rankings incluse several industries, so you can find the best job for you in all the sectors.
+                        </Text>
                     </View>
+
                     <View style={tw`flex flex-row gap-4 h-14 mb-3`}>
                         <Pressable
                             onPress={() => { }}
@@ -38,7 +41,8 @@ const Intro_Jobs_and_Invitations = ({ navigation }) =>
                         <Pressable
                             onPress={() =>
                             {
-                                navigation.navigate("registerScreen")
+                                navigation.navigate('IntroScreenJobsAndInvitations')
+
                             }}
                             style={({ pressed }) => [
                                 {
@@ -57,4 +61,4 @@ const Intro_Jobs_and_Invitations = ({ navigation }) =>
     )
 }
 
-export default Intro_Jobs_and_Invitations
+export default IntroScreenBrowseJobs
