@@ -20,15 +20,22 @@ const Intro_job_search = ({ navigation }) =>
             source={SearchDreamJob}
           />
         </View>
-        <View style={tw`w-full h-[40%] px-10 py-3 `}>
-          <Text style={tw`font-bold text-black text-4xl`}>Search your dream job fast and ease</Text>
-          <Text style={tw`py-2 text-sm leading-relaxed text-gray-600`}>
-            Figure out your top five priorities --
-            whether it is company culture, salary
-            or a specific job position
-          </Text>
+        <View style={tw`w-full h-[40%] px-10 py-3 justify-between`}>
+          <View>
 
-          <View style={tw`flex flex-row gap-4 h-14`}>
+            <Text style={tw`font-bold text-black text-4xl`}>Search your dream job fast and ease</Text>
+            <Text style={tw`pt-2 text-sm leading-relaxed text-gray-600`}>
+              Figure out your top five priorities --
+            </Text>
+            <Text style={tw`text-sm leading-relaxed text-gray-600`}>
+              whether it is company culture, salary
+            </Text>
+            <Text style={tw`pb-2 text-sm leading-relaxed text-gray-600`}>
+              or a specific job position
+            </Text>
+          </View>
+
+          <View style={tw`flex flex-row gap-4 h-14 mb-3`}>
             <Pressable
               onPress={() =>
               {
@@ -46,7 +53,7 @@ const Intro_job_search = ({ navigation }) =>
             <Pressable
               onPress={() =>
               {
-                navigation.navigate('IntroScreenJobsAndInvitations')
+                navigation.navigate('IntroScreenBrowseJobs')
               }}
               style={({ pressed }) => [
                 {

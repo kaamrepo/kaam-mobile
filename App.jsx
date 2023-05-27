@@ -10,6 +10,7 @@ import IntroScreenJobsAndInvitations from './src/screens/intro/IntroScreenJobsAn
 import Intro_job_search from './src/screens/intro/Intro_job_search';
 
 import SplashScreen from 'react-native-splash-screen'
+import IntroScreenBrowseJobs from './src/screens/intro/IntroScreenBrowseJobs';
 const Stack = createNativeStackNavigator();
 
 const App = () =>
@@ -36,6 +37,10 @@ const App = () =>
           title: 'search-dream-job',
           headerShown: false,
         }} />
+        <Stack.Screen name="IntroScreenBrowseJobs"
+          component={IntroScreenBrowseJobs}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen name="IntroScreenJobsAndInvitations"
           component={IntroScreenJobsAndInvitations}
           options={{ headerShown: false }}
