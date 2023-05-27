@@ -5,12 +5,11 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from './src/screens/login/Login';
 import HomeScreen from './src/screens/home/Home';
-import IntroScreen1 from './src/screens/intro/IntroScreen1';
+import IntroSelectLanguage from './src/screens/intro/IntroSelectLanguage';
 import IntroScreenJobsAndInvitations from './src/screens/intro/IntroScreenJobsAndInvitations';
 import Intro_job_search from './src/screens/intro/Intro_job_search';
+
 import SplashScreen from 'react-native-splash-screen'
-
-
 const Stack = createNativeStackNavigator();
 
 const App = () =>
@@ -25,22 +24,22 @@ const App = () =>
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName='Intro_job_search'>
-        <Stack.Screen name="IntroScreen1" component={IntroScreen1}
+      <Stack.Navigator initialRouteName='IntroSelectLanguage'>
+        <Stack.Screen name="IntroSelectLanguage" component={IntroSelectLanguage}
           options={{
             title: 'Kaam',
             headerShown: false,
           }}
         />
         <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Intro_job_search" component={Intro_job_search} options={{
+          title: 'search-dream-job',
+          headerShown: false,
+        }} />
         <Stack.Screen name="IntroScreenJobsAndInvitations"
           component={IntroScreenJobsAndInvitations}
           options={{ headerShown: false }}
         />
-        <Stack.Screen name="Intro_job_search" component={Intro_job_search} options={{
-            title: 'search-dream-job',
-            headerShown: false,
-          }}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
