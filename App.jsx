@@ -3,7 +3,6 @@ import { StyleSheet } from 'react-native';
 import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import LoginScreen from './src/screens/login/Login';
 import HomeScreen from './src/screens/home/Home';
 import IntroSelectLanguage from './src/screens/intro/IntroSelectLanguage';
 import IntroScreenJobsAndInvitations from './src/screens/intro/IntroScreenJobsAndInvitations';
@@ -12,7 +11,7 @@ import Intro_job_search from './src/screens/intro/Intro_job_search';
 import SplashScreen from 'react-native-splash-screen'
 import IntroScreenBrowseJobs from './src/screens/intro/IntroScreenBrowseJobs';
 
-import GetOTPScreen from "./src/screens/login/GetOTP"
+import LoginScreen from "./src/screens/login/Login"
 const Stack = createNativeStackNavigator();
 
 const App = () =>
@@ -47,8 +46,8 @@ const App = () =>
           component={IntroScreenJobsAndInvitations}
           options={{ headerShown: false }}
         />
-        <Stack.Screen name="GetOTP"
-          component={GetOTPScreen}
+        <Stack.Screen name="Login"
+          component={LoginScreen}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

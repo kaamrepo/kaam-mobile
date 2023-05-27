@@ -24,13 +24,13 @@ const Intro_job_search = ({ navigation }) =>
           <View>
 
             <Text style={[{ fontFamily: "Poppins-SemiBold" }, tw`text-black text-3xl`]}>Search your dream job fast and ease</Text>
-            <Text style={[{ fontFamily: "Poppins-SemiBold" }, tw`pt-2 text-sm leading-relaxed text-gray-600`]}>
+            <Text style={[{ fontFamily: "Poppins-Regular" }, tw`pt-2 text-sm text-gray-600`]}>
               Figure out your top five priorities --
             </Text>
-            <Text style={[{ fontFamily: "Poppins-SemiBold" }, tw`text-sm leading-relaxed text-gray-600`]}>
+            <Text style={[{ fontFamily: "Poppins-Regular" }, tw`text-sm text-gray-600`]}>
               whether it is company culture, salary
             </Text>
-            <Text style={[{ fontFamily: "Poppins-SemiBold" }, tw`pb-2 text-sm leading-relaxed text-gray-600`]}>
+            <Text style={[{ fontFamily: "Poppins-Regular" }, tw`pb-2 text-sm text-gray-600`]}>
               or a specific job position
             </Text>
           </View>
