@@ -1,11 +1,10 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-const Home = () =>
-{
+const Home = () => {
   return (
     <View>
-      <Text>Home</Text>
+      <Text style={{ color: "red" }}>Home Screen</Text>
     </View>
   )
 }

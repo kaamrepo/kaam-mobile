@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity,Pressable } from 'react-native';
+import { View, Text, Image, TouchableOpacity, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import tw from 'twrnc';
 
@@ -37,7 +37,7 @@ const ChooseProfession = () => {
         >
           <Image
             source={require('../../assets/images/profession-employee.png')}
-            style={tw`w-30 h-50 object-contain`}
+            style={tw`w-30 h-50`}
           />
           <Text style={tw`mt-5 font-bold text-black text-xl`}>Employee</Text>
           <View style={tw`text-sm leading-relaxed text-gray-600`}>
@@ -56,7 +56,7 @@ const ChooseProfession = () => {
         >
           <Image
             source={require('../../assets/images/profession-employee.png')}
-            style={tw`w-30 h-50 object-contain`}
+            style={tw`w-30 h-50`}
           />
           <Text style={tw`mt-5 font-bold text-black text-xl`}>Employer</Text>
           <View style={tw`text-sm leading-relaxed text-gray-600`}>
@@ -68,23 +68,22 @@ const ChooseProfession = () => {
         </TouchableOpacity>
       </View>
       <View style={tw`my-14`}>
-              <Pressable
-                onPress={() =>
-                {
-                  navigation.navigate('IntroJobSearch');
-                }}
-                style={({ pressed }) => [
-                  {
-                    backgroundColor: pressed ? '#d7dbd8' : 'transparent',
-                  },
-                  tw`w-1/2 items-center justify-center rounded-2xl`
-                ]}>
-                {({ pressed }) => (
-                  <Image source={require('../../assets/images/gotonextScreen.png')} style={tw`w-12 h-12`} />
-                )}
-              </Pressable>
+        <Pressable
+          onPress={() => {
+            navigation.navigate('Home');
+          }}
+          style={({ pressed }) => [
+            {
+              backgroundColor: pressed ? '#d7dbd8' : 'transparent',
+            },
+            tw`w-1/2 items-center justify-center rounded-2xl`
+          ]}>
+          {({ pressed }) => (
+            <Image source={require('../../assets/images/gotonextScreen.png')} style={tw`w-12 h-12`} />
+          )}
+        </Pressable>
 
-            </View>
+      </View>
     </View>
   );
 };

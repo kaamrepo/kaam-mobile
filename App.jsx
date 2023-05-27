@@ -7,25 +7,20 @@ import RegisterScreen from './src/screens/login/RegisterScreen';
 import HomeScreen from './src/screens/home/Home';
 import IntroSelectLanguage from './src/screens/intro/IntroSelectLanguage';
 import IntroScreenJobsAndInvitations from './src/screens/intro/IntroScreenJobsAndInvitations';
+import LastIntroScreen from './src/screens/intro/LastIntroScreen';
 import IntroJobSearch from './src/screens/intro/IntroJobSearch';
 import VerifyCode from './src/screens/login/VerifyCode';
 import ChooseProfession from './src/screens/login/ChooseProfession';
 import SplashScreen from 'react-native-splash-screen'
 import IntroScreenBrowseJobs from './src/screens/intro/IntroScreenBrowseJobs';
-
 import LoginScreen from "./src/screens/login/Login"
 const Stack = createNativeStackNavigator();
-
-const App = () =>
-{
-  useEffect(() =>
-  {
-    setTimeout(() =>
-    {
+const App = () => {
+  useEffect(() => {
+    setTimeout(() => {
       SplashScreen.hide()
     }, 1000);
   }, [])
-
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName='IntroSelectLanguage'>
@@ -46,6 +41,10 @@ const App = () =>
         />
         <Stack.Screen name="IntroScreenJobsAndInvitations"
           component={IntroScreenJobsAndInvitations}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen name="lastIntroScreen"
+          component={LastIntroScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen name="registerScreen"

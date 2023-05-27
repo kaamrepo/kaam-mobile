@@ -1,13 +1,13 @@
 import { Image, Text, View, Pressable, SafeAreaView } from 'react-native'
 import React from 'react'
-import IntroScreenJobsAndInvitations from "../../assets/images/IntroScreenJobsAndInvitations.png"
+import DreamCareerJobImage from "../../assets/images/dream-career-job.png"
 import tw from "twrnc"
 import GeneralStatusBar from '../../components/GeneralStatusBar'
-const Intro_Jobs_and_Invitations = ({ navigation }) => {
+const LastIntroScreen = ({ navigation }) => {
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <View style={tw`flex-1`}>
-                <GeneralStatusBar backgroundColor={"#f77278"} />
+                <GeneralStatusBar backgroundColor={"#5F4BB6"} />
                 <View style={tw`w-full h-[60%]`}>
                     <Image
                         style={{
@@ -16,13 +16,13 @@ const Intro_Jobs_and_Invitations = ({ navigation }) => {
                             width: '100%'
                         }}
                         resizeMode='stretch'
-                        source={IntroScreenJobsAndInvitations}
+                        source={DreamCareerJobImage}
                     />
                 </View>
                 <View style={tw`w-full h-[40%] px-10 py-3 justify-between`}>
                     <View>
-                        <Text style={[{ fontFamily: "Poppins-SemiBold" }, tw`text-black text-3xl`]}>Apply to fitted jobs & get invitations</Text>
-                        <Text style={[tw`py-2 text-sm text-gray-600`, { fontFamily: 'Poppins-Regular' }]}>You will ask to attend interviews to various companies and get your job proposals after that process.</Text>
+                        <Text style={[{ fontFamily: "Poppins-SemiBold" }, tw`text-black text-3xl`]}>Make your dream career with job</Text>
+                        <Text style={[tw`py-2 text-sm text-gray-600`, { fontFamily: 'Poppins-Regular' }]}>We help you find your dream job according to your skillset, location & preference to build your career.</Text>
                     </View>
                     <View style={tw`flex flex-row gap-4 h-14 mb-3`}>
                         <Pressable
@@ -30,24 +30,13 @@ const Intro_Jobs_and_Invitations = ({ navigation }) => {
                                 navigation.navigate("registerScreen")
                             }}
                             style={({ pressed }) => [
-                                tw`w-1/2 items-start justify-center rounded-2xl`
-                            ]}>
-                            {({ pressed }) => (
-                                <Text style={tw`text-gray-600 text-[15px] font-medium`}>Skip</Text>
-                            )}
-                        </Pressable>
-                        <Pressable
-                            onPress={() => {
-                                navigation.navigate("lastIntroScreen")
-                            }}
-                            style={({ pressed }) => [
                                 {
                                     backgroundColor: pressed ? '#418c4d' : '#4A9D58',
                                 },
-                                tw`w-1/2 items-center justify-center rounded-2xl`
+                                tw`w-full items-center justify-center rounded-2xl`
                             ]}>
                             {({ pressed }) => (
-                                <Text style={tw`text-white text-[15px] font-medium`}>Next</Text>
+                                <Text style={tw`text-white text-[15px] font-medium`}>Explore</Text>
                             )}
                         </Pressable>
                     </View>
@@ -57,4 +46,4 @@ const Intro_Jobs_and_Invitations = ({ navigation }) => {
     )
 }
 
-export default Intro_Jobs_and_Invitations
+export default LastIntroScreen
