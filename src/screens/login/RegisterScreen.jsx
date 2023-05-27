@@ -1,13 +1,11 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { BackHandler, Alert, Text, StyleSheet, View, SafeAreaView, TextInput, Image, Pressable, KeyboardAvoidingView, ScrollView } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import tw from 'twrnc';
 import Languages from '../../components/Languages.json';
-
 import GeneralStatusBar from '../../components/GeneralStatusBar';
-
 const validationSchema = yup.object().shape({
   name: yup.string().required('Name is required'),
   email: yup.string().required('Email is required').email('Invalid email format'),
@@ -18,13 +16,11 @@ const validationSchema = yup.object().shape({
     .required('Mobile number is required')
     .matches(/^[0-9]{10}$/, 'Invalid mobile number'),
 });
-
 const RegisterScreen = ({ navigation }) => {
   const { control, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(validationSchema),
     mode: 'onChange'
   });
-
   const onSubmit = (data) => {
     console.log("Form Data ", data);
     navigation.navigate('VerifyCode');
@@ -51,12 +47,10 @@ const RegisterScreen = ({ navigation }) => {
       );
       return true;
     };
-
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
       backAction
     );
-
     return () => backHandler.remove();
   }, []);
   return (
