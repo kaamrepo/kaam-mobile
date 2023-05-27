@@ -1,11 +1,10 @@
 import React from 'react';
-import { Text, StyleSheet, View, SafeAreaView, Button, TextInput,Image,Pressable } from 'react-native';
+import { Text, StyleSheet, View, SafeAreaView,  TextInput,Image,Pressable } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import tw from 'twrnc';
 import Languages from '../../components/Languages.json';
-
 const validationSchema = yup.object().shape({
   name: yup.string().required('Name is required'),
   email: yup.string().required('Email is required').email('Invalid email format'),
@@ -15,13 +14,14 @@ const validationSchema = yup.object().shape({
     .matches(/^[0-9]{10}$/, 'Invalid mobile number'),
 });
 
-const RegisterScreen = () => {
+const RegisterScreen = ({navigation}) => {
   const { control, handleSubmit, formState: { errors } } = useForm({
         resolver: yupResolver(validationSchema),
         mode: 'onChange'
     });
   const onSubmit = (data) => {
-    console.log("Form Dataa========>< ",data);
+    console.log("Form Data ",data);
+    navigation.navigate('VerifyCode');
   };
 
   return (
@@ -115,13 +115,15 @@ const RegisterScreen = () => {
                   tw`w-[95%] h-14 items-center justify-center rounded-xl`
               ]}
           >
-            {/* style={[{ fontFamily: "Poppins-SemiBold" }, tw`uppercase text-white`]} */}
               <Text style={{color:"white"}}>GET OTP</Text>
           </Pressable>
         </View>
         <View style={styles.bottomPanel}>
           <Text style={tw`text-gray-500`}>Have an account ?</Text> 
-          <Pressable><Text style={tw`text-green-500`}>Log in</Text></Pressable>
+          <Pressable onPress={() =>
+                {
+                  navigation.navigate('Login');
+                }}><Text style={tw`text-green-500`}>Log in</Text></Pressable>
         </View>
       </View>
     </SafeAreaView>
