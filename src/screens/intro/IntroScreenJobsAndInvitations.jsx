@@ -1,9 +1,9 @@
-import { StyleSheet, Image, Text, View, Pressable, Button, SafeAreaView } from 'react-native'
+import { Image, Text, View, Pressable, SafeAreaView } from 'react-native'
 import React from 'react'
 import IntroScreenJobsAndInvitations from "../../assets/images/IntroScreenJobsAndInvitations.png"
 import tw from "twrnc"
 import GeneralStatusBar from '../../components/GeneralStatusBar'
-const Intro_Jobs_and_Invitations = ({ navigate }) =>
+const Intro_Jobs_and_Invitations = ({ navigation }) =>
 {
     return (
         <SafeAreaView style={{ flex: 1 }}>
@@ -16,7 +16,7 @@ const Intro_Jobs_and_Invitations = ({ navigate }) =>
                             height: '110%',
                             width: '100%'
                         }}
-                        resizeMode='cover'
+                        resizeMode='stretch'
                         source={IntroScreenJobsAndInvitations}
                     />
                 </View>
@@ -61,5 +61,3 @@ const Intro_Jobs_and_Invitations = ({ navigate }) =>
 }
 
 export default Intro_Jobs_and_Invitations
-
-const styles = StyleSheet.create({})

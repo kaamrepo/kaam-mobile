@@ -16,7 +16,7 @@ const Intro_job_search = ({ navigation }) =>
               height: '110%',
               width: '100%'
             }}
-            resizeMode='cover'
+            resizeMode='stretch'
             source={SearchDreamJob}
           />
         </View>
