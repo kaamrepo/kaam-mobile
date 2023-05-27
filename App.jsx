@@ -7,7 +7,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 // Screens
 
 import RegisterScreen from './src/screens/login/RegisterScreen';
-
 import IntroSelectLanguage from './src/screens/intro/IntroSelectLanguage';
 import IntroScreenJobsAndInvitations from './src/screens/intro/IntroScreenJobsAndInvitations';
 import IntroJobSearch from './src/screens/intro/IntroJobSearch';
@@ -16,7 +15,7 @@ import ChooseProfession from './src/screens/login/ChooseProfession';
 import SplashScreen from 'react-native-splash-screen'
 import IntroScreenBrowseJobs from './src/screens/intro/IntroScreenBrowseJobs';
 import LoginScreen from "./src/screens/login/Login"
-import Dashboard from './src/screens/Dashboard';
+import BottomTabNavigation from './src/screens/BottomTabNavigation';
 
 
 // Navigators
@@ -35,7 +34,7 @@ const App = () =>
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName='Dashboard'>
+      <Stack.Navigator initialRouteName='IntroSelectLanguage'>
         <Stack.Screen name="IntroSelectLanguage" component={IntroSelectLanguage}
           options={{
             title: 'Kaam',
@@ -71,8 +70,8 @@ const App = () =>
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="Dashboard"
-          component={Dashboard}
+          name="BottomTabNavigation"
+          component={BottomTabNavigation}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

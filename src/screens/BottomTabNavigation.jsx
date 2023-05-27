@@ -19,7 +19,7 @@ const TabArr = [
 ];
 
 
-const Dashboard = () =>
+const BottomTabNavigation = () =>
 {
     return (
         <Tab.Navigator
@@ -50,7 +50,7 @@ const Dashboard = () =>
     )
 }
 
-export default Dashboard
+export default BottomTabNavigation
 
 const TabButton = (props) =>
 {

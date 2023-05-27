@@ -74,7 +74,7 @@ const ChooseProfession = () =>
         <Pressable
           onPress={() =>
           {
-            navigation.navigate('IntroJobSearch');
+            navigation.navigate('BottomTabNavigation');
           }}
           style={({ pressed }) => [
             {
