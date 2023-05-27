@@ -22,7 +22,7 @@ const Intro_Jobs_and_Invitations = ({ navigation }) =>
                 </View>
                 <View style={tw`w-full h-[40%] px-10 py-3 justify-between`}>
                     <View>
-                        <Text style={[tw`font-bold text-black text-4xl`, { fontFamily: 'Poppins' }]}>Apply to fitted jobs & get invitations</Text>
+                        <Text style={[tw`text-black text-3xl`, { fontFamily: "Poppins-SemiBold" }]}>Apply to fitted jobs & get invitations</Text>
                         <Text style={[tw`py-2 text-sm leading-relaxed text-gray-600`, { fontFamily: 'Poppins' }]}>You will ask to attend interviews to various companies and get your job proposals after that process.</Text>
                     </View>
                     <View style={tw`flex flex-row gap-4 h-14 mb-3`}>
@@ -38,6 +38,7 @@ const Intro_Jobs_and_Invitations = ({ navigation }) =>
                         <Pressable
                             onPress={() =>
                             {
+                                navigation.navigate("GetOTP")
                             }}
                             style={({ pressed }) => [
                                 {

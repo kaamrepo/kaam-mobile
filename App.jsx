@@ -11,6 +11,8 @@ import Intro_job_search from './src/screens/intro/Intro_job_search';
 
 import SplashScreen from 'react-native-splash-screen'
 import IntroScreenBrowseJobs from './src/screens/intro/IntroScreenBrowseJobs';
+
+import GetOTPScreen from "./src/screens/login/GetOTP"
 const Stack = createNativeStackNavigator();
 
 const App = () =>
@@ -43,6 +45,10 @@ const App = () =>
         />
         <Stack.Screen name="IntroScreenJobsAndInvitations"
           component={IntroScreenJobsAndInvitations}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen name="GetOTP"
+          component={GetOTPScreen}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

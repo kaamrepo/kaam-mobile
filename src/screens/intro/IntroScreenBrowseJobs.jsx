@@ -22,8 +22,8 @@ const IntroScreenBrowseJobs = ({ navigation }) =>
                 </View>
                 <View style={tw`w-full h-[40%] px-10 py-3 justify-between`}>
                     <View>
-                        <Text style={[tw`font-bold text-black text-4xl`, { fontFamily: 'Poppins' }]}>Browse the perfect jobs from the list</Text>
-                        <Text style={[tw`py-2 text-sm leading-relaxed text-gray-600`, { fontFamily: 'Poppins' }]}>
+                        <Text style={[tw`text-black text-3xl`, { fontFamily: "Poppins-SemiBold" }]}>Browse the perfect jobs from the list</Text>
+                        <Text style={[tw`py-2 text-sm text-gray-600`, { fontFamily: 'Poppins-Regular' }]}>
                             Our best jobs rankings incluse several industries, so you can find the best job for you in all the sectors.
                         </Text>
                     </View>

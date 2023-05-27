@@ -23,14 +23,14 @@ const Intro_job_search = ({ navigation }) =>
         <View style={tw`w-full h-[40%] px-10 py-3 justify-between`}>
           <View>
 
-            <Text style={tw`font-bold text-black text-4xl`}>Search your dream job fast and ease</Text>
-            <Text style={tw`pt-2 text-sm leading-relaxed text-gray-600`}>
+            <Text style={[{ fontFamily: "Poppins-SemiBold" }, tw`text-black text-3xl`]}>Search your dream job fast and ease</Text>
+            <Text style={[{ fontFamily: "Poppins-SemiBold" }, tw`pt-2 text-sm leading-relaxed text-gray-600`]}>
               Figure out your top five priorities --
             </Text>
-            <Text style={tw`text-sm leading-relaxed text-gray-600`}>
+            <Text style={[{ fontFamily: "Poppins-SemiBold" }, tw`text-sm leading-relaxed text-gray-600`]}>
               whether it is company culture, salary
             </Text>
-            <Text style={tw`pb-2 text-sm leading-relaxed text-gray-600`}>
+            <Text style={[{ fontFamily: "Poppins-SemiBold" }, tw`pb-2 text-sm leading-relaxed text-gray-600`]}>
               or a specific job position
             </Text>
           </View>
@@ -42,7 +42,7 @@ const Intro_job_search = ({ navigation }) =>
                 tw`w-1/2 items-start justify-center rounded-2xl`
               ]}>
               {({ pressed }) => (
-                <Text style={tw`text-gray-600 text-[15px] font-medium`}>Skip</Text>
+                <Text style={[{ fontFamily: "Poppins-SemiBold" }, tw`text-gray-600 text-[15px] font-medium`]}>Skip</Text>
               )}
             </Pressable>
             <Pressable
@@ -57,7 +57,7 @@ const Intro_job_search = ({ navigation }) =>
                 tw`w-1/2 items-center justify-center rounded-2xl`
               ]}>
               {({ pressed }) => (
-                <Text style={tw`text-white text-[15px] font-medium`}>Next</Text>
+                <Text style={[{ fontFamily: "Poppins-SemiBold" }, tw`text-white text-[15px] font-medium`]}>Next</Text>
               )}
             </Pressable>
           </View>
