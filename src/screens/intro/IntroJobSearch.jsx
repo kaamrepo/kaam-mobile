@@ -1,4 +1,4 @@
-import { StyleSheet, Image, Text, View, Pressable, Button } from 'react-native'
+import { StyleSheet, Image, Text, View, Pressable } from 'react-native'
 import SearchDreamJob from '../../assets/images/search-dream-job.png'
 import React from 'react'
 import tw from "twrnc"
