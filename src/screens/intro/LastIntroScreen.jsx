@@ -27,7 +27,7 @@ const LastIntroScreen = ({ navigation }) => {
                     <View style={tw`flex flex-row gap-4 h-14 mb-3`}>
                         <Pressable
                             onPress={() => {
-                                navigation.navigate("registerScreen")
+                                navigation.replace("registerScreen")
                             }}
                             style={({ pressed }) => [
                                 {

@@ -27,7 +27,7 @@ const Intro_Jobs_and_Invitations = ({ navigation }) => {
                     <View style={tw`flex flex-row gap-4 h-14 mb-3`}>
                         <Pressable
                             onPress={() => {
-                                navigation.navigate("registerScreen")
+                                navigation.replace("registerScreen")
                             }}
                             style={({ pressed }) => [
                                 tw`w-1/2 items-start justify-center rounded-2xl`
@@ -38,7 +38,7 @@ const Intro_Jobs_and_Invitations = ({ navigation }) => {
                         </Pressable>
                         <Pressable
                             onPress={() => {
-                                navigation.navigate("lastIntroScreen")
+                                navigation.replace("lastIntroScreen")
                             }}
                             style={({ pressed }) => [
                                 {

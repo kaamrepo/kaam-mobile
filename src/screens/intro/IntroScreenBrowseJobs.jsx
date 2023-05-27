@@ -29,7 +29,7 @@ const IntroScreenBrowseJobs = ({ navigation }) => {
 
                     <View style={tw`flex flex-row gap-4 h-14 mb-3`}>
                         <Pressable
-                            onPress={() => { navigation.navigate('registerScreen') }}
+                            onPress={() => { navigation.replace('registerScreen') }}
                             style={({ pressed }) => [
                                 tw`w-1/2 items-start justify-center rounded-2xl`
                             ]}>
@@ -39,7 +39,7 @@ const IntroScreenBrowseJobs = ({ navigation }) => {
                         </Pressable>
                         <Pressable
                             onPress={() => {
-                                navigation.navigate('IntroScreenJobsAndInvitations')
+                                navigation.replace('IntroScreenJobsAndInvitations')
 
                             }}
                             style={({ pressed }) => [

@@ -58,7 +58,7 @@ const IntroSelectLanguage = ({ navigation }) => {
             <View style={tw`my-14`}>
               <Pressable
                 onPress={() => {
-                  navigation.navigate('IntroJobSearch');
+                  navigation.replace('IntroJobSearch');
                 }}
                 style={({ pressed }) => [
                   {
