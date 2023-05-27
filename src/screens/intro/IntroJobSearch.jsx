@@ -1,4 +1,4 @@
-import { StyleSheet, Image, Text, View, Pressable, SafeAreaView, Button } from 'react-native'
+import { SafeAreaView, Image, Text, View, Pressable } from 'react-native'
 import SearchDreamJob from '../../assets/images/search-dream-job.png'
 import React from 'react'
 import tw from "twrnc"
@@ -8,7 +8,7 @@ const Intro_job_search = ({ navigation }) =>
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={tw`flex-1`}>
-        <GeneralStatusBar backgroundColor={"#50A853"} />
+        <GeneralStatusBar backgroundColor={"#57B56E"} />
         <View style={tw`w-full h-[60%]`}>
           <Image
             style={{
@@ -16,25 +16,19 @@ const Intro_job_search = ({ navigation }) =>
               height: '110%',
               width: '100%'
             }}
-            resizeMode='stretch'
+            resizeMode='cover'
             source={SearchDreamJob}
           />
         </View>
         <View style={tw`w-full h-[40%] px-10 py-3 justify-between`}>
           <View>
-
-            <Text style={[{ fontFamily: "Poppins-SemiBold" }, tw`text-black text-3xl`]}>Search your dream job fast and ease</Text>
-            <Text style={[{ fontFamily: "Poppins-Regular" }, tw`pt-2 text-sm text-gray-600`]}>
-              Figure out your top five priorities --
-            </Text>
-            <Text style={[{ fontFamily: "Poppins-Regular" }, tw`text-sm text-gray-600`]}>
-              whether it is company culture, salary
-            </Text>
-            <Text style={[{ fontFamily: "Poppins-Regular" }, tw`pb-2 text-sm text-gray-600`]}>
+            <Text style={[tw`text-black text-3xl`, { fontFamily: "Poppins-SemiBold" }]}>Search your dream job fast and ease</Text>
+            <Text style={[tw`py-2 text-sm text-gray-600`, { fontFamily: 'Poppins-Regular' }]}>
+              Figure out your top five priorities -- {'\n'}
+              whether it is company culture, salary {'\n'}
               or a specific job position
             </Text>
           </View>
-
           <View style={tw`flex flex-row gap-4 h-14 mb-3`}>
             <Pressable
               onPress={() => { }}
@@ -42,7 +36,7 @@ const Intro_job_search = ({ navigation }) =>
                 tw`w-1/2 items-start justify-center rounded-2xl`
               ]}>
               {({ pressed }) => (
-                <Text style={[{ fontFamily: "Poppins-SemiBold" }, tw`text-gray-600 text-[15px] font-medium`]}>Skip</Text>
+                <Text style={tw`text-gray-600 text-[15px] font-medium`}>Skip</Text>
               )}
             </Pressable>
             <Pressable
@@ -57,16 +51,14 @@ const Intro_job_search = ({ navigation }) =>
                 tw`w-1/2 items-center justify-center rounded-2xl`
               ]}>
               {({ pressed }) => (
-                <Text style={[{ fontFamily: "Poppins-SemiBold" }, tw`text-white text-[15px] font-medium`]}>Next</Text>
+                <Text style={tw`text-white text-[15px] font-medium`}>Next</Text>
               )}
             </Pressable>
           </View>
         </View>
-      </View>
-    </SafeAreaView>
+      </View >
+    </SafeAreaView >
   )
 }
 
 export default Intro_job_search
-
-const styles = StyleSheet.create({})

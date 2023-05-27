@@ -23,6 +23,7 @@ const Login = ({ navigation }) =>
     const onSubmit = (data) =>
     {
         console.log(data);
+        navigation.navigate('VerifyCode')
     }
     return (
         <SafeAreaView style={[{ flex: 1 }, tw`px-5 bg-white`]}>

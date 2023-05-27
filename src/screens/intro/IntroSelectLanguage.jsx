@@ -62,7 +62,7 @@ const IntroSelectLanguage = ({ navigation }) =>
               <Pressable
                 onPress={() =>
                 {
-                  navigation.navigate('Intro_job_search');
+                  navigation.navigate('IntroJobSearch');
                 }}
                 style={({ pressed }) => [
                   {

@@ -6,7 +6,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './src/screens/home/Home';
 import IntroSelectLanguage from './src/screens/intro/IntroSelectLanguage';
 import IntroScreenJobsAndInvitations from './src/screens/intro/IntroScreenJobsAndInvitations';
-import Intro_job_search from './src/screens/intro/Intro_job_search';
+import IntroJobSearch from './src/screens/intro/IntroJobSearch';
+import VerifyCode from './src/screens/login/VerifyCode';
+import ChooseProfession from './src/screens/login/ChooseProfession';
 
 import SplashScreen from 'react-native-splash-screen'
 import IntroScreenBrowseJobs from './src/screens/intro/IntroScreenBrowseJobs';
@@ -34,7 +36,7 @@ const App = () =>
           }}
         />
         <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Intro_job_search" component={Intro_job_search} options={{
+        <Stack.Screen name="IntroJobSearch" component={IntroJobSearch} options={{
           title: 'search-dream-job',
           headerShown: false,
         }} />
@@ -48,6 +50,14 @@ const App = () =>
         />
         <Stack.Screen name="Login"
           component={LoginScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen name="VerifyCode"
+          component={VerifyCode}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen name="ChooseProfession"
+          component={ChooseProfession}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
