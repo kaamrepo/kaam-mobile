@@ -1,50 +1,41 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native';
-import Icon from 'react-native-vector-icons/Feather';
-import Swiper from 'react-native-swiper';
+import { View, Text, Dimensions, Image, ScrollView, TouchableOpacity, TextInput } from 'react-native';
+import { GestureHandlerRootView, PanGestureHandler } from 'react-native-gesture-handler';
 import tw from 'twrnc';
+import Carousel from 'react-native-reanimated-carousel';
+import Icon from 'react-native-vector-icons/Feather';
 
 const Dashboard = () => {
   const carouselData = [
-    {id: 1, name: 'Product 1', price: '$10', address: 'Address 1'},
-    {id: 2, name: 'Product 2', price: '$20', address: 'Address 2'},
-    {id: 3, name: 'Product 3', price: '$30', address: 'Address 3'},
-    // Add more carousel items as needed
+    {
+      id: 1,
+      title: 'Item 1',
+      image: require('../../assets/images/browse-jobs.png'), // Replace with actual image path
+    },
+    {
+      id: 2,
+      title: 'Item 2',
+      image: require('../../assets/images/IntroScreenJobsAndInvitations.png'), // Replace with actual image path
+    },
+    {
+      id: 3,
+      title: 'Item 3',
+      image: require('../../assets/images/search-dream-job.png'), // Replace with actual image path
+    },
   ];
 
-  const colors = ['#FF00FF', '#C0C0C0'];
-
-  const getRandomColor = () => {
-    const randomIndex = Math.floor(Math.random() * colors.length);
-    return colors[randomIndex];
-  };
-
   const renderCarouselItem = item => (
-    <View
-      style={[
-        tw`bg-white p-4 rounded-lg shadow border-2`,
-        {backgroundColor: getRandomColor()},
-      ]}>
-      <Text style={tw`font-bold mb-2`}>{item.name}</Text>
-      <Text style={tw`text-gray-500 mb-2`}>{item.price}</Text>
-      <Text style={tw`text-gray-500`}>{item.address}</Text>
-      <Text style={tw`text-gray-500`}>{item.address}</Text>
-      <Text style={tw`text-gray-500`}>{item.address}</Text>
-      <Text style={tw`text-gray-500`}>{item.address}</Text>
-      <Text style={tw`text-gray-500`}>{item.address}</Text>
-      <Text style={tw`text-gray-500`}>{item.address}</Text>
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Image source={item.image} style={{ width: '70%', height: '70%', resizeMode: 'cover' }} />
+      <Text style={{ marginTop: 10, fontSize: 18, fontWeight: 'bold' }}>{item.title}</Text>
     </View>
   );
 
+  const width = Dimensions.get('window').width;
+
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={tw`flex bg-white`}>
-      <View style={tw`p-6 bg-white mt-5`}>
+         <View style={tw`p-6 bg-white mt-5`}>
         <View style={tw`flex-row justify-between items-center mb-4`}>
           <View>
             <Text style={tw`text-lg font-bold`}>Welcome, John Doe</Text>
@@ -80,55 +71,38 @@ const Dashboard = () => {
             See all
           </Text>
         </View>
-        <View style={tw`h-70 py-5`}>
-          <ScrollView contentContainerStyle={tw`items-center`}>
-            <Swiper centered={true} loop autoplay autoplayTimeout={5}>
-              {carouselData.map(item => (
-                <View key={item.id} style={tw`mx-2`}>
-                  {renderCarouselItem(item)}
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <Carousel
+            loop
+            width={width}
+            height={width / 2}
+            autoPlay={true}
+            data={carouselData}
+            scrollAnimationDuration={1000}
+            mode="parallax"
+            onSnapToItem={index => console.log('current index:', index)}
+            renderItem={({ item }) => (
+              <PanGestureHandler>
+                <View
+                  style={{
+                    flex: 1,
+                    borderWidth: 1,
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Image
+                    style={{
+                      height: '100%',
+                      width: '100%',
+                    }}
+                    resizeMode="stretch"
+                    source={item.image}
+                  />
                 </View>
-              ))}
-            </Swiper>
-          </ScrollView>
-        </View>
-      </View>
-      <View>
-        <View style={tw`flex-row justify-between items-center mb-4 mx-5`}>
-          <Text style={tw`font-bold text-black text-xl`}>Recomended Jobs</Text>
-          <Text style={tw`text-center text-sm leading-relaxed text-gray-600`}>
-            See all
-          </Text>
-        </View>
-        <View style={tw`h-70 py-5`}>
-          <ScrollView contentContainerStyle={tw`items-center`}>
-            <Swiper centered={true} loop autoplay autoplayTimeout={6}>
-              {carouselData.map(item => (
-                <View key={item.id} style={tw`mx-2`}>
-                  {renderCarouselItem(item)}
-                </View>
-              ))}
-            </Swiper>
-          </ScrollView>
-        </View>
-      </View>
-      <View>
-        <View style={tw`flex-row justify-between items-center mb-4 mx-5`}>
-          <Text style={tw`font-bold text-black text-xl`}>Featured Jobs</Text>
-          <Text style={tw`text-center text-sm leading-relaxed text-gray-600`}>
-            See all
-          </Text>
-        </View>
-        <View style={tw`h-70 py-5`}>
-          <ScrollView contentContainerStyle={tw`items-center`}>
-            <Swiper centered={true} loop autoplay autoplayTimeout={7}>
-              {carouselData.map(item => (
-                <View key={item.id} style={tw`mx-2`}>
-                  {renderCarouselItem(item)}
-                </View>
-              ))}
-            </Swiper>
-          </ScrollView>
-        </View>
+              </PanGestureHandler>
+            )}
+          />
+        </GestureHandlerRootView>
       </View>
     </ScrollView>
   );
