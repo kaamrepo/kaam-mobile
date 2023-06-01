@@ -3,8 +3,7 @@ import React from 'react'
 import BrowseJobsImage from "../../assets/images/browse-jobs.png"
 import tw from "twrnc"
 import GeneralStatusBar from '../../components/GeneralStatusBar'
-const IntroScreenBrowseJobs = ({ navigation }) =>
-{
+const IntroScreenBrowseJobs = ({ navigation }) => {
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <View style={tw`flex-1`}>
@@ -30,7 +29,7 @@ const IntroScreenBrowseJobs = ({ navigation }) =>
 
                     <View style={tw`flex flex-row gap-4 h-14 mb-3`}>
                         <Pressable
-                            onPress={() => { }}
+                            onPress={() => { navigation.replace('registerScreen') }}
                             style={({ pressed }) => [
                                 tw`w-1/2 items-start justify-center rounded-2xl`
                             ]}>
@@ -39,9 +38,8 @@ const IntroScreenBrowseJobs = ({ navigation }) =>
                             )}
                         </Pressable>
                         <Pressable
-                            onPress={() =>
-                            {
-                                navigation.navigate('IntroScreenJobsAndInvitations')
+                            onPress={() => {
+                                navigation.replace('IntroScreenJobsAndInvitations')
 
                             }}
                             style={({ pressed }) => [

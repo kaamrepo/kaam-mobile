@@ -9,8 +9,8 @@ import * as yup from "yup";
 
 const schema = yup.object({
   phonenumber: yup.string().required("Phone Number is required!")
-    .min(10, 'Phone number must be of 10 characters')
-    .max(10, 'Phone number must be of 10 characters'),
+    .min(10, 'Phone number must be of 10 characters.')
+    .max(10, 'Phone number must be of 10 characters.'),
 }).required();
 
 const Login = ({ navigation }) => {
@@ -41,29 +41,33 @@ const Login = ({ navigation }) => {
             <Text style={[{ fontFamily: "Poppins-SemiBold" }, tw`text-sm text-slate-500`]}>Let's log in. Apply to jobs!</Text>
           </View>
 
-          <View style={tw`w-full gap-3 -mt-20`}>
-            <View style={tw`border border-slate-500 rounded-xl flex flex-row w-full`}>
-              <View style={tw`w-[15%] justify-center items-center`}>
-                <Image source={require('../../assets/images/phoneIcon.png')} style={tw`w-6 h-6`} />
+          <View style={tw`w-full -mt-20`}>
+            <View style={tw`my-3`}>
+              <View style={tw`${errors?.phonenumber ? "border border-red-500" : "border border-slate-500"} rounded-xl flex flex-row w-full`}>
+                <View style={tw`w-[15%] justify-center items-center`}>
+                  <Image source={require('../../assets/images/phoneIcon.png')} style={tw`w-6 h-6`} />
+                </View>
+                <Controller
+                  control={control}
+                  name='phonenumber'
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextInput
+                      value={value}
+                      onChangeText={onChange}
+                      onBlur={onBlur}
+                      keyboardType='phone-pad'
+                      style={[{ fontFamily: "Poppins-Regular" }, tw` w-[80%] text-sm font-medium text-black`]}
+                      placeholder='Phone Number'
+                      placeholderTextColor={"gray"}
+                    />
+                  )
+                  }
+                />
               </View>
-              <Controller
-                control={control}
-                name='phonenumber'
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    value={value}
-                    onChangeText={onChange}
-                    onBlur={onBlur}
-                    keyboardType='phone-pad'
-                    style={[{ fontFamily: "Poppins-Regular" }, tw` w-[80%] text-sm font-medium text-black`]}
-                    placeholder='Phone Number'
-                    placeholderTextColor={"gray"}
-                  />
-                )
-                }
-              />
+              {errors?.phonenumber && <Text style={[tw`text-xs text-red-500 text-right`, { fontFamily: "Poppins-Regular" }]}>
+                {errors?.phonenumber?.message}
+              </Text>}
             </View>
-            {errors?.phonenumber && <Text style={tw`text-red-500`}>{errors?.phonenumber?.message}</Text>}
             <Pressable
               onPress={handleSubmit(onSubmit)}
               style={({ pressed }) => [
@@ -81,7 +85,7 @@ const Login = ({ navigation }) => {
             <Pressable onPress={() => {
               navigation.navigate("registerScreen")
             }}>
-              <Text style={tw`text-[#4A9D58] font-medium`}>Register</Text>
+              <Text style={tw`text-[#4A9D58] font-medium`}>Register.</Text>
             </Pressable>
           </View>
         </View>

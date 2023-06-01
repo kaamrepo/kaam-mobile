@@ -9,6 +9,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import RegisterScreen from './src/screens/login/RegisterScreen';
 import IntroSelectLanguage from './src/screens/intro/IntroSelectLanguage';
 import IntroScreenJobsAndInvitations from './src/screens/intro/IntroScreenJobsAndInvitations';
+import LastIntroScreen from './src/screens/intro/LastIntroScreen';
 import IntroJobSearch from './src/screens/intro/IntroJobSearch';
 import VerifyCode from './src/screens/login/VerifyCode';
 import ChooseProfession from './src/screens/login/ChooseProfession';
@@ -21,7 +22,6 @@ import BottomTabNavigation from './src/screens/BottomTabNavigation';
 // Navigators
 
 const Stack = createNativeStackNavigator();
-
 const App = () =>
 {
   useEffect(() =>
@@ -31,10 +31,9 @@ const App = () =>
       SplashScreen.hide()
     }, 1000);
   }, [])
-
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName='IntroSelectLanguage'>
+      <Stack.Navigator initialRouteName='VerifyCode'>
         <Stack.Screen name="IntroSelectLanguage" component={IntroSelectLanguage}
           options={{
             title: 'Kaam',
@@ -53,6 +52,10 @@ const App = () =>
           component={IntroScreenJobsAndInvitations}
           options={{ headerShown: false }}
         />
+        <Stack.Screen name="lastIntroScreen"
+          component={LastIntroScreen}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen name="registerScreen"
           component={RegisterScreen}
           options={{ headerShown: false }}
@@ -63,7 +66,10 @@ const App = () =>
         />
         <Stack.Screen name="VerifyCode"
           component={VerifyCode}
-          options={{ headerShown: false }}
+          options={{
+            headerShown: true,
+
+          }}
         />
         <Stack.Screen name="ChooseProfession"
           component={ChooseProfession}

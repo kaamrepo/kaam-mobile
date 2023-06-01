@@ -3,16 +3,13 @@ import React, { useState } from 'react';
 import tw from 'twrnc';
 import Languages from '../../components/Languages.json'
 import GeneralStatusBar from '../../components/GeneralStatusBar';
-const IntroSelectLanguage = ({ navigation }) =>
-{
+const IntroSelectLanguage = ({ navigation }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedOption, setSelectedOption] = useState('English');
-  const toggleModal = () =>
-  {
+  const toggleModal = () => {
     setIsModalVisible(!isModalVisible);
   };
-  const handleDropdownChange = (value) =>
-  {
+  const handleDropdownChange = (value) => {
     setSelectedOption(value);
   };
   const renderSeparator = () => (
@@ -60,9 +57,8 @@ const IntroSelectLanguage = ({ navigation }) =>
             </TouchableOpacity>
             <View style={tw`my-14`}>
               <Pressable
-                onPress={() =>
-                {
-                  navigation.navigate('IntroJobSearch');
+                onPress={() => {
+                  navigation.replace('IntroJobSearch');
                 }}
                 style={({ pressed }) => [
                   {
