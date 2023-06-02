@@ -4,7 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon, { Icons } from '../components/Icons';
 import * as Animatable from 'react-native-animatable';
 
-import Home from './home/Home';
+import Dashboard from './dashboard/Dashboard';
 import Inbox from './home/Inbox';
 import Bookmark from './home/Bookmark';
 import Menu from './home/Menu';
@@ -12,7 +12,7 @@ import Menu from './home/Menu';
 const Tab = createBottomTabNavigator();
 
 const TabArr = [
-    { route: 'Home', label: 'Home', type: Icons.Ionicons, activeIcon: 'home', inActiveIcon: 'home-outline', component: Home },
+    { route: 'Dashboard', label: 'Dashboard', type: Icons.Ionicons, activeIcon: 'home', inActiveIcon: 'home-outline', component: Dashboard },
     { route: 'Inbox', label: 'Inbox', type: Icons.MaterialCommunityIcons, activeIcon: 'email', inActiveIcon: 'email-outline', component: Inbox },
     { route: 'Bookmark', label: 'Bookmark', type: Icons.MaterialCommunityIcons, activeIcon: 'bookmark', inActiveIcon: 'bookmark-outline', component: Bookmark },
     { route: 'Menu', label: 'Menu', type: Icons.Ionicons, activeIcon: 'grid', inActiveIcon: 'grid-outline', component: Menu },
