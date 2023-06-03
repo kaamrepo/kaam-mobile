@@ -17,7 +17,8 @@ import SplashScreen from 'react-native-splash-screen'
 import IntroScreenBrowseJobs from './src/screens/intro/IntroScreenBrowseJobs';
 import LoginScreen from "./src/screens/login/Login"
 import BottomTabNavigation from './src/screens/BottomTabNavigation';
-
+import ApplyNow from './src/screens/jobs/ApplyNow';
+import Dashboard from './src/screens/dashboard/Dashboard';
 
 // Navigators
 
@@ -78,6 +79,16 @@ const App = () =>
         <Stack.Screen
           name="BottomTabNavigation"
           component={BottomTabNavigation}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ApplyNow"
+          component={ApplyNow}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Dashboard"
+          component={Dashboard}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
