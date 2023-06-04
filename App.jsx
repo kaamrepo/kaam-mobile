@@ -20,7 +20,7 @@ import BottomTabNavigation from './src/screens/BottomTabNavigation';
 import JobPreference from './src/screens/login/JobPreference';
 import Icon, { Icons } from './src/components/Icons';
 import tailwind from 'twrnc';
-import Toast, { BaseToast, ErrorToast, InfoToast, SuccessToast } from 'react-native-toast-message';
+import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
 import JobSelection from './src/screens/login/JobSelection';
 
 
