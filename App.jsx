@@ -22,7 +22,7 @@ import Icon, { Icons } from './src/components/Icons';
 import tailwind from 'twrnc';
 import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
 import JobSelection from './src/screens/login/JobSelection';
-
+import ApplyNow from './src/screens/jobs/ApplyNow';
 
 // Navigators
 
@@ -88,6 +88,11 @@ const App = () =>
               headerTitle: '', // Remove the title
               headerShown: true,
             })}
+          />
+          <Stack.Screen
+            name="ApplyNow"
+            component={ApplyNow}
+            options={{ headerShown: false }}
           />
           <Stack.Screen name="BottomTabNavigation" component={BottomTabNavigation} options={{ headerShown: false }} />
         </Stack.Navigator>
