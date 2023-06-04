@@ -29,6 +29,7 @@
     "react-native-snap-carousel": "4.0.0-beta.6",
     "react-native-splash-screen": "^3.3.0",
     "react-native-swiper": "^1.6.0",
+    "react-native-toast-message": "^2.1.6",
     "react-native-vector-icons": "^9.2.0",
     "twrnc": "^3.6.1",
     "yup": "^1.2.0"
