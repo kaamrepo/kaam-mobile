@@ -1,7 +1,8 @@
-import { StyleSheet, Text, View, Image, ScrollView, SafeAreaView, Pressable } from 'react-native'
+import { StyleSheet, Text, View, Image, ScrollView, SafeAreaView, Pressable, TextInput } from 'react-native'
 import React, { useState } from 'react'
 import tw from 'twrnc'
 import SelectChips from '../../components/SelectChips'
+import Icon, { Icons } from '../../components/Icons'
 
 
 const jobRoles = [
@@ -48,63 +49,42 @@ const jobRoles = [
     { name: "Packaging Staff", isSelected: false },
     { name: "Farm Worker", isSelected: false }
 ]
-const jobLocation = [
-    { name: "Worldwide", isSelected: false },
-    { name: "India", isSelected: false },
-    { name: "Maharashtra", isSelected: false },
-    { name: "Pune", isSelected: false },
-    { name: "Wakad", isSelected: false },
-    { name: "Hinjewadi", isSelected: false }
-]
-const jobTypes = [
-    { name: "Any", isSelected: false },
-    { name: "Full-Time", isSelected: false },
-    { name: "Part-Time", isSelected: false }
-]
-const jobPlace = [
-    { name: "Any", isSelected: false },
-    { name: "On-Site", isSelected: false },
-    { name: "Remote", isSelected: false }
-]
 
 const JobPreference = ({ navigation }) =>
 {
     const [selectedJobRoles, setSelectedJobRoles] = useState(jobRoles)
-    const [selectedJobLocation, setSelectedJobLocation] = useState(jobLocation)
-    const [selectedJobTypes, setSelectedJobTypes] = useState(jobTypes)
-    const [selectedJobPlace, setSelectedJobPlace] = useState(jobPlace)
+    const [searchValue, setSearchValue] = useState('');
+
+    const handleSearchChange = (text) =>
+    {
+        setSearchValue(text);
+        const filteredJobRoles = jobRoles.filter((jobRole) =>
+            jobRole.name.toLowerCase().includes(text.toLowerCase())
+        );
+        setSelectedJobRoles(filteredJobRoles);
+    };
 
     return (
-        <SafeAreaView style={[tw`bg-white flex-1 px-4`]}>
-            <ScrollView style={[tw`py-2`]} showsVerticalScrollIndicator={false}>
-                <View style={[tw`gap-3`]}>
+        <SafeAreaView style={[tw`bg-white flex-1 px-5 pt-5`]}>
+            <View style={[tw`flex-row justify-between items-center border border-slate-400 rounded-md px-5 mb-2`]}>
+                <Icon type={Icons.Ionicons} name={"search"} size={20} color={"black"} />
+                <TextInput
+                    style={tw`w-[90%] py-[5px] text-slate-600`}
+                    placeholder="Search for a job"
+                    placeholderTextColor={"gray"}
+                    value={searchValue}
+                    onChangeText={handleSearchChange}
+                />
+            </View>
+            <ScrollView showsVerticalScrollIndicator={false}>
+                <View style={[tw`mt-5 gap-3`]}>
                     <SelectChips
                         items={selectedJobRoles}
                         title={"Select Job Roles"}
                         setSelectedChips={setSelectedJobRoles}
-                        allowedCount={2}
+                        allowedCount={5}
+                        showAllOptions={true}
                         role={"job roles"}
-                    />
-                    <SelectChips
-                        items={selectedJobLocation}
-                        title={"Select Location"}
-                        setSelectedChips={setSelectedJobLocation}
-                        allowedCount={4}
-                        role={"locations"}
-                    />
-                    <SelectChips
-                        items={selectedJobTypes}
-                        title={"Job Types"}
-                        setSelectedChips={setSelectedJobTypes}
-                        allowedCount={3}
-                        role={"job types"}
-                    />
-                    <SelectChips
-                        items={selectedJobPlace}
-                        title={"Work Place"}
-                        setSelectedChips={setSelectedJobPlace}
-                        allowedCount={2}
-                        role={"work place"}
                     />
                 </View>
             </ScrollView >
@@ -119,33 +99,10 @@ const JobPreference = ({ navigation }) =>
                         <Text style={tw`text-gray-600 text-[15px] font-medium`}>Skip</Text>
                     )}
                 </Pressable>
-                {/* <Pressable
-                    onPress={() =>
-                    {
-                        // console.log(JSON.stringify({
-                        //     selectedJobRoles: selectedJobRoles.filter(i => i.isSelected),
-                        //     selectedJobLocation: selectedJobLocation.filter(i => i.isSelected),
-                        //     selectedJobTypes: selectedJobTypes.filter(i => i.isSelected),
-                        //     selectedJobPlace: selectedJobPlace.filter(i => i.isSelected),
-                        // }, null, 5));
-                        navigation.navigate("")
-                    }}
-                    style={({ pressed }) => [
-                        {
-                            backgroundColor: pressed ? '#418c4d' : '#4A9D58',
-                        },
-                        tw`w-11 h-11 items-center justify-center rounded-full`
-                    ]}>
-                    {({ pressed }) => (
-                        <Icon type={Icons.Ionicons} name="chevron-forward" color="#FFFFFF" size={35} />
-                    )}
-                </Pressable> */}
-
                 <Pressable
                     onPress={() =>
                     {
                         navigation.navigate('JobSelection');
-                        // navigation.navigate('BottomTabNavigation');
                     }}
                     style={({ pressed }) => [
                         {

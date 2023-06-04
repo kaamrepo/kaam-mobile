@@ -16,43 +16,45 @@ const validationSchema = yup.object().shape({
     .required('Mobile number is required')
     .matches(/^[0-9]{10}$/, 'Invalid mobile number'),
 });
-const RegisterScreen = ({ navigation }) => {
+const RegisterScreen = ({ navigation }) =>
+{
   const { control, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(validationSchema),
     mode: 'onChange'
   });
-  const onSubmit = (data) => {
+  const onSubmit = (data) =>
+  {
     console.log("Form Data ", data);
     navigation.navigate('VerifyCode');
   };
-  useEffect(() => {
-    const backAction = () => {
-      Alert.alert(
-        'Confirm Exit',
-        'Are you sure you want to exit?',
-        [
-          {
-            text: 'Cancel',
-            onPress: () => null,
-            style: 'cancel'
-          },
-          {
-            text: 'Exit',
-            onPress: () => {
-              BackHandler.exitApp(); // Exit the application
-            }
-          }
-        ],
-        { cancelable: false }
-      );
-      return true;
-    };
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      backAction
-    );
-    return () => backHandler.remove();
-  }, []);
+  // useEffect(() => {
+  //   const backAction = () => {
+  //     Alert.alert(
+  //       'Confirm Exit',
+  //       'Are you sure you want to exit?',
+  //       [
+  //         {
+  //           text: 'Cancel',
+  //           onPress: () => null,
+  //           style: 'cancel'
+  //         },
+  //         {
+  //           text: 'Exit',
+  //           onPress: () => {
+  //             BackHandler.exitApp(); // Exit the application
+  //           }
+  //         }
+  //       ],
+  //       { cancelable: false }
+  //     );
+  //     return true;
+  //   };
+  //   const backHandler = BackHandler.addEventListener(
+  //     'hardwareBackPress',
+  //     backAction
+  //   );
+  //   return () => backHandler.remove();
+  // }, []);
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <GeneralStatusBar backgroundColor={"#FFFFFF"} />
@@ -69,7 +71,7 @@ const RegisterScreen = ({ navigation }) => {
             <Text style={[{ fontFamily: "Poppins-Regular" }, tw`text-black text-sm font-normal text-gray-400 ml-[2px] mb-6`]}>Let’s Register. Apply to jobs!</Text>
 
             <View style={tw`mb-2`}>
-              <View style={tw`${errors && errors.name ? "border border-red-500" : "border border-slate-500"} rounded-xl flex flex-row w-[95%]`}>
+              <View style={tw`${ errors && errors.name ? "border border-red-500" : "border border-slate-500" } rounded-xl flex flex-row w-[95%]`}>
                 <View style={tw`w-[15%] justify-center items-center`}>
                   <Image source={require('../../assets/images/profileIcon.png')} style={tw`w-6 h-6`} />
                 </View>
@@ -95,7 +97,7 @@ const RegisterScreen = ({ navigation }) => {
             </View>
 
             <View style={tw`mb-2`}>
-              <View style={tw`${errors && errors.email ? "border border-red-500" : "border border-slate-500"} rounded-xl flex flex-row w-[95%]`}>
+              <View style={tw`${ errors && errors.email ? "border border-red-500" : "border border-slate-500" } rounded-xl flex flex-row w-[95%]`}>
                 <View style={tw`w-[15%] justify-center items-center`}>
                   <Image source={require('../../assets/images/mailIcon.png')} style={tw`w-6 h-6`} />
                 </View>
@@ -121,7 +123,7 @@ const RegisterScreen = ({ navigation }) => {
             </View>
 
             <View style={tw`mb-4`}>
-              <View style={tw`${errors && errors.mobileNumber ? "border border-red-500" : "border border-slate-500"} rounded-xl flex flex-row w-[95%]`}>
+              <View style={tw`${ errors && errors.mobileNumber ? "border border-red-500" : "border border-slate-500" } rounded-xl flex flex-row w-[95%]`}>
                 <View style={tw`w-[15%] justify-center items-center`}>
                   <Image source={require('../../assets/images/phoneIcon.png')} style={tw`w-6 h-6`} />
                 </View>

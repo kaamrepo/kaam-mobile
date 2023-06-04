@@ -93,8 +93,7 @@ const JobSelection = ({ navigation }) =>
                 <Pressable
                     onPress={() =>
                     {
-                        navigation.navigate('JobSelection');
-                        // navigation.navigate('BottomTabNavigation');
+                        navigation.replace('BottomTabNavigation');
                     }}
                     style={({ pressed }) => [
                         {

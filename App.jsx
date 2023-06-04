@@ -39,7 +39,7 @@ const App = () =>
   return (
     <>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName='ChooseProfession'>
+        <Stack.Navigator initialRouteName='JobPreference'>
           <Stack.Screen name="IntroSelectLanguage" component={IntroSelectLanguage} options={{ title: 'Kaam', headerShown: false }} />
           <Stack.Screen name="IntroJobSearch" component={IntroJobSearch} options={{ title: 'search-dream-job', headerShown: false, }} />
           <Stack.Screen name="IntroScreenBrowseJobs" component={IntroScreenBrowseJobs} options={{ headerShown: false }} />
