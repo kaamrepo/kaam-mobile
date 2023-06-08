@@ -1,4 +1,5 @@
-import { Image, Text, View, Pressable, SafeAreaView } from 'react-native'
+import { Image, Text, View, Pressable } from 'react-native'
+import {SafeAreaView} from 'react-native-safe-area-context';
 import React from 'react'
 import IntroScreenJobsAndInvitations from "../../assets/images/IntroScreenJobsAndInvitations.png"
 import tw from "twrnc"

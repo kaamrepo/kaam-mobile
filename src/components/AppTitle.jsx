@@ -2,6 +2,7 @@ import { Animated, StyleSheet, Text, Easing } from 'react-native'
 import React, { useRef, useEffect } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+
 const AppTitle = ({ title, titleColor, subTitle, subTitleColor, bottomBorderColor }) =>
 {
     const fadeIn = useRef(new Animated.Value(0)).current;

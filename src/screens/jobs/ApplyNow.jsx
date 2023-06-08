@@ -1,19 +1,27 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { View, Text, Image, TouchableOpacity,Pressable} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import tw from 'twrnc';
 import Image1 from '../../assets/images/browse-jobs.png';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const jobDescription = {
   image: Image1,
 };
 
-const ApplyNow = () => {
+const ApplyNow = ({navigation}) => {
+  const handleAppliedJob =()=>{
+    console.log("clicked on handle job ");
+    navigation.navigate('Chat');
+    
+    }
   const [activeTab, setActiveTab] = useState('description');
 
   const handleBackPress = () => {
     // Handle back button press logic here
     console.log('Back button pressed!');
+    navigation.goBack();
   };
 
   const handleBookmarkPress = () => {
@@ -83,15 +91,20 @@ const ApplyNow = () => {
   };
 
   return (
+    <SafeAreaView style={tw`flex-1`} edges={['top']}>
+
     <View style={tw`flex-1`}>
       <View style={tw`flex-1 bg-blue-500`}>
         <View style={tw`flex-row items-center justify-between p-4`}>
-          <TouchableOpacity
-            style={tw`absolute top-10 left-4`}
-            onPress={handleBackPress}
-          >
-            <Icon name="chevron-back" size={24} color="white" />
+        <View style={tw`mt-5`}>
+          <TouchableOpacity onPress={handleBackPress}>
+            <Ionicons
+              name="chevron-back"
+              size={24}
+              style={tw`text-white`}
+            />
           </TouchableOpacity>
+          </View>
           <View style={tw`flex flex-row items-center justify-end absolute top-10 right-4`}>
             <TouchableOpacity onPress={handleBookmarkPress}>
               <Icon name="bookmark" size={24} color="white" />
@@ -138,18 +151,25 @@ const ApplyNow = () => {
             </Text>
           </TouchableOpacity>
         </View>
-        <View style={tw`flex-1`}>{renderTabContent()}</View>
-        <TouchableOpacity
-          style={tw`p-4 bg-blue-700 items-center`}
-          onPress={() => {
-            // Handle apply now logic here
-            console.log('Apply Now button pressed!');
-          }}
-        >
-          <Text style={tw`text-white font-bold`}>Apply Now</Text>
-        </TouchableOpacity>
+        <View style={tw`flex`}>{renderTabContent()}</View>
+        
+        <Pressable
+              onPress={handleAppliedJob}
+              style={({ pressed }) => [
+                {
+                  backgroundColor: pressed ? '#418c4d' : '#4A9D58',
+                },
+                 tw`px-8 py-2 flex justify-center items-center rounded-xl mx-8 mt-5`,
+              ]}>
+              {({ pressed }) => (
+                <Text style={tw`text-white text-[24px] py-2 font-medium`}>
+                  Apply Now
+                </Text>
+              )}
+            </Pressable>
       </View>
     </View>
+    </SafeAreaView>
   );
 };
 

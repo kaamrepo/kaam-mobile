@@ -4,13 +4,12 @@ import
   View,
   Text,
   TextInput,
-  TouchableOpacity,
   Image,
   Pressable,
   Keyboard,
   ScrollView,
-  SafeAreaView
 } from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import tw from 'twrnc';
 const VerifyCode = () =>

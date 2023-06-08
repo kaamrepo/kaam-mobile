@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
-import { BackHandler, Alert, Text, StyleSheet, View, SafeAreaView, TextInput, Image, Pressable, KeyboardAvoidingView, ScrollView } from 'react-native';
+import { BackHandler, Alert, Text, StyleSheet, View, TextInput, Image, Pressable, KeyboardAvoidingView, ScrollView } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import tw from 'twrnc';

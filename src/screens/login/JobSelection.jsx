@@ -1,5 +1,6 @@
-import { SafeAreaView, StyleSheet, Text, View, FlatList, Image, Pressable } from 'react-native'
+import { StyleSheet, Text, View, FlatList, Image, Pressable } from 'react-native'
 import React, { useState } from 'react'
+import {SafeAreaView} from 'react-native-safe-area-context';
 import tw from 'twrnc'
 import Toast from 'react-native-toast-message';
 import Icon, { Icons } from '../../components/Icons';

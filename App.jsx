@@ -18,13 +18,14 @@ import IntroScreenBrowseJobs from './src/screens/intro/IntroScreenBrowseJobs';
 import LoginScreen from "./src/screens/login/Login"
 import BottomTabNavigation from './src/screens/BottomTabNavigation';
 import JobPreference from './src/screens/login/JobPreference';
-import ApplyNow from './src/screens/jobs/ApplyNow';
-import Dashboard from './src/screens/dashboard/Dashboard';import JobPreference from './src/screens/login/JobPreference';
+import Dashboard from './src/screens/dashboard/Dashboard';
 import Icon, { Icons } from './src/components/Icons';
 import tailwind from 'twrnc';
 import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
 import JobSelection from './src/screens/login/JobSelection';
 import ApplyNow from './src/screens/jobs/ApplyNow';
+import Chat from './src/screens/chats/Chat';
+import TrackApplication from './src/screens/chats/TrackApplication';
 
 // Navigators
 
@@ -51,12 +52,10 @@ const App = () =>
           <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
           <Stack.Screen name="VerifyCode" component={VerifyCode} options={{ headerShown: true }} />
           <Stack.Screen name="ChooseProfession" component={ChooseProfession} options={{ headerShown: false }} />
-          <Stack.Screen
-          name="ApplyNow"
-          component={ApplyNow}
-          options={{ headerShown: false }}
-        />
+          <Stack.Screen name="Chat" component={Chat} options={{ headerShown: false }} />
+          <Stack.Screen name="TrackApplication" component={TrackApplication} options={{ headerShown: false }} />
           <Stack.Screen name="JobPreference" component={JobPreference}
+
             options={({ navigation }) => ({
               headerLeft: () => (
                 <Pressable

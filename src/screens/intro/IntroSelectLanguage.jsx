@@ -1,5 +1,6 @@
-import { Image, StyleSheet, Pressable, FlatList, Text, TouchableOpacity, View, SafeAreaView, Modal, } from 'react-native'
+import { Image, StyleSheet, Pressable, FlatList, Text, TouchableOpacity, View, Modal, } from 'react-native'
 import React, { useState } from 'react';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import tw from 'twrnc';
 import Languages from '../../components/Languages.json'
 import GeneralStatusBar from '../../components/GeneralStatusBar';

@@ -1,5 +1,6 @@
-import { StyleSheet, Text, View, Image, ScrollView, SafeAreaView, Pressable, TextInput } from 'react-native'
+import { StyleSheet, Text, View, Image, ScrollView, Pressable, TextInput } from 'react-native'
 import React, { useState } from 'react'
+import {SafeAreaView} from 'react-native-safe-area-context';
 import tw from 'twrnc'
 import SelectChips from '../../components/SelectChips'
 import Icon, { Icons } from '../../components/Icons'

@@ -1,4 +1,5 @@
-import { SafeAreaView, Image, Text, View, Pressable } from 'react-native'
+import { Image, Text, View, Pressable } from 'react-native'
+import {SafeAreaView} from 'react-native-safe-area-context';
 import SearchDreamJob from '../../assets/images/search-dream-job.png'
 import React from 'react'
 import tw from "twrnc"

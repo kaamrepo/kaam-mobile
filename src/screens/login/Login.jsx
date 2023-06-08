@@ -1,5 +1,6 @@
-import { SafeAreaView, StyleSheet, Text, View, Pressable, TextInput, Image } from 'react-native'
+import { StyleSheet, Text, View, Pressable, TextInput, Image } from 'react-native'
 import React from 'react'
+import {SafeAreaView} from 'react-native-safe-area-context';
 import GeneralStatusBar from '../../components/GeneralStatusBar'
 import tw from 'twrnc';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
