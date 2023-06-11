@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, Pressable, TextInput, Image } from 'react-native'
 import React from 'react'
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import GeneralStatusBar from '../../components/GeneralStatusBar'
 import tw from 'twrnc';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -14,13 +14,15 @@ const schema = yup.object({
     .max(10, 'Phone number must be of 10 characters.'),
 }).required();
 
-const Login = ({ navigation }) => {
+const Login = ({ navigation }) =>
+{
   const { control, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(schema),
     mode: 'onChange'
   });
 
-  const onSubmit = (data) => {
+  const onSubmit = (data) =>
+  {
     console.log(data);
     navigation.navigate('VerifyCode')
   }
@@ -44,7 +46,7 @@ const Login = ({ navigation }) => {
 
           <View style={tw`w-full -mt-20`}>
             <View style={tw`my-3`}>
-              <View style={tw`${errors?.phonenumber ? "border border-red-500" : "border border-slate-500"} rounded-xl flex flex-row w-full`}>
+              <View style={tw`${ errors?.phonenumber ? "border border-red-500" : "border border-slate-500" } rounded-xl flex flex-row w-full`}>
                 <View style={tw`w-[15%] justify-center items-center`}>
                   <Image source={require('../../assets/images/phoneIcon.png')} style={tw`w-6 h-6`} />
                 </View>
@@ -83,7 +85,8 @@ const Login = ({ navigation }) => {
           </View>
           <View style={tw`flex flex-row gap-2`}>
             <Text style={tw`text-slate-600 font-normal`}>Don't have an Account?</Text>
-            <Pressable onPress={() => {
+            <Pressable onPress={() =>
+            {
               navigation.navigate("registerScreen")
             }}>
               <Text style={tw`text-[#4A9D58] font-medium`}>Register.</Text>

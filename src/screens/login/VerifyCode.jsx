@@ -9,15 +9,15 @@ import
   Keyboard,
   ScrollView,
 } from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import tw from 'twrnc';
-const VerifyCode = () =>
+import useLoginStore from '../../store/authentication/login';
+const VerifyCode = ({ navigation }) =>
 {
-  const navigation = useNavigation();
   const codeInputs = useRef([]);
   const [code, setCode] = useState('');
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+  const { login } = useLoginStore()
   // ...
   const handleCodeInput = (index, text) =>
   {
@@ -35,8 +35,9 @@ const VerifyCode = () =>
   const handleVerify = () =>
   {
     console.log('Verification code:', code);
+    login(code)
     // Navigate to the next screen or perform the verification logic
-    navigation.navigate('ChooseProfession');
+    // navigation.navigate('ChooseProfession');
   };
   useEffect(() =>
   {
@@ -62,22 +63,12 @@ const VerifyCode = () =>
   }, []);
   return (
     <ScrollView
+      style={tw`bg-white`}
       showsVerticalScrollIndicator={false}
     >
-      <SafeAreaView style={tw`flex-1`}>
-        <View style={tw`flex-1 justify-center items-center bg-white`}>
-          {/* <TouchableOpacity
-            style={tw`absolute top-10 left-4`}
-            onPress={() =>
-            {
-              navigation.goBack(); // Navigate back
-            }}>
-            <Image
-              source={require('../../assets/images/left-chevron.png')}
-              style={tw`w-5 h-5`}
-            />
-          </TouchableOpacity> */}
-          <View style={tw`flex mt-25`}>
+      <SafeAreaView style={tw`flex-1 bg-white py-0`}>
+        <View style={tw`flex-1 py-2 justify-start items-center`}>
+          <View style={tw`flex`}>
             <Image
               source={require('../../assets/images/kaam-logo-verify-code.png')}
               style={[tw`w-14 h-14`, { height: 100, width: 100 }]}
@@ -114,7 +105,7 @@ const VerifyCode = () =>
                 {
                   backgroundColor: pressed ? '#418c4d' : '#4A9D58',
                 },
-                tw`px-8 py-2 ${ isKeyboardOpen ? 'mt-10' : 'mt-30' } flex justify-center items-center rounded-xl`,
+                tw`px-8 py-2 ${ isKeyboardOpen ? 'mt-10' : 'mt-15' } flex justify-center items-center rounded-xl`,
               ]}>
               {({ pressed }) => (
                 <Text style={tw`text-white text-[24px] py-2 font-medium`}>
