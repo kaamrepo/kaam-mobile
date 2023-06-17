@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import { StyleSheet, Pressable } from 'react-native';
+import { StyleSheet, Pressable, ActivityIndicator, View } from 'react-native';
 import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -105,6 +105,15 @@ const App = () =>
       </NavigationContainer>
       <Toast config={toastConfig} position='bottom'
       />
+      <View
+        style={[tailwind`z-50 absolute top-0 left-0 right-0 bottom-0 justify-center items-center bg-green-200/20 hidden`]}
+      >
+        <ActivityIndicator size='large' animating={false} color="#50A853" style={{
+          zIndex: 9999,
+          position: 'absolute',
+          width: 300,
+        }} />
+      </View >
     </>
   );
 };

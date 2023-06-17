@@ -38,7 +38,9 @@ const RegisterScreen = ({ navigation }) =>
     const success = await registerUser({ ...data, dialcode: countryCode.dialcode })
     if (success)
     {
-      navigation.navigate('VerifyCode');
+      navigation.navigate('VerifyCode', {
+        fromScreen: "register"
+      });
     }
     else
     {

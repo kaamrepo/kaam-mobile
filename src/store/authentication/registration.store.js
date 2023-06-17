@@ -5,28 +5,28 @@ import Toast from 'react-native-toast-message';
 
 const useRegistrationStore = create((set) => ({
     loginDetails: {},
+    setLoginDetails: (data) =>
+    {
+        set({ loginDetails: data })
+    },
     registerUser: async (userRegistrationFormData) =>
     {
         try
         {
-            console.log(userRegistrationFormData);
-            console.log(REGISTER_USER);
             const res = await API.post(REGISTER_USER, userRegistrationFormData)
-            console.log("🥗🥗🥗🥗🥗", res);
             if (res && res.status === 201)
             {
                 const loginDetails = {
                     phone: userRegistrationFormData.phone,
                     dialcode: userRegistrationFormData.dialcode,
-                    strategy: "local"
                 }
                 set({ loginDetails: loginDetails })
                 return true;
             }
         } catch (error)
         {
-            console.log(error.response.data);
-            console.log(error.response.status);
+            console.log(error);
+            console.log(error.response);
             Toast.show({
                 type: 'tomatoToast',
                 text1: error.response.data.message,

@@ -11,14 +11,17 @@ import
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import tw from 'twrnc';
-import useLoginStore from '../../store/authentication/login';
-const VerifyCode = ({ navigation }) =>
+
+import useLoginStore from '../../store/authentication/login.store'
+
+const VerifyCode = ({ route, navigation }) =>
 {
   const codeInputs = useRef([]);
   const [code, setCode] = useState('');
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
-  const { login } = useLoginStore()
-  // ...
+  const { login } = useLoginStore();
+
+
   const handleCodeInput = (index, text) =>
   {
     const newCode = code.substr(0, index) + text + code.substr(index + 1);
@@ -32,10 +35,9 @@ const VerifyCode = ({ navigation }) =>
     }
   };
   // ...
-  const handleVerify = () =>
+  const handleVerify = async () =>
   {
-    console.log('Verification code:', code);
-    login(code)
+    const success = await login(code)
     // Navigate to the next screen or perform the verification logic
     // navigation.navigate('ChooseProfession');
   };
