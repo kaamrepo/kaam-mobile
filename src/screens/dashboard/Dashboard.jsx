@@ -1,14 +1,15 @@
-import React, {useState} from 'react';
-import {
-  View,
-  Image,
-  ScrollView,
-  TouchableOpacity,
-  TextInput,
-  Text,
-  Dimensions,
-  Pressable,
-} from 'react-native';
+import React, { useState } from 'react';
+import
+  {
+    View,
+    Image,
+    ScrollView,
+    TouchableOpacity,
+    TextInput,
+    Text,
+    Dimensions,
+    Pressable,
+  } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import tw from 'twrnc';
 import Icon from 'react-native-vector-icons/Feather';
@@ -18,28 +19,30 @@ import Image2 from '../../assets/images/IntroScreenJobsAndInvitations.png';
 import Image3 from '../../assets/images/search-dream-job.png';
 import Image4 from '../../assets/images/checklist.png';
 
-const Dashboard = ({navigation}) => {
+const Dashboard = ({ navigation }) =>
+{
   const [selectedImage, setSelectedImage] = useState(null);
 
   const nearbyJobsData = [
-    {id: 1, image: Image1},
-    {id: 2, image: Image2},
-    {id: 3, image: Image3},
-    {id: 4, image: Image4},
+    { id: 1, image: Image1 },
+    { id: 2, image: Image2 },
+    { id: 3, image: Image3 },
+    { id: 4, image: Image4 },
   ];
 
-  const renderItemsNearbyJobs = ({item, index}) => {
+  const renderItemsNearbyJobs = ({ item, index }) =>
+  {
     return (
       <TouchableOpacity
-        onPress={() => {
-          // console.log(item, "clicked");
-          navigation.navigate('ApplyNow', {id: item.id});
+        onPress={() =>
+        {
+          navigation.navigate('ApplyNow', { id: item.id });
         }}
         key={index}>
-        <View style={tw`${styles.slide}`}>
+        <View style={tw`${ styles.slide }`}>
           <Image
             source={item.image}
-            style={tw`${styles.image}`}
+            style={tw`${ styles.image }`}
             resizeMode="contain"
           />
         </View>
@@ -68,13 +71,14 @@ const Dashboard = ({navigation}) => {
     },
   ];
 
-  const renderItemsRecommendedJobs = ({item, index}) => {
+  const renderItemsRecommendedJobs = ({ item, index }) =>
+  {
     return (
-      <View style={tw`${styles.slide} rounded-3 p-4 m-4`} key={index}>
+      <View style={tw`${ styles.slide } rounded-3 p-4 m-4`} key={index}>
         <View style={tw`items-center mb-4`}>
           <Image
             source={item.image}
-            style={tw`${styles.image} w-20 h-20 rounded-full`}
+            style={tw`${ styles.image } w-20 h-20 rounded-full`}
           />
         </View>
         <Text style={tw`font-bold text-xl mb-2`}>{item.title}</Text>

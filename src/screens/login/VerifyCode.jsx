@@ -34,12 +34,10 @@ const VerifyCode = ({ route, navigation }) =>
       codeInputs.current[index - 1].focus();
     }
   };
-  // ...
+
   const handleVerify = async () =>
   {
-    const success = await login(code)
-    // Navigate to the next screen or perform the verification logic
-    // navigation.navigate('ChooseProfession');
+    await login(code)
   };
   useEffect(() =>
   {
