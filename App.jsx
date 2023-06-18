@@ -122,7 +122,11 @@ const App = () =>
                   component={ApplyNow}
                   options={{ headerShown: false }}
                 />
-                <Stack.Screen name="BottomTabNavigation" component={BottomTabNavigation} options={{ headerShown: false }} />
+                <Stack.Screen name="BottomTabNavigation"
+                  component={BottomTabNavigation}
+                  options={{ headerShown: false }}
+
+                />
               </>
           }
         </Stack.Navigator>

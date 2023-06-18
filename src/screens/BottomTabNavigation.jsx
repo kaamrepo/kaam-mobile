@@ -1,21 +1,35 @@
-import { TouchableOpacity, StyleSheet } from 'react-native'
+import { TouchableOpacity, StyleSheet, View } from 'react-native'
 import React, { useEffect, useRef } from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon, { Icons } from '../components/Icons';
 import * as Animatable from 'react-native-animatable';
-
+import tw from 'twrnc';
 import Dashboard from './dashboard/Dashboard';
 import Inbox from './home/Inbox';
 import Bookmark from './home/Bookmark';
 import Menu from './home/Menu';
 
+// svg icons
+import HomeSVG from '../assets/svgs/home.svg'
+import HomeInactiveSVG from '../assets/svgs/home_inactive.svg'
+
+import MailSVG from '../assets/svgs/mail.svg'
+import MailInactiveSVG from '../assets/svgs/mail_inactive.svg'
+
+import BookmarkSVG from '../assets/svgs/bookmark.svg'
+import BookmarkInactiveSVG from '../assets/svgs/bookmark_inactive.svg'
+
+import MenuSVG from '../assets/svgs/menu.svg'
+import MenuInactiveSVG from '../assets/svgs/menu_inactive.svg'
+
+
 const Tab = createBottomTabNavigator();
 
 const TabArr = [
-    { route: 'Dashboard', label: 'Dashboard', type: Icons.Ionicons, activeIcon: 'home', inActiveIcon: 'home-outline', component: Dashboard },
-    { route: 'Inbox', label: 'Inbox', type: Icons.MaterialCommunityIcons, activeIcon: 'email', inActiveIcon: 'email-outline', component: Inbox },
-    { route: 'Bookmark', label: 'Bookmark', type: Icons.MaterialCommunityIcons, activeIcon: 'bookmark', inActiveIcon: 'bookmark-outline', component: Bookmark },
-    { route: 'Menu', label: 'Menu', type: Icons.Ionicons, activeIcon: 'grid', inActiveIcon: 'grid-outline', component: Menu },
+    { route: 'Dashboard', label: 'Dashboard', component: Dashboard, activeIcon: <HomeSVG width={18} height={18} />, inactiveIcon: <HomeInactiveSVG width={18} height={18} /> },
+    { route: 'Inbox', label: 'Inbox', component: Inbox, activeIcon: <MailSVG width={18} height={18} />, inactiveIcon: <MailInactiveSVG width={18} height={18} /> },
+    { route: 'Bookmark', label: 'Bookmark', component: Bookmark, activeIcon: <BookmarkSVG width={18} height={18} />, inactiveIcon: <BookmarkInactiveSVG width={18} height={18} /> },
+    { route: 'Menu', label: 'Menu', component: Menu, activeIcon: <MenuSVG width={18} height={18} />, inactiveIcon: <MenuInactiveSVG width={18} height={18} /> },
 ];
 
 
@@ -25,13 +39,14 @@ const BottomTabNavigation = () =>
         <Tab.Navigator
             screenOptions={{
                 headerShown: false,
+                tabBarHideOnKeyboard: true,
                 tabBarStyle: {
-                    height: 60,
+                    height: 50,
                     position: 'absolute',
-                    bottom: 16,
-                    right: 16,
-                    left: 16,
-                    borderRadius: 16
+                    bottom: 0,
+                    right: 0,
+                    left: 0,
+
                 }
             }}
         >
@@ -78,7 +93,9 @@ const TabButton = (props) =>
                 ref={viewRef}
                 duration={1000}
                 style={styles.container}>
-                <Icon type={item.type} name={focused ? item.activeIcon : item.inActiveIcon} color={focused ? '#4A9D58' : '#CACBCE'} />
+                {focused ? item.activeIcon : item.inactiveIcon}
+                {/* <Icon type={item.type} name={focused ? item.activeIcon : item.inActiveIcon} color={item.iconColor} size={20} /> */}
+                <View style={tw`mt-[2px] w-[3px] h-[3px] rounded-full ${ focused ? `bg-green-600 shadow shadow-green-600` : "bg-white" }`}></View>
             </Animatable.View>
         </TouchableOpacity>
     )
