@@ -29,15 +29,11 @@ import ResumesSVG from "../assets/svgs/Resumes.svg"
 import SettingsSVG from "../assets/svgs/Settings.svg"
 import LogoutSVG from "../assets/svgs/Logout.svg"
 import BlueTickSVG from "../assets/svgs/Blue Tick.svg"
+import PremiumIconSVG from "../assets/svgs/PremiumIcon.svg"
 
 
 const CustomSidebarMenu = (props) =>
 {
-    const BASE_PATH =
-        'https://raw.githubusercontent.com/AboutReact/sampleresource/master/';
-
-
-    // console.log(JSON.stringify(props, null, 5));
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <View style={[tw`p-3 h-[35%] items-center justify-center relative`]}>
@@ -67,19 +63,24 @@ const CustomSidebarMenu = (props) =>
                 {/* <DrawerItemList {...props} /> */}
 
                 <View style={tw`px-4`}>
-                    <CustomDrawerItem title="Personal Info" icon={< PersonalInformationSVG />} subtitle={"80% complete"} subtitleStyle={tw`text-[#FE6D73] text-[12px]`} onPress={() => props.navigation.navigate("Personal Info")} />
-                    <CustomDrawerItem title="Applications" icon={< ApplicationsSVG />} onPress={() => props.navigation.navigate("Applications")} />
-                    <CustomDrawerItem title="Proposals" icon={< ProposalsSVG />} onPress={() => props.navigation.navigate("Proposals")} />
-                    <CustomDrawerItem title="Resumes" icon={< ResumesSVG />} onPress={() => props.navigation.navigate("Resumes")} />
-                    <CustomDrawerItem title="Portfolio" icon={< PortfolioSVG />} onPress={() => props.navigation.navigate("Portfolio")} />
-                    <CustomDrawerItem title="Settings" icon={< SettingsSVG />} onPress={() => props.navigation.navigate("Settings")} />
-                    <CustomDrawerItem title="Logout" icon={< LogoutSVG />} onPress={() => props.navigation.navigate("Logout")} />
+                    <CustomDrawerItem title="Personal Info" id={1} index={props?.state?.index} icon={< PersonalInformationSVG />} subtitle={"80% complete"} subtitleStyle={tw`text-[#FE6D73] text-[12px]`} onPress={() => props.navigation.navigate("Personal Info")} />
+                    <CustomDrawerItem title="Applications" id={2} index={props?.state?.index} icon={< ApplicationsSVG />} onPress={() => props.navigation.navigate("Applications")} />
+                    <CustomDrawerItem title="Proposals" id={3} index={props?.state?.index} icon={< ProposalsSVG />} onPress={() => props.navigation.navigate("Proposals")} />
+                    <CustomDrawerItem title="Resumes" id={4} index={props?.state?.index} icon={< ResumesSVG />} onPress={() => props.navigation.navigate("Resumes")} />
+                    <CustomDrawerItem title="Portfolio" id={5} index={props?.state?.index} icon={< PortfolioSVG />} onPress={() => props.navigation.navigate("Portfolio")} />
+                    <CustomDrawerItem title="Settings" id={6} index={props?.state?.index} icon={< SettingsSVG />} onPress={() => props.navigation.navigate("Settings")} />
+                    <CustomDrawerItem title="Logout" id={7} index={props?.state?.index} icon={< LogoutSVG />} onPress={() => props.navigation.navigate("Logout")} />
                 </View>
             </DrawerContentScrollView>
-            <Text
-                style={tw`text-center my-2`}>
-                www.kaam.com
-            </Text>
+
+            <View style={tw`items-center my-5`}>
+                <Pressable onPress={props.onPress} style={({ pressed }) => tw`my-3 px-5 py-3 flex-row gap-2 items-center justify-center rounded-xl shadow-lg shadow-green-800 ${ pressed ? 'bg-green-800' : 'bg-green-700' }`}>
+                    <PremiumIconSVG height={18} />
+                    <Text style={[tw`text-center text-white`, { fontFamily: "Poppins-Regular" }]}>
+                        Go Premium
+                    </Text>
+                </Pressable>
+            </View>
         </SafeAreaView>
     );
 };
@@ -112,8 +113,9 @@ export default CustomSidebarMenu;
 
 const CustomDrawerItem = (props) =>
 {
-    return <Pressable onPress={props.onPress} style={({ pressed }) => tw`flex-row px-2 my-[5px] items-center justify-between rounded-md ${ pressed ? 'bg-green-100' : 'bg-white' }`}>
-        <View style={tw`flex-row items-center gap-3 py-3 px-1`}>
+
+    return <Pressable onPress={props.onPress} style={({ pressed }) => tw`flex-row px-2 my-[3px] items-center justify-between rounded-md ${ pressed ? 'bg-green-500/30' : props.id === props.index ? 'bg-green-200/30' : 'bg-white' }`}>
+        <View style={tw`flex-row items-center gap-3 py-[10px] px-1`}>
             <View style={tw`px-1`}>
                 {props.icon}
             </View>
