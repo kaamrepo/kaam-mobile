@@ -9,7 +9,7 @@
 go to your desired JSX function and...
 
 ```javascript
-import Icons from '../../components/Icons';
+import Icon, {Icons} from '../../components/Icons';
 
 
 const App = ()=>{
@@ -17,7 +17,7 @@ const App = ()=>{
     // ... your code
     return (
         <>
-        <Icons name={"caret-up"} type={"button"} onPress={() => { }} shape={"round"} size={10} />
+        <Icon name={"caret-up"} type={Icons.Ionicon} size={10} />
         </>
     )
 }
