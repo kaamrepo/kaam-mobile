@@ -19,10 +19,9 @@ const useLoginStore = create((set, get) => ({
             const data = await useRegistrationStore.getState().loginDetails;
             let payload = { phone: data.phone, date: new Date().toISOString(), otp: userLoginFormData, strategy: "local" };
             const res = await API.post(LOGIN_USER, payload);
-            console.log(res.status);
+
             if (res && res.status === 201)
             {
-                console.log("andar aaya 😍😎😋");
                 await storeUserSession(res.data)
                 set({ loggedInUser: res.data.user, isLoggedIn: true })
             }
@@ -76,8 +75,6 @@ async function storeUserSession(data)
 {
     try
     {
-        console.log(data);
-
         await EncryptedStorage.setItem(
             "user_session",
             JSON.stringify(data)

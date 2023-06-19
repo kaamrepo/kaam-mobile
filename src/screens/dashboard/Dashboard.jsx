@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import
-  {
-    View,
-    Image,
-    ScrollView,
-    TouchableOpacity,
-    TextInput,
-    Text,
-    Dimensions,
-    Pressable,
-  } from 'react-native';
+{
+  View,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  TextInput,
+  Text,
+  Dimensions,
+  Pressable,
+} from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import tw from 'twrnc';
 import Icon from 'react-native-vector-icons/Feather';
@@ -18,9 +18,13 @@ import Image1 from '../../assets/images/browse-jobs.png';
 import Image2 from '../../assets/images/IntroScreenJobsAndInvitations.png';
 import Image3 from '../../assets/images/search-dream-job.png';
 import Image4 from '../../assets/images/checklist.png';
+import MenuIconSVG from "../../assets/svgs/Menu Icon.svg"
+import { useNavigation } from '@react-navigation/native';
 
 const Dashboard = ({ navigation }) =>
 {
+
+  const navigation2 = useNavigation();
   const [selectedImage, setSelectedImage] = useState(null);
 
   const nearbyJobsData = [
@@ -115,9 +119,19 @@ const Dashboard = ({ navigation }) =>
     <ScrollView showsVerticalScrollIndicator={false} style={tw`flex bg-white`}>
       <View style={tw`p-6 bg-white mt-5`}>
         <View style={tw`flex-row justify-between items-center mb-4`}>
-          <View>
-            <Text style={tw`text-lg font-bold`}>Welcome, John Doe</Text>
-            <Text style={tw`text-lg font-bold`}>Peter Khalko👋</Text>
+          <View style={tw`flex-row items-center gap-5`}>
+            <Pressable onPress={() =>
+            {
+              navigation.openDrawer();
+            }}
+              style={({ pressed }) => [tw``]}
+            >
+              <MenuIconSVG />
+            </Pressable>
+            <View>
+              <Text style={tw`text-lg font-bold`}>Welcome, John Doe</Text>
+              <Text style={tw`text-lg font-bold text-black`}>Peter Khalko👋</Text>
+            </View>
           </View>
           <TouchableOpacity
             style={tw`w-10 h-10 bg-green-500 rounded-lg items-center justify-center`}>
@@ -207,7 +221,7 @@ const Dashboard = ({ navigation }) =>
           </TouchableOpacity>
         ))}
       </View>
-    </ScrollView>
+    </ScrollView >
   );
 };
 

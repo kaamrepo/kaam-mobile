@@ -17,7 +17,6 @@ import ChooseProfession from './src/screens/login/ChooseProfession';
 import SplashScreen from 'react-native-splash-screen'
 import IntroScreenBrowseJobs from './src/screens/intro/IntroScreenBrowseJobs';
 import LoginScreen from "./src/screens/login/Login"
-import BottomTabNavigation from './src/screens/BottomTabNavigation';
 import JobPreference from './src/screens/login/JobPreference';
 import Icon, { Icons } from './src/components/Icons';
 import tailwind from 'twrnc';
@@ -26,6 +25,7 @@ import JobSelection from './src/screens/login/JobSelection';
 import ApplyNow from './src/screens/jobs/ApplyNow';
 import Chat from './src/screens/chats/Chat';
 import TrackApplication from './src/screens/chats/TrackApplication';
+import DrawerNavigation from './src/screens/DrawerNavigation';
 
 // Navigators
 
@@ -59,7 +59,7 @@ const App = () =>
   return (
     <>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName={!isLoggedIn ? 'IntroSelectLanguage' : 'ChooseProfession'}>
+        <Stack.Navigator initialRouteName={!isLoggedIn ? 'BottomTabNavigation' : 'BottomTabNavigation'}>
           {
             !isLoggedIn ?
               <>
@@ -122,13 +122,15 @@ const App = () =>
                   component={ApplyNow}
                   options={{ headerShown: false }}
                 />
-                <Stack.Screen name="BottomTabNavigation"
-                  component={BottomTabNavigation}
-                  options={{ headerShown: false }}
 
+                <Stack.Screen name="DrawerNavigation"
+                  component={DrawerNavigation}
+                  options={{ headerShown: false }}
                 />
+
               </>
           }
+
         </Stack.Navigator>
       </NavigationContainer>
       <Toast config={toastConfig} position='bottom'

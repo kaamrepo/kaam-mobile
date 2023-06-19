@@ -61,6 +61,8 @@ const BottomTabNavigation = () =>
                     />
                 )
             })}
+
+
         </Tab.Navigator >
     )
 }

@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, FlatList, Image, Pressable } from 'react-native'
 import React, { useState } from 'react'
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import tw from 'twrnc'
 import Toast from 'react-native-toast-message';
 import Icon, { Icons } from '../../components/Icons';
@@ -95,7 +95,7 @@ const JobSelection = ({ navigation }) =>
                     onPress={() =>
                     {
                         // navigation.navigate('JobSelection');
-                        navigation.navigate('BottomTabNavigation');
+                        navigation.navigate('DrawerNavigation');
                     }}
                     style={({ pressed }) => [
                         {
