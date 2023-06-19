@@ -19,13 +19,17 @@ import Image2 from '../../assets/images/IntroScreenJobsAndInvitations.png';
 import Image3 from '../../assets/images/search-dream-job.png';
 import Image4 from '../../assets/images/checklist.png';
 import MenuIconSVG from "../../assets/svgs/Menu Icon.svg"
+import FilterIconSVG from "../../assets/svgs/FilterIcon.svg"
 import { useNavigation } from '@react-navigation/native';
+import useLoginStore from '../../store/authentication/login.store';
+import capitalizeFirstLetter from '../../helper/utils/capitalizeFirstLetter';
 
 const Dashboard = ({ navigation }) =>
 {
 
   const navigation2 = useNavigation();
   const [selectedImage, setSelectedImage] = useState(null);
+  const { loggedInUser } = useLoginStore();
 
   const nearbyJobsData = [
     { id: 1, image: Image1 },
@@ -116,7 +120,7 @@ const Dashboard = ({ navigation }) =>
   ];
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false} style={tw`flex bg-white`}>
+    <ScrollView showsVerticalScrollIndicator={false} style={tw`flex bg-[#FAFAFD]`}>
       <View style={tw`px-6 pt-5 pb-2 bg-white`}>
         <View style={tw`flex-row justify-between items-center mb-4`}>
           <View style={tw`flex-row items-center gap-5`}>
@@ -129,8 +133,8 @@ const Dashboard = ({ navigation }) =>
               <MenuIconSVG width={25} height={25} />
             </Pressable>
             <View>
-              <Text style={tw`text-lg font-bold`}>Welcome, John Doe</Text>
-              <Text style={tw`text-lg font-bold text-black`}>Peter Khalko👋</Text>
+              <Text style={[tw`text-slate-500`, { fontFamily: "Poppins-Regular" }]}>Welcome,</Text>
+              <Text style={[tw`text-2xl text-black`, { fontFamily: "Poppins-Bold" }]}>{`${ capitalizeFirstLetter(loggedInUser?.firstname) } ${ capitalizeFirstLetter(loggedInUser?.lastname) }`} 👋</Text>
             </View>
           </View>
           <TouchableOpacity
@@ -143,7 +147,7 @@ const Dashboard = ({ navigation }) =>
       </View>
       <View style={tw`flex-row items-center mb-4 mx-5`}>
         <View
-          style={tw`flex-1 bg-gray-200 rounded-lg h-10 flex-row items-center pr-2`}>
+          style={tw`flex-1 bg-[#F2F2F3] rounded-lg h-10 flex-row items-center pr-2`}>
           <Icon name="search" size={20} color="gray" style={tw`mx-2`} />
           <TextInput
             style={tw`flex-1 text-sm text-black`}
@@ -152,8 +156,8 @@ const Dashboard = ({ navigation }) =>
           />
         </View>
         <TouchableOpacity
-          style={tw`w-10 h-10 bg-gray-200 rounded-lg items-center justify-center ml-2`}>
-          <Icon name="filter" size={20} color="gray" />
+          style={tw`w-10 h-10 bg-[#F2F2F3] rounded-lg items-center justify-center ml-2`}>
+          <FilterIconSVG />
         </TouchableOpacity>
       </View>
       <View>
@@ -201,8 +205,8 @@ const Dashboard = ({ navigation }) =>
       </View>
       <View>
         {featuredJobs.map((item, index) => (
-          <TouchableOpacity key={index}>
-            <View style={tw`bg-white rounded-5 p-3 m-3 shadow`}>
+          <Pressable key={index} onPress={() => { }}>
+            {({ pressed }) => (<View style={tw`rounded-5 p-2 m-3 mx-5 ${ pressed ? 'bg-gray-100' : 'bg-white' }`}>
               <View style={tw`flex-row`}>
                 <View style={tw`flex-1 items-center justify-center`}>
                   <Image
@@ -219,8 +223,8 @@ const Dashboard = ({ navigation }) =>
                   <Text style={tw`text-lg`}>{item.location}</Text>
                 </View>
               </View>
-            </View>
-          </TouchableOpacity>
+            </View>)}
+          </Pressable>
         ))}
       </View>
     </ScrollView >
@@ -228,7 +232,7 @@ const Dashboard = ({ navigation }) =>
 };
 
 const styles = {
-  slide: 'w-full h-52 justify-center items-center bg-gray-300',
+  slide: 'w-full h-52 justify-center items-center bg-[#F2F2F3]',
   image: 'w-full h-full',
 };
 

@@ -58,8 +58,8 @@ const useLoginStore = create((set, get) => ({
     {
         try
         {
-            set({ loggedInUser: undefined })
-            await removeUserSession()
+            await removeUserSession();
+            set({ loggedInUser: undefined, isLoggedIn: false })
         } catch (error)
         {
 

@@ -59,7 +59,7 @@ const App = () =>
   return (
     <>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName={!isLoggedIn ? 'BottomTabNavigation' : 'BottomTabNavigation'}>
+        <Stack.Navigator initialRouteName={!isLoggedIn ? 'IntroSelectLanguage' : 'ChooseProfession'}>
           {
             !isLoggedIn ?
               <>

@@ -31,9 +31,15 @@ import LogoutSVG from "../assets/svgs/Logout.svg"
 import BlueTickSVG from "../assets/svgs/Blue Tick.svg"
 import PremiumIconSVG from "../assets/svgs/PremiumIcon.svg"
 
+// Store
+import useLoginStore from '../store/authentication/login.store';
+import capitalizeFirstLetter from '../helper/utils/capitalizeFirstLetter';
+
 
 const CustomSidebarMenu = (props) =>
 {
+
+    const { logout, loggedInUser } = useLoginStore();
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <View style={[tw`p-3 h-[35%] items-center justify-center relative`]}>
@@ -52,7 +58,7 @@ const CustomSidebarMenu = (props) =>
                     source={require("../assets/images/browse-jobs.png")}
                     style={styles.sideMenuProfileIcon}
                 />
-                <Text style={[tw`text-black text-[24px]`, { fontFamily: 'Poppins-SemiBold' }]}>Sidhesh Parab</Text>
+                <Text style={[tw`text-black text-[24px]`, { fontFamily: 'Poppins-SemiBold' }]}>{`${ capitalizeFirstLetter(loggedInUser?.firstname) } ${ capitalizeFirstLetter(loggedInUser?.lastname) }`}</Text>
                 <View style={tw`flex-row`}>
                     <Text style={[tw`text-[#95969D] text-[14px]`, { fontFamily: 'Poppins-Light' }]}>UI Designer </Text>
                     <BlueTickSVG width={20} height={20} />
@@ -69,7 +75,7 @@ const CustomSidebarMenu = (props) =>
                     <CustomDrawerItem title="Resumes" id={4} index={props?.state?.index} icon={< ResumesSVG />} onPress={() => props.navigation.navigate("Resumes")} />
                     <CustomDrawerItem title="Portfolio" id={5} index={props?.state?.index} icon={< PortfolioSVG />} onPress={() => props.navigation.navigate("Portfolio")} />
                     <CustomDrawerItem title="Settings" id={6} index={props?.state?.index} icon={< SettingsSVG />} onPress={() => props.navigation.navigate("Settings")} />
-                    <CustomDrawerItem title="Logout" id={7} index={props?.state?.index} icon={< LogoutSVG />} onPress={() => props.navigation.navigate("Logout")} />
+                    <CustomDrawerItem title="Logout" id={7} index={props?.state?.index} icon={< LogoutSVG />} onPress={() => logout()} />
                 </View>
             </DrawerContentScrollView>
 

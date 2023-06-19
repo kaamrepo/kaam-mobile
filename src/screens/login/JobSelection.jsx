@@ -13,12 +13,12 @@ const JobSelection = ({ navigation }) =>
         { id: 3, isIcon: false, type: Icons.MaterialCommunityIcons, icon: require('../../assets/images/contract.png'), name: 'Contract', isSelected: false },
         { id: 4, isIcon: false, type: Icons.MaterialCommunityIcons, icon: require('../../assets/images/internship.png'), name: 'Internship', isSelected: false },
         { id: 5, isIcon: false, type: Icons.MaterialCommunityIcons, icon: require('../../assets/images/freelance.png'), name: 'Freelance', isSelected: false },
-        { id: 6, isIcon: true, type: Icons.MaterialCommunityIcons, icon: 'progress-clock', name: 'Designer', isSelected: false },
-        { id: 7, isIcon: true, type: Icons.MaterialCommunityIcons, icon: 'progress-clock', name: 'Developer', isSelected: false },
-        { id: 8, isIcon: true, type: Icons.MaterialCommunityIcons, icon: 'progress-clock', name: 'Administrative', isSelected: false },
-        { id: 9, isIcon: true, type: Icons.MaterialCommunityIcons, icon: 'progress-clock', name: 'Marketing', isSelected: false },
-        { id: 10, isIcon: true, type: Icons.MaterialCommunityIcons, icon: 'progress-clock', name: 'Management', isSelected: false },
-        { id: 11, isIcon: true, type: Icons.MaterialCommunityIcons, icon: 'progress-clock', name: 'Others', isSelected: false }
+        // { id: 6, isIcon: false, type: Icons.MaterialCommunityIcons, icon: require('../../assets/images/'), name: 'Designer', isSelected: false },
+        // { id: 7, isIcon: false, type: Icons.MaterialCommunityIcons, icon: require('../../assets/images/freelance.png'), name: 'Developer', isSelected: false },
+        // { id: 8, isIcon: false, type: Icons.MaterialCommunityIcons, icon: require('../../assets/images/freelance.png'), name: 'Administrative', isSelected: false },
+        // { id: 9, isIcon: false, type: Icons.MaterialCommunityIcons, icon: require('../../assets/images/freelance.png'), name: 'Marketing', isSelected: false },
+        // { id: 10, isIcon: false, type: Icons.MaterialCommunityIcons, icon: require('../../assets/images/freelance.png'), name: 'Management', isSelected: false },
+        // { id: 11, isIcon: false, type: Icons.MaterialCommunityIcons, icon: require('../../assets/images/freelance.png'), name: 'Others', isSelected: false }
     ];
 
     const [items, setSelectedChips] = useState(jobTypes);
@@ -141,7 +141,7 @@ const Chip = ({ name, isSelected, onSelect, object }) =>
             </View>
             <Icon type={Icons.Ionicons}
                 name={isSelected ? "checkmark-circle" : "checkmark-circle-outline"}
-                color={isSelected ? "#26a5ff" : "black"}
+                color={isSelected ? "#0E9D57" : "black"}
             />
         </Pressable >
     );
