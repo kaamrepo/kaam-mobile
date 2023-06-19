@@ -117,16 +117,16 @@ const Dashboard = ({ navigation }) =>
 
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={tw`flex bg-white`}>
-      <View style={tw`p-6 bg-white mt-5`}>
+      <View style={tw`px-6 pt-5 pb-2 bg-white`}>
         <View style={tw`flex-row justify-between items-center mb-4`}>
           <View style={tw`flex-row items-center gap-5`}>
             <Pressable onPress={() =>
             {
               navigation.openDrawer();
             }}
-              style={({ pressed }) => [tw``]}
+              style={({ pressed }) => [tw`p-2 h-12 w-12 rounded-full flex-row justify-center items-center ${ pressed ? 'bg-slate-200' : '' }`]}
             >
-              <MenuIconSVG />
+              <MenuIconSVG width={25} height={25} />
             </Pressable>
             <View>
               <Text style={tw`text-lg font-bold`}>Welcome, John Doe</Text>
@@ -134,8 +134,10 @@ const Dashboard = ({ navigation }) =>
             </View>
           </View>
           <TouchableOpacity
-            style={tw`w-10 h-10 bg-green-500 rounded-lg items-center justify-center`}>
-            {/* Online green ripple icon */}
+            style={tw`w-12 h-12`}>
+            <View style={tw`w-12 h-12 bg-yellow-400 rounded-lg shadow-2xl shadow-orange-800`}>
+
+            </View>
           </TouchableOpacity>
         </View>
       </View>
@@ -145,7 +147,7 @@ const Dashboard = ({ navigation }) =>
           <Icon name="search" size={20} color="gray" style={tw`mx-2`} />
           <TextInput
             style={tw`flex-1 text-sm text-black`}
-            placeholder="Searcvfdfdh"
+            placeholder="Search"
             placeholderTextColor="gray"
           />
         </View>
