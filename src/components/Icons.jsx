@@ -27,14 +27,14 @@ export const Icons = {
     EvilIcons,
 }
 
-const Icon = ({ type, name, color, size = 24, style }) =>
+const Icon = ({ type, name, color, size = 24, style, onPress }) =>
 {
     const fontSize = 24;
     const Tag = type;
     return (
         <>
             {type && name && (
-                <Tag name={name} size={size || fontSize} color={color} style={style} />
+                <Tag name={name} size={size || fontSize} color={color} style={style} onPress={onPress} />
             )}
         </>
     )

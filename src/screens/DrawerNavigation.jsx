@@ -20,6 +20,7 @@ function DrawerNavigation()
             drawerStyle={{
                 width: 240,
             }}
+            screenOptions={{ headerShown: false }}
             drawerContent={props => <CustomSidebarMenu {...props} />}
         >
             <Drawer.Screen name="BottomTabNavigation"
