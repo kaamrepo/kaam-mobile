@@ -3,9 +3,7 @@ import {
     Image,
     ScrollView,
     TouchableOpacity,
-    TextInput,
     Text,
-    Dimensions,
     Pressable,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
