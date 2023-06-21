@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
-import
-{
-  View,
-  Image,
-  ScrollView,
-  TouchableOpacity,
-  TextInput,
-  Text,
-  Dimensions,
-  Pressable,
+import {
+View,
+Image,
+ScrollView,
+TouchableOpacity,
+TextInput,
+Text,
+Dimensions,
+Pressable,
 } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import tw from 'twrnc';
@@ -24,8 +23,7 @@ import { useNavigation } from '@react-navigation/native';
 import useLoginStore from '../../store/authentication/login.store';
 import capitalizeFirstLetter from '../../helper/utils/capitalizeFirstLetter';
 
-const Dashboard = ({ navigation }) =>
-{
+const Dashboard = ({ navigation }) => {
 
   const navigation2 = useNavigation();
   const [selectedImage, setSelectedImage] = useState(null);
@@ -38,19 +36,17 @@ const Dashboard = ({ navigation }) =>
     { id: 4, image: Image4 },
   ];
 
-  const renderItemsNearbyJobs = ({ item, index }) =>
-  {
+  const renderItemsNearbyJobs = ({ item, index }) => {
     return (
       <TouchableOpacity
-        onPress={() =>
-        {
+        onPress={() => {
           navigation.navigate('ApplyNow', { id: item.id });
         }}
         key={index}>
-        <View style={tw`${ styles.slide }`}>
+        <View style={tw`${styles.slide}`}>
           <Image
             source={item.image}
-            style={tw`${ styles.image }`}
+            style={tw`${styles.image}`}
             resizeMode="contain"
           />
         </View>
@@ -79,14 +75,13 @@ const Dashboard = ({ navigation }) =>
     },
   ];
 
-  const renderItemsRecommendedJobs = ({ item, index }) =>
-  {
+  const renderItemsRecommendedJobs = ({ item, index }) => {
     return (
-      <View style={tw`${ styles.slide } rounded-3 p-4 m-4`} key={index}>
+      <View style={tw`${styles.slide} rounded-3 p-4 m-4`} key={index}>
         <View style={tw`items-center mb-4`}>
           <Image
             source={item.image}
-            style={tw`${ styles.image } w-20 h-20 rounded-full`}
+            style={tw`${styles.image} w-20 h-20 rounded-full`}
           />
         </View>
         <Text style={tw`font-bold text-xl mb-2`}>{item.title}</Text>
@@ -124,17 +119,16 @@ const Dashboard = ({ navigation }) =>
       <View style={tw`px-6 pt-5 pb-2 bg-white`}>
         <View style={tw`flex-row justify-between items-center mb-4`}>
           <View style={tw`flex-row items-center gap-5`}>
-            <Pressable onPress={() =>
-            {
+            <Pressable onPress={() => {
               navigation.openDrawer();
             }}
-              style={({ pressed }) => [tw`p-2 h-12 w-12 rounded-full flex-row justify-center items-center ${ pressed ? 'bg-slate-200' : '' }`]}
+              style={({ pressed }) => [tw`p-2 h-12 w-12 rounded-full flex-row justify-center items-center ${pressed ? 'bg-slate-200' : ''}`]}
             >
               <MenuIconSVG width={25} height={25} />
             </Pressable>
             <View>
               <Text style={[tw`text-slate-500`, { fontFamily: "Poppins-Regular" }]}>Welcome,</Text>
-              <Text style={[tw`text-2xl text-black`, { fontFamily: "Poppins-Bold" }]}>{`${ capitalizeFirstLetter(loggedInUser?.firstname) } ${ capitalizeFirstLetter(loggedInUser?.lastname) }`} 👋</Text>
+              <Text style={[tw`text-2xl text-black`, { fontFamily: "Poppins-Bold" }]}>{`${capitalizeFirstLetter(loggedInUser?.firstname)} ${capitalizeFirstLetter(loggedInUser?.lastname)}`} 👋</Text>
             </View>
           </View>
           <TouchableOpacity
@@ -206,7 +200,7 @@ const Dashboard = ({ navigation }) =>
       <View>
         {featuredJobs.map((item, index) => (
           <Pressable key={index} onPress={() => { }}>
-            {({ pressed }) => (<View style={tw`rounded-5 p-2 m-3 mx-5 ${ pressed ? 'bg-gray-100' : 'bg-white' }`}>
+            {({ pressed }) => (<View style={tw`rounded-5 p-2 m-3 mx-5 ${pressed ? 'bg-gray-100' : 'bg-white'}`}>
               <View style={tw`flex-row`}>
                 <View style={tw`flex-1 items-center justify-center`}>
                   <Image

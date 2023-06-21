@@ -1,1 +1,1 @@
-export const REACT_APP_DEV_MODE = "https://7316-2401-4900-1c16-7728-491a-6bf8-a4c5-ab79.ngrok-free.app"
+export const REACT_APP_DEV_MODE = 'http://192.168.1.19:3030';
