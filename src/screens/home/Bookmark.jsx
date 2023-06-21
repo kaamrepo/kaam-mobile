@@ -58,6 +58,80 @@ const Bookmark = ({ navigation }) => {
             status: "inreview",
             color: "gray"
         },
+        {
+            image: Image1,
+            title: 'Jr Executive',
+            description: 'Tester',
+            value: 960000,
+            location: 'Delhi', workshift: "Full-time",
+            status: "closed",
+            color: "red"
+
+        },
+        {
+            image: Image2,
+            title: 'Jr Engineer',
+            description: 'Devloper',
+            value: 98765,
+            location: 'Pune', workshift: "Over-Time",
+            status: "open",
+            color: "green"
+        },
+        {
+            image: Image3,
+            title: 'Sr tester',
+            description: 'Automation',
+            value: 576778,
+            location: 'Mumbai', workshift: "Part-time",
+            status: "applied",
+            color: "blue"
+        },
+        {
+            image: Image4,
+            title: 'Manager',
+            description: 'Delivery Manager',
+            value: 576744,
+            location: 'Mumbai', workshift: "Full-time",
+            status: "inreview",
+            color: "gray"
+        },
+        {
+            image: Image1,
+            title: 'Jr Executive',
+            description: 'Tester',
+            value: 960000,
+            location: 'Delhi', workshift: "Full-time",
+            status: "closed",
+            color: "red"
+
+        },
+        {
+            image: Image2,
+            title: 'Jr Engineer',
+            description: 'Devloper',
+            value: 98765,
+            location: 'Pune', workshift: "Over-Time",
+            status: "open",
+            color: "green"
+        },
+        {
+            image: Image3,
+            title: 'Sr tester',
+            description: 'Automation',
+            value: 576778,
+            location: 'Mumbai', workshift: "Part-time",
+            status: "applied",
+            color: "blue"
+        },
+        {
+            image: Image4,
+            title: 'Manager',
+            description: 'Delivery Manager',
+            value: 576744,
+            location: 'Mumbai', workshift: "Full-time",
+            status: "inreview",
+            color: "gray"
+        },
     ];
     return (
         <ScrollView showsVerticalScrollIndicator={false} style={tw`flex bg-[#FAFAFD]`}>
@@ -106,21 +180,21 @@ const Bookmark = ({ navigation }) => {
                                 </View>
                                 <View style={tw`flex-1 items-start justify-center `}>
                                     <Text style={tw`text-lg font-bold text-black`}>{item.title}</Text>
-                                    <Text style={tw`text-md text-gray-400`}>{item.description}</Text>
+                                    <Text style={tw`text-sm text-gray-400`}>{item.description}</Text>
                                 </View>
                                 <View style={tw`flex-1 items-end justify-center`}>
                                     <Text style={tw`text-lg font-semibold text-black`}>{item.value}/y</Text>
-                                    <Text style={tw`text-md text-gray-400`}>{item.location}</Text>
+                                    <Text style={tw`text-sm text-gray-400`}>{item.location}</Text>
                                 </View>
                             </View>
                             <View style={tw`flex-row justify-between items-center px-6 `}>
                                 <TouchableOpacity
                                     style={tw` w-28 h-10`}>
                                     <View style={tw`w-28 h-10 bg-${item.color}-100 border border-${item.color}-700 rounded-full flex-1 items-center justify-center`}>
-                                        <Text style={tw`text-md text-black capitalize`}>{item.status}</Text>
+                                        <Text style={tw`text-sm text-black capitalize`}>{item.status}</Text>
                                     </View>
                                 </TouchableOpacity>
-                                <Text style={tw`text-md text-black `}>{item.workshift}</Text>
+                                <Text style={tw`text-sm text-black `}>{item.workshift}</Text>
                             </View>
                         </View>)}
                     </Pressable>
