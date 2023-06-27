@@ -165,11 +165,12 @@ const toastConfig = {
   success: (props) => (
     <BaseToast
       {...props}
-      style={{ borderLeftColor: 'pink' }}
+      style={{ borderLeftColor: 'green', backgroundColor: '#22b556', }}
       contentContainerStyle={{ paddingHorizontal: 15 }}
       text1Style={{
         fontSize: 15,
-        fontWeight: '400'
+        fontWeight: '400',
+        color: 'white'
       }}
     />
   ),

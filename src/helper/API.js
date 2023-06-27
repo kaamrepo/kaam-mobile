@@ -1,10 +1,8 @@
 import axios from "axios";
 
-
 const API = axios.create({
     headers: {
         "Content-Type": "application/json",
-        Authorization: "",
     }
 })
 
@@ -33,3 +31,8 @@ const API = axios.create({
 // );
 
 export default API;
+
+
+
+
+

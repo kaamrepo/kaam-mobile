@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import API from '../../helper/API';
-import { REGISTER_USER } from '../../helper/endpoints';
+import { USER } from '../../helper/endpoints';
 import Toast from 'react-native-toast-message';
 
 const useRegistrationStore = create((set) => ({
@@ -13,7 +13,7 @@ const useRegistrationStore = create((set) => ({
     {
         try
         {
-            const res = await API.post(REGISTER_USER, userRegistrationFormData)
+            const res = await API.post(USER, userRegistrationFormData)
             if (res && res.status === 201)
             {
                 const loginDetails = {
