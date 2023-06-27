@@ -163,7 +163,7 @@ const Bookmark = ({ navigation }) => {
                 </View>
             </View>
             <View style={tw`flex-row justify-between items-center mt-3 mb-2 mx-6`}>
-                <Text style={[tw`text-xl text-black text-bold`, { fontFamily: "Poppins-Bold" }]}>You Saved 48 Jobs 👍</Text>
+                <Text style={[tw`text-xl text-black `, { fontFamily: "Poppins-Bold" }]}>You Saved 48 Jobs 👍</Text>
             </View>
             <View>
                 {featuredJobs.map((item, index) => (
