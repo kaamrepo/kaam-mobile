@@ -30,10 +30,11 @@ const detailsSchema = yup.object({
 })
 const addressSchema = yup.object({
     addressline: yup.string().required("Phone number is required!"),
-    pincode: yup.string().required("Phone number is required!"),
-    city: yup.string().required("Phone number is required!"),
-    state: yup.string().required("Phone number is required!"),
-    country: yup.string().required("Phone number is required!")
+    pincode: yup.string().required("ZIP code is required!"),
+    district: yup.string().required("District is required!"),
+    city: yup.string().required("City is required!"),
+    state: yup.string().required("State is required!"),
+    country: yup.string().required("Country is required!")
 })
 
 
@@ -70,9 +71,14 @@ const PersonalInfo = ({ navigation }) =>
         resolver: yupResolver(addressSchema),
         mode: 'onChange',
         defaultValues: {
+            addressline: loggedInUser?.address?.addressline,
+            pincode: loggedInUser?.address?.pincode,
+            city: loggedInUser?.address?.city,
+            district: loggedInUser?.address?.district,
+            state: loggedInUser?.address?.state,
+            country: loggedInUser?.address?.country,
         }
     });
-
 
     const [district, setDistrict] = useState([]);
     const [state, setState] = useState([]);
@@ -130,7 +136,6 @@ const PersonalInfo = ({ navigation }) =>
         {
 
             const res = await axios.get(`https://api.postalpincode.in/pincode/${ text }`);
-            console.log("🥩🥩🥩🥩", res.data)
             if (res.data[0].Status === "Success")
             {
                 res.data[0]?.PostOffice?.forEach(data =>
@@ -138,7 +143,13 @@ const PersonalInfo = ({ navigation }) =>
                     !district.includes(data.District) && setDistrict([...district, data.District]);
                     !state.includes(data.State) && setState([...state, data.State]);
                     !country.includes(data.Country) && setCountry([...country, data.Country]);
+
+
                 })
+                setAddressValue("district", res.data[0]?.PostOffice[0]?.District)
+                setAddressValue("city", res.data[0]?.PostOffice[0]?.Region)
+                setAddressValue("state", res.data[0]?.PostOffice[0]?.State)
+                setAddressValue("country", res.data[0]?.PostOffice[0]?.Country)
             }
             if (res.data[0].Status === "Error")
             {
@@ -164,11 +175,12 @@ const PersonalInfo = ({ navigation }) =>
     }
 
     const address = {
-        "House no.": loggedInUser?.address?.houseno,
-        "Street": loggedInUser?.address?.street,
+        "Address": loggedInUser?.address?.addressline,
         "Pin Code": loggedInUser?.address?.pincode,
         "City": loggedInUser?.address?.city,
+        "District": loggedInUser?.address?.district,
         "State": loggedInUser?.address?.state,
+        "Country": loggedInUser?.address?.country,
     }
 
     return (
@@ -357,7 +369,7 @@ const PersonalInfo = ({ navigation }) =>
                         )
                         }
                     />
-                    <Text style={[tw`text-red-600 w-full text-[10px] text-right px-2 py-1`, { fontFamily: "Poppins-Regular" }]}> {detailsError?.addressline?.message}</Text>
+                    <Text style={[tw`text-red-600 w-full text-[10px] text-right px-2 py-1`, { fontFamily: "Poppins-Regular" }]}> {addressError?.addressline?.message}</Text>
 
 
                     <Text style={[tw`text-gray-600 w-full text-[11px] text-left px-2`, { fontFamily: "Poppins-Regular" }]}>Zip Code:</Text>
@@ -387,34 +399,88 @@ const PersonalInfo = ({ navigation }) =>
                         )
                         }
                     />
-                    <Text style={[tw`text-red-600 w-full text-[10px] text-right px-2 py-1`, { fontFamily: "Poppins-Regular" }]}> {detailsError?.pincode?.message}</Text>
+                    <Text style={[tw`text-red-600 w-full text-[10px] text-right px-2 py-1`, { fontFamily: "Poppins-Regular" }]}> {addressError?.pincode?.message}</Text>
 
-
+                    <View style={[tw`w-full flex-row justify-between`]}>
+                        <View style={tw`w-[48%]`}>
+                            <Text style={[tw`text-gray-600 w-full text-[11px] text-left px-2`, { fontFamily: "Poppins-Regular" }]}>City:</Text>
+                            <Controller
+                                control={addressControl}
+                                name='city'
+                                render={({ field: { onChange, onBlur, value } }) => (
+                                    <TextInput
+                                        value={value}
+                                        onChangeText={onChange}
+                                        onBlur={onBlur}
+                                        style={[{ fontFamily: "Poppins-Regular" }, tw` px-4 py-3 text-black border-[1px] bg-slate-100/40 border-slate-300 w-full rounded-lg`]}
+                                        placeholder='eg. Pune'
+                                        placeholderTextColor={"gray"}
+                                    />
+                                )
+                                }
+                            />
+                            <Text style={[tw`text-red-600 w-full text-[10px] text-right px-2 py-1`, { fontFamily: "Poppins-Regular" }]}> {addressError?.city?.message}</Text>
+                        </View>
+                        <View style={tw`w-[48%]`}>
+                            <Text style={[tw`text-gray-600 w-full text-[11px] text-left px-2`, { fontFamily: "Poppins-Regular" }]}>District:</Text>
+                            <Controller
+                                control={addressControl}
+                                name='district'
+                                render={({ field: { onChange, onBlur, value } }) => (
+                                    <TextInput
+                                        value={value}
+                                        onChangeText={onChange}
+                                        onBlur={onBlur}
+                                        style={[{ fontFamily: "Poppins-Regular" }, tw` px-4 py-3 text-black border-[1px] bg-slate-100/40 border-slate-300 w-full rounded-lg`]}
+                                        placeholder='eg. Pune'
+                                        placeholderTextColor={"gray"}
+                                    />
+                                )
+                                }
+                            />
+                            <Text style={[tw`text-red-600 w-full text-[10px] text-right px-2 py-1`, { fontFamily: "Poppins-Regular" }]}> {addressError?.district?.message}</Text>
+                        </View>
+                    </View>
 
                     <Text style={[tw`text-gray-600 w-full text-[11px] text-left px-2`, { fontFamily: "Poppins-Regular" }]}>State:</Text>
                     <Controller
-                        control={detailsControl}
-                        name='email'
+                        control={addressControl}
+                        name='state'
                         render={({ field: { onChange, onBlur, value } }) => (
                             <TextInput
                                 value={value}
                                 onChangeText={onChange}
                                 onBlur={onBlur}
-                                keyboardType='email-address'
                                 style={[{ fontFamily: "Poppins-Regular" }, tw` px-4 py-3 text-black border-[1px] bg-slate-100/40 border-slate-300 w-full rounded-lg`]}
-                                placeholder='eg. abc@kaam.com'
+                                placeholder='eg. Maharashtra'
                                 placeholderTextColor={"gray"}
                             />
                         )
                         }
                     />
-                    <Text style={[tw`text-red-600 w-full text-[10px] text-right px-2 py-1`, { fontFamily: "Poppins-Regular" }]}> {detailsError?.email?.message}</Text>
+                    <Text style={[tw`text-red-600 w-full text-[10px] text-right px-2 py-1`, { fontFamily: "Poppins-Regular" }]}> {addressError?.state?.message}</Text>
 
 
-                    <Text style={[tw`text-gray-600 w-full text-[11px] text-left px-2`, { fontFamily: "Poppins-Regular" }]}>Date of Brith:</Text>
+                    <Text style={[tw`text-gray-600 w-full text-[11px] text-left px-2`, { fontFamily: "Poppins-Regular" }]}>Country:</Text>
+                    <Controller
+                        control={addressControl}
+                        name='country'
+                        render={({ field: { onChange, onBlur, value } }) => (
+                            <TextInput
+                                value={value}
+                                onChangeText={onChange}
+                                onBlur={onBlur}
+                                style={[{ fontFamily: "Poppins-Regular" }, tw` px-4 py-3 text-black border-[1px] bg-slate-100/40 border-slate-300 w-full rounded-lg`]}
+                                placeholder='eg. India'
+                                placeholderTextColor={"gray"}
+                            />
+                        )
+                        }
+                    />
+                    <Text style={[tw`text-red-600 w-full text-[10px] text-right px-2 py-1`, { fontFamily: "Poppins-Regular" }]}> {addressError?.country?.message}</Text>
 
                     <Pressable
-                        onPress={handleDetailsSubmit(updateDetails)}
+                        onPress={handleAddressSubmit(updateAddress)}
                         style={({ pressed }) => tw`my-3 px-5 py-3 w-1/2 flex-row gap-2 items-center justify-center rounded-xl shadow-lg shadow-green-800 ${ pressed ? 'bg-green-800' : 'bg-green-700' }`}>
                         <Text style={[tw`text-white text-[20px]`, { fontFamily: "Poppins-SemiBold" }]}>Save</Text>
                     </Pressable>

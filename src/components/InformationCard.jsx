@@ -16,7 +16,7 @@ const InformationCard = (props) =>
                     Object.entries(props.informationArray).map(([key, value], index) => (
                         <View key={index} style={tw`flex-row justify-between `}>
                             <Text style={[tw`text-[#0D0D26]/50`, { fontFamily: "Poppins-SemiBold" }]}>{key}</Text>
-                            <Text style={[tw`text-black`, { fontFamily: "Poppins-SemiBold" }]}>{value ? value : "  -    "}</Text>
+                            <Text style={[tw`text-black text-right w-[50%]`, { fontFamily: "Poppins-SemiBold" }]}>{value ? value : "  -    "}</Text>
                         </View>
                     ))
                 }
