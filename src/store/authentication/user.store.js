@@ -84,6 +84,57 @@ const useUsersStore = create((set, get) => ({
             });
             return false;
         }
+    },
+    updateAadharInfoStore: async (userid, data) =>
+    {
+        try
+        {
+            const res = await API.patch(`${ USER }/${ userid }`, data, { headers: { Authorization: await getToken() } });
+
+            if (res && res.data)
+            {
+                useLoginStore.getState().setloggedInUser(res.data)
+                Toast.show({
+                    type: 'success',
+                    text1: "Profile saved successfully!",
+                });
+                return true;
+            }
+
+        } catch (error)
+        {
+            Toast.show({
+                type: 'tomatoToast',
+                text1: "Failed to save data!",
+            });
+            return false;
+        }
+    },
+
+    updatePANInfoStore: async (userid, data) =>
+    {
+        try
+        {
+            const res = await API.patch(`${ USER }/${ userid }`, data, { headers: { Authorization: await getToken() } });
+
+            if (res && res.data)
+            {
+                useLoginStore.getState().setloggedInUser(res.data)
+                Toast.show({
+                    type: 'success',
+                    text1: "Profile saved successfully!",
+                });
+                return true;
+            }
+
+        } catch (error)
+        {
+            Toast.show({
+                type: 'tomatoToast',
+                text1: "Failed to save data!",
+            });
+            return false;
+        }
     }
 }))
 

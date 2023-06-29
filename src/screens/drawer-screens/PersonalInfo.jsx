@@ -36,6 +36,12 @@ const addressSchema = yup.object({
     state: yup.string().required("State is required!"),
     country: yup.string().required("Country is required!")
 })
+const aadharSchema = yup.object({
+    aadharno: yup.string().required("Aadhar number is required!").matches(/^[2-9]{1}[0-9]{3}\s[0-9]{4}\s[0-9]{4}$/, "Invalid Aadhar Number provided"),
+})
+const panSchema = yup.object({
+    panno: yup.string().required("PAN is required!").matches(/^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/, "Invalid PAN provided"),
+})
 
 
 
@@ -44,7 +50,7 @@ const PersonalInfo = ({ navigation }) =>
 
     // store imports
     const { loggedInUser } = useLoginStore();
-    const { updateAboutMeStore, updateDetailsStore, updateAddressStore } = useUsersStore()
+    const { updateAboutMeStore, updateDetailsStore, updateAddressStore, updateAadharInfoStore, updatePANInfoStore } = useUsersStore()
 
     const snapPoints = useMemo(() => ['35%', '60%', '75%'], []);
     const isKeyboardVisible = useKeyboardStatus();
@@ -77,6 +83,22 @@ const PersonalInfo = ({ navigation }) =>
             district: loggedInUser?.address?.district,
             state: loggedInUser?.address?.state,
             country: loggedInUser?.address?.country,
+        }
+    });
+
+    const { control: aadharControl, getValues: getAadharValues, setValue: setAadharValue, handleSubmit: handleAadharSubmit, formState: { errors: aadharError } } = useForm({
+        resolver: yupResolver(aadharSchema),
+        mode: 'onChange',
+        defaultValues: {
+            aadharno: loggedInUser?.aadharno
+        }
+    });
+
+    const { control: panControl, getValues: getPANValues, setValue: setPANValue, handleSubmit: handlePANSubmit, formState: { errors: panError } } = useForm({
+        resolver: yupResolver(panSchema),
+        mode: 'onChange',
+        defaultValues: {
+            panno: loggedInUser?.panno
         }
     });
 
@@ -127,6 +149,22 @@ const PersonalInfo = ({ navigation }) =>
         if (success)
         {
             bottomSheetAddressRef.current.close()
+        }
+    }
+    const updateAadharInfo = async (data) =>
+    {
+        const success = await updateAadharInfoStore(loggedInUser?._id, data)
+        if (success)
+        {
+            bottomSheetAadharVerificationRef.current.close()
+        }
+    }
+    const updatePANInfo = async (data) =>
+    {
+        const success = await updatePANInfoStore(loggedInUser?._id, data)
+        if (success)
+        {
+            bottomSheetPANVerificationRef.current.close()
         }
     }
 
@@ -241,6 +279,36 @@ const PersonalInfo = ({ navigation }) =>
                         </View>
                     </View>
                 </View>
+
+
+
+                {/* Profile Verification */}
+                <View style={tw`my-3`}>
+                    <View style={tw`px-6 flex-row justify-between`}>
+                        <Text style={[tw`text-[#0D0D26] text-[18px]`, { fontFamily: "Poppins-Bold" }]}>Profile Verification</Text>
+                    </View>
+                    <View style={tw`px-6 py-4 bg-white rounded-[20px] gap-3 border border-gray-100`}>
+                        <View style={tw`flex-row justify-between `}>
+
+                            <Text style={[tw`text-[#0D0D26]/50`, { fontFamily: "Poppins-SemiBold" }]}>Aadhar Verification</Text>
+
+                            <Icon type={Icons.MaterialCommunityIcons} style={tw`pl-2`} name={"pencil"} size={20} color={"black"} onPress={() =>
+                            {
+                                bottomSheetAadharVerificationRef.current.snapToIndex(0)
+                            }} />
+                        </View>
+                        <View style={tw`flex-row justify-between `}>
+
+                            <Text style={[tw`text-[#0D0D26]/50`, { fontFamily: "Poppins-SemiBold" }]}>PAN Verification</Text>
+
+                            <Icon type={Icons.MaterialCommunityIcons} style={tw`pl-2`} name={"pencil"} size={20} color={"black"} onPress={() =>
+                            {
+                                bottomSheetPANVerificationRef.current.snapToIndex(0)
+                            }} />
+                        </View>
+                    </View>
+                </View>
+                {/* Profile Verification */}
             </ScrollView>
 
 
@@ -518,6 +586,93 @@ const PersonalInfo = ({ navigation }) =>
                 </View>
             </BottomSheet>
             {/* About Me bottom sheet */}
+
+
+            {/* Profile Verification */}
+
+            <BottomSheet
+                ref={bottomSheetAadharVerificationRef}
+                index={-1}
+                snapPoints={snapPoints}
+                backdropComponent={renderBackdrop}
+                enablePanDownToClose={true}
+            >
+                <ScrollView style={[tw`flex-1 mx-5`]}
+                    contentContainerStyle={{ alignItems: 'center' }}
+                    showsVerticalScrollIndicator={false}
+                >
+                    <Text style={[tw`text-black text-[20px] text-center py-3`, { fontFamily: "Poppins-Bold" }]}>Aadhar Information</Text>
+
+                    <Text style={[tw`text-gray-600 w-full text-[11px] text-left px-2`, { fontFamily: "Poppins-Regular" }]}>Aadhar number:</Text>
+                    <Controller
+                        control={aadharControl}
+                        name='aadharno'
+                        render={({ field: { onChange, onBlur, value } }) => (
+                            <TextInput
+                                value={value}
+                                onChangeText={onChange}
+                                onBlur={onBlur}
+                                keyboardType='numeric'
+                                style={[{ fontFamily: "Poppins-Regular" }, tw`text-black px-4 py-3 border-[1px] bg-slate-100/40 border-slate-300 w-full rounded-lg`]}
+                                placeholder='ex. 9961 7601 2065'
+                                placeholderTextColor={"gray"}
+                            />
+                        )
+                        }
+                    />
+                    <Text style={[tw`text-red-600 w-full text-[10px] text-right px-2 py-1`, { fontFamily: "Poppins-Regular" }]}> {aadharError?.aadharno?.message}</Text>
+
+                    <Pressable
+                        onPress={handleAadharSubmit(updateAadharInfo)}
+                        style={({ pressed }) => tw`my-3 px-5 py-3 w-1/2 flex-row gap-2 items-center justify-center rounded-xl shadow-lg shadow-green-800 ${ pressed ? 'bg-green-800' : 'bg-green-700' }`}>
+                        <Text style={[tw`text-white text-[20px]`, { fontFamily: "Poppins-SemiBold" }]}>Save</Text>
+                    </Pressable>
+                </ScrollView>
+            </BottomSheet>
+
+
+            <BottomSheet
+                ref={bottomSheetPANVerificationRef}
+                index={-1}
+                snapPoints={snapPoints}
+                backdropComponent={renderBackdrop}
+                enablePanDownToClose={true}
+            >
+                <ScrollView style={[tw`flex-1 mx-5`]}
+                    contentContainerStyle={{ alignItems: 'center' }}
+                    showsVerticalScrollIndicator={false}
+                >
+                    <Text style={[tw`text-black text-[20px] text-center py-3`, { fontFamily: "Poppins-Bold" }]}>PAN Information</Text>
+
+                    <Text style={[tw`text-gray-600 w-full text-[11px] text-left px-2`, { fontFamily: "Poppins-Regular" }]}>Permanent Account Number (PAN):</Text>
+                    <Controller
+                        control={panControl}
+                        name='panno'
+                        render={({ field: { onChange, onBlur, value } }) => (
+                            <TextInput
+                                value={value}
+                                onChangeText={onChange}
+                                onBlur={onBlur}
+                                keyboardType='name-phone-pad'
+                                style={[{ fontFamily: "Poppins-Regular" }, tw`text-black px-4 py-3 border-[1px] bg-slate-100/40 border-slate-300 w-full rounded-lg`]}
+                                placeholder='ex. ABCTY1234D'
+                                placeholderTextColor={"gray"}
+                            />
+                        )
+                        }
+                    />
+                    <Text style={[tw`text-red-600 w-full text-[10px] text-right px-2 py-1`, { fontFamily: "Poppins-Regular" }]}> {panError?.panno?.message}</Text>
+
+                    <Pressable
+                        onPress={handlePANSubmit(updatePANInfo)}
+                        style={({ pressed }) => tw`my-3 px-5 py-3 w-1/2 flex-row gap-2 items-center justify-center rounded-xl shadow-lg shadow-green-800 ${ pressed ? 'bg-green-800' : 'bg-green-700' }`}>
+                        <Text style={[tw`text-white text-[20px]`, { fontFamily: "Poppins-SemiBold" }]}>Save</Text>
+                    </Pressable>
+                </ScrollView>
+            </BottomSheet>
+
+
+            {/* Profile Verification */}
 
         </SafeAreaView >
     )
