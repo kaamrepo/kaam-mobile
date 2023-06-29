@@ -1,3 +1,4 @@
+import { Pressable } from 'react-native'
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
 const Drawer = createDrawerNavigator();
@@ -12,6 +13,9 @@ import Proposals from './drawer-screens/Proposals';
 import Resumes from './drawer-screens/Resumes';
 import Portfolio from './drawer-screens/Portfolio';
 import Settings from './drawer-screens/Settings';
+import Icon, { Icons } from '../components/Icons';
+import tw from "twrnc"
+
 
 function DrawerNavigation()
 {
@@ -32,7 +36,27 @@ function DrawerNavigation()
             <Drawer.Screen name="Proposals" component={Proposals} />
             <Drawer.Screen name="Resumes" component={Resumes} />
             <Drawer.Screen name="Portfolio" component={Portfolio} />
-            <Drawer.Screen name="Settings" component={Settings} />
+            <Drawer.Screen name="Settings" component={Settings}
+                options={({ navigation }) => ({
+                    headerLeft: () => (
+                        <Pressable style={({ pressed }) => tw`mx-2 h-10 w-10 items-center justify-center rounded-full ${ pressed ? 'bg-gray-200' : '' } `} onPress={() =>
+                        {
+                            navigation.goBack();
+                            navigation.openDrawer();
+                        }}>
+                            <Icon type={Icons.Ionicons} name={"chevron-back"} size={25} color={"black"} />
+                        </Pressable>
+                    ),
+                    headerStyle: { backgroundColor: '#FAFAFD' },
+                    headerTransparent: false,
+                    headerShadowVisible: false,
+                    headerTitle: 'Settings',
+                    headerTitleAlign: 'center',
+                    headerTitleStyle: { fontFamily: "Poppins-SemiBold" },
+                    headerShown: true,
+                })}
+
+            />
             <Drawer.Screen name="Logout" component={Feed} />
         </Drawer.Navigator>
     );
