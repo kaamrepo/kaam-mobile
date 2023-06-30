@@ -6,12 +6,14 @@ import {
     Text,
     FlatList,
     Pressable,
+    TouchableOpacity
 } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import React from 'react';
 import tw from 'twrnc';
 import BlueTickSVG from '../../assets/svgs/Blue Tick.svg';
 
-const ViewProfile = () => {
+const ViewProfile = ({ navigation }) => {
     const portfolioItems = [
         { id: 1, title: 'Project 1' },
         { id: 2, title: 'Project 2' },
@@ -24,19 +26,34 @@ const ViewProfile = () => {
         { id: 9, title: 'Project 9' },
         { id: 10, title: 'Project 10' },
     ];
-
+    const handleBackPress = () => {
+        navigation.goBack();
+    };
     const renderItem = ({ item }) => (
-        <View style={tw`w-1/3 p-2 border border-black`}>
+        <View style={tw`w-1/3 p-2 `}>
             <Image
                 source={require('../../assets/images/browse-jobs.png')} // Replace with your image source
                 style={styles.itemImage}
             />
-            <Text>{item.title}</Text>
+            <Text style={tw`text-center text-black`}>{item.title}</Text>
         </View>
     );
     return (
         <SafeAreaView style={tw`flex-1 px-5`}>
-            <View style={tw`flex flex-row justify-end`}>
+            <View style={tw`flex flex-row justify-between`}>
+                <Pressable onPress={() => {
+                    navigation.openDrawer();
+                }}
+                    style={({ pressed }) => [tw`h-10 w-10  flex-row justify-center items-center ${pressed ? 'bg-slate-200' : ''}`]}
+                >
+                    <TouchableOpacity onPress={handleBackPress}>
+                        <Ionicons
+                            name="chevron-back"
+                            size={24}
+                            style={tw`text-black`}
+                        />
+                    </TouchableOpacity>
+                </Pressable>
                 <Text style={[tw`text-[#AFB0B6] text-[18px] p-2`, { fontFamily: 'Poppins-Semibold' }]}>
                     {'Edit'}
                 </Text>
@@ -59,7 +76,7 @@ const ViewProfile = () => {
                         </View>
                     </View>
                 </View>
-                <View style={tw`flex flex-row p-2`}>
+                <View style={tw`flex flex-row p-2 mb-2`}>
                     <View style={tw`flex-1 justify-center items-center p-1`}>
                         <Text style={[tw`text-[16px] text-black font-bold`, { fontFamily: 'Poppins-bold' }]}>
                             {'27'}
