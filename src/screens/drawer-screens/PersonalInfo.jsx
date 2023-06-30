@@ -26,8 +26,7 @@ const resume = [{
     key: "Create Resume", value: ""
 }]
 
-const PersonalInfo = ({ navigation }) =>
-{
+const PersonalInfo = ({ navigation }) => {
     const { loggedInUser } = useLoginStore();
 
     const [isAboutMeEdit, setAboutMeEdit] = useState(false);
@@ -58,8 +57,7 @@ const PersonalInfo = ({ navigation }) =>
     return (
         <SafeAreaView style={tw`flex-1 p-4 px-5 bg-[#FAFAFD]`}>
             <View>
-                <Pressable style={({ pressed }) => tw`h-10 w-10 items-center justify-center rounded-full ${ pressed ? 'bg-gray-200' : '' } `} onPress={() =>
-                {
+                <Pressable style={({ pressed }) => tw`h-10 w-10 items-center justify-center rounded-full ${pressed ? 'bg-gray-200' : ''} `} onPress={() => {
                     navigation.goBack();
                     navigation.openDrawer();
                 }}>
@@ -71,7 +69,7 @@ const PersonalInfo = ({ navigation }) =>
 
                 <View>
                     <View style={tw`flex-row gap-5 items-center`}>
-                        <Text style={[tw`text-[#0D0D26] text-[20px]`, { fontFamily: "Poppins-Bold" }]}>{`${ capitalizeFirstLetter(loggedInUser?.firstname) } ${ capitalizeFirstLetter(loggedInUser?.lastname) }`}</Text>
+                        <Text style={[tw`text-[#0D0D26] text-[20px]`, { fontFamily: "Poppins-Bold" }]}>{`${capitalizeFirstLetter(loggedInUser?.firstname)} ${capitalizeFirstLetter(loggedInUser?.lastname)}`}</Text>
                         <Icon type={Icons.MaterialCommunityIcons} name={"pencil"} size={20} color={"black"} onPress={() => { console.log("object") }} />
                     </View>
 
@@ -110,8 +108,7 @@ const PersonalInfo = ({ navigation }) =>
                                     onChangeText={onChangeAboutMeText} value={aboutMeText}
                                 /> : <Text style={[tw`text-[#0D0D26]/50 bg-blue-200`, { fontFamily: "Poppins-SemiBold" }]}>{aboutMeText}</Text>
                             }
-                            <Icon type={Icons.MaterialCommunityIcons} name={"pencil"} size={20} color={"black"} onPress={() =>
-                            {
+                            <Icon type={Icons.MaterialCommunityIcons} name={"pencil"} size={20} color={"black"} onPress={() => {
                                 bottomSheetRef.current.snapToIndex(1)
                                 // setAboutMeEdit(true)
                             }} />

@@ -168,7 +168,8 @@ const Bookmark = ({ navigation }) => {
             <View>
                 {featuredJobs.map((item, index) => (
                     <Pressable key={index} onPress={() => { }}>
-                        {({ pressed }) => (<View style={tw`rounded-5 p-2 m-3 mx-5 ${pressed ? 'bg-gray-100' : 'bg-white'}`}>
+                        {({ pressed }) => (
+                        <View style={tw`rounded-5 p-2 m-3 mx-5 ${pressed ? 'bg-gray-100' : 'bg-white'}`}>
                             <View style={tw`flex-row mb-2 px-5 `}>
                                 <View style={tw`m-2 items-center justify-center`}>
                                     <Image

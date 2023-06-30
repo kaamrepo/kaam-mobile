@@ -12,9 +12,9 @@ import Proposals from './drawer-screens/Proposals';
 import Resumes from './drawer-screens/Resumes';
 import Portfolio from './drawer-screens/Portfolio';
 import Settings from './drawer-screens/Settings';
+import ViewProfile from './drawer-screens/ViewProfile';
 
-function DrawerNavigation()
-{
+function DrawerNavigation() {
     return (
         <Drawer.Navigator
             drawerStyle={{
@@ -28,6 +28,7 @@ function DrawerNavigation()
                 options={{ headerShown: false, drawerItemStyle: { display: 'none' } }}
             />
             <Drawer.Screen name="Personal Info" component={PersonalInfo} />
+            <Drawer.Screen name="View Profile" component={ViewProfile} />
             <Drawer.Screen name="Applications" component={Applications} />
             <Drawer.Screen name="Proposals" component={Proposals} />
             <Drawer.Screen name="Resumes" component={Resumes} />
