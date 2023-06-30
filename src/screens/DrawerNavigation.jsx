@@ -4,7 +4,6 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 const Drawer = createDrawerNavigator();
 
 // Screens
-import Feed from './Feed';
 import BottomTabNavigation from './BottomTabNavigation';
 import CustomSidebarMenu from './CustomSidebarMenu';
 import PersonalInfo from './drawer-screens/PersonalInfo';
@@ -57,7 +56,6 @@ function DrawerNavigation()
                 })}
 
             />
-            <Drawer.Screen name="Logout" component={Feed} />
         </Drawer.Navigator>
     );
 }
