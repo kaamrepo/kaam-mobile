@@ -63,7 +63,7 @@ const ViewProfile = ({ navigation }) => {
                     <View style={[tw`p-3 items-center justify-center`]}>
                         <Image
                             source={require('../../assets/images/browse-jobs.png')}
-                            style={styles.sideMenuProfileIcon}
+                            style={styles.ProfileIcon}
                         />
                         <Text style={[tw`text-black text-[24px]`, { fontFamily: 'Poppins-SemiBold' }]}>
                             {'Akshay Naik'}
@@ -177,7 +177,7 @@ const ViewProfile = ({ navigation }) => {
 export default ViewProfile;
 
 const styles = StyleSheet.create({
-    sideMenuProfileIcon: {
+    ProfileIcon: {
         resizeMode: 'center',
         width: 100,
         height: 100,
