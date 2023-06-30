@@ -8,6 +8,7 @@ import {
     Pressable,
     TouchableOpacity
 } from 'react-native';
+import Icon, { Icons } from '../../components/Icons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import React from 'react';
 import tw from 'twrnc';
@@ -61,10 +62,13 @@ const ViewProfile = ({ navigation }) => {
             <View style={tw`bg-white rounded-lg`}>
                 <View style={tw`flex justify-center items-center`}>
                     <View style={[tw`p-3 items-center justify-center`]}>
-                        <Image
-                            source={require('../../assets/images/browse-jobs.png')}
-                            style={styles.ProfileIcon}
-                        />
+                        <View style={tw`flex-row items-center`}>
+                            <Image
+                                source={require('../../assets/images/browse-jobs.png')}
+                                style={styles.ProfileIcon}
+                            />
+                            <Icon type={Icons.MaterialCommunityIcons} name={"camera"} size={20} color={"white"} onPress={() => { console.log("object") }} style={tw`absolute bottom-1 right-1 bg-blue-300/50 rounded-full p-1`} />
+                        </View>
                         <Text style={[tw`text-black text-[24px]`, { fontFamily: 'Poppins-SemiBold' }]}>
                             {'Akshay Naik'}
                         </Text>
@@ -76,28 +80,29 @@ const ViewProfile = ({ navigation }) => {
                         </View>
                     </View>
                 </View>
+
                 <View style={tw`flex flex-row p-2 mb-2`}>
                     <View style={tw`flex-1 justify-center items-center p-1`}>
-                        <Text style={[tw`text-[16px] text-black font-bold`, { fontFamily: 'Poppins-bold' }]}>
+                        <Text style={[tw`text-[16px] text-black `, { fontFamily: 'Poppins-Bold' }]}>
                             {'27'}
                         </Text>
-                        <Text style={[tw`text-[12px] text-[#95969D] font-bold`, { fontFamily: 'Poppins-bold' }]}>
+                        <Text style={[tw`text-[12px] text-[#95969D] `, { fontFamily: 'Poppins-Bold' }]}>
                             {'Applied'}
                         </Text>
                     </View>
                     <View style={tw`flex-1 justify-center items-center p-1`}>
-                        <Text style={[tw`text-[16px] text-black font-bold`, { fontFamily: 'Poppins-bold' }]}>
+                        <Text style={[tw`text-[16px] text-black `, { fontFamily: 'Poppins-Bold' }]}>
                             {'19'}
                         </Text>
-                        <Text style={[tw`text-[12px] text-[#95969D] font-bold`, { fontFamily: 'Poppins-bold' }]}>
+                        <Text style={[tw`text-[12px] text-[#95969D] `, { fontFamily: 'Poppins-Bold' }]}>
                             {'Reviewed'}
                         </Text>
                     </View>
                     <View style={tw`flex-1 justify-center items-center p-1`}>
-                        <Text style={[tw`text-[16px] text-black font-bold`, { fontFamily: 'Poppins-bold' }]}>
+                        <Text style={[tw`text-[16px] text-black `, { fontFamily: 'Poppins-Bold' }]}>
                             {'22'}
                         </Text>
-                        <Text style={[tw`text-[12px] text-[#95969D] font-bold`, { fontFamily: 'Poppins-bold' }]}>
+                        <Text style={[tw`text-[12px] text-[#95969D] `, { fontFamily: 'Poppins-Bold' }]}>
                             {'Interview'}
                         </Text>
                     </View>
@@ -123,20 +128,20 @@ const ViewProfile = ({ navigation }) => {
                             <View style={tw`rounded-5 p-2 mb-2   ${pressed ? 'bg-gray-100' : 'bg-white'}`}>
                                 <View style={tw`flex-row justify-between items-center`}>
                                     <View style={tw`w-8 h-4 bg-[#5386E4] border border-[#5386E4] rounded-full  items-center justify-center`}>
-                                        <Text style={[tw`text-[8px] text-white font-bold `, { fontFamily: 'Poppins-bold' }]}>
+                                        <Text style={[tw`text-[8px] text-white  `, { fontFamily: 'Poppins-Bold' }]}>
                                             {'CV'}
                                         </Text>
                                     </View>
                                     <View>
-                                        <Text style={[tw`text-[11px] text-black font-bold `, { fontFamily: 'Poppins-bold' }]}>
+                                        <Text style={[tw`text-[11px] text-black  `, { fontFamily: 'Poppins-Bold' }]}>
                                             {'Akshay Naik'}
                                         </Text>
-                                        <Text style={[tw`text-[8px] text-black font-bold text-center`, { fontFamily: 'Poppins-bold' }]}>
+                                        <Text style={[tw`text-[8px] text-black  text-center`, { fontFamily: 'Poppins-SemiBold' }]}>
                                             {'UX Designer'}
                                         </Text>
                                     </View>
                                     <View style={tw`w-8 h-5 bg-[#5F4BB6] border border[#5F4BB6] rounded-full  items-center justify-center`}>
-                                        <Text style={[tw`text-[8px] text-white font-bold`, { fontFamily: 'Poppins-bold' }]}>
+                                        <Text style={[tw`text-[8px] text-white `, { fontFamily: 'Poppins-Bold' }]}>
                                             {'PDF'}
                                         </Text>
                                     </View>
