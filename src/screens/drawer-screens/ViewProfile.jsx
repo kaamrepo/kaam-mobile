@@ -8,6 +8,7 @@ import {
     Pressable,
     TouchableOpacity
 } from 'react-native';
+import DocumentPicker from 'react-native-document-picker';
 import Icon, { Icons } from '../../components/Icons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import React from 'react';
@@ -27,6 +28,32 @@ const ViewProfile = ({ navigation }) => {
         { id: 9, title: 'Project 9' },
         { id: 10, title: 'Project 10' },
     ];
+    const selectFile = async () => {
+        try {
+            const res = await DocumentPicker.pick({
+                type: [DocumentPicker.types.allFiles],
+            });
+            console.log(" res.uri ========== ", res.uri)
+            console.log(" res ========== ", res)
+            console.log(" res.name ========== ", res.name)
+            console.log(" res.type ========== ", res.type)
+            const formData = new FormData();
+            formData.append('profilePic', {
+                uri: res.uri,
+                name: res.name,
+                type: res.type,
+            });
+            // const response = await axios.post('YOUR_UPLOAD_ENDPOINT', formData, {
+            //     headers: {
+            //         'Content-Type': 'multipart/form-data',
+            //     },
+            // });
+
+            // console.log('File uploaded successfully:', response.data);
+        } catch (error) {
+            console.log('Error uploading file:', error);
+        }
+    };
     const handleBackPress = () => {
         navigation.goBack();
     };
@@ -39,6 +66,7 @@ const ViewProfile = ({ navigation }) => {
             <Text style={tw`text-center text-black`}>{item.title}</Text>
         </View>
     );
+
     return (
         <SafeAreaView style={tw`flex-1 px-5`}>
             <View style={tw`flex flex-row justify-between`}>
@@ -55,9 +83,9 @@ const ViewProfile = ({ navigation }) => {
                         />
                     </TouchableOpacity>
                 </Pressable>
-                <Text style={[tw`text-[#AFB0B6] text-[18px] p-2`, { fontFamily: 'Poppins-Semibold' }]}>
+                {/* <Text style={[tw`text-[#AFB0B6] text-[18px] p-2`, { fontFamily: 'Poppins-Semibold' }]}>
                     {'Edit'}
-                </Text>
+                </Text> */}
             </View>
             <View style={tw`bg-white rounded-lg`}>
                 <View style={tw`flex justify-center items-center`}>
@@ -67,7 +95,7 @@ const ViewProfile = ({ navigation }) => {
                                 source={require('../../assets/images/browse-jobs.png')}
                                 style={styles.ProfileIcon}
                             />
-                            <Icon type={Icons.MaterialCommunityIcons} name={"camera"} size={20} color={"white"} onPress={() => { console.log("object") }} style={tw`absolute bottom-1 right-1 bg-blue-300/50 rounded-full p-1`} />
+                            <Icon type={Icons.MaterialCommunityIcons} name={"camera"} size={20} color={"white"} onPress={() => { selectFile() }} style={tw`absolute bottom-1 right-1 bg-blue-300/50 rounded-full p-1`} />
                         </View>
                         <Text style={[tw`text-black text-[24px]`, { fontFamily: 'Poppins-SemiBold' }]}>
                             {'Akshay Naik'}
