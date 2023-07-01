@@ -12,6 +12,15 @@ const useLoginStore = create((set, get) => ({
     {
         set({ isLoggedIn: isLoggedIn, loggedInUser: user })
     },
+    setloggedInUser: async (data) =>
+    {
+
+        let userSession = await retrieveUserSession();
+        userSession = JSON.parse(userSession);
+        userSession['user'] = data;
+        await storeUserSession(userSession)
+        set({ loggedInUser: data })
+    },
     login: async (userLoginFormData) =>
     {
         try
@@ -71,7 +80,23 @@ const useLoginStore = create((set, get) => ({
 export default useLoginStore;
 
 
-async function storeUserSession(data)
+
+
+export const getToken = async () =>
+{
+    try
+    {
+        let token = await retrieveUserSession();
+        token = JSON.parse(token);
+        return token.accessToken;
+    } catch (error)
+    {
+
+    }
+}
+
+
+export const storeUserSession = async (data) =>
 {
     try
     {
@@ -83,11 +108,8 @@ async function storeUserSession(data)
             "isLoggedIn",
             JSON.stringify({ isLoggedIn: true })
         );
-
-        // Congrats! You've just stored your first value!
     } catch (error)
     {
-        // There was an error on the native side
     }
 }
 
@@ -99,12 +121,10 @@ export const retrieveUserSession = async () =>
 
         if (session !== undefined)
         {
-            // Congrats! You've just retrieved your first value!
             return session;
         }
     } catch (error)
     {
-        // There was an error on the native side
     }
 }
 export const retrieveLoggedInState = async () =>
@@ -115,29 +135,26 @@ export const retrieveLoggedInState = async () =>
 
         if (isLoggedIn !== undefined)
         {
-            // Congrats! You've just retrieved your first value!
             return isLoggedIn ? JSON.parse(isLoggedIn) : false;
         }
     } catch (error)
     {
-        // There was an error on the native side
     }
 }
 
-async function removeUserSession()
+export const removeUserSession = async () =>
 {
     try
     {
         await EncryptedStorage.removeItem("user_session");
         await EncryptedStorage.removeItem("isLoggedIn");
-        // Congrats! You've just removed your first value!
+
     } catch (error)
     {
-        // There was an error on the native side
     }
 }
 
-async function clearStorage()
+const clearStorage = async () =>
 {
     try
     {
