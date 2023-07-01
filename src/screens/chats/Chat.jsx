@@ -1,12 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TextInput, FlatList, TouchableOpacity, Pressable } from 'react-native';
 import tw from 'twrnc';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import GeneralStatusBar from '../../components/GeneralStatusBar';
+import dayjs from 'dayjs';
 
 const Chat = ({ navigation }) =>
 {
+
+
+  const [messageText, setMessageText] = useState("")
+
   const handleBackPress = () =>
   {
     navigation.goBack();
@@ -95,9 +100,12 @@ const Chat = ({ navigation }) =>
           style={tw`border border-gray-300 w-[75%] rounded-xl max-h-15 bg-white px-4 py-2`}
           placeholder="Type a message..."
           multiline
+          value={messageText}
+          onChangeText={setMessageText}
         />
         <View style={tw`w-[25%] flex-row justify-around items-center`}>
           <Pressable
+            disabled={messageText?.length ? false : true}
             style={({ pressed }) => [
               {
                 backgroundColor: pressed ? '#d7dbd8' : 'transparent',
@@ -105,7 +113,7 @@ const Chat = ({ navigation }) =>
               tw`w-10 h-10 items-center justify-center rounded-full`
             ]}
           >
-            <Ionicons name="send" size={20} style={tw`ml-[3px] text-green-600`} />
+            <Ionicons name="send" size={20} style={tw`ml-[3px] ${ messageText?.length ? 'text-green-600' : 'text-slate-400' }`} />
           </Pressable>
           <Pressable
             style={({ pressed }) => [

@@ -35,9 +35,12 @@ const useUsersStore = create((set, get) => ({
     {
         try
         {
+            console.log(data.dateofbirth);
+            console.log(new Date(data.dateofbirth));
             data = {
                 ...data,
-                dateofbirth: new Date(data.dateofbirth).toISOString()
+                dateofbirth: new Date(data.dateofbirth)
+                // dateofbirth: new Date(data.dateofbirth).toISOString()
             }
             const res = await API.patch(`${ USER }/${ userid }`, data, { headers: { Authorization: await getToken() } });
 
