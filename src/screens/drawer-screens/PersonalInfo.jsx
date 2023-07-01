@@ -47,6 +47,7 @@ const panSchema = yup.object({
 
 const PersonalInfo = ({ navigation }) => {
 
+    // store imports
     const { loggedInUser } = useLoginStore();
     const { updateAboutMeStore, updateDetailsStore, updateAddressStore, updateAadharInfoStore, updatePANInfoStore } = useUsersStore()
 
@@ -217,7 +218,7 @@ const PersonalInfo = ({ navigation }) => {
                 <View>
                     <View style={tw`flex-row gap-5 items-center`}>
                         <Text style={[tw`text-[#0D0D26] text-[20px]`, { fontFamily: "Poppins-Bold" }]}>{`${capitalizeFirstLetter(loggedInUser?.firstname)} ${capitalizeFirstLetter(loggedInUser?.lastname)}`}</Text>
-                        <Icon type={Icons.MaterialCommunityIcons} name={"pencil"} size={20} color={"black"} onPress={() => { console.log("object") }} />
+                        <Icon type={Icons.MaterialCommunityIcons} name={"pencil"} size={20} color={"black"} onPress={() => { }} />
                     </View>
 
                     <Text style={[tw`text-[#FE6D73] text-[12px]`, { fontFamily: 'Poppins-Light' }]}>{80 + "% Complete"}</Text>
@@ -248,16 +249,38 @@ const PersonalInfo = ({ navigation }) => {
                     </View>
                     <View style={tw`px-6 py-4 bg-white rounded-[20px] border border-gray-100`}>
                         <View style={tw`flex-row justify-between `}>
-                            {isAboutMeEdit ?
-                                <TextInput
-                                    style={[tw`py-0 w-[85%]`, { fontFamily: "Poppins-Regular" }]}
-                                    placeholder='Type here..'
-                                    onChangeText={onChangeAboutMeText} value={aboutMeText}
-                                /> : <Text style={[tw`text-[#0D0D26]/50 bg-blue-200`, { fontFamily: "Poppins-SemiBold" }]}>{aboutMeText}</Text>
-                            }
-                            <Icon type={Icons.MaterialCommunityIcons} name={"pencil"} size={20} color={"black"} onPress={() => {
-                                bottomSheetRef.current.snapToIndex(1)
-                                // setAboutMeEdit(true)
+
+                            <Text style={[tw`text-[#0D0D26]/50`, { fontFamily: "Poppins-SemiBold" }]}>{loggedInUser?.aboutme}</Text>
+
+                            <Icon type={Icons.MaterialCommunityIcons} style={tw`pl-2`} name={"pencil"} size={20} color={"black"} onPress={() => {
+                                bottomSheetAboutMeRef.current.snapToIndex(0)
+                            }} />
+                        </View>
+                    </View>
+                </View>
+
+
+
+                {/* Profile Verification */}
+                <View style={tw`my-3`}>
+                    <View style={tw`px-6 flex-row justify-between`}>
+                        <Text style={[tw`text-[#0D0D26] text-[18px]`, { fontFamily: "Poppins-Bold" }]}>Profile Verification</Text>
+                    </View>
+                    <View style={tw`px-6 py-4 bg-white rounded-[20px] gap-3 border border-gray-100`}>
+                        <View style={tw`flex-row justify-between `}>
+
+                            <Text style={[tw`text-[#0D0D26]/50`, { fontFamily: "Poppins-SemiBold" }]}>Aadhar Verification</Text>
+
+                            <Icon type={Icons.MaterialCommunityIcons} style={tw`pl-2`} name={"pencil"} size={20} color={"black"} onPress={() => {
+                                bottomSheetAadharVerificationRef.current.snapToIndex(0)
+                            }} />
+                        </View>
+                        <View style={tw`flex-row justify-between `}>
+
+                            <Text style={[tw`text-[#0D0D26]/50`, { fontFamily: "Poppins-SemiBold" }]}>PAN Verification</Text>
+
+                            <Icon type={Icons.MaterialCommunityIcons} style={tw`pl-2`} name={"pencil"} size={20} color={"black"} onPress={() => {
+                                bottomSheetPANVerificationRef.current.snapToIndex(0)
                             }} />
                         </View>
                     </View>
