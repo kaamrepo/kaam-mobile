@@ -122,7 +122,7 @@ const ApplyNow = ({ navigation }) =>
               source={jobDescription.image}
               style={tw`w-28 h-28 rounded-full`}
             />
-            <Text style={[tw`text-xl font-bold mt-2 text-white`, { fontFamily: "Poppins-Bold" }]}>John Doe</Text>
+            <Text style={[tw`text-xl mt-2 text-white`, { fontFamily: "Poppins-Bold" }]}>John Doe</Text>
             <Text style={[tw`text-lg text-white`, { fontFamily: "Poppins-Bold" }]}>Software Engineer</Text>
           </View>
           <View style={tw`flex-row justify-between items-center my-1 px-10`}>

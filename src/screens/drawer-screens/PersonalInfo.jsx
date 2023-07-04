@@ -14,9 +14,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import dayjs from 'dayjs';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import axios from 'axios';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
-
+import useLoaderStore from '../../store/loader.store';
+import API from '../../helper/API';
 
 
 const detailsSchema = yup.object({
@@ -45,11 +45,14 @@ const panSchema = yup.object({
 
 
 
-const PersonalInfo = ({ navigation }) => {
+const PersonalInfo = ({ navigation }) =>
+{
 
     // store imports
     const { loggedInUser } = useLoginStore();
     const { updateAboutMeStore, updateDetailsStore, updateAddressStore, updateAadharInfoStore, updatePANInfoStore } = useUsersStore()
+
+    const { setLoading } = useLoaderStore()
 
     const snapPoints = useMemo(() => ['35%', '60%', '75%'], []);
     const isKeyboardVisible = useKeyboardStatus();
@@ -105,7 +108,8 @@ const PersonalInfo = ({ navigation }) => {
     const [state, setState] = useState([]);
     const [country, setCountry] = useState([]);
 
-    useEffect(() => {
+    useEffect(() =>
+    {
         if (loggedInUser?.phone) setDetailsValue("phone", loggedInUser?.phone)
         if (loggedInUser?.email) setDetailsValue("email", loggedInUser?.email)
         if (loggedInUser?.dateofbirth) setDetailsValue("dateofbirth", loggedInUser?.dateofbirth)
@@ -122,45 +126,61 @@ const PersonalInfo = ({ navigation }) => {
         []
     );
 
-    const updateAboutMe = async () => {
-        if (aboutMeText && aboutMeText.length) {
+    const updateAboutMe = async () =>
+    {
+        if (aboutMeText && aboutMeText.length)
+        {
             const success = await updateAboutMeStore(loggedInUser?._id, { aboutme: aboutMeText })
-            if (success) {
+            if (success)
+            {
                 bottomSheetAboutMeRef.current.close()
             }
         }
     }
-    const updateDetails = async (data) => {
+    const updateDetails = async (data) =>
+    {
         const success = await updateDetailsStore(loggedInUser?._id, data)
-        if (success) {
+        if (success)
+        {
             bottomSheetDetailsRef.current.close()
         }
+
     }
-    const updateAddress = async (data) => {
+    const updateAddress = async (data) =>
+    {
         const success = await updateAddressStore(loggedInUser?._id, data)
-        if (success) {
+        if (success)
+        {
             bottomSheetAddressRef.current.close()
         }
     }
-    const updateAadharInfo = async (data) => {
+    const updateAadharInfo = async (data) =>
+    {
         const success = await updateAadharInfoStore(loggedInUser?._id, data)
-        if (success) {
+        if (success)
+        {
             bottomSheetAadharVerificationRef.current.close()
         }
     }
-    const updatePANInfo = async (data) => {
+    const updatePANInfo = async (data) =>
+    {
         const success = await updatePANInfoStore(loggedInUser?._id, data)
-        if (success) {
+        if (success)
+        {
             bottomSheetPANVerificationRef.current.close()
         }
     }
 
-    const getAddressDateByZIPCode = async (text) => {
-        try {
+    const getAddressDateByZIPCode = async (text) =>
+    {
+        try
+        {
 
-            const res = await axios.get(`https://api.postalpincode.in/pincode/${text}`);
-            if (res.data[0].Status === "Success") {
-                res.data[0]?.PostOffice?.forEach(data => {
+            const res = await API.get(`https://api.postalpincode.in/pincode/${ text }`);
+            if (res.data[0].Status === "Success")
+            {
+                res.data[0]?.PostOffice?.forEach(data =>
+                {
                     !district.includes(data.District) && setDistrict([...district, data.District]);
                     !state.includes(data.State) && setState([...state, data.State]);
                     !country.includes(data.Country) && setCountry([...country, data.Country]);
@@ -172,13 +192,17 @@ const PersonalInfo = ({ navigation }) => {
                 setAddressValue("state", res.data[0]?.PostOffice[0]?.State)
                 setAddressValue("country", res.data[0]?.PostOffice[0]?.Country)
             }
-            if (res.data[0].Status === "Error") {
+            if (res.data[0].Status === "Error")
+            {
                 Toast.show({
                     type: 'tomatoToast',
                     text1: "Invalid ZIP Code.",
                 });
             }
-        } catch (error) {
+
+        } catch (error)
+        {
+
             Toast.show({
                 type: 'tomatoToast',
                 text1: "Invalid ZIP Code.",
@@ -205,7 +229,8 @@ const PersonalInfo = ({ navigation }) => {
     return (
         <SafeAreaView style={tw`flex-1 p-4 px-5 bg-[#FAFAFD]`}>
             <View>
-                <Pressable style={({ pressed }) => tw`h-10 w-10 items-center justify-center rounded-full ${pressed ? 'bg-gray-200' : ''} `} onPress={() => {
+                <Pressable style={({ pressed }) => tw`h-10 w-10 items-center justify-center rounded-full ${ pressed ? 'bg-gray-200' : '' } `} onPress={() =>
+                {
                     navigation.goBack();
                     navigation.openDrawer();
                 }}>
@@ -217,7 +242,7 @@ const PersonalInfo = ({ navigation }) => {
 
                 <View>
                     <View style={tw`flex-row gap-5 items-center`}>
-                        <Text style={[tw`text-[#0D0D26] text-[20px]`, { fontFamily: "Poppins-Bold" }]}>{`${capitalizeFirstLetter(loggedInUser?.firstname)} ${capitalizeFirstLetter(loggedInUser?.lastname)}`}</Text>
+                        <Text style={[tw`text-[#0D0D26] text-[20px]`, { fontFamily: "Poppins-Bold" }]}>{`${ capitalizeFirstLetter(loggedInUser?.firstname) } ${ capitalizeFirstLetter(loggedInUser?.lastname) }`}</Text>
                         <Icon type={Icons.MaterialCommunityIcons} name={"pencil"} size={20} color={"black"} onPress={() => { }} />
                     </View>
 
@@ -250,9 +275,10 @@ const PersonalInfo = ({ navigation }) => {
                     <View style={tw`px-6 py-4 bg-white rounded-[20px] border border-gray-100`}>
                         <View style={tw`flex-row justify-between `}>
 
-                            <Text style={[tw`text-[#0D0D26]/50`, { fontFamily: "Poppins-SemiBold" }]}>{loggedInUser?.aboutme}</Text>
+                            <Text style={[tw`text-[#0D0D26]/50`, { fontFamily: "Poppins-SemiBold" }]}>{loggedInUser?.aboutme ?? "Type here..."}</Text>
 
-                            <Icon type={Icons.MaterialCommunityIcons} style={tw`pl-2`} name={"pencil"} size={20} color={"black"} onPress={() => {
+                            <Icon type={Icons.MaterialCommunityIcons} style={tw`pl-2`} name={"pencil"} size={20} color={"black"} onPress={() =>
+                            {
                                 bottomSheetAboutMeRef.current.snapToIndex(0)
                             }} />
                         </View>
@@ -271,7 +297,8 @@ const PersonalInfo = ({ navigation }) => {
 
                             <Text style={[tw`text-[#0D0D26]/50`, { fontFamily: "Poppins-SemiBold" }]}>Aadhar Verification</Text>
 
-                            <Icon type={Icons.MaterialCommunityIcons} style={tw`pl-2`} name={"pencil"} size={20} color={"black"} onPress={() => {
+                            <Icon type={Icons.MaterialCommunityIcons} style={tw`pl-2`} name={"pencil"} size={20} color={"black"} onPress={() =>
+                            {
                                 bottomSheetAadharVerificationRef.current.snapToIndex(0)
                             }} />
                         </View>
@@ -279,7 +306,8 @@ const PersonalInfo = ({ navigation }) => {
 
                             <Text style={[tw`text-[#0D0D26]/50`, { fontFamily: "Poppins-SemiBold" }]}>PAN Verification</Text>
 
-                            <Icon type={Icons.MaterialCommunityIcons} style={tw`pl-2`} name={"pencil"} size={20} color={"black"} onPress={() => {
+                            <Icon type={Icons.MaterialCommunityIcons} style={tw`pl-2`} name={"pencil"} size={20} color={"black"} onPress={() =>
+                            {
                                 bottomSheetPANVerificationRef.current.snapToIndex(0)
                             }} />
                         </View>
@@ -358,7 +386,8 @@ const PersonalInfo = ({ navigation }) => {
                     <DateTimePickerModal
                         isVisible={isDatePickerVisible}
                         mode="date"
-                        onConfirm={(date) => {
+                        onConfirm={(date) =>
+                        {
                             setDetailsValue("dateofbirth", date);
                             setDatePickerVisibility(false)
                         }}
@@ -371,7 +400,7 @@ const PersonalInfo = ({ navigation }) => {
 
                     <Pressable
                         onPress={handleDetailsSubmit(updateDetails)}
-                        style={({ pressed }) => tw`my-3 px-5 py-3 w-1/2 flex-row gap-2 items-center justify-center rounded-xl shadow-lg shadow-green-800 ${pressed ? 'bg-green-800' : 'bg-green-700'}`}>
+                        style={({ pressed }) => tw`my-3 px-5 py-3 w-1/2 flex-row gap-2 items-center justify-center rounded-xl shadow-lg shadow-green-800 ${ pressed ? 'bg-green-800' : 'bg-green-700' }`}>
                         <Text style={[tw`text-white text-[20px]`, { fontFamily: "Poppins-SemiBold" }]}>Save</Text>
                     </Pressable>
                 </ScrollView>
@@ -425,9 +454,11 @@ const PersonalInfo = ({ navigation }) => {
                                 multiline={true}
                                 value={value}
                                 onChangeText={onChange}
-                                onChange={(e) => {
+                                onChange={(e) =>
+                                {
                                     const { text } = e.nativeEvent;
-                                    if (text && text.length >= 6) {
+                                    if (text && text.length >= 6)
+                                    {
                                         getAddressDateByZIPCode(text)
                                     }
                                 }}
@@ -523,7 +554,7 @@ const PersonalInfo = ({ navigation }) => {
 
                     <Pressable
                         onPress={handleAddressSubmit(updateAddress)}
-                        style={({ pressed }) => tw`my-3 px-5 py-3 w-1/2 flex-row gap-2 items-center justify-center rounded-xl shadow-lg shadow-green-800 ${pressed ? 'bg-green-800' : 'bg-green-700'}`}>
+                        style={({ pressed }) => tw`my-3 px-5 py-3 w-1/2 flex-row gap-2 items-center justify-center rounded-xl shadow-lg shadow-green-800 ${ pressed ? 'bg-green-800' : 'bg-green-700' }`}>
                         <Text style={[tw`text-white text-[20px]`, { fontFamily: "Poppins-SemiBold" }]}>Save</Text>
                     </Pressable>
                 </ScrollView>
@@ -543,7 +574,7 @@ const PersonalInfo = ({ navigation }) => {
                 <View style={[tw`flex-1 items-center mx-5`]}>
                     <Text style={[tw`text-black text-[20px] text-center py-3`, { fontFamily: "Poppins-Bold" }]}>About Me</Text>
                     <TextInput
-                        style={[tw`p-4 text-black border-[1px] bg-slate-100/40 ${isKeyboardVisible ? 'max-h-[45%]' : 'max-h-[25%]'} border-slate-300 w-full rounded-lg`, { fontFamily: "Poppins-Regular" }]}
+                        style={[tw`p-4 text-black border-[1px] bg-slate-100/40 ${ isKeyboardVisible ? 'max-h-[45%]' : 'max-h-[25%]' } border-slate-300 w-full rounded-lg`, { fontFamily: "Poppins-Regular" }]}
                         placeholder='Type here..'
                         onChangeText={onChangeAboutMeText}
                         value={aboutMeText}
@@ -554,7 +585,7 @@ const PersonalInfo = ({ navigation }) => {
 
                     <Pressable
                         onPress={() => { updateAboutMe() }}
-                        style={({ pressed }) => tw`my-3 px-5 py-3 w-1/2 flex-row gap-2 items-center justify-center rounded-xl shadow-lg shadow-green-800 ${pressed ? 'bg-green-800' : 'bg-green-700'}`}>
+                        style={({ pressed }) => tw`my-3 px-5 py-3 w-1/2 flex-row gap-2 items-center justify-center rounded-xl shadow-lg shadow-green-800 ${ pressed ? 'bg-green-800' : 'bg-green-700' }`}>
                         <Text style={[tw`text-white text-[20px]`, { fontFamily: "Poppins-SemiBold" }]}>Save</Text>
                     </Pressable>
                 </View>
@@ -598,7 +629,7 @@ const PersonalInfo = ({ navigation }) => {
 
                     <Pressable
                         onPress={handleAadharSubmit(updateAadharInfo)}
-                        style={({ pressed }) => tw`my-3 px-5 py-3 w-1/2 flex-row gap-2 items-center justify-center rounded-xl shadow-lg shadow-green-800 ${pressed ? 'bg-green-800' : 'bg-green-700'}`}>
+                        style={({ pressed }) => tw`my-3 px-5 py-3 w-1/2 flex-row gap-2 items-center justify-center rounded-xl shadow-lg shadow-green-800 ${ pressed ? 'bg-green-800' : 'bg-green-700' }`}>
                         <Text style={[tw`text-white text-[20px]`, { fontFamily: "Poppins-SemiBold" }]}>Save</Text>
                     </Pressable>
                 </ScrollView>
@@ -639,7 +670,7 @@ const PersonalInfo = ({ navigation }) => {
 
                     <Pressable
                         onPress={handlePANSubmit(updatePANInfo)}
-                        style={({ pressed }) => tw`my-3 px-5 py-3 w-1/2 flex-row gap-2 items-center justify-center rounded-xl shadow-lg shadow-green-800 ${pressed ? 'bg-green-800' : 'bg-green-700'}`}>
+                        style={({ pressed }) => tw`my-3 px-5 py-3 w-1/2 flex-row gap-2 items-center justify-center rounded-xl shadow-lg shadow-green-800 ${ pressed ? 'bg-green-800' : 'bg-green-700' }`}>
                         <Text style={[tw`text-white text-[20px]`, { fontFamily: "Poppins-SemiBold" }]}>Save</Text>
                     </Pressable>
                 </ScrollView>
@@ -647,6 +678,7 @@ const PersonalInfo = ({ navigation }) => {
 
 
             {/* Profile Verification */}
+
 
         </SafeAreaView >
     )
