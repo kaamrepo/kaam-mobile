@@ -51,7 +51,7 @@ const useLoginStore = create((set, get) => ({
             const res = await API.patch(GET_OTP, data);
             if (res && res.status === 200)
             {
-                useRegistrationStore.getState().setLoginDetails({ phone: res.data.phone })
+                useRegistrationStore.getState().setLoginDetails({ phone: res.data.phone, dialcode: res.data.dialcode })
                 return true;
             }
         } catch (error)

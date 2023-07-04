@@ -1,5 +1,6 @@
 import React from 'react';
-import {
+import
+{
     SafeAreaView,
     View,
     StyleSheet,
@@ -9,7 +10,8 @@ import {
     Pressable
 } from 'react-native';
 
-import {
+import
+{
     DrawerContentScrollView,
     DrawerItemList,
     DrawerItem,
@@ -34,14 +36,16 @@ import useLoginStore from '../store/authentication/login.store';
 import capitalizeFirstLetter from '../helper/utils/capitalizeFirstLetter';
 
 
-const CustomSidebarMenu = (props) => {
+const CustomSidebarMenu = (props) =>
+{
 
     const { logout, loggedInUser } = useLoginStore();
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <View style={[tw`p-3 h-[35%] items-center justify-center relative`]}>
-                <Pressable style={({ pressed }) => tw`absolute rounded-full p-1 top-5 right-5 ${pressed ? 'bg-slate-200' : ''}`}
-                    onPress={() => {
+            <View style={[tw`p-3 mt-4 h-[35%] items-center justify-center relative`]}>
+                <Pressable style={({ pressed }) => tw`absolute rounded-full p-1 top-5 right-5 ${ pressed ? 'bg-slate-200' : '' }`}
+                    onPress={() =>
+                    {
                         props.navigation.closeDrawer();
                     }}
                 >
@@ -54,7 +58,7 @@ const CustomSidebarMenu = (props) => {
                     source={require("../assets/images/browse-jobs.png")}
                     style={styles.sideMenuProfileIcon}
                 />
-                <Text style={[tw`text-black text-[24px]`, { fontFamily: 'Poppins-SemiBold' }]}>{`${capitalizeFirstLetter(loggedInUser?.firstname)} ${capitalizeFirstLetter(loggedInUser?.lastname)}`}</Text>
+                <Text style={[tw`text-black text-[24px]`, { fontFamily: 'Poppins-SemiBold' }]}>{`${ capitalizeFirstLetter(loggedInUser?.firstname) } ${ capitalizeFirstLetter(loggedInUser?.lastname) }`}</Text>
                 <View style={tw`flex-row`}>
                     <Text style={[tw`text-[#95969D] text-[14px]`, { fontFamily: 'Poppins-Light' }]}>UI Designer</Text>
                     <BlueTickSVG width={20} height={20} />
@@ -76,7 +80,7 @@ const CustomSidebarMenu = (props) => {
             </DrawerContentScrollView>
 
             <View style={tw`items-center my-5`}>
-                <Pressable onPress={props.onPress} style={({ pressed }) => tw`my-3 px-5 py-3 flex-row gap-2 items-center justify-center rounded-xl shadow-lg shadow-green-800 ${pressed ? 'bg-green-800' : 'bg-green-700'}`}>
+                <Pressable onPress={props.onPress} style={({ pressed }) => tw`my-3 px-5 py-3 flex-row gap-2 items-center justify-center rounded-xl shadow-lg shadow-green-800 ${ pressed ? 'bg-green-800' : 'bg-green-700' }`}>
                     <PremiumIconSVG height={18} />
                     <Text style={[tw`text-center text-white`, { fontFamily: "Poppins-Regular" }]}>
                         Go Premium
@@ -113,9 +117,10 @@ export default CustomSidebarMenu;
 
 
 
-const CustomDrawerItem = (props) => {
+const CustomDrawerItem = (props) =>
+{
 
-    return <Pressable onPress={props.onPress} style={({ pressed }) => tw`flex-row px-2 my-[3px] items-center justify-between rounded-md ${pressed ? 'bg-green-500/30' : props.id === props.index ? 'bg-green-200/30' : 'bg-white'}`}>
+    return <Pressable onPress={props.onPress} style={({ pressed }) => tw`flex-row px-2 my-[3px] items-center justify-between rounded-md ${ pressed ? 'bg-green-500/30' : props.id === props.index ? 'bg-green-200/30' : 'bg-white' }`}>
         <View style={tw`flex-row items-center gap-3 py-[10px] px-1`}>
             <View style={tw`px-1`}>
                 {props.icon}

@@ -60,7 +60,7 @@ const App = () =>
   }, [isLoggedIn])
 
   return (
-    < >
+    <>
       <NavigationContainer>
         <Stack.Navigator initialRouteName={'DrawerNavigation'}>
           {/* <Stack.Navigator initialRouteName={!isLoggedIn ? 'IntroSelectLanguage' : 'DrawerNavigation'}> */}
@@ -140,9 +140,9 @@ const App = () =>
       <Toast config={toastConfig} position='bottom'
       />
       <View
-        style={[tw`z-50 absolute top-0 left-0 right-0 bottom-0 justify-center items-center bg-green-200/20 ${ isLoading ? 'flex' : 'hidden' }`]}
+        style={[tw`z-50 absolute top-0 left-0 right-0 bottom-0 justify-center items-center ${ isLoading ? 'flex' : 'hidden' }`]}
       >
-        <ActivityIndicator size='large' animating={isLoading} color="#50A853" style={{
+        <ActivityIndicator size={60} animating={isLoading} color="#00cc66" style={{
           zIndex: 9999,
           position: 'absolute',
           width: 300,

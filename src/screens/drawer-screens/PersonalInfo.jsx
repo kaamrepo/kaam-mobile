@@ -17,7 +17,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import useLoaderStore from '../../store/loader.store';
 import API from '../../helper/API';
-
+import { Picker } from '@react-native-picker/picker'
 
 const detailsSchema = yup.object({
     phone: yup.string().required("Phone number is required!")
@@ -81,7 +81,7 @@ const PersonalInfo = ({ navigation }) =>
         defaultValues: {
             addressline: loggedInUser?.address?.addressline,
             pincode: loggedInUser?.address?.pincode,
-            city: loggedInUser?.address?.city,
+            // city: loggedInUser?.address?.city,
             district: loggedInUser?.address?.district,
             state: loggedInUser?.address?.state,
             country: loggedInUser?.address?.country,
@@ -104,9 +104,8 @@ const PersonalInfo = ({ navigation }) =>
         }
     });
 
-    const [district, setDistrict] = useState([]);
-    const [state, setState] = useState([]);
-    const [country, setCountry] = useState([]);
+    const [cities, setCities] = useState([]);
+    const [selectedCity, setSelectedCity] = useState("");
 
     useEffect(() =>
     {
@@ -179,18 +178,19 @@ const PersonalInfo = ({ navigation }) =>
             const res = await API.get(`https://api.postalpincode.in/pincode/${ text }`);
             if (res.data[0].Status === "Success")
             {
-                res.data[0]?.PostOffice?.forEach(data =>
-                {
-                    !district.includes(data.District) && setDistrict([...district, data.District]);
-                    !state.includes(data.State) && setState([...state, data.State]);
-                    !country.includes(data.Country) && setCountry([...country, data.Country]);
-
-
-                })
                 setAddressValue("district", res.data[0]?.PostOffice[0]?.District)
-                setAddressValue("city", res.data[0]?.PostOffice[0]?.Region)
                 setAddressValue("state", res.data[0]?.PostOffice[0]?.State)
                 setAddressValue("country", res.data[0]?.PostOffice[0]?.Country)
+
+                let placeSet = new Set()
+                res.data[0]?.PostOffice.forEach(p =>
+                {
+                    placeSet.add(p?.Block)
+                    placeSet.add(p?.Division)
+                })
+
+                setCities(Array.from(placeSet))
+
             }
             if (res.data[0].Status === "Error")
             {
@@ -210,6 +210,14 @@ const PersonalInfo = ({ navigation }) =>
         }
     }
 
+    useEffect(() =>
+    {
+        if (loggedInUser?.address?.city)
+        {
+            getAddressDateByZIPCode(loggedInUser?.address?.pincode)
+            setSelectedCity(loggedInUser?.address?.city)
+        }
+    }, [loggedInUser?.address?.city])
 
     const details = {
         "Phone Number": loggedInUser?.phone,
@@ -220,7 +228,7 @@ const PersonalInfo = ({ navigation }) =>
     const address = {
         "Address": loggedInUser?.address?.addressline,
         "Pin Code": loggedInUser?.address?.pincode,
-        "City": loggedInUser?.address?.city,
+        "City/Village": loggedInUser?.address?.city,
         "District": loggedInUser?.address?.district,
         "State": loggedInUser?.address?.state,
         "Country": loggedInUser?.address?.country,
@@ -475,7 +483,7 @@ const PersonalInfo = ({ navigation }) =>
                     <Text style={[tw`text-red-600 w-full text-[10px] text-right px-2 py-1`, { fontFamily: "Poppins-Regular" }]}> {addressError?.pincode?.message}</Text>
 
                     <View style={[tw`w-full flex-row justify-between`]}>
-                        <View style={tw`w-[48%]`}>
+                        {/* <View style={tw`w-[48%]`}>
                             <Text style={[tw`text-gray-600 w-full text-[11px] text-left px-2`, { fontFamily: "Poppins-Regular" }]}>City:</Text>
                             <Controller
                                 control={addressControl}
@@ -493,7 +501,26 @@ const PersonalInfo = ({ navigation }) =>
                                 }
                             />
                             <Text style={[tw`text-red-600 w-full text-[10px] text-right px-2 py-1`, { fontFamily: "Poppins-Regular" }]}> {addressError?.city?.message}</Text>
+                        </View> */}
+
+                        <View style={tw`w-[48%] `}>
+                            <Text style={[tw`text-gray-600 w-full text-[11px] text-left px-2`, { fontFamily: "Poppins-Regular" }]}>City/Village:</Text>
+                            <View style={[tw`border-[1px] bg-slate-100/40 border-slate-300 w-full rounded-lg m-0`]}>
+                                <Picker
+                                    selectedValue={selectedCity}
+                                    style={{ width: '100%' }}
+                                    onValueChange={(itemValue, itemIndex) =>
+                                    {
+                                        setAddressValue("city", itemValue)
+                                        setSelectedCity(itemValue)
+                                    }}
+                                >
+                                    {cities?.map((c) => <Picker.Item label={c} value={c} key={c} />)}
+                                </Picker>
+                            </View>
                         </View>
+
+
                         <View style={tw`w-[48%]`}>
                             <Text style={[tw`text-gray-600 w-full text-[11px] text-left px-2`, { fontFamily: "Poppins-Regular" }]}>District:</Text>
                             <Controller

@@ -12,7 +12,6 @@ const API = axios.create({
 API.interceptors.request.use(async (request) =>
 {
     useLoaderStore.getState().setLoading(true)
-    // console.log("🤣🤣🤣🤣🤣🤣🤣", data);
     return request;
 });
 
@@ -32,8 +31,4 @@ API.interceptors.response.use(
 );
 
 export default API;
-
-
-
-
 

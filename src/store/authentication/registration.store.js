@@ -13,11 +13,13 @@ const useRegistrationStore = create((set) => ({
     {
         try
         {
+            console.log("😍😍😍", userRegistrationFormData);
             const res = await API.post(USER, userRegistrationFormData)
             if (res && res.status === 201)
             {
                 const loginDetails = {
                     phone: userRegistrationFormData.phone,
+                    dialcode: userRegistrationFormData.dialcode,
                 }
                 set({ loginDetails: loginDetails })
                 return true;
