@@ -8,14 +8,29 @@ import {
     Pressable,
     TouchableOpacity
 } from 'react-native';
-import DocumentPicker from 'react-native-document-picker';
 import Icon, { Icons } from '../../components/Icons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import React from 'react';
+import React from 'react'
 import tw from 'twrnc';
 import BlueTickSVG from '../../assets/svgs/Blue Tick.svg';
+import useLoginStore from '../../store/authentication/login.store';
+import { launchImageLibrary } from 'react-native-image-picker';
+import useUsersStore from '../../store/authentication/user.store';
 
 const ViewProfile = ({ navigation }) => {
+    const { loggedInUser } = useLoginStore();
+    const { updateUserProfileStore } = useUsersStore()
+    let options = {
+        title: 'Select Image',
+        type: 'library',
+        options: {
+            maxHeight: 200,
+            maxWidth: 200,
+            selectionLimit: 1,
+            mediaType: 'photo',
+            includeBase64: false,
+        },
+    }
     const portfolioItems = [
         { id: 1, title: 'Project 1' },
         { id: 2, title: 'Project 2' },
@@ -28,30 +43,13 @@ const ViewProfile = ({ navigation }) => {
         { id: 9, title: 'Project 9' },
         { id: 10, title: 'Project 10' },
     ];
-    const selectFile = async () => {
-        try {
-            const res = await DocumentPicker.pick({
-                type: [DocumentPicker.types.allFiles],
-            });
-            console.log(" res.uri ========== ", res.uri)
-            console.log(" res ========== ", res)
-            console.log(" res.name ========== ", res.name)
-            console.log(" res.type ========== ", res.type)
+    const uploadProfile = async () => {
+        const image = await launchImageLibrary(options);
+        if (image) {
             const formData = new FormData();
-            formData.append('profilePic', {
-                uri: res.uri,
-                name: res.name,
-                type: res.type,
-            });
-            // const response = await axios.post('YOUR_UPLOAD_ENDPOINT', formData, {
-            //     headers: {
-            //         'Content-Type': 'multipart/form-data',
-            //     },
-            // });
-
-            // console.log('File uploaded successfully:', response.data);
-        } catch (error) {
-            console.log('Error uploading file:', error);
+            formData.append("source", "uploadProfile");
+            formData.append("profilepic", { uri: image.assets[0].uri, type: image.assets[0].type, name: image.assets[0].fileName });
+            await updateUserProfileStore(loggedInUser?._id, formData)
         }
     };
     const handleBackPress = () => {
@@ -91,14 +89,17 @@ const ViewProfile = ({ navigation }) => {
                 <View style={tw`flex justify-center items-center`}>
                     <View style={[tw`p-3 items-center justify-center`]}>
                         <View style={tw`flex-row items-center`}>
-                            <Image
-                                source={require('../../assets/images/browse-jobs.png')}
+                            {loggedInUser?.profilepic ? <Image
+                                source={{ uri: loggedInUser.profilepic }}
                                 style={styles.ProfileIcon}
-                            />
-                            <Icon type={Icons.MaterialCommunityIcons} name={"camera"} size={20} color={"white"} onPress={() => { selectFile() }} style={tw`absolute bottom-1 right-1 bg-blue-300/50 rounded-full p-1`} />
+                            /> : <Image
+                                source={require('../../assets/images/default-profile.jpg')}
+                                style={styles.ProfileIcon}
+                            />}
+                            <Icon type={Icons.MaterialCommunityIcons} name={"camera"} size={20} color={"white"} onPress={() => { uploadProfile() }} style={tw`absolute bottom-1 right-1 bg-blue-300/50 rounded-full p-1`} />
                         </View>
                         <Text style={[tw`text-black text-[24px]`, { fontFamily: 'Poppins-SemiBold' }]}>
-                            {'Akshay Naik'}
+                            {`${loggedInUser.firstname} ${loggedInUser.lastname}`}
                         </Text>
                         <View style={tw`flex-row`}>
                             <Text style={[tw`text-[#95969D] text-[14px]`, { fontFamily: 'Poppins-Light' }]}>
