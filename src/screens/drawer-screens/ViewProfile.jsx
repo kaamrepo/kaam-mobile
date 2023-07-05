@@ -29,6 +29,7 @@ const ViewProfile = ({ navigation }) => {
             selectionLimit: 1,
             mediaType: 'photo',
             includeBase64: false,
+            quality: 0.7,
         },
     }
     const portfolioItems = [
@@ -212,7 +213,7 @@ export default ViewProfile;
 
 const styles = StyleSheet.create({
     ProfileIcon: {
-        resizeMode: 'center',
+        // resizeMode: 'center',
         width: 100,
         height: 100,
         borderRadius: 100 / 2,

@@ -241,7 +241,7 @@ const styleData = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 8,
-    resizeMode: "center",
+    // resizeMode: "center",
     shadowColor: '#FF5722',
     shadowOpacity: 1,
     shadowOffset: {
