@@ -50,10 +50,13 @@ const CustomSidebarMenu = (props) => {
                         style={tw`text-black`}
                     />
                 </Pressable>
-                <Image
-                    source={require("../assets/images/browse-jobs.png")}
+                {loggedInUser?.profilepic ? <Image
+                    source={{ uri: loggedInUser.profilepic }}
                     style={styles.sideMenuProfileIcon}
-                />
+                /> : <Image
+                    source={require('../assets/images/default-profile.jpg')}
+                    style={styles.sideMenuProfileIcon}
+                />}
                 <Text style={[tw`text-black text-[24px]`, { fontFamily: 'Poppins-SemiBold' }]}>{`${capitalizeFirstLetter(loggedInUser?.firstname)} ${capitalizeFirstLetter(loggedInUser?.lastname)}`}</Text>
                 <View style={tw`flex-row`}>
                     <Text style={[tw`text-[#95969D] text-[14px]`, { fontFamily: 'Poppins-Light' }]}>UI Designer</Text>

@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import {
-View,
-Image,
-ScrollView,
-TouchableOpacity,
-TextInput,
-Text,
-Dimensions,
-Pressable,
+  View,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  TextInput,
+  Text,
+  StyleSheet,
+  Dimensions,
+  Pressable,
 } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import tw from 'twrnc';
@@ -133,8 +134,14 @@ const Dashboard = ({ navigation }) => {
           </View>
           <TouchableOpacity
             style={tw`w-12 h-12`}>
-            <View style={tw`w-12 h-12 bg-yellow-400 rounded-lg shadow-2xl shadow-orange-800`}>
-
+            <View style={tw`w-12 h-12  rounded-lg shadow-2xl shadow-orange-800`}>
+              {loggedInUser?.profilepic ? <Image
+                source={{ uri: loggedInUser.profilepic }}
+                style={styleData.ProfileIcon}
+              /> : <Image
+                source={require('../../assets/images/default-profile.jpg')}
+                style={styleData.ProfileIcon}
+              />}
             </View>
           </TouchableOpacity>
         </View>
@@ -229,5 +236,25 @@ const styles = {
   slide: 'w-full h-52 justify-center items-center bg-[#F2F2F3]',
   image: 'w-full h-full',
 };
+const styleData = StyleSheet.create({
+  ProfileIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 8,
+    resizeMode: "center",
+    shadowColor: '#FF5722',
+    shadowOpacity: 1,
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowRadius: 16,
+    ...Platform.select({
+      android: {
+        elevation: 8,
+      },
+    }),
+  },
+});
 
 export default Dashboard;
