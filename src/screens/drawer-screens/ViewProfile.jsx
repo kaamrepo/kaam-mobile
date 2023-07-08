@@ -1,4 +1,5 @@
-import {
+import
+{
     SafeAreaView,
     View,
     StyleSheet,
@@ -17,7 +18,8 @@ import useLoginStore from '../../store/authentication/login.store';
 import { launchImageLibrary } from 'react-native-image-picker';
 import useUsersStore from '../../store/authentication/user.store';
 
-const ViewProfile = ({ navigation }) => {
+const ViewProfile = ({ navigation }) =>
+{
     const { loggedInUser } = useLoginStore();
     const { updateUserProfileStore } = useUsersStore()
     let options = {
@@ -44,16 +46,19 @@ const ViewProfile = ({ navigation }) => {
         { id: 9, title: 'Project 9' },
         { id: 10, title: 'Project 10' },
     ];
-    const uploadProfile = async () => {
+    const uploadProfile = async () =>
+    {
         const image = await launchImageLibrary(options);
-        if (image) {
+        if (image)
+        {
             const formData = new FormData();
             formData.append("source", "uploadProfile");
             formData.append("profilepic", { uri: image.assets[0].uri, type: image.assets[0].type, name: image.assets[0].fileName });
             await updateUserProfileStore(loggedInUser?._id, formData)
         }
     };
-    const handleBackPress = () => {
+    const handleBackPress = () =>
+    {
         navigation.goBack();
     };
     const renderItem = ({ item }) => (
@@ -69,10 +74,11 @@ const ViewProfile = ({ navigation }) => {
     return (
         <SafeAreaView style={tw`flex-1 px-5`}>
             <View style={tw`flex flex-row justify-between`}>
-                <Pressable onPress={() => {
+                <Pressable onPress={() =>
+                {
                     navigation.openDrawer();
                 }}
-                    style={({ pressed }) => [tw`h-10 w-10  flex-row justify-center items-center ${pressed ? 'bg-slate-200' : ''}`]}
+                    style={({ pressed }) => [tw`h-10 w-10  flex-row justify-center items-center ${ pressed ? 'bg-slate-200' : '' }`]}
                 >
                     <TouchableOpacity onPress={handleBackPress}>
                         <Ionicons
@@ -100,7 +106,7 @@ const ViewProfile = ({ navigation }) => {
                             <Icon type={Icons.MaterialCommunityIcons} name={"camera"} size={20} color={"white"} onPress={() => { uploadProfile() }} style={tw`absolute bottom-1 right-1 bg-blue-300/50 rounded-full p-1`} />
                         </View>
                         <Text style={[tw`text-black text-[24px]`, { fontFamily: 'Poppins-SemiBold' }]}>
-                            {`${loggedInUser.firstname} ${loggedInUser.lastname}`}
+                            {`${ loggedInUser.firstname } ${ loggedInUser.lastname }`}
                         </Text>
                         <View style={tw`flex-row`}>
                             <Text style={[tw`text-[#95969D] text-[14px]`, { fontFamily: 'Poppins-Light' }]}>
@@ -155,7 +161,7 @@ const ViewProfile = ({ navigation }) => {
                 renderItem={({ item }) => (
                     <Pressable onPress={() => { }}>
                         {({ pressed }) => (
-                            <View style={tw`rounded-5 p-2 mb-2   ${pressed ? 'bg-gray-100' : 'bg-white'}`}>
+                            <View style={tw`rounded-5 p-2 mb-2   ${ pressed ? 'bg-gray-100' : 'bg-white' }`}>
                                 <View style={tw`flex-row justify-between items-center`}>
                                     <View style={tw`w-8 h-4 bg-[#5386E4] border border-[#5386E4] rounded-full  items-center justify-center`}>
                                         <Text style={[tw`text-[8px] text-white  `, { fontFamily: 'Poppins-Bold' }]}>
