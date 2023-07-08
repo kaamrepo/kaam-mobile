@@ -18,12 +18,14 @@ const useRegistrationStore = create((set) => ({
             {
                 const loginDetails = {
                     phone: userRegistrationFormData.phone,
+                    dialcode: userRegistrationFormData.dialcode,
                 }
                 set({ loginDetails: loginDetails })
                 return true;
             }
         } catch (error)
         {
+            console.log(JSON.stringify(error, null, 4));
             Toast.show({
                 type: 'tomatoToast',
                 text1: error.response.data.message,

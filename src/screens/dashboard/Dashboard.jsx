@@ -24,6 +24,7 @@ import FilterIconSVG from "../../assets/svgs/FilterIcon.svg"
 import { useNavigation } from '@react-navigation/native';
 import useLoginStore from '../../store/authentication/login.store';
 import capitalizeFirstLetter from '../../helper/utils/capitalizeFirstLetter';
+import GeneralStatusBar from '../../components/GeneralStatusBar';
 
 const Dashboard = ({ navigation }) =>
 {
@@ -121,7 +122,8 @@ const Dashboard = ({ navigation }) =>
   ];
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false} style={tw`flex bg-[#FAFAFD]`}>
+    <ScrollView showsVerticalScrollIndicator={false} style={tw`flex pt-5 bg-[#FAFAFD]`}>
+      <GeneralStatusBar backgroundColor={"#d6d6d6"} />
       <View style={tw`px-6 pt-5 pb-2 bg-white`}>
         <View style={tw`flex-row justify-between items-center mb-4`}>
           <View style={tw`flex-row items-center gap-5`}>
@@ -135,7 +137,7 @@ const Dashboard = ({ navigation }) =>
             </Pressable>
             <View>
               <Text style={[tw`text-slate-500`, { fontFamily: "Poppins-Regular" }]}>Welcome,</Text>
-              <Text style={[tw`text-2xl text-black`, { fontFamily: "Poppins-Bold" }]}>{`${ capitalizeFirstLetter(loggedInUser?.firstname) } ${ capitalizeFirstLetter(loggedInUser?.lastname) }`}</Text>
+              <Text style={[tw`text-2xl text-black`, { fontFamily: "Poppins-Bold" }]}>{`${ capitalizeFirstLetter(loggedInUser?.firstname) } ${ capitalizeFirstLetter(loggedInUser?.lastname) }`} </Text>
             </View>
           </View>
           <TouchableOpacity

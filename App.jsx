@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import useLoginStore, { retrieveLoggedInState, retrieveUserSession } from "./src/store/authentication/login.store"
 
+
 // Screens
 
 import RegisterScreen from './src/screens/login/RegisterScreen';
@@ -19,13 +20,14 @@ import IntroScreenBrowseJobs from './src/screens/intro/IntroScreenBrowseJobs';
 import LoginScreen from "./src/screens/login/Login"
 import JobPreference from './src/screens/login/JobPreference';
 import Icon, { Icons } from './src/components/Icons';
-import tailwind from 'twrnc';
+import tw from 'twrnc';
 import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
 import JobSelection from './src/screens/login/JobSelection';
 import ApplyNow from './src/screens/jobs/ApplyNow';
 import Chat from './src/screens/chats/Chat';
 import TrackApplication from './src/screens/chats/TrackApplication';
 import DrawerNavigation from './src/screens/DrawerNavigation';
+import useLoaderStore from './src/store/loader.store';
 
 // Navigators
 
@@ -34,6 +36,7 @@ const App = () =>
 {
 
   const { isLoggedIn, setLoggedInUserDetails } = useLoginStore()
+  const { isLoading } = useLoaderStore()
 
   useEffect(() =>
   {
@@ -84,7 +87,7 @@ const App = () =>
                       <Pressable
                         onPress={() => { navigation.goBack() }}
                         style={({ pressed }) => [
-                          tailwind`rounded-full w-8 h-8 flex items-center justify-center ${ pressed ? 'bg-gray-500/30' : '' }`
+                          tw`rounded-full w-8 h-8 flex items-center justify-center ${ pressed ? 'bg-gray-500/30' : '' }`
                         ]}>
                         {({ pressed }) => (
                           <Icon type={Icons.Ionicons} name="chevron-back" color="#000000" />
@@ -105,7 +108,7 @@ const App = () =>
                       <Pressable
                         onPress={() => { navigation.goBack() }}
                         style={({ pressed }) => [
-                          tailwind`rounded-full w-8 h-8 flex items-center justify-center ${ pressed ? 'bg-gray-500/30' : '' }`
+                          tw`rounded-full w-8 h-8 flex items-center justify-center ${ pressed ? 'bg-gray-500/30' : '' }`
                         ]}>
                         {({ pressed }) => (
                           <Icon type={Icons.Ionicons} name="close" color="#000000" size={30} />
@@ -137,9 +140,9 @@ const App = () =>
       <Toast config={toastConfig} position='bottom'
       />
       <View
-        style={[tailwind`z-50 absolute top-0 left-0 right-0 bottom-0 justify-center items-center bg-green-200/20 hidden`]}
+        style={[tw`z-50 absolute top-0 left-0 right-0 bottom-0 justify-center items-center ${ isLoading ? 'flex' : 'hidden' }`]}
       >
-        <ActivityIndicator size='large' animating={false} color="#50A853" style={{
+        <ActivityIndicator size={60} animating={isLoading} color="#00cc66" style={{
           zIndex: 9999,
           position: 'absolute',
           width: 300,

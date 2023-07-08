@@ -21,3 +21,9 @@ const App = () => {
 // link : https://oblador.github.io/react-native-vector-icons/
 
 ```
+
+
+dropdown element
+
+package : react-native-element-dropdown
+documentation link: https://www.npmjs.com/package/react-native-element-dropdown

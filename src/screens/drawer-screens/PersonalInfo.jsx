@@ -1,4 +1,4 @@
-import { StyleSheet, Image, Text, View, Pressable, ScrollView, TextInput } from 'react-native';
+import { StyleSheet, Image, Text, View, Pressable, ScrollView, TextInput, Dimensions } from 'react-native';
 import { SafeAreaView } from "react-native-safe-area-context"
 import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react'
 import tw from 'twrnc'
@@ -14,10 +14,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import dayjs from 'dayjs';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import axios from 'axios';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
-
-
+import API from '../../helper/API';
+import { Dropdown } from 'react-native-element-dropdown';
 
 const detailsSchema = yup.object({
     phone: yup.string().required("Phone number is required!")
@@ -29,7 +28,7 @@ const detailsSchema = yup.object({
     dateofbirth: yup.string()
 })
 const addressSchema = yup.object({
-    addressline: yup.string().required("Phone number is required!"),
+    addressline: yup.string().required("Address is required!"),
     pincode: yup.string().required("ZIP code is required!"),
     district: yup.string().required("District is required!"),
     city: yup.string().required("City is required!"),
@@ -43,7 +42,8 @@ const panSchema = yup.object({
     panno: yup.string().required("PAN is required!").matches(/^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/, "Invalid PAN provided"),
 })
 
-
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 const PersonalInfo = ({ navigation }) =>
 {
@@ -79,7 +79,7 @@ const PersonalInfo = ({ navigation }) =>
         defaultValues: {
             addressline: loggedInUser?.address?.addressline,
             pincode: loggedInUser?.address?.pincode,
-            city: loggedInUser?.address?.city,
+            // city: loggedInUser?.address?.city,
             district: loggedInUser?.address?.district,
             state: loggedInUser?.address?.state,
             country: loggedInUser?.address?.country,
@@ -102,9 +102,9 @@ const PersonalInfo = ({ navigation }) =>
         }
     });
 
-    const [district, setDistrict] = useState([]);
-    const [state, setState] = useState([]);
-    const [country, setCountry] = useState([]);
+    const [cities, setCities] = useState([]);
+    const [open, setOpen] = useState(false);
+    const [selectedCity, setSelectedCity] = useState("");
 
     useEffect(() =>
     {
@@ -142,6 +142,7 @@ const PersonalInfo = ({ navigation }) =>
         {
             bottomSheetDetailsRef.current.close()
         }
+
     }
     const updateAddress = async (data) =>
     {
@@ -168,26 +169,28 @@ const PersonalInfo = ({ navigation }) =>
         }
     }
 
+
     const getAddressDateByZIPCode = async (text) =>
     {
         try
         {
 
-            const res = await axios.get(`https://api.postalpincode.in/pincode/${ text }`);
+            const res = await API.get(`https://api.postalpincode.in/pincode/${ text }`);
             if (res.data[0].Status === "Success")
             {
-                res.data[0]?.PostOffice?.forEach(data =>
-                {
-                    !district.includes(data.District) && setDistrict([...district, data.District]);
-                    !state.includes(data.State) && setState([...state, data.State]);
-                    !country.includes(data.Country) && setCountry([...country, data.Country]);
-
-
-                })
                 setAddressValue("district", res.data[0]?.PostOffice[0]?.District)
-                setAddressValue("city", res.data[0]?.PostOffice[0]?.Region)
                 setAddressValue("state", res.data[0]?.PostOffice[0]?.State)
                 setAddressValue("country", res.data[0]?.PostOffice[0]?.Country)
+
+                let placeSet = new Set()
+                res.data[0]?.PostOffice.forEach(p =>
+                {
+                    placeSet.add(p?.Block)
+                    placeSet.add(p?.Division)
+                })
+
+                setCities(Array.from(placeSet).map((d, i) => ({ label: d, value: d })))
+
             }
             if (res.data[0].Status === "Error")
             {
@@ -196,8 +199,10 @@ const PersonalInfo = ({ navigation }) =>
                     text1: "Invalid ZIP Code.",
                 });
             }
+
         } catch (error)
         {
+
             Toast.show({
                 type: 'tomatoToast',
                 text1: "Invalid ZIP Code.",
@@ -205,6 +210,14 @@ const PersonalInfo = ({ navigation }) =>
         }
     }
 
+    useEffect(() =>
+    {
+        if (loggedInUser?.address?.city)
+        {
+            getAddressDateByZIPCode(loggedInUser?.address?.pincode)
+            setSelectedCity(loggedInUser?.address?.city)
+        }
+    }, [loggedInUser?.address?.city])
 
     const details = {
         "Phone Number": loggedInUser?.phone,
@@ -215,7 +228,7 @@ const PersonalInfo = ({ navigation }) =>
     const address = {
         "Address": loggedInUser?.address?.addressline,
         "Pin Code": loggedInUser?.address?.pincode,
-        "City": loggedInUser?.address?.city,
+        "City/Village": loggedInUser?.address?.city,
         "District": loggedInUser?.address?.district,
         "State": loggedInUser?.address?.state,
         "Country": loggedInUser?.address?.country,
@@ -277,7 +290,7 @@ const PersonalInfo = ({ navigation }) =>
                     <View style={tw`px-6 py-4 bg-white rounded-[20px] border border-gray-100`}>
                         <View style={tw`flex-row justify-between `}>
 
-                            <Text style={[tw`text-[#0D0D26]/50`, { fontFamily: "Poppins-SemiBold" }]}>{loggedInUser?.aboutme}</Text>
+                            <Text style={[tw`text-[#0D0D26]/50`, { fontFamily: "Poppins-SemiBold" }]}>{loggedInUser?.aboutme ?? "Type here..."}</Text>
 
                             <Icon type={Icons.MaterialCommunityIcons} style={tw`pl-2`} name={"pencil"} size={20} color={"black"} onPress={() =>
                             {
@@ -477,25 +490,30 @@ const PersonalInfo = ({ navigation }) =>
                     <Text style={[tw`text-red-600 w-full text-[10px] text-right px-2 py-1`, { fontFamily: "Poppins-Regular" }]}> {addressError?.pincode?.message}</Text>
 
                     <View style={[tw`w-full flex-row justify-between`]}>
-                        <View style={tw`w-[48%]`}>
-                            <Text style={[tw`text-gray-600 w-full text-[11px] text-left px-2`, { fontFamily: "Poppins-Regular" }]}>City:</Text>
-                            <Controller
-                                control={addressControl}
-                                name='city'
-                                render={({ field: { onChange, onBlur, value } }) => (
-                                    <TextInput
-                                        value={value}
-                                        onChangeText={onChange}
-                                        onBlur={onBlur}
-                                        style={[{ fontFamily: "Poppins-Regular" }, tw` px-4 py-3 text-black border-[1px] bg-slate-100/40 border-slate-300 w-full rounded-lg`]}
-                                        placeholder='eg. Pune'
-                                        placeholderTextColor={"gray"}
-                                    />
-                                )
-                                }
+                        <View style={tw`w-[48%] `}>
+                            <Text style={[tw`text-gray-600 w-full text-[11px] text-left px-2`, { fontFamily: "Poppins-Regular" }]}>City/Village:</Text>
+                            <Dropdown
+                                style={[tw`py-2 text-black px-2 border-[1px] bg-slate-100/40 border-slate-300 w-full rounded-lg`]}
+                                mode='modal'
+                                placeholder="Select City"
+                                placeholderStyle={[tw`text-gray-500 text-[14px] px-2`, { fontFamily: "Poppins-Regular" }]}
+                                selectedTextStyle={[tw`text-black text-[14px] px-2`, { fontFamily: "Poppins-Regular" }]}
+                                data={cities}
+                                disable={cities?.length <= 0 ? true : false}
+                                labelField="label"
+                                valueField="value"
+                                value={selectedCity}
+                                containerStyle={[tw`bg-white rounded-lg w-[${ windowWidth * 0.60 }px]`]}
+                                itemContainerStyle={[tw`rounded-lg`]}
+                                itemTextStyle={tw`text-black`}
+                                onChange={item =>
+                                {
+                                    setAddressValue("city", item.value)
+                                    setSelectedCity(item.value)
+                                }}
                             />
-                            <Text style={[tw`text-red-600 w-full text-[10px] text-right px-2 py-1`, { fontFamily: "Poppins-Regular" }]}> {addressError?.city?.message}</Text>
                         </View>
+
                         <View style={tw`w-[48%]`}>
                             <Text style={[tw`text-gray-600 w-full text-[11px] text-left px-2`, { fontFamily: "Poppins-Regular" }]}>District:</Text>
                             <Controller
@@ -680,6 +698,7 @@ const PersonalInfo = ({ navigation }) =>
 
 
             {/* Profile Verification */}
+
 
         </SafeAreaView >
     )

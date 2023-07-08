@@ -13,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import tw from 'twrnc';
 
 import useLoginStore from '../../store/authentication/login.store'
+import useRegistrationStore from '../../store/authentication/registration.store';
 
 const VerifyCode = ({ route, navigation }) =>
 {
@@ -20,6 +21,7 @@ const VerifyCode = ({ route, navigation }) =>
   const [code, setCode] = useState('');
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
   const { login } = useLoginStore();
+  const { loginDetails } = useRegistrationStore()
 
 
   const handleCodeInput = (index, text) =>
@@ -80,7 +82,7 @@ const VerifyCode = ({ route, navigation }) =>
             Enter verification code received on your phone
           </Text>
           <Text style={tw`py-2 text-sm leading-relaxed text-gray-600`}>
-            +91 - 8928843887
+            {loginDetails?.dialcode} {loginDetails?.phone}
           </Text>
           <View style={tw`flex-1 mt-15`}>
             <View style={tw`flex flex-row justify-center items-center`}>

@@ -1,6 +1,5 @@
 import
 {
-    SafeAreaView,
     View,
     StyleSheet,
     Image,
@@ -17,6 +16,8 @@ import BlueTickSVG from '../../assets/svgs/Blue Tick.svg';
 import useLoginStore from '../../store/authentication/login.store';
 import { launchImageLibrary } from 'react-native-image-picker';
 import useUsersStore from '../../store/authentication/user.store';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
 
 const ViewProfile = ({ navigation }) =>
 {
@@ -57,10 +58,7 @@ const ViewProfile = ({ navigation }) =>
             await updateUserProfileStore(loggedInUser?._id, formData)
         }
     };
-    const handleBackPress = () =>
-    {
-        navigation.goBack();
-    };
+
     const renderItem = ({ item }) => (
         <View style={tw`w-1/3 p-2 `}>
             <Image
@@ -72,27 +70,24 @@ const ViewProfile = ({ navigation }) =>
     );
 
     return (
-        <SafeAreaView style={tw`flex-1 px-5`}>
-            <View style={tw`flex flex-row justify-between`}>
+        <SafeAreaView style={tw`flex-1 px-5 py-4`}>
+            {/* <View style={tw`flex flex-row justify-between`}>
+                
+            </View> */}
+            <View style={tw`bg-white p-1 mb-3 rounded-lg relative`}>
                 <Pressable onPress={() =>
                 {
+                    navigation.goBack();
                     navigation.openDrawer();
                 }}
-                    style={({ pressed }) => [tw`h-10 w-10  flex-row justify-center items-center ${ pressed ? 'bg-slate-200' : '' }`]}
+                    style={({ pressed }) => [tw`h-10 w-10 absolute z-10 rounded-full top-2 left-2 flex-row justify-center items-center ${ pressed ? 'bg-slate-200' : '' }`]}
                 >
-                    <TouchableOpacity onPress={handleBackPress}>
-                        <Ionicons
-                            name="chevron-back"
-                            size={24}
-                            style={tw`text-black`}
-                        />
-                    </TouchableOpacity>
+                    <Ionicons
+                        name="chevron-back"
+                        size={24}
+                        style={tw`text-black`}
+                    />
                 </Pressable>
-                {/* <Text style={[tw`text-[#AFB0B6] text-[18px] p-2`, { fontFamily: 'Poppins-Semibold' }]}>
-                    {'Edit'}
-                </Text> */}
-            </View>
-            <View style={tw`bg-white rounded-lg`}>
                 <View style={tw`flex justify-center items-center`}>
                     <View style={[tw`p-3 items-center justify-center`]}>
                         <View style={tw`flex-row items-center`}>
@@ -145,8 +140,9 @@ const ViewProfile = ({ navigation }) =>
                 </View>
             </View>
             <FlatList
+                showsVerticalScrollIndicator={false}
                 ListHeaderComponent={() => (
-                    <View style={tw`flex flex-row justify-between items-center mt-2`}>
+                    <View style={tw`flex flex-row justify-between items-center`}>
                         <Text style={[tw`text-[#0D0D26]  text-[16px] p-2`, { fontFamily: 'Poppins-Bold' }]}>
                             {'Resume'}
                         </Text>

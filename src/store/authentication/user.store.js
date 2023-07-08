@@ -35,8 +35,7 @@ const useUsersStore = create((set, get) => ({
   {
     try
     {
-      console.log(data.dateofbirth);
-      console.log(new Date(data.dateofbirth));
+
       data = {
         ...data,
         dateofbirth: new Date(data.dateofbirth),
