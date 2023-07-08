@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import
 {
   View,
@@ -10,6 +10,7 @@ import
   StyleSheet,
   Dimensions,
   Pressable,
+  RefreshControl
 } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import tw from 'twrnc';
@@ -25,13 +26,16 @@ import { useNavigation } from '@react-navigation/native';
 import useLoginStore from '../../store/authentication/login.store';
 import capitalizeFirstLetter from '../../helper/utils/capitalizeFirstLetter';
 import GeneralStatusBar from '../../components/GeneralStatusBar';
+import useDashboardStore from '../../store/authentication/dashboard.store';
 
 const Dashboard = ({ navigation }) =>
 {
+  const [refreshing, setRefreshing] = useState(false);
 
   const navigation2 = useNavigation();
   const [selectedImage, setSelectedImage] = useState(null);
   const { loggedInUser } = useLoginStore();
+  const { nearbyjobs, getNearByJobs } = useDashboardStore();
 
   const nearbyJobsData = [
     { id: 1, image: Image1 },
@@ -48,13 +52,26 @@ const Dashboard = ({ navigation }) =>
         {
           navigation.navigate('ApplyNow', { id: item.id });
         }}
-        key={index}>
-        <View style={tw`${ styles.slide }`}>
-          <Image
-            source={item.image}
-            style={tw`${ styles.image }`}
-            resizeMode="contain"
-          />
+        key={index}
+        style={tw`shadow shadow-green-500`}
+      >
+        <View style={tw`w-full h-48 justify-between p-5 rounded-3 ${ nearbyjobs && Object.keys(nearbyjobs).length ? `bg-[#4A9D58]` : `animate-pulse bg-slate-200` }`}>
+          <View style={tw`w-full flex-row items-center gap-4`}>
+            <Image
+              source={{ uri: loggedInUser?.profilepic }}
+              style={tw`h-13 w-13 rounded-xl ${ nearbyjobs && Object.keys(nearbyjobs).length ? `` : `animate-pulse bg-slate-200` }`}
+              resizeMode="contain"
+            />
+            <Text style={[tw`text-white text-[18px] ${ nearbyjobs && Object.keys(nearbyjobs).length ? `` : `animate-pulse bg-slate-200` }`, { fontFamily: "Poppins-Bold" }]}>{item.position}</Text>
+          </View>
+
+          <View style={tw`flex-row justify-between items-center`}>
+            {item?.tags?.map(tag => <Text key={tag} style={[tw`p-2 px-3 text-white text-xs rounded-full bg-slate-100/30`, { fontFamily: "Poppins-Regular" }]}>{tag}</Text>)}
+          </View>
+          <View style={tw`flex-row justify-between items-center`}>
+            <Text style={[tw`text-white text-sm`, { fontFamily: "Poppins-SemiBold" }]}>₹ {item?.salary}/year</Text>
+            <Text style={[tw`text-white text-sm`, { fontFamily: "Poppins-SemiBold" }]}>{item?.location?.name}</Text>
+          </View>
         </View>
       </TouchableOpacity>
     );
@@ -81,10 +98,28 @@ const Dashboard = ({ navigation }) =>
     },
   ];
 
+
+  useEffect(() =>
+  {
+    getNearByJobs();
+  }, [])
+
+
+  const onRefresh = React.useCallback(() =>
+  {
+    setRefreshing(true);
+    getNearByJobs();
+    setRefreshing(false);
+    // setTimeout(() =>
+    // {
+    //    setRefreshing(false);
+    // }, 2000);
+  }, []);
+
   const renderItemsRecommendedJobs = ({ item, index }) =>
   {
     return (
-      <View style={tw`${ styles.slide } rounded-3 p-4 m-4`} key={index}>
+      <View style={tw`w-full h-52 justify-center items-center bg-blue-600 rounded-3 p-4 m-4`} key={index}>
         <View style={tw`items-center mb-4`}>
           <Image
             source={item.image}
@@ -122,7 +157,11 @@ const Dashboard = ({ navigation }) =>
   ];
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false} style={tw`flex pt-5 bg-[#FAFAFD]`}>
+    <ScrollView showsVerticalScrollIndicator={false} style={tw`flex pt-5 bg-[#FAFAFD]`}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
       <GeneralStatusBar backgroundColor={"#d6d6d6"} />
       <View style={tw`px-6 pt-5 pb-2 bg-white`}>
         <View style={tw`flex-row justify-between items-center mb-4`}>
@@ -181,7 +220,8 @@ const Dashboard = ({ navigation }) =>
           autoplay={true} // Enable autoplay
           autoplayInterval={5000} // Autoplay interval in milliseconds (5 seconds)
           loop={true} // Loop the carousel
-          data={nearbyJobsData}
+          data={nearbyjobs?.data}
+          // data={nearbyJobsData}
           renderItem={renderItemsNearbyJobs}
           sliderWidth={Dimensions.get('window').width}
           itemWidth={Dimensions.get('window').width - 80}
@@ -240,8 +280,22 @@ const Dashboard = ({ navigation }) =>
   );
 };
 
+const cardColors = {
+  1: "#4A9D58",
+  2: "#5386E4",
+  3: "#5F4BB6",
+  4: "#F2BB40",
+  5: "#313131",
+  6: "#D9302A",
+  7: "#4A9D58",
+  8: "#5386E4",
+  9: "#5F4BB6",
+  10: "#F2BB40",
+  11: "#313131",
+  12: "#D9302A",
+}
+
 const styles = {
-  slide: 'w-full h-52 justify-center items-center bg-[#F2F2F3]',
   image: 'w-full h-full',
 };
 const styleData = StyleSheet.create({
@@ -257,11 +311,6 @@ const styleData = StyleSheet.create({
       height: 0,
     },
     shadowRadius: 16,
-    // ...Platform.select({
-    //   android: {
-    //     elevation: 8,
-    //   },
-    // }),
   },
 });
 
