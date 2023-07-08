@@ -25,6 +25,7 @@ const useRegistrationStore = create((set) => ({
             }
         } catch (error)
         {
+            console.log(JSON.stringify(error, null, 4));
             Toast.show({
                 type: 'tomatoToast',
                 text1: error.response.data.message,

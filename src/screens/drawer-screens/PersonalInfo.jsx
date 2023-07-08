@@ -1,4 +1,4 @@
-import { StyleSheet, Image, Text, View, Pressable, ScrollView, TextInput } from 'react-native';
+import { StyleSheet, Image, Text, View, Pressable, ScrollView, TextInput, Dimensions } from 'react-native';
 import { SafeAreaView } from "react-native-safe-area-context"
 import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react'
 import tw from 'twrnc'
@@ -15,9 +15,8 @@ import * as yup from "yup";
 import dayjs from 'dayjs';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
-import useLoaderStore from '../../store/loader.store';
 import API from '../../helper/API';
-import { Picker } from '@react-native-picker/picker'
+import { Dropdown } from 'react-native-element-dropdown';
 
 const detailsSchema = yup.object({
     phone: yup.string().required("Phone number is required!")
@@ -29,7 +28,7 @@ const detailsSchema = yup.object({
     dateofbirth: yup.string()
 })
 const addressSchema = yup.object({
-    addressline: yup.string().required("Phone number is required!"),
+    addressline: yup.string().required("Address is required!"),
     pincode: yup.string().required("ZIP code is required!"),
     district: yup.string().required("District is required!"),
     city: yup.string().required("City is required!"),
@@ -43,7 +42,8 @@ const panSchema = yup.object({
     panno: yup.string().required("PAN is required!").matches(/^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/, "Invalid PAN provided"),
 })
 
-
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 const PersonalInfo = ({ navigation }) =>
 {
@@ -51,8 +51,6 @@ const PersonalInfo = ({ navigation }) =>
     // store imports
     const { loggedInUser } = useLoginStore();
     const { updateAboutMeStore, updateDetailsStore, updateAddressStore, updateAadharInfoStore, updatePANInfoStore } = useUsersStore()
-
-    const { setLoading } = useLoaderStore()
 
     const snapPoints = useMemo(() => ['35%', '60%', '75%'], []);
     const isKeyboardVisible = useKeyboardStatus();
@@ -105,6 +103,7 @@ const PersonalInfo = ({ navigation }) =>
     });
 
     const [cities, setCities] = useState([]);
+    const [open, setOpen] = useState(false);
     const [selectedCity, setSelectedCity] = useState("");
 
     useEffect(() =>
@@ -189,7 +188,7 @@ const PersonalInfo = ({ navigation }) =>
                     placeSet.add(p?.Division)
                 })
 
-                setCities(Array.from(placeSet))
+                setCities(Array.from(placeSet).map((d, i) => ({ label: d, value: d })))
 
             }
             if (res.data[0].Status === "Error")
@@ -483,43 +482,29 @@ const PersonalInfo = ({ navigation }) =>
                     <Text style={[tw`text-red-600 w-full text-[10px] text-right px-2 py-1`, { fontFamily: "Poppins-Regular" }]}> {addressError?.pincode?.message}</Text>
 
                     <View style={[tw`w-full flex-row justify-between`]}>
-                        {/* <View style={tw`w-[48%]`}>
-                            <Text style={[tw`text-gray-600 w-full text-[11px] text-left px-2`, { fontFamily: "Poppins-Regular" }]}>City:</Text>
-                            <Controller
-                                control={addressControl}
-                                name='city'
-                                render={({ field: { onChange, onBlur, value } }) => (
-                                    <TextInput
-                                        value={value}
-                                        onChangeText={onChange}
-                                        onBlur={onBlur}
-                                        style={[{ fontFamily: "Poppins-Regular" }, tw` px-4 py-3 text-black border-[1px] bg-slate-100/40 border-slate-300 w-full rounded-lg`]}
-                                        placeholder='eg. Pune'
-                                        placeholderTextColor={"gray"}
-                                    />
-                                )
-                                }
-                            />
-                            <Text style={[tw`text-red-600 w-full text-[10px] text-right px-2 py-1`, { fontFamily: "Poppins-Regular" }]}> {addressError?.city?.message}</Text>
-                        </View> */}
-
                         <View style={tw`w-[48%] `}>
                             <Text style={[tw`text-gray-600 w-full text-[11px] text-left px-2`, { fontFamily: "Poppins-Regular" }]}>City/Village:</Text>
-                            <View style={[tw`border-[1px] bg-slate-100/40 border-slate-300 w-full rounded-lg m-0`]}>
-                                <Picker
-                                    selectedValue={selectedCity}
-                                    style={{ width: '100%' }}
-                                    onValueChange={(itemValue, itemIndex) =>
-                                    {
-                                        setAddressValue("city", itemValue)
-                                        setSelectedCity(itemValue)
-                                    }}
-                                >
-                                    {cities?.map((c) => <Picker.Item label={c} value={c} key={c} />)}
-                                </Picker>
-                            </View>
+                            <Dropdown
+                                style={[tw`py-2 text-black px-2 border-[1px] bg-slate-100/40 border-slate-300 w-full rounded-lg`]}
+                                mode='modal'
+                                placeholder="Select City"
+                                placeholderStyle={[tw`text-gray-500 text-[14px] px-2`, { fontFamily: "Poppins-Regular" }]}
+                                selectedTextStyle={[tw`text-black text-[14px] px-2`, { fontFamily: "Poppins-Regular" }]}
+                                data={cities}
+                                disable={cities?.length <= 0 ? true : false}
+                                labelField="label"
+                                valueField="value"
+                                value={selectedCity}
+                                containerStyle={[tw`bg-white rounded-lg w-[${ windowWidth * 0.60 }px]`]}
+                                itemContainerStyle={[tw`rounded-lg`]}
+                                itemTextStyle={tw`text-black`}
+                                onChange={item =>
+                                {
+                                    setAddressValue("city", item.value)
+                                    setSelectedCity(item.value)
+                                }}
+                            />
                         </View>
-
 
                         <View style={tw`w-[48%]`}>
                             <Text style={[tw`text-gray-600 w-full text-[11px] text-left px-2`, { fontFamily: "Poppins-Regular" }]}>District:</Text>
