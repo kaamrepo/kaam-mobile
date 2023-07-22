@@ -5,7 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import useLoginStore, { retrieveLoggedInState, retrieveUserSession } from "./src/store/authentication/login.store"
 
-
+import { BlurView } from "@react-native-community/blur";
 // Screens
 
 import RegisterScreen from './src/screens/login/RegisterScreen';
@@ -137,24 +137,31 @@ const App = () =>
 
         </Stack.Navigator>
       </NavigationContainer>
-      <Toast config={toastConfig} position='bottom'
-      />
+      <Toast config={toastConfig} position='bottom' />
       <View
         style={[tw`z-50 absolute top-0 left-0 right-0 bottom-0 justify-center items-center ${ isLoading ? 'flex' : 'hidden' }`]}
       >
-        <ActivityIndicator size={60} animating={isLoading} color="#00cc66" style={{
-          zIndex: 9999,
-          position: 'absolute',
-          width: 300,
-        }} />
-      </View >
+        <ActivityIndicator size={60} animating={isLoading} color="#00cc66" />
+      </View>
     </>
   );
 };
 
 export default App;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  blurView: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+});
 
 
 

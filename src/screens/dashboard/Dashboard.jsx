@@ -12,6 +12,7 @@ import
   Pressable,
   RefreshControl
 } from 'react-native';
+
 import Carousel from 'react-native-snap-carousel';
 import tw from 'twrnc';
 import Icon from 'react-native-vector-icons/Feather';
@@ -22,20 +23,19 @@ import Image3 from '../../assets/images/search-dream-job.png';
 import Image4 from '../../assets/images/checklist.png';
 import MenuIconSVG from "../../assets/svgs/Menu Icon.svg"
 import FilterIconSVG from "../../assets/svgs/FilterIcon.svg"
-import { useNavigation } from '@react-navigation/native';
 import useLoginStore from '../../store/authentication/login.store';
 import capitalizeFirstLetter from '../../helper/utils/capitalizeFirstLetter';
 import GeneralStatusBar from '../../components/GeneralStatusBar';
-import useDashboardStore from '../../store/authentication/dashboard.store';
-
+import useJobStore from '../../store/authentication/dashboard.store';
+import useLoaderStore from '../../store/loader.store';
 const Dashboard = ({ navigation }) =>
 {
   const [refreshing, setRefreshing] = useState(false);
 
-  const navigation2 = useNavigation();
   const [selectedImage, setSelectedImage] = useState(null);
   const { loggedInUser } = useLoginStore();
-  const { nearbyjobs, getNearByJobs } = useDashboardStore();
+  const { nearbyjobs, getNearByJobs } = useJobStore();
+  const { isLoading } = useLoaderStore();
 
   const nearbyJobsData = [
     { id: 1, image: Image1 },
@@ -50,27 +50,28 @@ const Dashboard = ({ navigation }) =>
       <TouchableOpacity
         onPress={() =>
         {
-          navigation.navigate('ApplyNow', { id: item.id });
+          navigation.navigate('ApplyNow', { id: item._id });
         }}
-        key={index}
-        style={tw`shadow shadow-green-500`}
+        key={item._id}
+        style={tw`shadow-md shadow-offset-1 shadow-radius-[10px]`}
       >
-        <View style={tw`w-full h-48 justify-between p-5 rounded-3 ${ nearbyjobs && Object.keys(nearbyjobs).length ? `bg-[#4A9D58]` : `animate-pulse bg-slate-200` }`}>
+        <View style={tw`w-full h-48 justify-between p-5 rounded-3 ${ !isLoading ? `${ item?.styles?.bgcolor ? `bg-[${ item?.styles?.bgcolor }]` : 'bg-white' }` : `bg-slate-200` }`}>
           <View style={tw`w-full flex-row items-center gap-4`}>
-            <Image
+            {isLoading ? <View style={tw`h-13 w-13 rounded-xl bg-slate-300/40`}></View> : <Image
               source={{ uri: loggedInUser?.profilepic }}
-              style={tw`h-13 w-13 rounded-xl ${ nearbyjobs && Object.keys(nearbyjobs).length ? `` : `animate-pulse bg-slate-200` }`}
+              style={tw`h-13 w-13 rounded-xl`}
               resizeMode="contain"
-            />
-            <Text style={[tw`text-white text-[18px] ${ nearbyjobs && Object.keys(nearbyjobs).length ? `` : `animate-pulse bg-slate-200` }`, { fontFamily: "Poppins-Bold" }]}>{item.position}</Text>
+            />}
+            <Text style={[tw`${ item?.styles?.color ? `text-[${ item?.styles?.color }]` : 'text-white' } text-[18px] ${ !isLoading ? `` : `bg-slate-300/40 rounded-full w-[70%] py-2` }`, { fontFamily: "Poppins-Bold" }]}>{item.position}</Text>
           </View>
 
-          <View style={tw`flex-row justify-between items-center`}>
-            {item?.tags?.map(tag => <Text key={tag} style={[tw`p-2 px-3 text-white text-xs rounded-full bg-slate-100/30`, { fontFamily: "Poppins-Regular" }]}>{tag}</Text>)}
+          <View style={tw`flex-row justify-between items-center ${ !isLoading ? `` : `bg-slate-300/40 rounded-full w-full p-4` }`}>
+            {item?.tags?.map(tag => <Text key={tag} style={[tw`p-2 px-3 ${ item?.styles?.color ? `text-[${ item?.styles?.color }]` : 'text-white' } text-xs rounded-full bg-slate-100/30`, { fontFamily: "Poppins-Regular" }]}>{tag}</Text>)}
           </View>
           <View style={tw`flex-row justify-between items-center`}>
-            <Text style={[tw`text-white text-sm`, { fontFamily: "Poppins-SemiBold" }]}>₹ {item?.salary}/year</Text>
-            <Text style={[tw`text-white text-sm`, { fontFamily: "Poppins-SemiBold" }]}>{item?.location?.name}</Text>
+            <Text style={[tw`${ item?.styles?.color ? `text-[${ item?.styles?.color }]` : 'text-white' } text-sm ${ !isLoading ? `` : `bg-slate-300/40 rounded-full w-[30%] p-1 px-3` }`, { fontFamily: "Poppins-SemiBold" }]}>
+              {item?.salary ? `₹ ${ new Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format(item?.salary) }/${ item?.salaryduration }` : ''}</Text>
+            <Text style={[tw`${ item?.styles?.color ? `text-[${ item?.styles?.color }]` : 'text-white' } text-sm ${ !isLoading ? `` : `bg-slate-300/40 rounded-full w-[30%] p-1 px-3` }`, { fontFamily: "Poppins-SemiBold" }]}>{item?.location?.name}</Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -220,8 +221,7 @@ const Dashboard = ({ navigation }) =>
           autoplay={true} // Enable autoplay
           autoplayInterval={5000} // Autoplay interval in milliseconds (5 seconds)
           loop={true} // Loop the carousel
-          data={nearbyjobs?.data}
-          // data={nearbyJobsData}
+          data={isLoading ? nearbyJobsData : nearbyjobs?.data}
           renderItem={renderItemsNearbyJobs}
           sliderWidth={Dimensions.get('window').width}
           itemWidth={Dimensions.get('window').width - 80}

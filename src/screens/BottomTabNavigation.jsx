@@ -37,6 +37,7 @@ const BottomTabNavigation = () =>
 {
     return (
         <Tab.Navigator
+            initialRouteName='Inbox'
             screenOptions={{
                 headerShown: false,
                 tabBarHideOnKeyboard: true,

@@ -1,17 +1,22 @@
-import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, Pressable } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, Pressable } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import tw from 'twrnc';
 import Image1 from '../../assets/images/browse-jobs.png';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import useJobStore from '../../store/authentication/dashboard.store';
+import { WebView } from 'react-native-webview';
+
 
 const jobDescription = {
   image: Image1,
 };
 
-const ApplyNow = ({ navigation }) =>
+const ApplyNow = ({ route, navigation }) =>
 {
+
+  const { getNearByJobById, job, clearJob } = useJobStore();
   const handleAppliedJob = () =>
   {
     console.log("clicked on handle job ");
@@ -46,50 +51,41 @@ const ApplyNow = ({ navigation }) =>
         return (
           <View style={tw`p-4`}>
             <Text style={[tw`text-lg`, { fontFamily: "Poppins-SemiBold" }]}>Job Description</Text>
-            <Text style={[tw`text-[12px]`, { fontFamily: "Poppins-Regular" }]}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Vestibulum volutpat vestibulum augue a ultricies. Maecenas eget
-              mi id justo egestas vehicula. Mauris finibus justo sed magna
-              ullamcorper, ac gravida dui faucibus. Aenean mollis metus ut
-              ligula viverra, id ullamcorper mi pretium. Nulla facilisi.
-            </Text>
+            {/* <Text style={[tw`text-[12px]`, { fontFamily: "Poppins-Regular" }]}>
+              {job?.description}
+            </Text> */}
+            {job?.description && <WebView source={{ html: job?.description }} />}
           </View>
         );
       case 'requirement':
         return (
           <View style={tw`p-4`}>
             <Text style={[tw`text-lg`, { fontFamily: "Poppins-SemiBold" }]}>Job Requirement</Text>
-            <Text style={[tw`text-[12px]`, { fontFamily: "Poppins-Regular" }]}>
-              Nullam sagittis quam euismod, pulvinar ligula a, faucibus nunc.
-              Vivamus in arcu tristique, eleifend sem nec, cursus nunc. Nulla
-              sed volutpat justo, id tincidunt velit. Etiam luctus mauris ac
-              turpis mollis, id euismod ligula ultricies.
-            </Text>
+            {/* <Text style={[tw`text-[12px]`, { fontFamily: "Poppins-Regular" }]}>
+              {job?.requirements}
+            </Text> */}
+            {job?.requirements && <WebView source={{ html: job?.requirements }} />}
           </View>
         );
       case 'about':
         return (
           <View style={tw`p-4`}>
             <Text style={[tw`text-lg`, { fontFamily: "Poppins-SemiBold" }]}>About the Company</Text>
-            <Text style={[tw`text-[12px]`, { fontFamily: "Poppins-Regular" }]}>
-              Fusce gravida sollicitudin massa in luctus. Nam efficitur metus
-              eu erat bibendum rhoncus. Aliquam nec sapien at lectus
-              pellentesque sagittis. Sed blandit sapien eget efficitur
-              ullamcorper. Vestibulum lacinia ligula sit amet lorem mattis
-              consectetur.
-            </Text>
+            {/* <Text style={[tw`text-[12px]`, { fontFamily: "Poppins-Regular" }]}>
+              {job?.about}
+            </Text> */}
+            {job?.about && <WebView source={{ html: job?.about }} />}
+
           </View>
         );
       case 'review':
         return (
           <View style={tw`p-4`}>
             <Text style={[tw`text-lg`, { fontFamily: "Poppins-SemiBold" }]}>Review</Text>
-            <Text style={[tw`text-[12px]`, { fontFamily: "Poppins-Regular" }]}>
-              Donec eu mi at orci fringilla condimentum. Phasellus malesuada
-              metus nec purus lacinia ultrices. Proin ac congue ipsum, vitae
-              consectetur quam. Pellentesque habitant morbi tristique
-              senectus et netus et malesuada fames ac turpis egestas.
-            </Text>
+            {/* <Text style={[tw`text-[12px]`, { fontFamily: "Poppins-Regular" }]}>
+              {job?.review}
+            </Text> */}
+            {job?.review && <WebView source={{ html: job?.review }} />}
           </View>
         );
       default:
@@ -97,73 +93,86 @@ const ApplyNow = ({ navigation }) =>
     }
   };
 
+  useEffect(() =>
+  {
+    if (route?.params?.id)
+    {
+      getNearByJobById(route?.params?.id)
+    }
+  }, [route?.params?.id])
+
+  useEffect(() =>
+  {
+    return () => { clearJob() }
+  }, [])
+
   return (
     <SafeAreaView style={tw`flex-1`} edges={['top']}>
       <View style={tw`flex-1`}>
-        <View style={tw`flex-1 bg-blue-500`}>
-          <View style={tw`flex-row items-center justify-between p-4`}>
-            <View style={tw`mt-5`}>
-              <TouchableOpacity onPress={handleBackPress}>
-                <Ionicons
-                  name="chevron-back"
-                  size={24}
-                  style={tw`text-white`}
-                />
-              </TouchableOpacity>
-            </View>
-            <View style={tw`flex flex-row items-center justify-end absolute top-10 right-4`}>
-              <TouchableOpacity onPress={handleBookmarkPress}>
-                <Icon name="bookmark" size={24} color="white" />
-              </TouchableOpacity>
-            </View>
+        <View style={tw`flex-1 ${ job?.styles?.bgcolor ? `bg-[${ job?.styles?.bgcolor }]` : 'bg-white' } px-5`}>
+          <View style={tw`flex-row items-center justify-between py-4`}>
+            <Pressable onPress={handleBackPress} style={({ pressed }) => [tw`p-2 rounded-full ${ pressed ? 'bg-black/20' : '' }`]}>
+              <Ionicons
+                name="chevron-back"
+                size={24}
+                color={job?.styles?.color ? `${ job?.styles?.color }` : 'white'}
+              />
+            </Pressable>
+
+            <Pressable onPress={handleBookmarkPress} style={({ pressed }) => [tw`p-2 rounded-full ${ pressed ? 'bg-black/20' : '' }`]}>
+              <Icon name="bookmark" size={24} color={job?.styles?.color ? `${ job?.styles?.color }` : 'white'} />
+            </Pressable>
           </View>
-          <View style={tw`flex items-center justify-center p-4`}>
+          <View style={tw`flex items-center justify-center py-3`}>
             <Image
               source={jobDescription.image}
               style={tw`w-28 h-28 rounded-full`}
             />
-            <Text style={[tw`text-xl mt-2 text-white`, { fontFamily: "Poppins-Bold" }]}>John Doe</Text>
-            <Text style={[tw`text-lg text-white`, { fontFamily: "Poppins-Bold" }]}>Software Engineer</Text>
+            <Text style={[tw`text-xl mt-2 ${ job?.styles?.color ? `text-[${ job?.styles?.color }]` : 'text-white' }`, { fontFamily: "Poppins-Bold" }]}>{job?.employerDetails?.firstname}</Text>
+            <Text style={[tw`text-lg ${ job?.styles?.color ? `text-[${ job?.styles?.color }]` : 'text-white' }`, { fontFamily: "Poppins-Bold" }]}>{job?.position}</Text>
           </View>
-          <View style={tw`flex-row justify-between items-center my-1 px-10`}>
-            <Text style={[tw`text-xs text-white px-5 py-[5px] bg-blue-200/30 rounded-full`, { fontFamily: "Poppins-Regular" }]}>Design</Text>
-            <Text style={[tw`text-xs text-white px-5 py-[5px] bg-blue-200/30 rounded-full`, { fontFamily: "Poppins-Regular" }]}>Full-Time</Text>
-            <Text style={[tw`text-xs text-white px-5 py-[5px] bg-blue-200/30 rounded-full`, { fontFamily: "Poppins-Regular" }]}>Junior</Text>
+          <View style={tw`flex-row justify-around items-center my-1`}>
+            {
+              job?.tags?.map(tag => (
+                <Text key={tag} style={[tw`text-xs ${ job?.styles?.color ? `text-[${ job?.styles?.color }]` : 'text-white' } px-5 py-[5px] bg-blue-200/30 rounded-full`, { fontFamily: "Poppins-Regular" }]}>{tag}</Text>
+              ))
+            }
           </View>
-          <View style={tw`flex-row justify-between items-center my-3 px-10`}>
+          <View style={tw`flex-row justify-between items-center my-3`}>
             <View>
-              <Text style={[tw`text-lg text-white`, { fontFamily: "Poppins-Bold" }]}>988888 /y</Text>
+              <Text style={[tw`text-[14px] ${ job?.styles?.color ? `text-[${ job?.styles?.color }]` : 'text-white' }`, { fontFamily: "Poppins-Bold" }]}>{job?.salary ? `₹ ${ new Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format(job?.salary) }/${ job?.salaryduration }` : ''}</Text>
             </View>
             <View>
-              <Text style={[tw`text-lg  text-white`, { fontFamily: "Poppins-Bold" }]}>India, Pune</Text>
+              <Text style={[tw`text-[14px]  ${ job?.styles?.color ? `text-[${ job?.styles?.color }]` : 'text-white' }`, { fontFamily: "Poppins-Bold" }]}>{job?.location?.name}</Text>
             </View>
           </View>
         </View>
-        <View style={tw`flex-1 bg-white`}>
-          <View style={tw`flex-row justify-between items-center p-4 bg-white`}>
-            <TouchableOpacity onPress={() => handleTabChange('description')}>
-              <Text style={[tw`${ activeTab === 'description' ? 'text-blue-500' : 'text-gray-500' }`, { fontFamily: "Poppins-SemiBold" }]}>
-                Description
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleTabChange('requirement')}>
-              <Text style={[tw`${ activeTab === 'requirement' ? 'text-blue-500' : 'text-gray-500' }`, { fontFamily: "Poppins-SemiBold" }]}>
-                Requirement
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleTabChange('about')}>
-              <Text style={[tw`${ activeTab === 'about' ? 'text-blue-500' : 'text-gray-500' }`, { fontFamily: "Poppins-SemiBold" }]}>
-                About
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleTabChange('review')}>
-              <Text style={[tw`${ activeTab === 'review' ? 'text-blue-500' : 'text-gray-500' }`, { fontFamily: "Poppins-SemiBold" }]}>
-                Review
-              </Text>
-            </TouchableOpacity>
+        <View style={tw`flex-1 bg-white justify-between pb-5`}>
+          <View>
+            <View style={tw`flex-row justify-between items-center p-4 bg-white`}>
+              <Pressable onPress={() => handleTabChange('description')}>
+                <Text style={[tw`${ activeTab === 'description' ? 'text-blue-500' : 'text-gray-500' }`, { fontFamily: "Poppins-SemiBold" }]}>
+                  Description
+                </Text>
+              </Pressable>
+              <Pressable onPress={() => handleTabChange('requirement')}>
+                <Text style={[tw`${ activeTab === 'requirement' ? 'text-blue-500' : 'text-gray-500' }`, { fontFamily: "Poppins-SemiBold" }]}>
+                  Requirement
+                </Text>
+              </Pressable>
+              <Pressable onPress={() => handleTabChange('about')}>
+                <Text style={[tw`${ activeTab === 'about' ? 'text-blue-500' : 'text-gray-500' }`, { fontFamily: "Poppins-SemiBold" }]}>
+                  About
+                </Text>
+              </Pressable>
+              <Pressable onPress={() => handleTabChange('review')}>
+                <Text style={[tw`${ activeTab === 'review' ? 'text-blue-500' : 'text-gray-500' }`, { fontFamily: "Poppins-SemiBold" }]}>
+                  Review
+                </Text>
+              </Pressable>
+            </View>
+            <View style={tw`flex`}>{renderTabContent()}</View>
           </View>
-          <View style={tw`flex`}>{renderTabContent()}</View>
-
           <Pressable
             onPress={handleAppliedJob}
             style={({ pressed }) => [

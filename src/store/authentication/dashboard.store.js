@@ -4,8 +4,9 @@ import { NEARBY_JOBS } from '../../helper/endpoints';
 import Toast from 'react-native-toast-message';
 import useLoginStore, { getToken } from './login.store';
 
-const useDashboardStore = create((set, get) => ({
+const useJobStore = create((set, get) => ({
     nearbyjobs: {},
+    job: {},
     getNearByJobs: async (skip = 0, limit = 5) =>
     {
         try
@@ -34,6 +35,31 @@ const useDashboardStore = create((set, get) => ({
             Toast.show({
                 type: 'tomatoToast',
                 text1: 'Failed to get jobs!',
+            });
+        }
+    },
+    clearNearByJobs: () => set({ nearbyjobs: {} }),
+    clearJob: () => set({ job: {} }),
+    getNearByJobById: async (id) =>
+    {
+        try
+        {
+            let params = {}
+            const res = await API.get(`${ NEARBY_JOBS }/${ id }`, {
+                headers: { Authorization: await getToken() },
+                params
+            });
+
+            if (res && res.data)
+            {
+                set({ job: res.data })
+            }
+        } catch (error)
+        {
+            console.log(JSON.stringify(error, null, 5))
+            Toast.show({
+                type: 'tomatoToast',
+                text1: 'Failed to get a job details!',
             });
         }
     },
@@ -69,4 +95,4 @@ const useDashboardStore = create((set, get) => ({
     },
 }));
 
-export default useDashboardStore;
+export default useJobStore;

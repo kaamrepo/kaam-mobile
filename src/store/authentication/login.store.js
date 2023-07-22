@@ -73,7 +73,7 @@ const useLoginStore = create((set, get) => ({
         {
 
         }
-    }
+    },
 }))
 
 

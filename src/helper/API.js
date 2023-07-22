@@ -5,7 +5,7 @@ import useLoaderStore from "../store/loader.store";
 const API = axios.create({
     headers: {
         "Content-Type": "application/json",
-    }
+    },
 })
 
 //interceptor which calls custom enable loader function when the request is sent through axios
