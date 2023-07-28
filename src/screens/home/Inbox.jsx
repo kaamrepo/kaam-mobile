@@ -5,7 +5,7 @@ import tw from 'twrnc'
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
-import { RichEditor, RichToolbar, actions } from 'react-native-pell-rich-editor';
+// import { RichEditor, RichToolbar, actions } from 'react-native-pell-rich-editor';
 import FontFamilyStylesheet from '../../assets/css/stylesheet';
 
 import WhiteTickSMSVG from "../../assets/svgs/WhiteTickSM.svg"
@@ -34,33 +34,33 @@ const colors = [
     "#38b000",
 ]
 
-const createJobSchema = yup.object({
-    position: yup.string().required("Job position is required!"),
-    description: yup.string().required("Job description is required!"),
-    requirements: yup.string().required("Job requirements is required!"),
-    tags: yup.array().of(yup.string()).min(1).max(3),
-    about: yup.string().required("Mention about the job!"),
-    salary: yup.number().required("Job salary in required!"),
-    salaryduration: yup.string().required("Please mention the salary duration!"),
-})
+// const createJobSchema = yup.object({
+//     position: yup.string().required("Job position is required!"),
+//     description: yup.string().required("Job description is required!"),
+//     requirements: yup.string().required("Job requirements is required!"),
+//     tags: yup.array().of(yup.string()).min(1).max(3),
+//     about: yup.string().required("Mention about the job!"),
+//     salary: yup.number().required("Job salary in required!"),
+//     salaryduration: yup.string().required("Please mention the salary duration!"),
+// })
 
 const Inbox = () =>
 {
 
     const [selectedColor, setSelectedColor] = useState(null);
-    const [tagText, setTagText] = useState("")
-    const [tags, setTags] = useState([])
+    // const [tagText, setTagText] = useState("")
+    // const [tags, setTags] = useState([])
 
-    const { control, getValues, setValue, handleSubmit, formState: { errors } } = useForm({
-        resolver: yupResolver(createJobSchema),
-        mode: 'onChange',
-        defaultValues: {
-            description: ''
-        }
-    });
-    const descriptionRef = useRef();
-    const requirementsRef = useRef();
-    const aboutRef = useRef();
+    // const { control, getValues, setValue, handleSubmit, formState: { errors } } = useForm({
+    //     resolver: yupResolver(createJobSchema),
+    //     mode: 'onChange',
+    //     defaultValues: {
+    //         description: ''
+    //     }
+    // });
+    // const descriptionRef = useRef();
+    // const requirementsRef = useRef();
+    // const aboutRef = useRef();
 
     const Item = ({ color }) => (
         <Pressable key={color}
@@ -94,7 +94,7 @@ const Inbox = () =>
                 />
             </View>
 
-
+            {/* 
             <ScrollView style={[tw`my-5`]} contentContainerStyle={{ alignItems: 'center' }}
                 showsVerticalScrollIndicator={false}
             >
@@ -125,12 +125,11 @@ const Inbox = () =>
                 <CustomTextEditor label="Job description" placeholder="eg. We are currently seeking a highly skilled and motivated Software Engineer" getValues={getValues} setValue={setValue} fieldName={"description"} editorRef={descriptionRef} errors={errors} />
 
 
-                {/* <CustomTextEditor label="Job requirements" placeholder="eg. We are currently seeking a highly skilled and motivated Software Engineer" getValues={getValues} setValue={setValue} fieldName={"requirements"} editorRef={requirementsRef} errors={errors} />
+                <CustomTextEditor label="Job requirements" placeholder="eg. We are currently seeking a highly skilled and motivated Software Engineer" getValues={getValues} setValue={setValue} fieldName={"requirements"} editorRef={requirementsRef} errors={errors} />
 
 
-                <CustomTextEditor label="Job about" placeholder="eg. We are currently seeking a highly skilled and motivated Software Engineer" getValues={getValues} setValue={setValue} fieldName={"about"} editorRef={aboutRef} errors={errors} /> */}
+                <CustomTextEditor label="Job about" placeholder="eg. We are currently seeking a highly skilled and motivated Software Engineer" getValues={getValues} setValue={setValue} fieldName={"about"} editorRef={aboutRef} errors={errors} />
 
-                {/* tags, setTags, tagText, setTagText */}
                 <View style={[tw`w-full`]}>
                     <Text style={[tw`text-gray-600 w-full text-[11px] text-left px-2`, { fontFamily: "Poppins-Regular" }]}>Job position:</Text>
                     <View style={[tw`w-full flex-row`]}>
@@ -163,7 +162,7 @@ const Inbox = () =>
                             <Text style={[tw`text-white text-[22px]`, { fontFamily: "Poppins-SemiBold" }]}>+</Text>
                         </Pressable>
                     </View>
-                    {/* // setTags(prev => prev.filter(t => t !== tag)) */}
+                     setTags(prev => prev.filter(t => t !== tag))
                     <View style={[tw`flex flex-row flex-wrap gap-2 my-1`]}>
                         {
                             tags?.map((tag, index) => (
@@ -185,8 +184,8 @@ const Inbox = () =>
                     <Text style={[tw`text-white text-[20px]`, { fontFamily: "Poppins-SemiBold" }]}>Post a Job</Text>
                 </Pressable>
 
-            </ScrollView>
-        </SafeAreaView>
+            </ScrollView > */}
+        </SafeAreaView >
     )
 }
 
@@ -198,46 +197,46 @@ const styles = StyleSheet.create({})
 
 
 
-const CustomTextEditor = ({ label, placeholder, getValues, setValue, fieldName, editorRef, errors }) =>
-{
-    return (
-        <View style={tw`w-full`}>
-            <Text style={[tw`text-gray-600 w-full text-[11px] text-left px-2`, { fontFamily: "Poppins-Regular" }]}>{label}:</Text>
-            <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
-                <RichEditor
-                    placeholder={placeholder}
-                    placeholderTextColor="gray"
-                    style={tw`border border-slate-300 bg-slate-100/40 rounded-t-lg overflow-hidden`}
-                    ref={editorRef}
-                    editorStyle={{
-                        initialCSSText: `${ FontFamilyStylesheet }`,
-                        contentCSSText: `font-family: Poppins; font-size:14px; color:gray;`
-                    }}
-                    initialContentHTML={getValues(`${ fieldName }`)}
-                    onChange={(content) =>
-                    {
-                        setValue(`${ fieldName }`, content)
-                    }}
-                />
-            </KeyboardAvoidingView>
-            <RichToolbar
-                style={tw`rounded-b-lg border border-t-0 border-slate-300`}
-                editor={editorRef}
-                selectedIconTint={'#2095F2'}
-                disabledIconTint={'#bfbfbf'}
-                actions={[
-                    actions.keyboard,
-                    actions.setBold,
-                    actions.setItalic,
-                    actions.setUnderline,
-                    actions.insertBulletsList,
-                    actions.insertOrderedList,
-                    actions.setStrikethrough,
-                    actions.undo,
-                    actions.redo,
-                ]}
-            />
-            <Text style={[tw`text-red-600 w-full text-[10px] text-right px-2 py-1`, { fontFamily: "Poppins-Regular" }]}> {errors?.[`${ fieldName }`]?.message}</Text>
-        </View>
-    )
-}
+// const CustomTextEditor = ({ label, placeholder, getValues, setValue, fieldName, editorRef, errors }) =>
+// {
+//     return (
+//         <View style={tw`w-full`}>
+//             <Text style={[tw`text-gray-600 w-full text-[11px] text-left px-2`, { fontFamily: "Poppins-Regular" }]}>{label}:</Text>
+//             <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
+//                 <RichEditor
+//                     placeholder={placeholder}
+//                     placeholderTextColor="gray"
+//                     style={tw`border border-slate-300 bg-slate-100/40 rounded-t-lg overflow-hidden`}
+//                     ref={editorRef}
+//                     editorStyle={{
+//                         initialCSSText: `${ FontFamilyStylesheet }`,
+//                         contentCSSText: `font-family: Poppins; font-size:14px; color:gray;`
+//                     }}
+//                     initialContentHTML={getValues(`${ fieldName }`)}
+//                     onChange={(content) =>
+//                     {
+//                         setValue(`${ fieldName }`, content)
+//                     }}
+//                 />
+//             </KeyboardAvoidingView>
+//             <RichToolbar
+//                 style={tw`rounded-b-lg border border-t-0 border-slate-300`}
+//                 editor={editorRef}
+//                 selectedIconTint={'#2095F2'}
+//                 disabledIconTint={'#bfbfbf'}
+//                 actions={[
+//                     actions.keyboard,
+//                     actions.setBold,
+//                     actions.setItalic,
+//                     actions.setUnderline,
+//                     actions.insertBulletsList,
+//                     actions.insertOrderedList,
+//                     actions.setStrikethrough,
+//                     actions.undo,
+//                     actions.redo,
+//                 ]}
+//             />
+//             <Text style={[tw`text-red-600 w-full text-[10px] text-right px-2 py-1`, { fontFamily: "Poppins-Regular" }]}> {errors?.[`${ fieldName }`]?.message}</Text>
+//         </View>
+//     )
+// }
