@@ -16,7 +16,6 @@ import
 import Carousel from 'react-native-snap-carousel';
 import tw from 'twrnc';
 import Icon from 'react-native-vector-icons/Feather';
-// Import your images from the assets/images folder
 import Image1 from '../../assets/images/browse-jobs.png';
 import Image2 from '../../assets/images/IntroScreenJobsAndInvitations.png';
 import Image3 from '../../assets/images/search-dream-job.png';
@@ -28,6 +27,8 @@ import capitalizeFirstLetter from '../../helper/utils/capitalizeFirstLetter';
 import GeneralStatusBar from '../../components/GeneralStatusBar';
 import useJobStore from '../../store/authentication/dashboard.store';
 import useLoaderStore from '../../store/loader.store';
+import { requestLocationPermission } from '../../helper/utils/getGeoLocation';
+import Geolocation from 'react-native-geolocation-service';
 const Dashboard = ({ navigation }) =>
 {
   const [refreshing, setRefreshing] = useState(false);
@@ -36,6 +37,8 @@ const Dashboard = ({ navigation }) =>
   const { loggedInUser } = useLoginStore();
   const { nearbyjobs, getNearByJobs } = useJobStore();
   const { isLoading } = useLoaderStore();
+
+  const [location, setLocation] = useState(false);
 
   const nearbyJobsData = [
     { id: 1, image: Image1 },
@@ -102,20 +105,53 @@ const Dashboard = ({ navigation }) =>
 
   useEffect(() =>
   {
-    getNearByJobs();
+
+    const result = requestLocationPermission();
+    result.then(res =>
+    {
+      if (res)
+      {
+        Geolocation.getCurrentPosition(
+          position =>
+          {
+            setLocation(position)
+          },
+          error =>
+          {
+            console.log(error.code, error.message);
+          },
+          { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
+        );
+      }
+    });
+
   }, [])
+
+  useEffect(() =>
+  {
+    console.log("object");
+    if (location)
+    {
+      getNearByJobs(0, 5, [location?.coords?.longitude, location?.coords?.latitude]);
+    }
+
+  }, [location])
 
 
   const onRefresh = React.useCallback(() =>
   {
+
     setRefreshing(true);
-    getNearByJobs();
+    if (location)
+    {
+      getNearByJobs(0, 5, [location?.coords?.longitude, location?.coords?.latitude]);
+    }
     setRefreshing(false);
     // setTimeout(() =>
     // {
     //    setRefreshing(false);
     // }, 2000);
-  }, []);
+  }, [location]);
 
   const renderItemsRecommendedJobs = ({ item, index }) =>
   {

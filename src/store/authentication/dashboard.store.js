@@ -7,7 +7,7 @@ import useLoginStore, { getToken } from './login.store';
 const useJobStore = create((set, get) => ({
     nearbyjobs: {},
     job: {},
-    getNearByJobs: async (skip = 0, limit = 5) =>
+    getNearByJobs: async (skip = 0, limit = 5, coordinates) =>
     {
         try
         {
@@ -15,10 +15,11 @@ const useJobStore = create((set, get) => ({
             let params = {
                 skip,
                 limit,
-                employerid: {
+                createdby: {
                     $nin: [userid]
                 },
-                sortDesc: ['createdat']
+                coordinates,
+                sortDesc: ['createdat'],
             }
             const res = await API.get(`${ NEARBY_JOBS }/`, {
                 headers: { Authorization: await getToken() },

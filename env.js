@@ -1,1 +1,1 @@
-export const REACT_APP_DEV_MODE = 'http://192.168.1.8:3030';
+export const REACT_APP_DEV_MODE = 'http://192.168.177.34:3030';
