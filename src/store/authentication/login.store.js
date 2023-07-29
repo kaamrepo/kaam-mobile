@@ -8,6 +8,16 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 const useLoginStore = create((set, get) => ({
   loggedInUser: undefined,
   isLoggedIn: false,
+  language: "English",
+  getLanguage: async () =>
+  {
+    (async () =>
+    {
+      let response = await retrieveLanguage();
+      if (response)
+        set({ language: response })
+    })();
+  },
   setLoggedInUserDetails: async (user, isLoggedIn) =>
   {
     set({ isLoggedIn: isLoggedIn, loggedInUser: user });
@@ -78,17 +88,18 @@ const useLoginStore = create((set, get) => ({
 
     }
   },
-  // retrieveLanguageFromStore: async () =>
-  // {
-  //   try
-  //   {
-  //     const lang = await retrieveLanguage();
-  //     return lang;
-  //   } catch (error)
-  //   {
-  //     return false;
-  //   }
-  // }
+  selectLanguage: async data =>
+  {
+    try
+    {
+      set({ language: data })
+      await storeUserlanguage(data);
+    } catch (error)
+    {
+      console.log('error', error);
+    }
+  },
+
 }))
 
 

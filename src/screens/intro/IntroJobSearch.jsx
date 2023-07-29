@@ -8,6 +8,7 @@ import { translation } from './stringsoflanguages';
 import { retrieveLanguage } from '../../store/authentication/login.store';
 const Intro_job_search = ({ navigation }) =>
 {
+
   const [selectedLanguage, setSelectedLanguage] = useState('');
   useEffect(() =>
   {

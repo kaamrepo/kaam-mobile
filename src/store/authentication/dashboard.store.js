@@ -33,10 +33,10 @@ const useJobStore = create((set, get) => ({
         } catch (error)
         {
             console.log(JSON.stringify(error, null, 5))
-            Toast.show({
-                type: 'tomatoToast',
-                text1: 'Failed to get jobs!',
-            });
+            // Toast.show({
+            //     type: 'tomatoToast',
+            //     text1: 'Failed to get jobs!',
+            // });
         }
     },
     clearNearByJobs: () => set({ nearbyjobs: {} }),

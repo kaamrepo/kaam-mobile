@@ -35,7 +35,7 @@ const Stack = createNativeStackNavigator();
 const App = () =>
 {
 
-  const { isLoggedIn, setLoggedInUserDetails } = useLoginStore()
+  const { isLoggedIn, setLoggedInUserDetails, getLanguage } = useLoginStore()
   const { isLoading } = useLoaderStore()
 
   useEffect(() =>
@@ -57,6 +57,8 @@ const App = () =>
       }
     }
     getData()
+
+    getLanguage()
   }, [isLoggedIn])
 
   return (

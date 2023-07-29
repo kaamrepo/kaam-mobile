@@ -5,7 +5,7 @@ export const USER = `${ COMMON_ENDPOINT }users`
 export const LOGIN_USER = `${ COMMON_ENDPOINT }authentication`
 export const GET_OTP = `${ COMMON_ENDPOINT }login`
 
-export const NEARBY_JOBS = `${ COMMON_ENDPOINT }jobs`
+export const NEARBY_JOBS = `${ COMMON_ENDPOINT }nearby-jobs`
 
 
 

@@ -29,12 +29,14 @@ import useJobStore from '../../store/authentication/dashboard.store';
 import useLoaderStore from '../../store/loader.store';
 import { requestLocationPermission } from '../../helper/utils/getGeoLocation';
 import Geolocation from 'react-native-geolocation-service';
+import { dashboardTranslation } from './dashboardTranslation';
+
 const Dashboard = ({ navigation }) =>
 {
   const [refreshing, setRefreshing] = useState(false);
 
   const [selectedImage, setSelectedImage] = useState(null);
-  const { loggedInUser } = useLoginStore();
+  const { loggedInUser, language } = useLoginStore();
   const { nearbyjobs, getNearByJobs } = useJobStore();
   const { isLoading } = useLoaderStore();
 
@@ -211,7 +213,7 @@ const Dashboard = ({ navigation }) =>
               <MenuIconSVG width={25} height={25} />
             </Pressable>
             <View>
-              <Text style={[tw`text-slate-500`, { fontFamily: "Poppins-Regular" }]}>Welcome,</Text>
+              <Text style={[tw`text-slate-500`, { fontFamily: "Poppins-Regular" }]}>{dashboardTranslation[language]["Welcome"]},</Text>
               <Text style={[tw`text-2xl text-black`, { fontFamily: "Poppins-Bold" }]}>{`${ capitalizeFirstLetter(loggedInUser?.firstname) } ${ capitalizeFirstLetter(loggedInUser?.lastname) }`} </Text>
             </View>
           </View>
@@ -246,25 +248,32 @@ const Dashboard = ({ navigation }) =>
       </View>
       <View>
         <View style={tw`flex-row justify-between items-center mb-4 mx-5`}>
-          <Text style={tw`font-bold text-black text-xl`}>Nearby Jobs</Text>
-          <Text style={tw`text-center text-sm leading-relaxed text-gray-600`}>
+          <Text style={[tw`text-black text-xl`, { fontFamily: "Poppins-Bold" }]}>Nearby Jobs</Text>
+          <Text style={[tw`text-center text-sm leading-relaxed text-gray-600`, { fontFamily: "Poppins-Regular" }]}>
             See all
           </Text>
         </View>
-        <Carousel
-          layout={'default'}
-          autoplay={true} // Enable autoplay
-          autoplayInterval={5000} // Autoplay interval in milliseconds (5 seconds)
-          loop={true} // Loop the carousel
-          data={isLoading ? nearbyJobsData : nearbyjobs?.data}
-          renderItem={renderItemsNearbyJobs}
-          sliderWidth={Dimensions.get('window').width}
-          itemWidth={Dimensions.get('window').width - 80}
-        />
+        {/* <Text style={tw`bg-red-700 text-white`}>{JSON.stringify(nearbyjobs, null, 4)}</Text> */}
+        {
+          isLoading ?
+            <RecommendedJobsFillerComponent isLoading={isLoading} />
+            : Object.keys(nearbyjobs)?.length <= 0
+              ? <RecommendedJobsFillerComponent isLoading={isLoading} />
+              :
+              <Carousel
+                layout={'default'}
+                autoplay={true}
+                autoplayInterval={5000}
+                loop={true}
+                data={nearbyjobs?.data}
+                renderItem={renderItemsNearbyJobs}
+                sliderWidth={Dimensions.get('window').width}
+                itemWidth={Dimensions.get('window').width - 80}
+              />}
       </View>
       <View style={tw`flex-row justify-between items-center mt-5 mb-4 mx-5`}>
-        <Text style={tw`font-bold text-black text-xl`}>Recomended Jobs</Text>
-        <Text style={tw`text-center text-sm leading-relaxed text-gray-600`}>
+        <Text style={[tw`text-black text-xl`, { fontFamily: "Poppins-Bold" }]}>Recomended Jobs</Text>
+        <Text style={[tw`text-center text-sm leading-relaxed text-gray-600`, { fontFamily: "Poppins-Regular" }]}>
           See all
         </Text>
       </View>
@@ -282,32 +291,33 @@ const Dashboard = ({ navigation }) =>
         />
       </View>
       <View style={tw`flex-row justify-between items-center mt-5 mb-4 mx-5`}>
-        <Text style={tw`font-bold text-black text-xl`}>Featured Jobs</Text>
-        <Text style={tw`text-center text-sm leading-relaxed text-gray-600`}>
+        <Text style={[tw`text-black text-xl`, { fontFamily: "Poppins-Bold" }]}>Featured Jobs</Text>
+        <Text style={[tw`text-center text-sm leading-relaxed text-gray-600`, { fontFamily: "Poppins-Regular" }]}>
           See all
         </Text>
       </View>
       <View>
         {featuredJobs.map((item, index) => (
           <Pressable key={index} onPress={() => { }}>
-            {({ pressed }) => (<View style={tw`rounded-5 p-2 m-3 mx-5 ${ pressed ? 'bg-gray-100' : 'bg-white' }`}>
-              <View style={tw`flex-row`}>
-                <View style={tw`flex-1 items-center justify-center`}>
-                  <Image
-                    source={item.image}
-                    style={tw`w-12 h-12 rounded-full`}
-                  />
+            {({ pressed }) => (
+              <View style={tw`rounded-5 p-2 m-3 mx-5 border border-neutral-200 ${ pressed ? 'bg-gray-100' : 'bg-white' }`}>
+                <View style={tw`flex-row items-center`}>
+                  <View style={tw`flex-1 items-center justify-center`}>
+                    <Image
+                      source={item.image}
+                      style={tw`w-12 h-12 rounded-full`}
+                    />
+                  </View>
+                  <View style={tw`flex-1 items-center justify-center`}>
+                    <Text style={[tw`text-lg`, { fontFamily: "Poppins-SemiBold" }]}>{item.title}</Text>
+                    <Text style={[tw`text-lg`, { fontFamily: "Poppins-Regular" }]}>{item.description}</Text>
+                  </View>
+                  <View style={tw`flex-1 items-center justify-center`}>
+                    <Text style={[tw`text-lg`, { fontFamily: "Poppins-SemiBold" }]}>{item.value}/y</Text>
+                    <Text style={[tw`text-lg`, { fontFamily: "Poppins-Regular" }]}>{item.location}</Text>
+                  </View>
                 </View>
-                <View style={tw`flex-1 items-center justify-center`}>
-                  <Text style={tw`text-lg mb-2 font-bold`}>{item.title}</Text>
-                  <Text style={tw`text-lg`}>{item.description}</Text>
-                </View>
-                <View style={tw`flex-1 items-center justify-center`}>
-                  <Text style={tw`text-lg font-bold`}>{item.value}/y</Text>
-                  <Text style={tw`text-lg`}>{item.location}</Text>
-                </View>
-              </View>
-            </View>)}
+              </View>)}
           </Pressable>
         ))}
       </View>
@@ -350,3 +360,16 @@ const styleData = StyleSheet.create({
 });
 
 export default Dashboard;
+
+
+
+const RecommendedJobsFillerComponent = ({ isLoading }) =>
+{
+  return <View style={tw`w-full items-center px-5 h-48`}>
+    <View style={tw`w-full h-full justify-center bg-neutral-100 border border-neutral-300 rounded-3`}>
+      <Text style={[tw`text-center text-sm leading-relaxed text-gray-600`, { fontFamily: "Poppins-Regular" }]}>
+        {isLoading ? "" : "There are no nearby jobs"}
+      </Text>
+    </View>
+  </View>
+}

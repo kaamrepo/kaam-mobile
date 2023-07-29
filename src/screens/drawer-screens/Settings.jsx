@@ -57,7 +57,7 @@ const Settings = ({ navigation }) =>
             titleClass: "text-[#0D0D26]",
             handleNavigation: () =>
             {
-                bottomSheetSelectLanguageRef.current.snapToIndex(0)
+                bottomSheetSelectLanguageRef.current.snapToIndex(1)
             }
         },
         {
