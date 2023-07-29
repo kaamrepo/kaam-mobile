@@ -1,15 +1,18 @@
 import { Image, Text, View, Pressable } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SearchDreamJob from '../../assets/images/search-dream-job.png'
-import React, { useEffect, useState } from 'react'; // Import useEffect
+import React, { useEffect, useState } from 'react';
 import tw from "twrnc"
 import GeneralStatusBar from '../../components/GeneralStatusBar'
 import { translation } from './stringsoflanguages';
 import { retrieveLanguage } from '../../store/authentication/login.store';
-const Intro_job_search = ({ navigation }) => {
+const Intro_job_search = ({ navigation }) =>
+{
   const [selectedLanguage, setSelectedLanguage] = useState('');
-  useEffect(() => {
-    async function getData() {
+  useEffect(() =>
+  {
+    async function getData()
+    {
       let response = await retrieveLanguage()
       setSelectedLanguage(response);
     }
@@ -39,7 +42,8 @@ const Intro_job_search = ({ navigation }) => {
           </View>
           <View style={tw`flex flex-row gap-4 h-14 mb-3`}>
             <Pressable
-              onPress={() => {
+              onPress={() =>
+              {
                 navigation.replace("registerScreen")
               }}
               style={({ pressed }) => [
@@ -50,7 +54,8 @@ const Intro_job_search = ({ navigation }) => {
               )}
             </Pressable>
             <Pressable
-              onPress={() => {
+              onPress={() =>
+              {
                 navigation.replace('IntroScreenBrowseJobs')
               }}
               style={({ pressed }) => [

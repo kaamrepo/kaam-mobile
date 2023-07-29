@@ -129,7 +129,6 @@ const Dashboard = ({ navigation }) =>
 
   useEffect(() =>
   {
-    console.log("object");
     if (location)
     {
       getNearByJobs(0, 5, [location?.coords?.longitude, location?.coords?.latitude]);

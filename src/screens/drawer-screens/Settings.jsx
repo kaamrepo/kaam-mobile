@@ -1,13 +1,10 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { Pressable, StyleSheet, Text } from 'react-native'
+import React, { useRef } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Icon, { Icons } from '../../components/Icons';
+
 import tw from "twrnc"
 
-
-
 // SVG Icons
-
 import ProfileSVG from "../../assets/svgs/Profile.svg";
 import NotificationsSVG from "../../assets/svgs/Notifications.svg";
 import ChangePasswordSVG from "../../assets/svgs/ChangePassword.svg";
@@ -19,9 +16,21 @@ import TermsAndCondtionsSVG from "../../assets/svgs/TermsAndCondtions.svg";
 import HelpCenterSVG from "../../assets/svgs/HelpCenter.svg";
 import SupportSVG from "../../assets/svgs/Support.svg";
 import AboutSVG from "../../assets/svgs/About.svg";
+import LanguageSelection from './settings/LanguageSelection';
 
 const Settings = ({ navigation }) =>
 {
+    const bottomSheetSelectLanguageRef = useRef(null);
+
+    const updateLanguage = async (data) =>
+    {
+        // const success = await updateDetailsStore(loggedInUser?._id, data)
+        if (success)
+        {
+            bottomSheetSelectLanguageRef.current.close()
+        }
+
+    }
 
     const applcationOptions = [
         {
@@ -46,7 +55,10 @@ const Settings = ({ navigation }) =>
             icon: <LanguageSVG />,
             title: "Language",
             titleClass: "text-[#0D0D26]",
-            handleNavigation: () => { }
+            handleNavigation: () =>
+            {
+                bottomSheetSelectLanguageRef.current.snapToIndex(0)
+            }
         },
         {
             icon: <ThemeSVG />,
@@ -108,6 +120,12 @@ const Settings = ({ navigation }) =>
                     <ClickableItem key={index} handleNavigation={option.handleNavigation} icon={option.icon} title={option.title} titleClass={option.titleClass} />
                 )
             }
+
+            <LanguageSelection
+                bottomSheetSelectLanguageRef={bottomSheetSelectLanguageRef}
+                updateLanguage={updateLanguage}
+            />
+
 
         </SafeAreaView>
     )
