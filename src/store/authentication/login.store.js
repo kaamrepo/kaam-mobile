@@ -1,33 +1,33 @@
-import { create } from 'zustand';
+import {create} from 'zustand';
 import API from '../../helper/API';
-import { LOGIN_USER, GET_OTP } from '../../helper/endpoints';
+import {LOGIN_USER, GET_OTP} from '../../helper/endpoints';
 import Toast from 'react-native-toast-message';
 import useRegistrationStore from './registration.store.js';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
 const useLoginStore = create((set, get) => ({
-    loggedInUser: undefined,
-    isLoggedIn: false,
-    setLoggedInUserDetails: async (user, isLoggedIn) =>
-    {
-        set({ isLoggedIn: isLoggedIn, loggedInUser: user })
-    },
-    setloggedInUser: async (data) =>
-    {
-
-        let userSession = await retrieveUserSession();
-        userSession = JSON.parse(userSession);
-        userSession['user'] = data;
-        await storeUserSession(userSession)
-        set({ loggedInUser: data })
-    },
-    login: async (userLoginFormData) =>
-    {
-        try
-        {
-            const data = await useRegistrationStore.getState().loginDetails;
-            let payload = { phone: data.phone, date: new Date().toISOString(), otp: userLoginFormData, strategy: "local" };
-            const res = await API.post(LOGIN_USER, payload);
+  loggedInUser: undefined,
+  isLoggedIn: false,
+  setLoggedInUserDetails: async (user, isLoggedIn) => {
+    set({isLoggedIn: isLoggedIn, loggedInUser: user});
+  },
+  setloggedInUser: async data => {
+    let userSession = await retrieveUserSession();
+    userSession = JSON.parse(userSession);
+    userSession['user'] = data;
+    await storeUserSession(userSession);
+    set({loggedInUser: data});
+  },
+  login: async userLoginFormData => {
+    try {
+      const data = await useRegistrationStore.getState().loginDetails;
+      let payload = {
+        phone: data.phone,
+        date: new Date().toISOString(),
+        otp: userLoginFormData,
+        strategy: 'local',
+      };
+      const res = await API.post(LOGIN_USER, payload);
 
             if (res && res.status === 201)
             {
@@ -79,89 +79,81 @@ const useLoginStore = create((set, get) => ({
 
 export default useLoginStore;
 
+export const getToken = async () => {
+  try {
+    let token = await retrieveUserSession();
+    token = JSON.parse(token);
+    return token.accessToken;
+  } catch (error) {}
+};
 
-
-
-export const getToken = async () =>
-{
-    try
-    {
-        let token = await retrieveUserSession();
-        token = JSON.parse(token);
-        return token.accessToken;
-    } catch (error)
-    {
-
+export const storeUserSession = async data => {
+  try {
+    await EncryptedStorage.setItem('user_session', JSON.stringify(data));
+    await EncryptedStorage.setItem(
+      'isLoggedIn',
+      JSON.stringify({isLoggedIn: true}),
+    );
+  } catch (error) {}
+};
+export const storeUserlanguage = async data => {
+  try {
+    const input = {selectedLanguage: data};
+    try {
+      const dataAsString = JSON.stringify(input);
+      await EncryptedStorage.setItem('setLanguage', dataAsString);
+      console.log('Data stored successfully.');
+    } catch (error) {
+      console.error('Error storing data:', error);
     }
-}
+  } catch (error) {}
+};
 
+export const retrieveUserSession = async () => {
+  try {
+    const session = await EncryptedStorage.getItem('user_session');
 
-export const storeUserSession = async (data) =>
-{
-    try
-    {
-        await EncryptedStorage.setItem(
-            "user_session",
-            JSON.stringify(data)
-        );
-        await EncryptedStorage.setItem(
-            "isLoggedIn",
-            JSON.stringify({ isLoggedIn: true })
-        );
-    } catch (error)
-    {
+    if (session !== undefined) {
+      return session;
     }
-}
+  } catch (error) {}
+};
+export const retrieveLoggedInState = async () => {
+  try {
+    const isLoggedIn = await EncryptedStorage.getItem('isLoggedIn');
 
-export const retrieveUserSession = async () =>
-{
-    try
-    {
-        const session = await EncryptedStorage.getItem("user_session");
-
-        if (session !== undefined)
-        {
-            return session;
-        }
-    } catch (error)
-    {
+    if (isLoggedIn !== undefined) {
+      return isLoggedIn ? JSON.parse(isLoggedIn) : false;
     }
-}
-export const retrieveLoggedInState = async () =>
-{
-    try
-    {
-        const isLoggedIn = await EncryptedStorage.getItem("isLoggedIn");
-
-        if (isLoggedIn !== undefined)
-        {
-            return isLoggedIn ? JSON.parse(isLoggedIn) : false;
-        }
-    } catch (error)
-    {
+  } catch (error) {}
+};
+export const retrieveLanguage = async () => {
+  try {
+    const storedData = await EncryptedStorage.getItem('setLanguage');
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+      const language = parsedData.selectedLanguage;
+      return language;
+    } else {
+      console.log('No language data found in storage.');
     }
-}
+  } catch (error) {
+    console.error('Error retrieving language data:', error);
+  }
+};
 
-export const removeUserSession = async () =>
-{
-    try
-    {
-        await EncryptedStorage.removeItem("user_session");
-        await EncryptedStorage.removeItem("isLoggedIn");
+export const removeUserSession = async () => {
+  try {
+    await EncryptedStorage.removeItem('user_session');
+    await EncryptedStorage.removeItem('isLoggedIn');
+  } catch (error) {}
+};
 
-    } catch (error)
-    {
-    }
-}
-
-const clearStorage = async () =>
-{
-    try
-    {
-        await EncryptedStorage.clear();
-        // Congrats! You've just cleared the device storage!
-    } catch (error)
-    {
-        // There was an error on the native side
-    }
-}
+const clearStorage = async () => {
+  try {
+    await EncryptedStorage.clear();
+    // Congrats! You've just cleared the device storage!
+  } catch (error) {
+    // There was an error on the native side
+  }
+};

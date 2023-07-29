@@ -1,10 +1,12 @@
 import { Image, StyleSheet, Pressable, FlatList, Text, TouchableOpacity, View, Modal, } from 'react-native'
 import React, { useState } from 'react';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import tw from 'twrnc';
 import Languages from '../../components/Languages.json'
 import GeneralStatusBar from '../../components/GeneralStatusBar';
+import useLoginStore from "../../store/authentication/login.store"
 const IntroSelectLanguage = ({ navigation }) => {
+  const { selectLanguage } = useLoginStore()
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedOption, setSelectedOption] = useState('English');
   const toggleModal = () => {
@@ -60,6 +62,8 @@ const IntroSelectLanguage = ({ navigation }) => {
               <Pressable
                 onPress={() => {
                   navigation.replace('IntroJobSearch');
+                  console.log("selected Language ========>", selectedOption);
+                  selectLanguage(selectedOption)
                 }}
                 style={({ pressed }) => [
                   {
