@@ -74,6 +74,7 @@ const LanguageSelection = ({ bottomSheetSelectLanguageRef, updateLanguage }) =>
                         onPress={() =>
                         {
                             selectLanguage(radioButtons[selectedId]?.value)
+                            bottomSheetSelectLanguageRef.current.close()
                         }}>
                         <Text style={[tw`text-white text-xl`, { fontFamily: 'Poppins-SemiBold' }]}>
                             {languageSelectionTanslation[language]["Save"]}
@@ -87,6 +88,7 @@ const LanguageSelection = ({ bottomSheetSelectLanguageRef, updateLanguage }) =>
 
 export default LanguageSelection
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create({})
 
-})
+
+

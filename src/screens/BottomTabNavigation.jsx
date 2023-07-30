@@ -43,10 +43,10 @@ const BottomTabNavigation = () =>
                 tabBarHideOnKeyboard: true,
                 tabBarStyle: {
                     height: 50,
-                    position: 'absolute',
-                    bottom: 0,
-                    right: 0,
-                    left: 0,
+                    // position: 'absolute',
+                    // bottom: 0,
+                    // right: 0,
+                    // left: 0,
 
                 }
             }}

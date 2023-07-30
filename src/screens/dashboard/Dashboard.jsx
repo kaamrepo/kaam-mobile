@@ -10,7 +10,7 @@ import
   StyleSheet,
   Dimensions,
   Pressable,
-  RefreshControl
+  RefreshControl,
 } from 'react-native';
 
 import Carousel from 'react-native-snap-carousel';
@@ -35,18 +35,96 @@ const Dashboard = ({ navigation }) =>
 {
   const [refreshing, setRefreshing] = useState(false);
 
-  const [selectedImage, setSelectedImage] = useState(null);
   const { loggedInUser, language } = useLoginStore();
   const { nearbyjobs, getNearByJobs } = useJobStore();
   const { isLoading } = useLoaderStore();
 
   const [location, setLocation] = useState(false);
 
-  const nearbyJobsData = [
-    { id: 1, image: Image1 },
-    { id: 2, image: Image2 },
-    { id: 3, image: Image3 },
-    { id: 4, image: Image4 },
+  useEffect(() =>
+  {
+
+    const result = requestLocationPermission();
+    result.then(res =>
+    {
+      if (res)
+      {
+        Geolocation.getCurrentPosition(
+          position =>
+          {
+            setLocation(position)
+          },
+          error =>
+          {
+            console.log(error.code, error.message);
+          },
+          { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
+        );
+      }
+    });
+
+  }, [])
+
+  useEffect(() =>
+  {
+    if (location)
+    {
+      getNearByJobs(0, 5, [location?.coords?.longitude, location?.coords?.latitude]);
+    }
+  }, [location])
+
+
+  const onRefresh = React.useCallback(() =>
+  {
+    setRefreshing(true);
+    if (location)
+    {
+      getNearByJobs(0, 5, [location?.coords?.longitude, location?.coords?.latitude]);
+    }
+    setRefreshing(false);
+  }, [location]);
+
+  const renderItemsRecommendedJobs = ({ item, index }) =>
+  {
+    return (
+      <View style={tw`w-full h-52 justify-center items-center bg-blue-600 rounded-3 p-4 m-4`} key={index}>
+        <View style={tw`items-center mb-4`}>
+          <Image
+            source={item.image}
+            style={tw`${ styles.image } w-20 h-20 rounded-full`}
+          />
+        </View>
+        <Text style={tw`font-bold text-xl mb-2`}>{item.title}</Text>
+        <Text>{item.location}</Text>
+        <Text>{item.value}/y</Text>
+      </View>
+    );
+  };
+  const featuredJobs = [
+    {
+      _id: "fghjkl",
+      image: Image1,
+      title: 'Jr Executive',
+      description: 'Tester',
+      value: 960000,
+      location: 'Delhi',
+    },
+    {
+      _id: "fghgjkl",
+      image: Image2,
+      title: 'Jr Engineer',
+      description: 'Devloper',
+      value: 98765,
+      location: 'Pune',
+    },
+    {
+      _id: "fghjksl",
+      image: Image1,
+      title: 'Sr tester',
+      description: 'Automation',
+      value: 576778,
+      location: 'Mumbai',
+    },
   ];
 
   const renderItemsNearbyJobs = ({ item, index }) =>
@@ -104,120 +182,32 @@ const Dashboard = ({ navigation }) =>
     },
   ];
 
-
-  useEffect(() =>
-  {
-
-    const result = requestLocationPermission();
-    result.then(res =>
-    {
-      if (res)
-      {
-        Geolocation.getCurrentPosition(
-          position =>
-          {
-            setLocation(position)
-          },
-          error =>
-          {
-            console.log(error.code, error.message);
-          },
-          { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
-        );
-      }
-    });
-
-  }, [])
-
-  useEffect(() =>
-  {
-    if (location)
-    {
-      getNearByJobs(0, 5, [location?.coords?.longitude, location?.coords?.latitude]);
-    }
-
-  }, [location])
-
-
-  const onRefresh = React.useCallback(() =>
-  {
-
-    setRefreshing(true);
-    if (location)
-    {
-      getNearByJobs(0, 5, [location?.coords?.longitude, location?.coords?.latitude]);
-    }
-    setRefreshing(false);
-    // setTimeout(() =>
-    // {
-    //    setRefreshing(false);
-    // }, 2000);
-  }, [location]);
-
-  const renderItemsRecommendedJobs = ({ item, index }) =>
-  {
-    return (
-      <View style={tw`w-full h-52 justify-center items-center bg-blue-600 rounded-3 p-4 m-4`} key={index}>
-        <View style={tw`items-center mb-4`}>
-          <Image
-            source={item.image}
-            style={tw`${ styles.image } w-20 h-20 rounded-full`}
-          />
-        </View>
-        <Text style={tw`font-bold text-xl mb-2`}>{item.title}</Text>
-        <Text>{item.location}</Text>
-        <Text>{item.value}/y</Text>
-      </View>
-    );
-  };
-  const featuredJobs = [
-    {
-      image: Image1,
-      title: 'Jr Executive',
-      description: 'Tester',
-      value: 960000,
-      location: 'Delhi',
-    },
-    {
-      image: Image2,
-      title: 'Jr Engineer',
-      description: 'Devloper',
-      value: 98765,
-      location: 'Pune',
-    },
-    {
-      image: Image1,
-      title: 'Sr tester',
-      description: 'Automation',
-      value: 576778,
-      location: 'Mumbai',
-    },
-  ];
-
+  // bg-[#FAFAFD]
   return (
-    <ScrollView showsVerticalScrollIndicator={false} style={tw`flex pt-5 bg-[#FAFAFD]`}
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      nestedScrollEnabled
+      style={[tw`py-10 bg-[#FAFAFD]`,]}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
       <GeneralStatusBar backgroundColor={"#d6d6d6"} />
-      <View style={tw`px-6 pt-5 pb-2 bg-white`}>
-        <View style={tw`flex-row justify-between items-center mb-4`}>
+      <View style={tw`mx-5 mb-4 rounded-3 justify-center`}>
+        <View style={tw`flex-row justify-between items-center`}>
           <View style={tw`flex-row items-center gap-5`}>
-            <Pressable onPress={() =>
-            {
-              navigation.openDrawer();
-            }}
+            <Pressable onPress={() => { navigation.openDrawer(); }}
               style={({ pressed }) => [tw`p-2 h-12 w-12 rounded-full flex-row justify-center items-center ${ pressed ? 'bg-slate-200' : '' }`]}
             >
               <MenuIconSVG width={25} height={25} />
             </Pressable>
-            <View>
-              <Text style={[tw`text-slate-500`, { fontFamily: "Poppins-Regular" }]}>{dashboardTranslation[language]["Welcome"]},</Text>
-              <Text style={[tw`text-2xl text-black`, { fontFamily: "Poppins-Bold" }]}>{`${ capitalizeFirstLetter(loggedInUser?.firstname) } ${ capitalizeFirstLetter(loggedInUser?.lastname) }`} </Text>
+            <View style={tw`justify-center`}>
+              <Text style={[tw`text-slate-600`, { fontFamily: "Poppins-Regular" }]}>{dashboardTranslation[language]["Welcome"]},</Text>
+              <Text style={[tw`text-xl text-black`, { fontFamily: "Poppins-Bold" }]}>{`${ capitalizeFirstLetter(loggedInUser?.firstname) } ${ capitalizeFirstLetter(loggedInUser?.lastname) }`} </Text>
             </View>
           </View>
           <TouchableOpacity
+            onPress={() => navigation.navigate("View Profile")}
             style={tw`w-12 h-12`}>
             <View style={tw`w-12 h-12  rounded-lg shadow-2xl shadow-orange-800`}>
               {loggedInUser?.profilepic ? <Image
@@ -231,6 +221,8 @@ const Dashboard = ({ navigation }) =>
           </TouchableOpacity>
         </View>
       </View>
+
+
       <View style={tw`flex-row items-center mb-4 mx-5`}>
         <View
           style={tw`flex-1 bg-[#F2F2F3] rounded-lg h-10 flex-row items-center pr-2`}>
@@ -248,12 +240,11 @@ const Dashboard = ({ navigation }) =>
       </View>
       <View>
         <View style={tw`flex-row justify-between items-center mb-4 mx-5`}>
-          <Text style={[tw`text-black text-xl`, { fontFamily: "Poppins-Bold" }]}>Nearby Jobs</Text>
+          <Text style={[tw`text-black text-xl`, { fontFamily: "Poppins-Bold" }]}>{dashboardTranslation[language]["Nearby Jobs"]}</Text>
           <Text style={[tw`text-center text-sm leading-relaxed text-gray-600`, { fontFamily: "Poppins-Regular" }]}>
-            See all
+            {dashboardTranslation[language]["See all"]}
           </Text>
         </View>
-        {/* <Text style={tw`bg-red-700 text-white`}>{JSON.stringify(nearbyjobs, null, 4)}</Text> */}
         {
           isLoading ?
             <RecommendedJobsFillerComponent isLoading={isLoading} />
@@ -272,9 +263,11 @@ const Dashboard = ({ navigation }) =>
               />}
       </View>
       <View style={tw`flex-row justify-between items-center mt-5 mb-4 mx-5`}>
-        <Text style={[tw`text-black text-xl`, { fontFamily: "Poppins-Bold" }]}>Recomended Jobs</Text>
+        <Text style={[tw`text-black text-xl`, { fontFamily: "Poppins-Bold" }]}>
+          {dashboardTranslation[language]["Recommended Jobs"]}
+        </Text>
         <Text style={[tw`text-center text-sm leading-relaxed text-gray-600`, { fontFamily: "Poppins-Regular" }]}>
-          See all
+          {dashboardTranslation[language]["See all"]}
         </Text>
       </View>
       <View>
@@ -291,36 +284,17 @@ const Dashboard = ({ navigation }) =>
         />
       </View>
       <View style={tw`flex-row justify-between items-center mt-5 mb-4 mx-5`}>
-        <Text style={[tw`text-black text-xl`, { fontFamily: "Poppins-Bold" }]}>Featured Jobs</Text>
+        <Text style={[tw`text-black text-xl`, { fontFamily: "Poppins-Bold" }]}>
+          {dashboardTranslation[language]["Featured Jobs"]}
+        </Text>
         <Text style={[tw`text-center text-sm leading-relaxed text-gray-600`, { fontFamily: "Poppins-Regular" }]}>
-          See all
+          {dashboardTranslation[language]["See all"]}
         </Text>
       </View>
-      <View>
-        {featuredJobs.map((item, index) => (
-          <Pressable key={index} onPress={() => { }}>
-            {({ pressed }) => (
-              <View style={tw`rounded-5 p-2 m-3 mx-5 border border-neutral-200 ${ pressed ? 'bg-gray-100' : 'bg-white' }`}>
-                <View style={tw`flex-row items-center`}>
-                  <View style={tw`flex-1 items-center justify-center`}>
-                    <Image
-                      source={item.image}
-                      style={tw`w-12 h-12 rounded-full`}
-                    />
-                  </View>
-                  <View style={tw`flex-1 items-center justify-center`}>
-                    <Text style={[tw`text-lg`, { fontFamily: "Poppins-SemiBold" }]}>{item.title}</Text>
-                    <Text style={[tw`text-lg`, { fontFamily: "Poppins-Regular" }]}>{item.description}</Text>
-                  </View>
-                  <View style={tw`flex-1 items-center justify-center`}>
-                    <Text style={[tw`text-lg`, { fontFamily: "Poppins-SemiBold" }]}>{item.value}/y</Text>
-                    <Text style={[tw`text-lg`, { fontFamily: "Poppins-Regular" }]}>{item.location}</Text>
-                  </View>
-                </View>
-              </View>)}
-          </Pressable>
-        ))}
-      </View>
+
+      {isLoading ? <LoadingElement /> :
+        <FeaturedJobsElement featuredJobs={featuredJobs} />}
+
     </ScrollView >
   );
 };
@@ -370,6 +344,34 @@ const RecommendedJobsFillerComponent = ({ isLoading }) =>
       <Text style={[tw`text-center text-sm leading-relaxed text-gray-600`, { fontFamily: "Poppins-Regular" }]}>
         {isLoading ? "" : "There are no nearby jobs"}
       </Text>
+    </View>
+  </View>
+}
+
+const FeaturedJobsElement = ({ featuredJobs }) =>
+{
+  return <View style={tw`px-5 mb-14`}>
+    {featuredJobs && featuredJobs.length ? featuredJobs?.map(f => (
+      <Pressable
+        key={f._id}
+        // onPress={() => { }}
+        style={({ pressed }) => tw`my-1 w-full bg-white border border-gray-200 rounded-3 py-3 px-5 ${ pressed ? '' : '' }`}>
+        <Text style={[tw`text-black text-[14px]`, { fontFamily: "Poppins-Regular" }]}>{f.title}</Text>
+      </Pressable>
+    )
+    ) : <Text>There are no featured jobs</Text>
+    }
+  </View>
+}
+
+
+
+const LoadingElement = ({ height, width }) =>
+{
+
+  return <View style={[tw`bg-gray-200 items-center justify-center px-5 h-32 my-4 w-full`]}>
+    <View style={tw``}>
+
     </View>
   </View>
 }
