@@ -24,7 +24,7 @@ const RecommendedJobsElement = ({ language, recommendedJobsData, isLoading, navi
                 </Text>
             </View>
             <View style={tw`px-5 mb-14 w-full`}>
-                <View style={[tw`w-full h-30 bg-gray-200 rounded-3 items-center justify-center`
+                <View style={[tw`w-full h-48 bg-gray-200 rounded-3 items-center justify-center`
                 ]}>
                     <Text style={[tw`text-neutral-700 text-sm`, { fontFamily: "Poppins-Regular" }]}>Fetching jobs...</Text>
                 </View>
@@ -43,7 +43,7 @@ const RecommendedJobsElement = ({ language, recommendedJobsData, isLoading, navi
                 </Text>
             </View>
             <View style={tw`px-5 mb-14 w-full`}>
-                <View style={tw`w-full h-30 bg-gray-200 rounded-3 items-center justify-center`}>
+                <View style={tw`w-full h-48 bg-gray-200 rounded-3 items-center justify-center`}>
                     <Text style={[tw`text-neutral-700 text-sm`, { fontFamily: "Poppins-Regular" }]}>There are no recommended jobs</Text>
                 </View>
             </View>
