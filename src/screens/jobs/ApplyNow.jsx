@@ -51,19 +51,18 @@ const ApplyNow = ({ route, navigation }) =>
         return (
           <View style={tw`p-4`}>
             <Text style={[tw`text-lg`, { fontFamily: "Poppins-SemiBold" }]}>Job Description</Text>
-            {/* <Text style={[tw`text-[12px]`, { fontFamily: "Poppins-Regular" }]}>
+            <Text style={[tw`text-[12px]`, { fontFamily: "Poppins-Regular" }]}>
               {job?.description}
-            </Text> */}
-            {job?.description && <WebView source={{ html: job?.description }} />}
+            </Text>
           </View>
         );
       case 'requirement':
         return (
           <View style={tw`p-4`}>
             <Text style={[tw`text-lg`, { fontFamily: "Poppins-SemiBold" }]}>Job Requirement</Text>
-            {/* <Text style={[tw`text-[12px]`, { fontFamily: "Poppins-Regular" }]}>
+            <Text style={[tw`text-[12px]`, { fontFamily: "Poppins-Regular" }]}>
               {job?.requirements}
-            </Text> */}
+            </Text>
             {job?.requirements && <WebView source={{ html: job?.requirements }} />}
           </View>
         );
@@ -71,10 +70,9 @@ const ApplyNow = ({ route, navigation }) =>
         return (
           <View style={tw`p-4`}>
             <Text style={[tw`text-lg`, { fontFamily: "Poppins-SemiBold" }]}>About the Company</Text>
-            {/* <Text style={[tw`text-[12px]`, { fontFamily: "Poppins-Regular" }]}>
+            <Text style={[tw`text-[12px]`, { fontFamily: "Poppins-Regular" }]}>
               {job?.about}
-            </Text> */}
-            {job?.about && <WebView source={{ html: job?.about }} />}
+            </Text>
 
           </View>
         );
@@ -82,10 +80,9 @@ const ApplyNow = ({ route, navigation }) =>
         return (
           <View style={tw`p-4`}>
             <Text style={[tw`text-lg`, { fontFamily: "Poppins-SemiBold" }]}>Review</Text>
-            {/* <Text style={[tw`text-[12px]`, { fontFamily: "Poppins-Regular" }]}>
+            <Text style={[tw`text-[12px]`, { fontFamily: "Poppins-Regular" }]}>
               {job?.review}
-            </Text> */}
-            {job?.review && <WebView source={{ html: job?.review }} />}
+            </Text>
           </View>
         );
       default:
@@ -140,7 +137,7 @@ const ApplyNow = ({ route, navigation }) =>
           </View>
           <View style={tw`flex-row justify-between items-center my-3`}>
             <View>
-              <Text style={[tw`text-[14px] ${ job?.styles?.color ? `text-[${ job?.styles?.color }]` : 'text-white' }`, { fontFamily: "Poppins-Bold" }]}>{job?.salary ? `₹ ${ new Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format(job?.salary) }/${ job?.salaryduration }` : ''}</Text>
+              <Text style={[tw`text-[14px] ${ job?.styles?.color ? `text-[${ job?.styles?.color }]` : 'text-white' }`, { fontFamily: "Poppins-Bold" }]}>{job?.salary ? `₹ ${ new Intl.NumberFormat('en-IN', { maximumSignificantDigits: 3 }).format(job?.salary) }/${ job?.salarybasis }` : ''}</Text>
             </View>
             <View>
               <Text style={[tw`text-[14px]  ${ job?.styles?.color ? `text-[${ job?.styles?.color }]` : 'text-white' }`, { fontFamily: "Poppins-Bold" }]}>{job?.location?.name}</Text>

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import API from '../../helper/API';
-import { NEARBY_JOBS } from '../../helper/endpoints';
+import { NEARBY_JOBS, JOBS } from '../../helper/endpoints';
 import Toast from 'react-native-toast-message';
 import useLoginStore, { getToken } from './login.store';
 
@@ -90,6 +90,34 @@ const useJobStore = create((set, get) => ({
             Toast.show({
                 type: 'tomatoToast',
                 text1: 'Failed to save data!',
+            });
+            return false;
+        }
+    },
+    postJobs: async (payload) =>
+    {
+        try
+        {
+            const res = await API.post(`${ JOBS }`, payload, {
+                headers: {
+                    Authorization: await getToken(),
+                },
+            });
+
+            if (res?.data)
+            {
+                Toast.show({
+                    type: 'success',
+                    text1: 'Job created successfully!',
+                });
+                return true;
+            }
+        } catch (error)
+        {
+            console.log(JSON.stringify(error, null, 4));
+            Toast.show({
+                type: 'tomatoToast',
+                text1: 'Failed to post a job!',
             });
             return false;
         }
