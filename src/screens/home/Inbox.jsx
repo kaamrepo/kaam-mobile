@@ -112,12 +112,13 @@ const Inbox = () =>
 
     return (
         <SafeAreaView style={tw`flex-1 px-5 bg-white`}>
-            <ScrollView style={[tw`my-5 mt-9`]} contentContainerStyle={{ alignItems: 'center' }}
+            <ScrollView style={[tw`my-5 mt-9`]}
+                contentContainerStyle={{ alignItems: 'flex-start' }}
                 showsVerticalScrollIndicator={false}
             >
 
-                <Text style={[tw`w-full text-black text-[20px]`, { fontFamily: "Poppins-SemiBold" }]}>Be a Job Provider</Text>
-                <Text style={[tw`w-full text-black text-sm my-2`, { fontFamily: "Poppins-Regular" }]}>Fill out the following details to post the job.</Text>
+                <Text style={[tw`w-auto rounded border-b-4 border-black text-black text-[20px]`, { fontFamily: "Poppins-Bold" }]}>Be a Job Provider</Text>
+                <Text style={[tw`w-full text-black text-sm my-2 mt-10`, { fontFamily: "Poppins-Regular" }]}>Fill out the following details to post the job.</Text>
 
                 <View style={tw`w-full`}>
                     <Text style={[tw`text-gray-600 w-full text-[11px] text-left px-2`, { fontFamily: "Poppins-Regular" }]}>position:</Text>
@@ -336,12 +337,14 @@ const Inbox = () =>
                     </View>
                 </View>
 
-                <Pressable
-                    onPress={handleSubmit(createJob)}
-                    style={({ pressed }) => tw`my-3 px-5 py-2 w-1/2 flex-row gap-2 items-baseline justify-center rounded-xl shadow shadow-zinc-800 ${ pressed ? 'bg-black' : 'bg-[#0D0D0D]' }`}>
-                    <Icon type={Icons.Ionicons} name={"briefcase"} size={22} color={"white"} />
-                    <Text style={[tw`text-white text-[20px]`, { fontFamily: "Poppins-SemiBold" }]}>Post a Job</Text>
-                </Pressable>
+                <View style={tw`w-full mt-5 items-center`}>
+                    <Pressable
+                        onPress={handleSubmit(createJob)}
+                        style={({ pressed }) => tw`my-3 px-5 py-2 w-1/2 flex-row gap-2 items-baseline justify-center rounded-xl shadow shadow-zinc-800 ${ pressed ? 'bg-black' : 'bg-[#0D0D0D]' }`}>
+                        <Icon type={Icons.Ionicons} name={"briefcase"} size={22} color={"white"} />
+                        <Text style={[tw`text-white text-[20px]`, { fontFamily: "Poppins-SemiBold" }]}>Post a Job</Text>
+                    </Pressable>
+                </View>
 
             </ScrollView >
         </SafeAreaView >
