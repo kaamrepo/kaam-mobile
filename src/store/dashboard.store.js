@@ -1,8 +1,8 @@
 import { create } from 'zustand';
-import API from '../../helper/API';
-import { NEARBY_JOBS, JOBS } from '../../helper/endpoints';
+import API from '../helper/API';
+import { JOBS, JOBS_APPLICATIONS } from '../helper/endpoints';
 import Toast from 'react-native-toast-message';
-import useLoginStore, { getToken } from './login.store';
+import useLoginStore, { getToken } from './authentication/login.store';
 
 const useJobStore = create((set, get) => ({
     nearbyjobs: {},
@@ -21,7 +21,7 @@ const useJobStore = create((set, get) => ({
                 coordinates,
                 sortDesc: ['createdat'],
             }
-            const res = await API.get(`${ NEARBY_JOBS }/`, {
+            const res = await API.get(`${ JOBS }/`, {
                 headers: { Authorization: await getToken() },
                 params
             });
@@ -46,7 +46,7 @@ const useJobStore = create((set, get) => ({
         try
         {
             let params = {}
-            const res = await API.get(`${ NEARBY_JOBS }/${ id }`, {
+            const res = await API.get(`${ JOBS }/${ id }`, {
                 headers: { Authorization: await getToken() },
                 params
             });
@@ -62,6 +62,35 @@ const useJobStore = create((set, get) => ({
                 type: 'tomatoToast',
                 text1: 'Failed to get a job details!',
             });
+        }
+    },
+    applyForJob: async (payload) =>
+    {
+        try
+        {
+            const res = await API.post(`${ JOBS_APPLICATIONS }`, payload, {
+                headers: {
+                    Authorization: await getToken(),
+                },
+            });
+
+            if (res?.data)
+            {
+                console.log(JSON.stringify(res?.data, null, 4));
+                Toast.show({
+                    type: 'success',
+                    text1: 'Applied successfully!',
+                });
+                return true;
+            }
+        } catch (error)
+        {
+            console.log(JSON.stringify(error, null, 4));
+            Toast.show({
+                type: 'tomatoToast',
+                text1: 'Something went wrong!',
+            });
+            return false;
         }
     },
     updateUserProfileStore: async (userid, data) =>
