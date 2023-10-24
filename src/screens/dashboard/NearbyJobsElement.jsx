@@ -9,12 +9,10 @@ import Carousel from 'react-native-snap-carousel';
 import useLoginStore from '../../store/authentication/login.store';
 import Icon, { Icons } from '../../components/Icons';
 
-const NearbyJobsElement = ({ language, nearbyjobs, navigation, isLoading }) =>
-{
+const NearbyJobsElement = ({ language, nearbyjobs, navigation, isLoading }) => {
     const { loggedInUser } = useLoginStore();
 
-    if (isLoading)
-    {
+    if (isLoading) {
         return (
             <>
                 <View style={tw`flex-row justify-between items-center mb-4 mx-5`}>
@@ -31,8 +29,7 @@ const NearbyJobsElement = ({ language, nearbyjobs, navigation, isLoading }) =>
             </>
         )
     }
-    if (nearbyjobs && nearbyjobs?.total == 0)
-    {
+    if ((nearbyjobs && nearbyjobs?.total == 0) || Object.keys(nearbyjobs)?.length == 0) {
         return (
             <>
                 <View style={tw`flex-row justify-between items-center mb-4 mx-5`}>
@@ -80,13 +77,11 @@ const styles = StyleSheet.create({})
 
 
 
-const renderItemsNearbyJobs = ({ item, index, navigation, isLoading, loggedInUser }) =>
-{
+const renderItemsNearbyJobs = ({ item, index, navigation, isLoading, loggedInUser }) => {
 
     return (
         <TouchableOpacity
-            onPress={() =>
-            {
+            onPress={() => {
                 navigation.navigate('ApplyNow', { id: item._id });
             }}
             key={item._id}
@@ -95,12 +90,11 @@ const renderItemsNearbyJobs = ({ item, index, navigation, isLoading, loggedInUse
             <View style={tw`w-full h-48 justify-between p-5 rounded-3 ${ !isLoading ? `${ item?.styles?.bgcolor ? `bg-[${ item?.styles?.bgcolor }]` : 'bg-white' }` : `bg-slate-200` }`}>
                 <View style={tw`w-full flex-row items-center gap-4`}>
                     {isLoading ? <View style={tw`h-13 w-13 rounded-xl bg-slate-300/40`}></View> :
-                        <Image
-                            source={{ uri: item?.employerDetails?.profilepic ? item?.employerDetails?.profilepic : loggedInUser?.profilepic }}
+                        item?.employerDetails?.profilepic ? <Image
+                            source={{ uri: item?.employerDetails?.profilepic }}
                             style={tw`h-13 w-13 rounded-xl`}
                             resizeMode="contain"
-                        />
-                        // <View style={tw`h-13 w-13 rounded-xl bg-slate-300/40`}></View>
+                        /> : <View style={tw`h-13 w-13 rounded-xl bg-slate-300/40`}></View>
                     }
                     <Text style={[tw`${ item?.styles?.color ? `text-[${ item?.styles?.color }]` : 'text-white' } text-[18px] ${ !isLoading ? `` : `bg-slate-300/40 rounded-full w-[70%] py-2` }`, { fontFamily: "Poppins-Bold" }]}>{item.position}</Text>
                 </View>
