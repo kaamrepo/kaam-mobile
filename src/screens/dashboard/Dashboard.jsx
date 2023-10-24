@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import
 {
   View,
@@ -7,13 +7,11 @@ import
   TouchableOpacity,
   TextInput,
   Text,
-  Dimensions,
   Pressable,
   RefreshControl,
 
 } from 'react-native';
 
-import Carousel from 'react-native-snap-carousel';
 import tw from 'twrnc';
 import Icon from 'react-native-vector-icons/Feather';
 import Image1 from '../../assets/images/browse-jobs.png';
@@ -24,7 +22,7 @@ import FilterIconSVG from "../../assets/svgs/FilterIcon.svg"
 import useLoginStore from '../../store/authentication/login.store';
 import capitalizeFirstLetter from '../../helper/utils/capitalizeFirstLetter';
 import GeneralStatusBar from '../../components/GeneralStatusBar';
-import useJobStore from '../../store/authentication/dashboard.store';
+import useJobStore from '../../store/dashboard.store';
 import useLoaderStore from '../../store/loader.store';
 import { requestLocationPermission } from '../../helper/utils/getGeoLocation';
 import Geolocation from 'react-native-geolocation-service';
@@ -32,6 +30,7 @@ import { dashboardTranslation } from './dashboardTranslation';
 import FeaturedJobsElement from './FeaturedJobsElement';
 import RecommendedJobsElement from './RecommendedJobsElement';
 import NearbyJobsElement from './NearbyJobsElement';
+import { useFocusEffect } from '@react-navigation/native';
 
 const Dashboard = ({ navigation }) =>
 {
@@ -40,37 +39,6 @@ const Dashboard = ({ navigation }) =>
   const { nearbyjobs, getNearByJobs } = useJobStore();
   const { isLoading } = useLoaderStore();
   const [location, setLocation] = useState(false);
-
-
-  useEffect(() =>
-  {
-    const result = requestLocationPermission();
-    result.then(res =>
-    {
-      if (res)
-      {
-        Geolocation.getCurrentPosition(
-          position =>
-          {
-            setLocation(position)
-          },
-          error =>
-          {
-            console.log(error.code, error.message);
-          },
-          { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
-        );
-      }
-    });
-  }, [])
-
-  useEffect(() =>
-  {
-    if (location)
-    {
-      getNearByJobs(0, 5, [location?.coords?.longitude, location?.coords?.latitude]);
-    }
-  }, [location])
 
   const onRefresh = React.useCallback(() =>
   {
@@ -81,6 +49,40 @@ const Dashboard = ({ navigation }) =>
     }
     setRefreshing(false);
   }, [location]);
+
+
+  useFocusEffect(
+    useCallback(() =>
+    {
+      const result = requestLocationPermission();
+      result.then(res =>
+      {
+        if (res)
+        {
+          Geolocation.getCurrentPosition(
+            position =>
+            {
+              setLocation(position)
+            },
+            error =>
+            {
+              console.log(error.code, error.message);
+            },
+            { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
+          );
+        }
+      });
+    }, [])
+  );
+  useFocusEffect(
+    useCallback(() =>
+    {
+      if (location)
+      {
+        getNearByJobs(0, 5, [location?.coords?.longitude, location?.coords?.latitude]);
+      }
+    }, [location])
+  )
 
   const featuredJobs = {
     total: 3,

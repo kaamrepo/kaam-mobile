@@ -10,7 +10,7 @@ import Icon, { Icons } from '../../components/Icons';
 
 import WhiteTickSMSVG from "../../assets/svgs/WhiteTickSM.svg"
 import useLoginStore from '../../store/authentication/login.store';
-import useJobStore from '../../store/authentication/dashboard.store';
+import useJobStore from '../../store/dashboard.store';
 
 const colors = [
     "#ffffff",
