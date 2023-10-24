@@ -5,11 +5,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import tw from 'twrnc';
-import Languages from '../../components/Languages.json';
 import GeneralStatusBar from '../../components/GeneralStatusBar';
 import { CountryPicker } from "react-native-country-codes-picker";
+import { RegistrationTranslation } from './loginTranslation';
 import useRegistrationStore from '../../store/authentication/registration.store';
-
+import useLoginStore from '../../store/authentication/login.store';
 const validationSchema = yup.object().shape({
   firstname: yup.string().required('First Name is required').trim(),
   lastname: yup.string().required('Last Name is required').trim(),
@@ -27,7 +27,7 @@ const RegisterScreen = ({ navigation }) =>
     resolver: yupResolver(validationSchema),
     mode: 'onChange'
   });
-
+  const { loggedInUser, language } = useLoginStore();
   const [show, setShow] = useState(false);
   const [countryCode, setCountryCode] = useState({ "dialcode": "+91", "flag": "🇮🇳" });
   const { registerUser } = useRegistrationStore()
@@ -85,21 +85,21 @@ const RegisterScreen = ({ navigation }) =>
       <View style={styles.container}>
         <View style={styles.topPanel}>
           <Text style={[{ fontFamily: "Poppins-Bold", textAlignVertical: 'center' }, tw`text-black text-3xl`]}>
-            {Languages.appTitle}
+            {RegistrationTranslation[language]["Kaam"]}
           </Text>
           <View style={tw`border-black border-[3px] w-[10%] bg-black ml-[2%]`} />
         </View>
         <ScrollView contentContainerStyle={styles.contentContainer}>
           <View style={styles.formContainer}>
-            <Text style={[{ fontFamily: "Poppins-SemiBold" }, tw`text-black text-2xl mb-2`]}>Registration 👍</Text>
-            <Text style={[{ fontFamily: "Poppins-Regular" }, tw`text-black text-sm font-normal text-gray-400 ml-[2px] mb-6`]}>Let’s Register. Apply to jobs!</Text>
+            <Text style={[{ fontFamily: "Poppins-SemiBold" }, tw`text-black text-2xl mb-2`]}>{RegistrationTranslation[language]["Registration"]} 👍</Text>
+            <Text style={[{ fontFamily: "Poppins-Regular" }, tw`text-black text-sm font-normal text-gray-400 ml-[2px] mb-6`]}>{RegistrationTranslation[language]["Let’s Register. Apply to jobs!"]} </Text>
 
             <View style={tw`flex-row justify-between`}>
               <View style={tw`mb-2 w-[49%]`}>
                 <View style={tw`${ errors && errors.firstname ? "border border-red-500" : "border border-slate-500" } rounded-xl flex w-[100%]`}>
                   <Controller
                     control={control}
-                    name='firstname'
+                    name={`${RegistrationTranslation[language]["First Name"]}`}
                     render={({ field: { onChange, onBlur, value } }) => (
                       <TextInput
                         value={value}
@@ -107,7 +107,7 @@ const RegisterScreen = ({ navigation }) =>
                         onBlur={onBlur}
                         keyboardType='ascii-capable'
                         style={[{ fontFamily: "Poppins-Regular" }, tw`w-full text-sm font-medium text-black px-4`]}
-                        placeholder='First Name'
+                        placeholder={`${RegistrationTranslation[language]["First Name"]}`}
                         placeholderTextColor='gray'
                       />
                     )}
@@ -121,7 +121,7 @@ const RegisterScreen = ({ navigation }) =>
                 <View style={tw`${ errors && errors.lastname ? "border border-red-500" : "border border-slate-500" } rounded-xl flex w-[100%]`}>
                   <Controller
                     control={control}
-                    name='lastname'
+                    name={`${RegistrationTranslation[language]["Last Name"]}`}
                     render={({ field: { onChange, onBlur, value } }) => (
                       <TextInput
                         value={value}
@@ -129,7 +129,7 @@ const RegisterScreen = ({ navigation }) =>
                         onBlur={onBlur}
                         keyboardType='ascii-capable'
                         style={[{ fontFamily: "Poppins-Regular" }, tw`w-full text-sm font-medium text-black px-4`]}
-                        placeholder='Last Name'
+                        placeholder={`${RegistrationTranslation[language]["Last Name"]}`}
                         placeholderTextColor='gray'
                       />
                     )}
@@ -148,7 +148,7 @@ const RegisterScreen = ({ navigation }) =>
                 </View>
                 <Controller
                   control={control}
-                  name='email'
+                  name={`${RegistrationTranslation[language]["Email"]}`}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <TextInput
                       value={value}
@@ -156,7 +156,7 @@ const RegisterScreen = ({ navigation }) =>
                       onBlur={onBlur}
                       keyboardType='email-address'
                       style={[{ fontFamily: "Poppins-Regular" }, tw`w-[80%] text-sm font-medium text-black`]}
-                      placeholder='E-mail'
+                      placeholder={`${RegistrationTranslation[language]["Email"]}`}
                       placeholderTextColor='gray'
                     />
                   )}
@@ -203,7 +203,7 @@ const RegisterScreen = ({ navigation }) =>
                   </View>
                   <Controller
                     control={control}
-                    name='phone'
+                    name={`${RegistrationTranslation[language]["Phone Number"]}`}
                     render={({ field: { onChange, onBlur, value } }) => (
                       <TextInput
                         value={value}
@@ -211,7 +211,7 @@ const RegisterScreen = ({ navigation }) =>
                         onBlur={onBlur}
                         keyboardType='phone-pad'
                         style={[{ fontFamily: "Poppins-Regular" }, tw`w-[80%] text-sm font-medium text-black`]}
-                        placeholder='Phone Number'
+                        placeholder={`${RegistrationTranslation[language]["Phone Number"]}`}
                         placeholderTextColor='gray'
                       />
                     )}
@@ -231,14 +231,14 @@ const RegisterScreen = ({ navigation }) =>
                 tw`w-full h-13 items-center justify-center rounded-xl`
               ]}
             >
-              <Text style={{ color: "white", fontFamily: "Poppins-Regular" }}>GET OTP</Text>
+              <Text style={{ color: "white", fontFamily: "Poppins-Regular" }}>{`${RegistrationTranslation[language]["GET OTP"]}`}</Text>
             </Pressable>
           </View>
         </ScrollView>
         <View style={styles.bottomPanel}>
-          <Text style={tw`text-gray-500`}>Have an account?</Text>
+          <Text style={tw`text-gray-500`}>{`${RegistrationTranslation[language]["Have an account?"]}`}</Text>
           <Pressable onPress={() => navigation.navigate('Login')}>
-            <Text style={tw`text-[#4A9D58] font-medium`}>Log in.</Text>
+            <Text style={tw`text-[#4A9D58] font-medium`}>{`${RegistrationTranslation[language]["Log in"]}`}</Text>
           </Pressable>
         </View>
       </View >
