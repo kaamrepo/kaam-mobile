@@ -1,10 +1,10 @@
 {
   "languages": [
     {"lang": "मराठी"},
+    {"lang": "हिंदी"},
+    {"lang": "English"},
     {"lang": "ગુજરાતી"},
     {"lang": "தமிழ்"},
-    {"lang": "English"},
-    {"lang": "हिंदी"},
     {"lang": "اردو"}
   ],
   "appTitle": "Kaam"

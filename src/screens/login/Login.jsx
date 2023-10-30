@@ -8,7 +8,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import useLoginStore from '../../store/authentication/login.store';
-
+import { RegistrationTranslation } from './loginTranslation';
 const schema = yup.object({
   phone: yup.string().required("Phone Number is required!")
     .min(10, 'Phone number must be of 10 characters.')
@@ -22,7 +22,7 @@ const Login = ({ navigation }) =>
     mode: 'onChange'
   });
   const [countryCode, setCountryCode] = useState({ "dialcode": "+91", "flag": "🇮🇳" });
-  const { getOTP } = useLoginStore();
+  const { getOTP,language } = useLoginStore();
   const [isFormButtonDisabled, setFormButtonDisabled] = useState(false)
   const [show, setShow] = useState(false);
 
@@ -50,13 +50,13 @@ const Login = ({ navigation }) =>
             fontSize: 32,
             color: "black",
             fontFamily: 'Poppins-Bold'
-          }}>Kaam</Text>
+          }}>{RegistrationTranslation[language]["Kaam"]}</Text>
           <View style={tw`w-[12%] bg-black h-[5px] ml-2 -mt-2 rounded-[1px]`}></View>
         </View>
         <View style={[styles.maincontainer, tw`justify-around items-center`]}>
           <View style={tw`w-full`}>
-            <Text style={[{ fontFamily: "Poppins-SemiBold" }, tw`text-black text-[26px]`]}>Welcome Back 👋</Text>
-            <Text style={[{ fontFamily: "Poppins-SemiBold" }, tw`text-sm text-slate-500`]}>Let's log in. Apply to jobs!</Text>
+            <Text style={[{ fontFamily: "Poppins-SemiBold" }, tw`text-black text-[26px]`]}>{RegistrationTranslation[language]["Welcome Back"]} 👋</Text>
+            <Text style={[{ fontFamily: "Poppins-SemiBold" }, tw`text-sm text-slate-500`]}>{RegistrationTranslation[language]["Let's log in. Apply to jobs!"]}fdd</Text>
           </View>
 
           <View style={tw`w-full -mt-20`}>
@@ -102,7 +102,7 @@ const Login = ({ navigation }) =>
                         onBlur={onBlur}
                         keyboardType='phone-pad'
                         style={[{ fontFamily: "Poppins-Regular" }, tw` w-[80%] text-sm font-medium text-black`]}
-                        placeholder='Phone Number'
+                        placeholder={RegistrationTranslation[language]["Phone Number"]}
                         placeholderTextColor={"gray"}
                       />
                     )
@@ -124,16 +124,16 @@ const Login = ({ navigation }) =>
                 tw`w-full h-13 items-center justify-center rounded-xl`
               ]}
             >
-              <Text style={[{ fontFamily: "Poppins-SemiBold" }, tw`uppercase text-white`]}>get otp</Text>
+              <Text style={[{ fontFamily: "Poppins-SemiBold" }, tw`uppercase text-white`]}>{RegistrationTranslation[language]["GET OTP"]}</Text>
             </Pressable>
           </View>
           <View style={tw`flex flex-row gap-2`}>
-            <Text style={tw`text-slate-600 font-normal`}>Don't have an Account?</Text>
+            <Text style={tw`text-slate-600 font-normal`}>{RegistrationTranslation[language]["Don't have an Account?"]} </Text>
             <Pressable onPress={() =>
             {
               navigation.navigate("registerScreen")
             }}>
-              <Text style={tw`text-[#4A9D58] font-medium`}>Register.</Text>
+              <Text style={tw`text-[#4A9D58] font-medium`}>{RegistrationTranslation[language]["Register"]}.</Text>
             </Pressable>
           </View>
         </View>
