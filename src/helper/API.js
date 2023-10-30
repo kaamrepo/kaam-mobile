@@ -1,10 +1,11 @@
 import axios from "axios";
 import useLoaderStore from "../store/loader.store";
-
+import { getTimeZone } from "react-native-localize";
 
 const API = axios.create({
     headers: {
         "Content-Type": "application/json",
+        timezone: getTimeZone()
     },
 })
 

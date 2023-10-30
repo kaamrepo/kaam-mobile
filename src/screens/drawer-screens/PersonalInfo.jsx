@@ -45,8 +45,7 @@ const panSchema = yup.object({
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const PersonalInfo = ({ navigation }) =>
-{
+const PersonalInfo = ({ navigation }) => {
 
     // store imports
     const { loggedInUser } = useLoginStore();
@@ -65,14 +64,12 @@ const PersonalInfo = ({ navigation }) =>
     const bottomSheetAadharVerificationRef = useRef(null);
     const bottomSheetPANVerificationRef = useRef(null);
 
-    const { control: detailsControl, getValues: getDetailsValues, setValue: setDetailsValue, handleSubmit: handleDetailsSubmit, formState: { errors: detailsError } } = useForm({
+    const { control: detailsControl, watch, setValue: setDetailsValue, handleSubmit: handleDetailsSubmit, formState: { errors: detailsError } } = useForm({
         resolver: yupResolver(detailsSchema),
-        mode: 'onChange',
-        defaultValues: {
-            "dateofbirth": loggedInUser.dateofbirth ?? new Date()
-        }
+        mode: 'onChange'
     });
 
+    const userDateOfBirth = watch("dateofbirth")
     const { control: addressControl, getValues: getAddressValues, setValue: setAddressValue, handleSubmit: handleAddressSubmit, formState: { errors: addressError } } = useForm({
         resolver: yupResolver(addressSchema),
         mode: 'onChange',
@@ -103,11 +100,9 @@ const PersonalInfo = ({ navigation }) =>
     });
 
     const [cities, setCities] = useState([]);
-    const [open, setOpen] = useState(false);
     const [selectedCity, setSelectedCity] = useState("");
 
-    useEffect(() =>
-    {
+    useEffect(() => {
         if (loggedInUser?.phone) setDetailsValue("phone", loggedInUser?.phone)
         if (loggedInUser?.email) setDetailsValue("email", loggedInUser?.email)
         if (loggedInUser?.dateofbirth) setDetailsValue("dateofbirth", loggedInUser?.dateofbirth)
@@ -124,67 +119,52 @@ const PersonalInfo = ({ navigation }) =>
         []
     );
 
-    const updateAboutMe = async () =>
-    {
-        if (aboutMeText && aboutMeText.length)
-        {
+    const updateAboutMe = async () => {
+        if (aboutMeText && aboutMeText.length) {
             const success = await updateAboutMeStore(loggedInUser?._id, { aboutme: aboutMeText })
-            if (success)
-            {
+            if (success) {
                 bottomSheetAboutMeRef.current.close()
             }
         }
     }
-    const updateDetails = async (data) =>
-    {
+    const updateDetails = async (data) => {
         const success = await updateDetailsStore(loggedInUser?._id, data)
-        if (success)
-        {
+        if (success) {
             bottomSheetDetailsRef.current.close()
         }
 
     }
-    const updateAddress = async (data) =>
-    {
+    const updateAddress = async (data) => {
         const success = await updateAddressStore(loggedInUser?._id, data)
-        if (success)
-        {
+        if (success) {
             bottomSheetAddressRef.current.close()
         }
     }
-    const updateAadharInfo = async (data) =>
-    {
+    const updateAadharInfo = async (data) => {
         const success = await updateAadharInfoStore(loggedInUser?._id, data)
-        if (success)
-        {
+        if (success) {
             bottomSheetAadharVerificationRef.current.close()
         }
     }
-    const updatePANInfo = async (data) =>
-    {
+    const updatePANInfo = async (data) => {
         const success = await updatePANInfoStore(loggedInUser?._id, data)
-        if (success)
-        {
+        if (success) {
             bottomSheetPANVerificationRef.current.close()
         }
     }
 
 
-    const getAddressDateByZIPCode = async (text) =>
-    {
-        try
-        {
+    const getAddressDateByZIPCode = async (text) => {
+        try {
 
             const res = await API.get(`https://api.postalpincode.in/pincode/${ text }`);
-            if (res.data[0].Status === "Success")
-            {
+            if (res.data[0].Status === "Success") {
                 setAddressValue("district", res.data[0]?.PostOffice[0]?.District)
                 setAddressValue("state", res.data[0]?.PostOffice[0]?.State)
                 setAddressValue("country", res.data[0]?.PostOffice[0]?.Country)
 
                 let placeSet = new Set()
-                res.data[0]?.PostOffice.forEach(p =>
-                {
+                res.data[0]?.PostOffice.forEach(p => {
                     placeSet.add(p?.Block)
                     placeSet.add(p?.Division)
                 })
@@ -192,16 +172,14 @@ const PersonalInfo = ({ navigation }) =>
                 setCities(Array.from(placeSet).map((d, i) => ({ label: d, value: d })))
 
             }
-            if (res.data[0].Status === "Error")
-            {
+            if (res.data[0].Status === "Error") {
                 Toast.show({
                     type: 'tomatoToast',
                     text1: "Invalid ZIP Code.",
                 });
             }
 
-        } catch (error)
-        {
+        } catch (error) {
 
             Toast.show({
                 type: 'tomatoToast',
@@ -210,10 +188,8 @@ const PersonalInfo = ({ navigation }) =>
         }
     }
 
-    useEffect(() =>
-    {
-        if (loggedInUser?.address?.city)
-        {
+    useEffect(() => {
+        if (loggedInUser?.address?.city) {
             getAddressDateByZIPCode(loggedInUser?.address?.pincode)
             setSelectedCity(loggedInUser?.address?.city)
         }
@@ -224,7 +200,6 @@ const PersonalInfo = ({ navigation }) =>
         "E-mail": loggedInUser?.email ?? "",
         "DOB": loggedInUser?.dateofbirth ? dayjs(loggedInUser?.dateofbirth).format("DD MMM YYYY") : ""
     }
-
     const address = {
         "Address": loggedInUser?.address?.addressline,
         "Pin Code": loggedInUser?.address?.pincode,
@@ -237,8 +212,7 @@ const PersonalInfo = ({ navigation }) =>
     return (
         <SafeAreaView style={tw`flex-1 p-4 px-5 bg-[#FAFAFD]`}>
             <View>
-                <Pressable style={({ pressed }) => tw`h-10 w-10 items-center justify-center rounded-full ${ pressed ? 'bg-gray-200' : '' } `} onPress={() =>
-                {
+                <Pressable style={({ pressed }) => tw`h-10 w-10 items-center justify-center rounded-full ${ pressed ? 'bg-gray-200' : '' } `} onPress={() => {
                     navigation.goBack();
                     navigation.openDrawer();
                 }}>
@@ -292,8 +266,7 @@ const PersonalInfo = ({ navigation }) =>
 
                             <Text style={[tw`text-[#0D0D26]/50`, { fontFamily: "Poppins-SemiBold" }]}>{loggedInUser?.aboutme ?? "Type here..."}</Text>
 
-                            <Icon type={Icons.MaterialCommunityIcons} style={tw`pl-2`} name={"pencil"} size={20} color={"black"} onPress={() =>
-                            {
+                            <Icon type={Icons.MaterialCommunityIcons} style={tw`pl-2`} name={"pencil"} size={20} color={"black"} onPress={() => {
                                 bottomSheetAboutMeRef.current.snapToIndex(0)
                             }} />
                         </View>
@@ -312,8 +285,7 @@ const PersonalInfo = ({ navigation }) =>
 
                             <Text style={[tw`text-[#0D0D26]/50`, { fontFamily: "Poppins-SemiBold" }]}>Aadhar Verification</Text>
 
-                            <Icon type={Icons.MaterialCommunityIcons} style={tw`pl-2`} name={"pencil"} size={20} color={"black"} onPress={() =>
-                            {
+                            <Icon type={Icons.MaterialCommunityIcons} style={tw`pl-2`} name={"pencil"} size={20} color={"black"} onPress={() => {
                                 bottomSheetAadharVerificationRef.current.snapToIndex(0)
                             }} />
                         </View>
@@ -321,8 +293,7 @@ const PersonalInfo = ({ navigation }) =>
 
                             <Text style={[tw`text-[#0D0D26]/50`, { fontFamily: "Poppins-SemiBold" }]}>PAN Verification</Text>
 
-                            <Icon type={Icons.MaterialCommunityIcons} style={tw`pl-2`} name={"pencil"} size={20} color={"black"} onPress={() =>
-                            {
+                            <Icon type={Icons.MaterialCommunityIcons} style={tw`pl-2`} name={"pencil"} size={20} color={"black"} onPress={() => {
                                 bottomSheetPANVerificationRef.current.snapToIndex(0)
                             }} />
                         </View>
@@ -392,24 +363,29 @@ const PersonalInfo = ({ navigation }) =>
                     <Text style={[tw`text-gray-600 w-full text-[11px] text-left px-2`, { fontFamily: "Poppins-Regular" }]}>Date of Brith:</Text>
 
 
-                    <Text style={[{ fontFamily: "Poppins-Regular" }, tw`text-black px-4 py-[15px] border-[1px] bg-slate-100/40 border-slate-300 w-full rounded-lg`]}
+                    {userDateOfBirth ? <Text style={[{ fontFamily: "Poppins-Regular" }, tw`text-black px-4 py-[15px] border-[1px] bg-slate-100/40 border-slate-300 w-full rounded-lg`]}
                         onPress={() => setDatePickerVisibility(true)}
                     >
-                        {dayjs(getDetailsValues("dateofbirth")).format("DD MMM YYYY") ?? "Date of Brith:"}
-                    </Text>
+                        {dayjs(userDateOfBirth).format("DD MMM YYYY")}
+                    </Text> :
+                        <Text style={[{ fontFamily: "Poppins-Regular" }, tw`text-gray-500 px-4 py-[15px] border-[1px] bg-slate-100/40 border-slate-300 w-full rounded-lg`]}
+                            onPress={() => setDatePickerVisibility(true)}
+                        >
+                            {JSON.stringify(userDateOfBirth)}
+                            Date of Birth.
+                        </Text>}
 
                     <DateTimePickerModal
                         isVisible={isDatePickerVisible}
                         mode="date"
-                        onConfirm={(date) =>
-                        {
+                        date={undefined}
+                        onConfirm={(date) => {
+
                             setDetailsValue("dateofbirth", date);
                             setDatePickerVisibility(false)
                         }}
                         onCancel={() => setDatePickerVisibility(false)}
                     />
-
-                    {/* getDetailsValues("dateofbirth") */}
 
                     <Text style={[tw`text-red-600 w-full text-[10px] text-right px-2 py-1`, { fontFamily: "Poppins-Regular" }]}> {detailsError?.dateofbirth?.message}</Text>
 
@@ -469,11 +445,9 @@ const PersonalInfo = ({ navigation }) =>
                                 multiline={true}
                                 value={value}
                                 onChangeText={onChange}
-                                onChange={(e) =>
-                                {
+                                onChange={(e) => {
                                     const { text } = e.nativeEvent;
-                                    if (text && text.length >= 6)
-                                    {
+                                    if (text && text.length >= 6) {
                                         getAddressDateByZIPCode(text)
                                     }
                                 }}
@@ -506,8 +480,7 @@ const PersonalInfo = ({ navigation }) =>
                                 containerStyle={[tw`bg-white rounded-lg w-[${ windowWidth * 0.60 }px]`]}
                                 itemContainerStyle={[tw`rounded-lg`]}
                                 itemTextStyle={tw`text-black`}
-                                onChange={item =>
-                                {
+                                onChange={item => {
                                     setAddressValue("city", item.value)
                                     setSelectedCity(item.value)
                                 }}

@@ -16,13 +16,18 @@ const jobDescription = {
 
 const ApplyNow = ({ route, navigation }) => {
 
-  const { getNearByJobById, job, clearJob, appliedJob, applyForJob, getJobApplicationByParams } = useJobStore();
+  const { getNearByJobById, job, clearJob, appliedJob, applyForJob, getJobApplicationByParams, getAppliedJobDetailsById } = useJobStore();
   const { loggedInUser } = useLoginStore()
   const { isLoading } = useLoaderStore();
 
-  const handleAppliedJob = () => {
-    applyForJob({ jobid: job?._id, employerid: job?.createdby });
-    navigation.navigate('Chat');
+  const handleAppliedJob = async () => {
+    const res = await applyForJob({ jobid: job?._id, employerid: job?.createdby });
+    if (res) { //  this will return the job application id if available or return false;
+      const success = await getAppliedJobDetailsById(res)
+      if (success) { // if above call success then it will return true else false;
+        navigation.navigate('Chat', { appliedJobId: appliedJob?._id, chatid: appliedJob?.chatid });
+      }
+    }
   }
   const [activeTab, setActiveTab] = useState('description');
 
@@ -218,7 +223,7 @@ const ApplyNow = ({ route, navigation }) => {
             </View>
             <View style={tw`flex`}>{renderTabContent(activeTab, job)}</View>
           </View>
-          {!isLoading ? appliedJob ? (
+          {!isLoading ? appliedJob && Object.keys(appliedJob)?.length ? (
             <Pressable
               onPress={() => {
                 handleChatNavigation(appliedJob)

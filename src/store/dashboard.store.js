@@ -66,12 +66,12 @@ const useJobStore = create((set, get) => ({
             });
 
             if (res?.data) {
-                console.log(JSON.stringify(res?.data, null, 4));
+                // console.log(JSON.stringify(res?.data, null, 4));
                 Toast.show({
                     type: 'success',
                     text1: 'Applied successfully!',
                 });
-                return true;
+                return res?.data?._id;
             }
         } catch (error) {
             console.log(JSON.stringify(error, null, 4));
@@ -152,6 +152,21 @@ const useJobStore = create((set, get) => ({
             //     type: 'tomatoToast',
             //     text1: 'Failed to get a job details!',
             // });
+        }
+    },
+    getAppliedJobDetailsById: async (id) => {
+        try {
+            const res = await API.get(`${ JOBS_APPLICATIONS }/${ id }`, {
+                headers: { Authorization: await getToken() },
+            });
+
+            if (res && res.data) {
+                set({ appliedJob: res.data })
+                return true
+            }
+        } catch (error) {
+            console.log("🍿🍿", JSON.stringify(error, null, 5))
+            return false
         }
     }
 }));

@@ -3,18 +3,16 @@ import API from '../../helper/API';
 import { USER } from '../../helper/endpoints';
 import Toast from 'react-native-toast-message';
 import useLoginStore, { getToken, retrieveUserSession } from './login.store';
+// import { getTimeZone } from "react-native-localize";
 
 const useUsersStore = create((set, get) => ({
-  updateAboutMeStore: async (userid, data) =>
-  {
-    try
-    {
+  updateAboutMeStore: async (userid, data) => {
+    try {
       const res = await API.patch(`${ USER }/${ userid }`, data, {
         headers: { Authorization: await getToken() },
       });
 
-      if (res && res.data)
-      {
+      if (res && res.data) {
         useLoginStore.getState().setloggedInUser(res.data);
         Toast.show({
           type: 'success',
@@ -22,8 +20,7 @@ const useUsersStore = create((set, get) => ({
         });
         return true;
       }
-    } catch (error)
-    {
+    } catch (error) {
       Toast.show({
         type: 'tomatoToast',
         text1: 'Failed to save data!',
@@ -31,20 +28,20 @@ const useUsersStore = create((set, get) => ({
       return false;
     }
   },
-  updateDetailsStore: async (userid, data) =>
-  {
-    try
-    {
+  updateDetailsStore: async (userid, data) => {
+    try {
       data = {
         ...data,
-        dateofbirth: data.dateofbirth.split("T")[0],
+        dateofbirth: new Date(data.dateofbirth).toISOString(),
       };
+
       const res = await API.patch(`${ USER }/${ userid }`, data, {
-        headers: { Authorization: await getToken() },
+        headers: {
+          Authorization: await getToken()
+        },
       });
 
-      if (res && res.data)
-      {
+      if (res && res.data) {
         useLoginStore.getState().setloggedInUser(res.data);
         Toast.show({
           type: 'success',
@@ -52,8 +49,8 @@ const useUsersStore = create((set, get) => ({
         });
         return true;
       }
-    } catch (error)
-    {
+    } catch (error) {
+      console.log("🍿🍿🍿", error)
       Toast.show({
         type: 'tomatoToast',
         text1: 'Failed to save data!',
@@ -61,18 +58,15 @@ const useUsersStore = create((set, get) => ({
       return false;
     }
   },
-  updateAddressStore: async (userid, data) =>
-  {
-    try
-    {
+  updateAddressStore: async (userid, data) => {
+    try {
       const res = await API.patch(
         `${ USER }/${ userid }`,
         { address: data },
         { headers: { Authorization: await getToken() } },
       );
 
-      if (res && res.data)
-      {
+      if (res && res.data) {
         useLoginStore.getState().setloggedInUser(res.data);
         Toast.show({
           type: 'success',
@@ -80,8 +74,7 @@ const useUsersStore = create((set, get) => ({
         });
         return true;
       }
-    } catch (error)
-    {
+    } catch (error) {
       Toast.show({
         type: 'tomatoToast',
         text1: 'Failed to save data!',
@@ -89,16 +82,13 @@ const useUsersStore = create((set, get) => ({
       return false;
     }
   },
-  updateAadharInfoStore: async (userid, data) =>
-  {
-    try
-    {
+  updateAadharInfoStore: async (userid, data) => {
+    try {
       const res = await API.patch(`${ USER }/${ userid }`, data, {
         headers: { Authorization: await getToken() },
       });
 
-      if (res && res.data)
-      {
+      if (res && res.data) {
         useLoginStore.getState().setloggedInUser(res.data);
         Toast.show({
           type: 'success',
@@ -106,8 +96,7 @@ const useUsersStore = create((set, get) => ({
         });
         return true;
       }
-    } catch (error)
-    {
+    } catch (error) {
       Toast.show({
         type: 'tomatoToast',
         text1: 'Failed to save data!',
@@ -115,16 +104,13 @@ const useUsersStore = create((set, get) => ({
       return false;
     }
   },
-  updatePANInfoStore: async (userid, data) =>
-  {
-    try
-    {
+  updatePANInfoStore: async (userid, data) => {
+    try {
       const res = await API.patch(`${ USER }/${ userid }`, data, {
         headers: { Authorization: await getToken() },
       });
 
-      if (res?.data)
-      {
+      if (res?.data) {
         useLoginStore.getState().setloggedInUser(res.data);
         Toast.show({
           type: 'success',
@@ -132,8 +118,7 @@ const useUsersStore = create((set, get) => ({
         });
         return true;
       }
-    } catch (error)
-    {
+    } catch (error) {
       Toast.show({
         type: 'tomatoToast',
         text1: 'Failed to save data!',
@@ -141,10 +126,8 @@ const useUsersStore = create((set, get) => ({
       return false;
     }
   },
-  updateUserProfileStore: async (userid, data) =>
-  {
-    try
-    {
+  updateUserProfileStore: async (userid, data) => {
+    try {
       const res = await API.patch(`${ USER }/${ userid }`, data, {
         headers: {
           Authorization: await getToken(),
@@ -152,8 +135,7 @@ const useUsersStore = create((set, get) => ({
         },
       });
 
-      if (res?.data)
-      {
+      if (res?.data) {
         useLoginStore.getState().setloggedInUser(res.data);
         Toast.show({
           type: 'success',
@@ -161,8 +143,7 @@ const useUsersStore = create((set, get) => ({
         });
         return true;
       }
-    } catch (error)
-    {
+    } catch (error) {
       console.log(JSON.stringify(error, null, 4));
       Toast.show({
         type: 'tomatoToast',

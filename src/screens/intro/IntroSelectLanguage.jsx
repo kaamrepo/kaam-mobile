@@ -66,7 +66,6 @@ const IntroSelectLanguage = ({ navigation }) =>
                 onPress={() =>
                 {
                   navigation.replace('IntroJobSearch');
-                  console.log("selected Language ========>", selectedOption);
                   selectLanguage(selectedOption)
                 }}
                 style={({ pressed }) => [
