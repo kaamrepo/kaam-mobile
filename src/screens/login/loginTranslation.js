@@ -42,7 +42,7 @@ export const RegistrationTranslation = {
     'Have an account?': 'Have an account?',
     'Log in': 'Log in',
     'First Name': 'First Name',
-    'Last Name': 'First Name',
+    'Last Name': 'Last Name',
     Email: 'Email',
     'Phone Number': 'Phone Number',
     'GET OTP': 'GET OTP',
