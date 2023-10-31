@@ -147,33 +147,35 @@ const Chat = ({route, navigation}) => {
       <View style={tw`flex-1 px-4 py-1`}>
         {/* Chat messages */}
         <FlatList
-          data={[
-            // ...chat?.messages,
-            {
-              _id: '3456789',
-              text: 'Hii',
-              senderid: '6536ba4b9455f4004a1cbd7d',
-              type: 'later',
-              createdat: '2023-10-31T18:03:33.051Z',
-              isseen: false,
-            },
-            {
-              _id: '34567839',
-              text: 'Hii,  How are you doding \n waht are your foing broo \n this has been observed that you are not good enough for this company so we have decided to terminate you in coming month.',
-              senderid: '6536ba4b9455f4004a1cbd7d',
-              type: 'later',
-              createdat: '2023-10-31T18:03:33.051Z',
-              isseen: true,
-            },
-            {
-              _id: '34567849',
-              text: 'Hii, I am doing well',
-              senderid: '6536ba4b9455f4004a1cbd7a',
-              type: 'later',
-              createdat: '2023-10-31T18:03:33.051Z',
-              isseen: false,
-            },
-          ]}
+          data={
+            chat?.messages
+            // [
+            // {
+            //   _id: '3456789',
+            //   text: 'Hii',
+            //   senderid: '6536ba4b9455f4004a1cbd7d',
+            //   type: 'later',
+            //   createdat: '2023-10-31T18:03:33.051Z',
+            //   isseen: false,
+            // },
+            // {
+            //   _id: '34567839',
+            //   text: 'Hii,  How are you doding \n waht are your foing broo \n this has been observed that you are not good enough for this company so we have decided to terminate you in coming month.',
+            //   senderid: '6536ba4b9455f4004a1cbd7d',
+            //   type: 'later',
+            //   createdat: '2023-10-31T18:03:33.051Z',
+            //   isseen: true,
+            // },
+            // {
+            //   _id: '34567849',
+            //   text: 'Hii, I am doing well',
+            //   senderid: '6536ba4b9455f4004a1cbd7a',
+            //   type: 'later',
+            //   createdat: '2023-10-31T18:03:33.051Z',
+            //   isseen: false,
+            // },
+            // ]
+          }
           renderItem={renderMessage}
           showsVerticalScrollIndicator={false}
           keyExtractor={item => item._id.toString()}
