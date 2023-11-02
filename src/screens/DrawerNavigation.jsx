@@ -15,6 +15,7 @@ import Settings from './drawer-screens/Settings';
 import Icon, { Icons } from '../components/Icons';
 import tw from "twrnc"
 import ViewProfile from './drawer-screens/ViewProfile';
+import Notifications from './drawer-screens/Notifications'
 
 
 function DrawerNavigation() {
@@ -32,10 +33,8 @@ function DrawerNavigation() {
             />
             <Drawer.Screen name="Personal Info" component={PersonalInfo} />
             <Drawer.Screen name="View Profile" component={ViewProfile} />
-            <Drawer.Screen name="Applications" component={Applications} />
-            <Drawer.Screen name="Proposals" component={Proposals} />
-            <Drawer.Screen name="Resumes" component={Resumes} />
-            <Drawer.Screen name="Portfolio" component={Portfolio} />
+            <Drawer.Screen name="Notifications" component={Notifications} />
+           
             <Drawer.Screen name="Settings" component={Settings}
                 options={({ navigation }) => ({
                     headerLeft: () => (

@@ -133,8 +133,8 @@ const Bookmark = ({ navigation }) => {
     ];
     return (
         <ScrollView showsVerticalScrollIndicator={false} style={tw`flex bg-[#FAFAFD]`}>
-            <View style={tw`bg-white`}>
-                <View style={tw`flex-row justify-between items-center p-3`}>
+            <View style={tw`bg-white `}>
+                <View style={tw`flex-row justify-between items-center p-3 mt-8`}>
                     <Pressable onPress={() => {
                         navigation.openDrawer();
                     }}

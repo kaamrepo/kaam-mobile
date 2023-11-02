@@ -1,13 +1,11 @@
 import { Pressable, StyleSheet, Text } from 'react-native'
 import React, { useRef } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
-
+import { Alert } from 'react-native';
 import tw from "twrnc"
 
 // SVG Icons
-import ProfileSVG from "../../assets/svgs/Profile.svg";
 import NotificationsSVG from "../../assets/svgs/Notifications.svg";
-import ChangePasswordSVG from "../../assets/svgs/ChangePassword.svg";
 import LanguageSVG from "../../assets/svgs/Language.svg";
 import ThemeSVG from "../../assets/svgs/Theme.svg";
 import DeleteAccountSVG from "../../assets/svgs/DeleteAccount.svg";
@@ -17,10 +15,11 @@ import HelpCenterSVG from "../../assets/svgs/HelpCenter.svg";
 import SupportSVG from "../../assets/svgs/Support.svg";
 import AboutSVG from "../../assets/svgs/About.svg";
 import LanguageSelection from './settings/LanguageSelection';
-
+import ThemeSelection from './settings/ThemeSelection'
 const Settings = ({ navigation }) =>
 {
     const bottomSheetSelectLanguageRef = useRef(null);
+    const bottomSheetThemeSelectionRef = useRef(null);
 
     const updateLanguage = async (data) =>
     {
@@ -31,25 +30,24 @@ const Settings = ({ navigation }) =>
         }
 
     }
-
+    const showAlert = () => {
+        Alert.alert(
+            'Delete Account',
+            'Do you want to delete your account ?',
+            [
+                { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+                { text: 'OK', onPress: () => console.log('OK Pressed') }
+            ],
+            { cancelable: false }
+        );
+    };
     const applcationOptions = [
-        {
-            icon: <ProfileSVG />,
-            title: "Profile Visibility",
-            titleClass: "text-[#0D0D26]",
-            handleNavigation: () => { }
-        },
+        
         {
             icon: <NotificationsSVG />,
             title: "Notification",
             titleClass: "text-[#0D0D26]",
-            handleNavigation: () => { }
-        },
-        {
-            icon: <ChangePasswordSVG />,
-            title: "Change Password",
-            titleClass: "text-[#0D0D26]",
-            handleNavigation: () => { }
+            handleNavigation: () => {navigation.navigate("Notifications")}
         },
         {
             icon: <LanguageSVG />,
@@ -64,13 +62,16 @@ const Settings = ({ navigation }) =>
             icon: <ThemeSVG />,
             title: "Theme",
             titleClass: "text-[#0D0D26]",
-            handleNavigation: () => { }
+            handleNavigation: () =>
+            {
+                bottomSheetThemeSelectionRef.current.snapToIndex(1)
+            }
         },
         {
             icon: <DeleteAccountSVG />,
             title: "Delete Account",
             titleClass: "text-[#E30000] ",
-            handleNavigation: () => { }
+            handleNavigation: () => {showAlert()}
         },
     ]
     const aboutOptions = [
@@ -78,7 +79,9 @@ const Settings = ({ navigation }) =>
             icon: <PrivacySVG />,
             title: "Privacy",
             titleClass: "text-[#0D0D26]",
-            handleNavigation: () => { }
+            handleNavigation: () => { 
+                
+            }
         },
         {
             icon: <TermsAndCondtionsSVG />,
@@ -123,6 +126,10 @@ const Settings = ({ navigation }) =>
 
             <LanguageSelection
                 bottomSheetSelectLanguageRef={bottomSheetSelectLanguageRef}
+                updateLanguage={updateLanguage}
+            />
+            <ThemeSelection
+                bottomSheetThemeSelectionRef={bottomSheetThemeSelectionRef}
                 updateLanguage={updateLanguage}
             />
 

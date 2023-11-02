@@ -69,26 +69,25 @@ const CustomSidebarMenu = (props) =>
                 <Text style={[tw`text-green-700 text-[15px]`, { fontFamily: 'Poppins-Regular' }]} onPress={() => props.navigation.navigate("View Profile")} >View Profile</Text>
             </View>
             <DrawerContentScrollView {...props}>
-                {/* <DrawerItemList {...props} /> */}
-
                 <View style={tw`px-4`}>
                     <CustomDrawerItem title="Personal Info" id={1} index={props?.state?.index} icon={< PersonalInformationSVG />} subtitle={"80% complete"} subtitleStyle={tw`text-[#FE6D73] text-[12px]`} onPress={() => props.navigation.navigate("Personal Info")} />
-                    <CustomDrawerItem title="Applications" id={2} index={props?.state?.index} icon={< ApplicationsSVG />} onPress={() => props.navigation.navigate("Applications")} />
-                    <CustomDrawerItem title="Proposals" id={3} index={props?.state?.index} icon={< ProposalsSVG />} onPress={() => props.navigation.navigate("Proposals")} />
-                    <CustomDrawerItem title="Resumes" id={4} index={props?.state?.index} icon={< ResumesSVG />} onPress={() => props.navigation.navigate("Resumes")} />
-                    <CustomDrawerItem title="Portfolio" id={5} index={props?.state?.index} icon={< PortfolioSVG />} onPress={() => props.navigation.navigate("Portfolio")} />
                     <CustomDrawerItem title="Settings" id={6} index={props?.state?.index} icon={< SettingsSVG />} onPress={() => props.navigation.navigate("Settings")} />
                     <CustomDrawerItem title="Logout" id={7} index={props?.state?.index} icon={< LogoutSVG />} onPress={() => logout()} />
                 </View>
-            </DrawerContentScrollView>
-
-            <View style={tw`items-center my-5`}>
+                <View style={tw`items-center my-5`}>
                 <Pressable onPress={props.onPress} style={({ pressed }) => tw`my-3 px-5 py-3 flex-row gap-2 items-center justify-center rounded-xl shadow-lg shadow-green-800 ${ pressed ? 'bg-green-800' : 'bg-green-700' }`}>
                     <PremiumIconSVG height={18} />
                     <Text style={[tw`text-center text-white`, { fontFamily: "Poppins-Regular" }]}>
                         Go Premium
                     </Text>
                 </Pressable>
+            </View>
+            </DrawerContentScrollView>
+
+            <View style={tw`items-center my-5`}>
+                <Text style={[tw`text-center text-black`, { fontFamily: "Poppins-Regular" }]}>
+                        kaamPay app ltd.
+                </Text>
             </View>
         </SafeAreaView>
     );

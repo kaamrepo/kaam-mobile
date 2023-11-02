@@ -7,5 +7,6 @@
     {"lang": "தமிழ்"},
     {"lang": "اردو"}
   ],
-  "appTitle": "Kaam"
+  "appTitle": "KaamPay",
+  "theme":[{"id":1,"option":"Light","type":"theme"},{"id":2,"option":"Dark"}]
 }

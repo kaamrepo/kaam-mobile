@@ -10,7 +10,7 @@ import useLoginStore from '../../../store/authentication/login.store';
 import Languages from "../../../components/Languages.json"
 import { languageSelectionTanslation } from './languageSelectionTanslation';
 
-const LanguageSelection = ({ bottomSheetSelectLanguageRef, updateLanguage }) =>
+const ThemeSelection = ({ bottomSheetThemeSelectionRef, updateLanguage }) =>
 {
 
     const { language, selectLanguage } = useLoginStore();
@@ -28,8 +28,8 @@ const LanguageSelection = ({ bottomSheetSelectLanguageRef, updateLanguage }) =>
 
     const radioButtons = useMemo(() =>
     {
-        return Languages.languages.map((l, i) => { 
-            return ({ id: `${ i }`, label: l.lang, value: l.lang ,type:"language"})})
+        return Languages.theme.map((l, i) => { 
+            return ({ id: `${ i }`, label: l.option, value: l.option ,type:"theme"})})
     }, []);
 
     const [selectedId, setSelectedId] = useState();
@@ -45,7 +45,7 @@ const LanguageSelection = ({ bottomSheetSelectLanguageRef, updateLanguage }) =>
 
     return (
         <BottomSheet
-            ref={bottomSheetSelectLanguageRef}
+            ref={bottomSheetThemeSelectionRef}
             index={-1}
             snapPoints={snapPoints}
             backdropComponent={renderBackdrop}
@@ -54,9 +54,10 @@ const LanguageSelection = ({ bottomSheetSelectLanguageRef, updateLanguage }) =>
             <View style={[tw`flex-1 items-center mx-5`]}>
 
                 <View style={tw`flex-row items-center gap-2`}>
-                    <Icon type={Icons.Ionicons} name={"language"} size={28} color={"black"} />
+                    
+                    <Icon type={Icons.Ionicons} name={"home"} size={28} color={"black"} />
                     <Text style={[tw`text-black text-[20px] text-center py-3`, { fontFamily: "Poppins-Bold" }]}>
-                        {languageSelectionTanslation[language]["Select Your Language"]}
+                        {languageSelectionTanslation[language]["Select your Theme"]}
                     </Text>
                 </View>
 
@@ -66,7 +67,6 @@ const LanguageSelection = ({ bottomSheetSelectLanguageRef, updateLanguage }) =>
                         onPress={setSelectedId}
                         selectedId={selectedId}
                         containerStyle={tw`items-start w-[30%]`}
-                    // selected={true}
                     />
                 </View>
                 <View style={tw`my-5 w-full items-center`}>
@@ -75,7 +75,7 @@ const LanguageSelection = ({ bottomSheetSelectLanguageRef, updateLanguage }) =>
                         onPress={() =>
                         {
                             selectLanguage(radioButtons[selectedId]?.value)
-                            bottomSheetSelectLanguageRef.current.close()
+                            bottomSheetThemeSelectionRef.current.close()
                         }}>
                         <Text style={[tw`text-white text-xl`, { fontFamily: 'Poppins-SemiBold' }]}>
                             {languageSelectionTanslation[language]["Save"]}
@@ -87,7 +87,7 @@ const LanguageSelection = ({ bottomSheetSelectLanguageRef, updateLanguage }) =>
     )
 }
 
-export default LanguageSelection
+export default ThemeSelection
 
 const styles = StyleSheet.create({})
 
