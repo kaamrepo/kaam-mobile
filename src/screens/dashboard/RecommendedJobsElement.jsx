@@ -65,9 +65,9 @@ const RecommendedJobsElement = ({ language, recommendedJobsData, isLoading, navi
                 <Carousel
                     layout={'stack'}
                     layoutCardOffset={`18`}
-                    autoplay={true} // Enable autoplay
-                    autoplayInterval={5000} // Autoplay interval in milliseconds (5 seconds)
-                    loop={true} // Loop the carousel
+                    autoplay={false} // Enable autoplay
+                    // autoplayInterval={5000} // Autoplay interval in milliseconds (5 seconds)
+                    loop={false} // Loop the carousel
                     data={recommendedJobsData?.data}
                     renderItem={renderItemsRecommendedJobs}
                     sliderWidth={Dimensions.get('window').width}

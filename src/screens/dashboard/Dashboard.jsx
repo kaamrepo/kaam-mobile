@@ -17,6 +17,8 @@ import Icon from 'react-native-vector-icons/Feather';
 import Image1 from '../../assets/images/browse-jobs.png';
 import Image2 from '../../assets/images/IntroScreenJobsAndInvitations.png';
 import Image3 from '../../assets/images/search-dream-job.png';
+// import nearby_jobs_skin1 from '../../assets/images/nearby-jobs-skin-1.png';
+// import nearby_jobs_skin1 from '../../assets/images/nearby-jobs-skin-1.png';
 import MenuIconSVG from "../../assets/svgs/Menu Icon.svg"
 import FilterIconSVG from "../../assets/svgs/FilterIcon.svg"
 import useLoginStore from '../../store/authentication/login.store';
@@ -36,7 +38,7 @@ const Dashboard = ({ navigation }) =>
 {
   const [refreshing, setRefreshing] = useState(false);
   const { loggedInUser, language } = useLoginStore();
-  const { nearbyjobs, getNearByJobs } = useJobStore();
+  const { getNearByJobs } = useJobStore();
   const { isLoading } = useLoaderStore();
   const [location, setLocation] = useState(false);
 
@@ -125,17 +127,51 @@ const Dashboard = ({ navigation }) =>
       title: 'Homemade Cook',
       value: 960000,
       location: 'Mumbai',
-      bgcolor: "#28282B"
+      bgcolor: "#28282B",
+      _id:"1"
     },
     {
       image: Image2,
       title: 'Maid',
       value: 960000,
       location: 'Pune',
-      bgcolor: "#80461b"
+      bgcolor: "#80461b",
+      _id:"2"
     },
     {
       image: Image3,
+      title: 'Hotel helper',
+      value: 960000,
+      location: 'Delhi',
+      bgcolor: "#ce5f38",
+      _id:"3"
+    }]
+  };
+    const nearbyjobs = {
+    total: 3,
+    skip: 0,
+    limit: 0,
+    data: [{
+      image: Image1,
+      title: 'Homemade Cook',
+      description: 'Testeradfasdjfl;ajsdfkal;sdkfjlaksdjfl;kasjdflkjkl;djl;',
+      value: 960000,
+      location: 'Mumbai',
+      bgcolor: "#28282B",
+      // skin:nearby_jobs_skin1
+    },
+    {
+      image: Image2,
+      title: 'Maid',
+      value: 960000,
+      location: 'Pune',
+      bgcolor: "#80461b",
+      description: 'Testeradfasdjfl;ajsdfkal;sdkfjlaksdjfl;kasjdflkjkl;djl;',
+
+    },
+    {
+      image: Image3,
+      description: 'Testeradfasdjfl;ajsdfkal;sdkfjlaksdjfl;kasjdflkjkl;djl;',
       title: 'Hotel helper',
       value: 960000,
       location: 'Delhi',
