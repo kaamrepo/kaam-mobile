@@ -1,5 +1,4 @@
-
-export const REACT_APP_ENV = 'local'
+export const REACT_APP_ENV = 'local';
 // export const REACT_APP_ENV = 'dev'
 // export const REACT_APP_ENV = 'test'
 // export const REACT_APP_ENV = 'production'
