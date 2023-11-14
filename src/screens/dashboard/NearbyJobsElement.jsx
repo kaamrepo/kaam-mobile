@@ -126,8 +126,7 @@ const renderItemsNearbyJobs = ({item, index, isLoading}) => {
     <ImageBackground
       source={require('./nearby-jobs-skin-1.png')}
       style={[
-        tw`w-full h-48 rounded-3`,
-        {backgroundColor: nearbyJobsColorSchemes[index]},
+        tw`w-full h-48 rounded-3 bg-[${nearbyJobsColorSchemes[index]}]`
       ]}
       resizeMode="cover">
       <TouchableOpacity
@@ -136,16 +135,19 @@ const renderItemsNearbyJobs = ({item, index, isLoading}) => {
         }}
         key={item._id}
         style={tw`w-full h-48 rounded-3`}>
-        <View style={tw`flex flex-row justify-evenly p-3 h-35`}>
+        <View style={tw`flex flex-row justify-evenly p-4 h-35`}>
           <View>
             <Image source={item.image} style={tw`w-15 h-15 rounded-full`} />
           </View>
-          <View style={tw`flex-3 items-center`}>
-            <Text style={tw`text-white text-xl font-bold`}>
+          <View style={tw`flex-3 items-center p-2`}>
+            <Text
+              style={tw`text-white text-xl font-bold`}
+              numberOfLines={1}
+              ellipsizeMode="tail">
               {item.title}
             </Text>
             <Text
-              style={tw`text-white text-xl font-bold`}
+              style={tw`text-white text-lg font-bold`}
               numberOfLines={1}
               ellipsizeMode="tail">
               {item.description}
@@ -156,7 +158,7 @@ const renderItemsNearbyJobs = ({item, index, isLoading}) => {
               <View>
                 <Image
                   source={require('./bookmark.png')}
-                  style={tw`mt-1 h-6 w-6 text-white`}
+                  style={tw`mt-1 h-6 w-6`}
                 />
               </View>
             </Pressable>
