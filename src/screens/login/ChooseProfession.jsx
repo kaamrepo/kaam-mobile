@@ -1,20 +1,17 @@
-import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, Pressable } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, {useState} from 'react';
+import {View, Text, Image, TouchableOpacity, Pressable} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import tw from 'twrnc';
 
-const ChooseProfession = () =>
-{
+const ChooseProfession = () => {
   const navigation = useNavigation();
   const [selectedProfession, setSelectedProfession] = useState(null);
 
-  const handleProfessionSelection = (profession) =>
-  {
+  const handleProfessionSelection = profession => {
     setSelectedProfession(profession);
   };
 
-  const isProfessionSelected = (profession) =>
-  {
+  const isProfessionSelected = profession => {
     return selectedProfession === profession;
   };
 
@@ -23,7 +20,7 @@ const ChooseProfession = () =>
       <View style={tw`flex items-center`}>
         <Image
           source={require('../../assets/images/kaam-logo-verify-code.png')}
-          style={[tw`w-14 h-14`, { height: 80, width: 80 }]}
+          style={[tw`w-14 h-14`, {height: 80, width: 80}]}
           resizeMode="contain"
         />
       </View>
@@ -36,8 +33,7 @@ const ChooseProfession = () =>
           style={[
             tw`flex flex-col items-center justify-center bg-white rounded-full py-15 px-5 mx-2 border-green-500 border-2`,
             isProfessionSelected('employee') && tw`border-green-500 border-8`,
-          ]}
-        >
+          ]}>
           <Image
             source={require('../../assets/images/profession-employee.png')}
             style={tw`w-30 h-50`}
@@ -55,8 +51,7 @@ const ChooseProfession = () =>
           style={[
             tw`flex flex-col items-center justify-center bg-white rounded-full py-15 px-5 mx-2 border-green-500 border-2`,
             isProfessionSelected('employer') && tw`border-green-500 border-8`,
-          ]}
-        >
+          ]}>
           <Image
             source={require('../../assets/images/profession-employee.png')}
             style={tw`w-30 h-50`}
@@ -72,22 +67,23 @@ const ChooseProfession = () =>
       </View>
       <View style={tw`my-14`}>
         <Pressable
-          onPress={() =>
-          {
+          onPress={() => {
             navigation.navigate('JobPreference');
             // navigation.navigate('BottomTabNavigation');
           }}
-          style={({ pressed }) => [
+          style={({pressed}) => [
             {
               backgroundColor: pressed ? '#d7dbd8' : 'transparent',
             },
-            tw`w-1/2 items-center justify-center rounded-2xl`
+            tw`w-1/2 items-center justify-center rounded-2xl`,
           ]}>
-          {({ pressed }) => (
-            <Image source={require('../../assets/images/gotonextScreen.png')} style={tw`w-12 h-12`} />
+          {({pressed}) => (
+            <Image
+              source={require('../../assets/images/gotonextScreen.png')}
+              style={tw`w-12 h-12`}
+            />
           )}
         </Pressable>
-
       </View>
     </View>
   );

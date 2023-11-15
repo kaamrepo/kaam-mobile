@@ -1,5 +1,5 @@
-import {TouchableOpacity, StyleSheet, View} from 'react-native';
-import React, {useEffect, useRef} from 'react';
+import {TouchableOpacity, StyleSheet, View, Modal, Text} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Icon, {Icons} from '../components/Icons';
 import * as Animatable from 'react-native-animatable';
@@ -74,11 +74,17 @@ const BottomTabNavigation = () => {
         headerShown: false,
         tabBarHideOnKeyboard: true,
         tabBarStyle: {
+          borderTopLeftRadius: 40,
+          borderTopRightRadius: 40,
           height: 60,
-          // position: 'absolute',
-          // bottom: 0,
-          // right: 0,
-          // left: 0,
+          position: 'absolute',
+          bottom: 0,
+          right: 0,
+          left: 0,
+        },
+
+        headerBackgroundContainerStyle: {
+          backgroundColor: 'transparent',
         },
       }}>
       {TabArr.map((item, index) => (
@@ -93,6 +99,7 @@ const BottomTabNavigation = () => {
                 {...props}
                 item={item}
                 isMiddleElement={Math.floor(TabArr.length / 2) === index}
+                // setPopupVisible={setPopupVisible}
               />
             ),
           }}
@@ -108,6 +115,7 @@ const TabButton = props => {
   const {item, onPress, accessibilityState, isMiddleElement} = props;
   const focused = accessibilityState.selected;
   const viewRef = useRef(null);
+  const [popupVisible, setPopupVisible] = useState(false);
 
   useEffect(() => {
     if (!isMiddleElement) {
@@ -127,34 +135,57 @@ const TabButton = props => {
   }, [focused]);
 
   return (
-    <TouchableOpacity
-      onPress={onPress}
-      activeOpacity={1}
-      style={[tw`relative`, styles.container]}>
-      <Animatable.View
-        ref={viewRef}
-        duration={1000}
-        style={[
-          tw`${
-            isMiddleElement
-              ? `${
-                  focused ? 'bg-white' : 'bg-black'
-                } w-14 h-14 rounded-full shadow-lg absolute -top-5`
-              : ''
-          }`,
-          styles.container,
-        ]}>
-        {focused ? item.activeIcon : item.inactiveIcon}
-        {!isMiddleElement && (
-          <View
-            style={tw`mt-[2px] w-[3px] h-[3px] rounded-full ${
-              focused ? `bg-green-600 shadow shadow-green-600` : 'bg-white'
-            }`}></View>
-        )}
-      </Animatable.View>
-    </TouchableOpacity>
+    <>
+      <PopupMenu visible={popupVisible} />
+      <TouchableOpacity
+        onPress={() => {
+          if (!isMiddleElement) onPress();
+          else {
+            console.log('😊😊😊 pressed');
+            setPopupVisible(prev => !prev);
+          }
+        }}
+        activeOpacity={1}
+        style={[tw`relative`, styles.container]}>
+        <Animatable.View
+          ref={viewRef}
+          duration={1000}
+          style={[
+            tw`${
+              isMiddleElement
+                ? `${
+                    focused ? 'bg-white' : 'bg-black'
+                  } w-14 h-14 rounded-full shadow-lg absolute -top-[48%]`
+                : 'z-50'
+            }`,
+            styles.container,
+            {zIndex: 20},
+          ]}>
+          {focused ? item.activeIcon : item.inactiveIcon}
+          {!isMiddleElement && (
+            <View
+              style={tw`mt-[2px] w-[3px] h-[3px] rounded-full z-50 ${
+                focused ? `bg-green-600 shadow shadow-green-600` : 'bg-white'
+              }`}></View>
+          )}
+        </Animatable.View>
+      </TouchableOpacity>
+    </>
   );
 };
+
+const PopupMenu = ({visible}) => (
+  <View
+    style={[
+      tw`${
+        visible
+          ? 'flex h-[120px] w-[50%] absolute left-[25%] bottom-1/2 justify-center items-center bg-white rounded-t-lg border border-gray-300 shadow'
+          : 'hidden'
+      }`,
+    ]}>
+    <Text>This is the pop-up menu</Text>
+  </View>
+);
 
 const styles = StyleSheet.create({
   container: {
