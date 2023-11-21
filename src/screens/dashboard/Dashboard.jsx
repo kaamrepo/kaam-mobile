@@ -239,7 +239,7 @@ const Dashboard = ({ navigation }) =>
 
       <NearbyJobsElement {...{ language, nearbyjobs, isLoading, navigation }} />
       <RecommendedJobsElement {...{ language, recommendedJobsData, isLoading, navigation }} />
-      <FeaturedJobsElement featuredJobs={featuredJobs} isLoading={isLoading} language={language} navigation={navigation} />
+      <FeaturedJobsElement {...{ language, featuredJobs, isLoading, navigation }} />
     </ScrollView >
   );
 };

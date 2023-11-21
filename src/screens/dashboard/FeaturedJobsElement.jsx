@@ -2,6 +2,7 @@ import {View, Text, Pressable, Image} from 'react-native';
 import tw from 'twrnc';
 import React from 'react';
 import {dashboardTranslation} from './dashboardTranslation';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const FeaturedJobsElement = ({
   featuredJobs,
@@ -9,6 +10,9 @@ const FeaturedJobsElement = ({
   language,
   navigation,
 }) => {
+  const handleSeeAllPress = () => {
+    navigation.navigate('SeeAll',{isLoading});
+  };
   if (isLoading) {
     return (
       <>
@@ -78,19 +82,24 @@ const FeaturedJobsElement = ({
         <Text style={[tw`text-black text-xl`, {fontFamily: 'Poppins-Bold'}]}>
           {dashboardTranslation[language]['Featured Jobs']}
         </Text>
+        <TouchableOpacity onPress={handleSeeAllPress}>
         <Text
-          style={[
-            tw`text-center text-sm leading-relaxed text-gray-600`,
-            {fontFamily: 'Poppins-Regular'},
-          ]}>
-          {dashboardTranslation[language]['See all']}
+            style={[
+              tw`text-center text-sm leading-relaxed text-gray-600`,
+              {fontFamily: 'Poppins-Regular'},
+            ]}>
+        See all
         </Text>
+        </TouchableOpacity>
       </View>
       <View style={tw`px-5 mb-14`}>
-        {featuredJobs?.data?.map(f => (
+        {featuredJobs?.data?.map(item => (
           <Pressable
-            key={f._id}
-            onPress={() => {}}
+            key={item._id}
+            onPress={() => {
+          console.log('pressed recommended jobs');
+          navigation.navigate('ApplyNow',{jobDetails: item});
+        }}
             style={({pressed}) =>
               tw`my-1 w-full flex-row justify-between border border-gray-200 rounded-3 py-3 px-5 ${
                 pressed ? 'bg-green-100/10' : 'bg-white'
@@ -98,7 +107,7 @@ const FeaturedJobsElement = ({
             }>
             <View style={tw`h-10 w-10 flex-2`}>
               <Image
-                source={f.image}
+                source={item.image}
                 style={tw`h-10 w-10 rounded-xl`}
                 resizeMode="contain"
               />
@@ -111,7 +120,7 @@ const FeaturedJobsElement = ({
                 ]}
                 numberOfLines={1}
                 ellipsizeMode="tail">
-                {f.title}
+                {item.title}
               </Text>
               <Text
                 style={[
@@ -120,7 +129,7 @@ const FeaturedJobsElement = ({
                 ]}
                 numberOfLines={1}
                 ellipsizeMode="tail">
-                {f.description}
+                {item.description}
               </Text>
             </View>
             <View style={tw` flex-2`}>
@@ -129,14 +138,14 @@ const FeaturedJobsElement = ({
                   tw`text-black text-[14px]`,
                   {fontFamily: 'Poppins-SemiBold'},
                 ]}>
-                ₹: {f.value}
+                ₹: {item.value}
               </Text>
               <Text
                 style={[
                   tw`text-neutral-600 text-[14px]`,
                   {fontFamily: 'Poppins-Regular'},
                 ]}>
-                {f.location}
+                {item.location}
               </Text>
             </View>
           </Pressable>

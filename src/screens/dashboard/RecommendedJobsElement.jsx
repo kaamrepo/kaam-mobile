@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View, Dimensions, Image} from 'react-native';
+import {StyleSheet, Text, View, Dimensions, Image,TouchableOpacity,Pressable} from 'react-native';
 import React from 'react';
 import {dashboardTranslation} from './dashboardTranslation';
 import tw from 'twrnc';
@@ -11,6 +11,9 @@ const RecommendedJobsElement = ({
   isLoading,
   navigation,
 }) => {
+  const handleSeeAllPress = () => {
+    navigation.navigate('SeeAll',{isLoading});
+  };
   if (isLoading) {
     return (
       <>
@@ -80,13 +83,15 @@ const RecommendedJobsElement = ({
         <Text style={[tw`text-black text-xl`, {fontFamily: 'Poppins-Bold'}]}>
           {dashboardTranslation[language]['Recommended Jobs']}
         </Text>
+        <TouchableOpacity onPress={handleSeeAllPress}>
         <Text
-          style={[
-            tw`text-center text-sm leading-relaxed text-gray-600`,
-            {fontFamily: 'Poppins-Regular'},
-          ]}>
-          {dashboardTranslation[language]['See all']}
+            style={[
+              tw`text-center text-sm leading-relaxed text-gray-600`,
+              {fontFamily: 'Poppins-Regular'},
+            ]}>
+        See all
         </Text>
+        </TouchableOpacity>
       </View>
       <View>
         <Carousel
@@ -95,7 +100,7 @@ const RecommendedJobsElement = ({
           autoplay={false}
           loop={false}
           data={recommendedJobsData?.data}
-          renderItem={renderItemsRecommendedJobs}
+          renderItem={props => renderItemsRecommendedJobs({...props, navigation})}
           sliderWidth={Dimensions.get('window').width}
           itemWidth={(Dimensions.get('window').width - 80) * 0.5} // Adjust the item width
           inactiveSlideOpacity={1} // To make inactive slides fully visible
@@ -109,10 +114,10 @@ export default RecommendedJobsElement;
 
 const styles = StyleSheet.create({});
 
-const renderItemsRecommendedJobs = ({item, index}) => {
+const renderItemsRecommendedJobs = ({item, index,navigation}) => {
   return (
-    <View
-      style={[
+    <Pressable
+     style={[
         tw`w-full h-48 flex flex-col justify-center items-center bg-slate-100 rounded-3 p-4 m-4 text-black`,
         {
           elevation: 8,
@@ -122,7 +127,12 @@ const renderItemsRecommendedJobs = ({item, index}) => {
           shadowRadius: 10,
         },
       ]}
-      key={index}>
+      key={index}
+     onPress={() => {
+          console.log('pressed recommended jobs');
+          navigation.navigate('ApplyNow',{jobDetails: item});
+        }}
+    >
       <View style={tw`items-center mb-4`}>
         <Image source={item.image} style={tw`w-15 h-15 rounded-full`} />
       </View>
@@ -138,6 +148,6 @@ const renderItemsRecommendedJobs = ({item, index}) => {
         <Icon type={Icons.MaterialIcons} name={'location-pin'} size={20} />
         <Text style={{fontFamily: 'Poppins-SemiBold'}}>{item.location}</Text>
       </View>
-    </View>
+    </Pressable>
   );
 };

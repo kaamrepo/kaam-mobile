@@ -19,7 +19,9 @@ import SeeAll from '../see-all/SeeAll';
 const nearbyJobsColorSchemes = ['#87C4FF', '#739072', '#CE5A67', '#ECEE81'];
 const NearbyJobsElement = ({language, nearbyjobs, navigation, isLoading}) => {
   const {loggedInUser} = useLoginStore();
-
+  const handleSeeAllPress = () => {
+    navigation.navigate('SeeAll',{isLoading});
+  };
   if (isLoading) {
     return (
       <>
@@ -83,9 +85,6 @@ const NearbyJobsElement = ({language, nearbyjobs, navigation, isLoading}) => {
       </>
     );
   }
-  const handleSeeAllPress = () => {
-    navigation.navigate('SeeAll',{isLoading});
-  };
 
   return (
     <>
@@ -104,7 +103,7 @@ const NearbyJobsElement = ({language, nearbyjobs, navigation, isLoading}) => {
             {dashboardTranslation[language]['See all']}
         
         </TouchableOpacity> */}
-        test
+        See all
         </Text>
         </TouchableOpacity>
       </View>
