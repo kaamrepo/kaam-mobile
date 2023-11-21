@@ -14,6 +14,7 @@ import {dashboardTranslation} from './dashboardTranslation';
 import Carousel from 'react-native-snap-carousel';
 import useLoginStore from '../../store/authentication/login.store';
 import Icon, {Icons} from '../../components/Icons';
+import SeeAll from '../see-all/SeeAll';
 // const image = {uri: 'nearby-jobs-skin-1.png'};
 const nearbyJobsColorSchemes = ['#87C4FF', '#739072', '#CE5A67', '#ECEE81'];
 const NearbyJobsElement = ({language, nearbyjobs, navigation, isLoading}) => {
@@ -82,19 +83,30 @@ const NearbyJobsElement = ({language, nearbyjobs, navigation, isLoading}) => {
       </>
     );
   }
+  const handleSeeAllPress = () => {
+    navigation.navigate('SeeAll',{isLoading});
+  };
+
   return (
     <>
       <View style={tw`flex-row justify-between items-center mb-4 mx-5`}>
         <Text style={[tw`text-black text-xl`, {fontFamily: 'Poppins-Bold'}]}>
           {dashboardTranslation[language]['Nearby Jobs']}
         </Text>
+        <TouchableOpacity onPress={handleSeeAllPress}>
         <Text
-          style={[
-            tw`text-center text-sm leading-relaxed text-gray-600`,
-            {fontFamily: 'Poppins-Regular'},
-          ]}>
-          {dashboardTranslation[language]['See all']}
+            style={[
+              tw`text-center text-sm leading-relaxed text-gray-600`,
+              {fontFamily: 'Poppins-Regular'},
+            ]}>
+        {/* <TouchableOpacity onPress={handleSeeAllPress}>
+         
+            {dashboardTranslation[language]['See all']}
+        
+        </TouchableOpacity> */}
+        test
         </Text>
+        </TouchableOpacity>
       </View>
       <View>
         <Carousel
@@ -103,7 +115,7 @@ const NearbyJobsElement = ({language, nearbyjobs, navigation, isLoading}) => {
           // autoplayInterval={5000}
           loop={false}
           data={nearbyjobs?.data}
-          renderItem={renderItemsNearbyJobs}
+          renderItem={props => renderItemsNearbyJobs({...props, navigation})}
           sliderWidth={Dimensions.get('window').width}
           itemWidth={Dimensions.get('window').width - 80}
         />
@@ -116,7 +128,11 @@ export default NearbyJobsElement;
 
 const styles = StyleSheet.create({});
 
-const renderItemsNearbyJobs = ({item, index, isLoading}) => {
+const handleBookmarkPress = () => {
+  // Handle bookmark button press logic here
+  console.log('Bookmark button pressed!');
+};
+const renderItemsNearbyJobs = ({item, index, navigation}) => {
   const randomColorIndex = Math.floor(
     Math.random() * nearbyJobsColorSchemes.length,
   );
@@ -124,14 +140,13 @@ const renderItemsNearbyJobs = ({item, index, isLoading}) => {
 
   return (
     <ImageBackground
-      source={require('./nearby-jobs-skin-1.png')}
-      style={[
-        tw`w-full h-48 rounded-3 bg-[${nearbyJobsColorSchemes[index]}]`
-      ]}
+      source={require('../../assets/images/nearby_jobs_skin1.png')}
+      style={[tw`w-full h-48 rounded-3 bg-[${nearbyJobsColorSchemes[index]}]`]}
       resizeMode="cover">
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate('ApplyNow', {id: item._id});
+          console.log('pressed');
+          navigation.navigate('ApplyNow', {jobDetails: item});
         }}
         key={item._id}
         style={tw`w-full h-48 rounded-3`}>
@@ -154,13 +169,17 @@ const renderItemsNearbyJobs = ({item, index, isLoading}) => {
             </Text>
           </View>
           <View style={tw`items-end`}>
-            <Pressable>
-              <View>
-                <Image
-                  source={require('./bookmark.png')}
-                  style={tw`mt-1 h-6 w-6`}
-                />
-              </View>
+            <Pressable
+              onPress={handleBookmarkPress}
+              style={({pressed}) => [
+                tw`p-2 rounded-full ${pressed ? 'bg-black/20' : ''}`,
+              ]}>
+              <Icon
+                type={Icons.Ionicons}
+                name="bookmark"
+                size={24}
+                color={'white'}
+              />
             </Pressable>
           </View>
         </View>

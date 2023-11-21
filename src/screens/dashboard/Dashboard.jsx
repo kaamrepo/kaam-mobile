@@ -17,8 +17,6 @@ import Icon from 'react-native-vector-icons/Feather';
 import Image1 from '../../assets/images/browse-jobs.png';
 import Image2 from '../../assets/images/IntroScreenJobsAndInvitations.png';
 import Image3 from '../../assets/images/search-dream-job.png';
-// import nearby_jobs_skin1 from '../../assets/images/nearby-jobs-skin-1.png';
-// import nearby_jobs_skin1 from '../../assets/images/nearby-jobs-skin-1.png';
 import MenuIconSVG from "../../assets/svgs/Menu Icon.svg"
 import FilterIconSVG from "../../assets/svgs/FilterIcon.svg"
 import useLoginStore from '../../store/authentication/login.store';
@@ -218,7 +216,7 @@ const Dashboard = ({ navigation }) =>
         </View>
       </View>
 
-      <View style={tw`flex-row items-center mb-4 mx-5`}>
+      {/* <View style={tw`flex-row items-center mb-4 mx-5`}>
         <View
           style={tw`flex-1 bg-[#F2F2F3] rounded-lg h-10 flex-row items-center pr-2`}>
           <Icon name="search" size={20} color="gray" style={tw`mx-2`} />
@@ -232,7 +230,7 @@ const Dashboard = ({ navigation }) =>
           style={tw`w-10 h-10 bg-[#F2F2F3] rounded-lg items-center justify-center ml-2`}>
           <FilterIconSVG />
         </TouchableOpacity>
-      </View>
+      </View> */}
 
 
 
