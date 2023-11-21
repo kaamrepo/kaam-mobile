@@ -99,7 +99,7 @@ const RegisterScreen = ({ navigation }) =>
                 <View style={tw`${ errors && errors.firstname ? "border border-red-500" : "border border-slate-500" } rounded-xl flex w-[100%]`}>
                   <Controller
                     control={control}
-                    name={`${RegistrationTranslation[language]["First Name"]}`}
+                    name="firstname"
                     render={({ field: { onChange, onBlur, value } }) => (
                       <TextInput
                         value={value}
@@ -121,7 +121,7 @@ const RegisterScreen = ({ navigation }) =>
                 <View style={tw`${ errors && errors.lastname ? "border border-red-500" : "border border-slate-500" } rounded-xl flex w-[100%]`}>
                   <Controller
                     control={control}
-                    name={`${RegistrationTranslation[language]["Last Name"]}`}
+                    name="lastname"
                     render={({ field: { onChange, onBlur, value } }) => (
                       <TextInput
                         value={value}
@@ -148,7 +148,7 @@ const RegisterScreen = ({ navigation }) =>
                 </View>
                 <Controller
                   control={control}
-                  name={`${RegistrationTranslation[language]["Email"]}`}
+                  name="email"
                   render={({ field: { onChange, onBlur, value } }) => (
                     <TextInput
                       value={value}
@@ -203,7 +203,7 @@ const RegisterScreen = ({ navigation }) =>
                   </View>
                   <Controller
                     control={control}
-                    name={`${RegistrationTranslation[language]["Phone Number"]}`}
+                    name="phone"
                     render={({ field: { onChange, onBlur, value } }) => (
                       <TextInput
                         value={value}

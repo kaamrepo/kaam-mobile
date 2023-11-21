@@ -32,14 +32,10 @@ function DrawerNavigation() {
             />
             <Drawer.Screen name="Personal Info" component={PersonalInfo} />
             <Drawer.Screen name="View Profile" component={ViewProfile} />
-            <Drawer.Screen name="Applications" component={Applications} />
-            <Drawer.Screen name="Proposals" component={Proposals} />
-            <Drawer.Screen name="Resumes" component={Resumes} />
-            <Drawer.Screen name="Portfolio" component={Portfolio} />
             <Drawer.Screen name="Settings" component={Settings}
                 options={({ navigation }) => ({
                     headerLeft: () => (
-                        <Pressable style={({ pressed }) => tw`mx-2 h-10 w-10 items-center justify-center rounded-full ${pressed ? 'bg-gray-200' : ''} `} onPress={() => {
+                        <Pressable style={({ pressed }) => tw`mx-2 h-10 w-10 items-center justify-center rounded-full ${ pressed ? 'bg-gray-200' : '' } `} onPress={() => {
                             navigation.goBack();
                             navigation.openDrawer();
                         }}>

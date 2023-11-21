@@ -36,7 +36,7 @@ const Dashboard = ({ navigation }) =>
 {
   const [refreshing, setRefreshing] = useState(false);
   const { loggedInUser, language } = useLoginStore();
-  const { nearbyjobs, getNearByJobs } = useJobStore();
+  const { getNearByJobs } = useJobStore();
   const { isLoading } = useLoaderStore();
   const [location, setLocation] = useState(false);
 
@@ -125,17 +125,51 @@ const Dashboard = ({ navigation }) =>
       title: 'Homemade Cook',
       value: 960000,
       location: 'Mumbai',
-      bgcolor: "#28282B"
+      bgcolor: "#28282B",
+      _id:"1"
     },
     {
       image: Image2,
       title: 'Maid',
       value: 960000,
       location: 'Pune',
-      bgcolor: "#80461b"
+      bgcolor: "#80461b",
+      _id:"2"
     },
     {
       image: Image3,
+      title: 'Hotel helper',
+      value: 960000,
+      location: 'Delhi',
+      bgcolor: "#ce5f38",
+      _id:"3"
+    }]
+  };
+    const nearbyjobs = {
+    total: 3,
+    skip: 0,
+    limit: 0,
+    data: [{
+      image: Image1,
+      title: 'Homemade Cook',
+      description: 'Testeradfasdjfl;ajsdfkal;sdkfjlaksdjfl;kasjdflkjkl;djl;',
+      value: 960000,
+      location: 'Mumbai',
+      bgcolor: "#28282B",
+      // skin:nearby_jobs_skin1
+    },
+    {
+      image: Image2,
+      title: 'Maid',
+      value: 960000,
+      location: 'Pune',
+      bgcolor: "#80461b",
+      description: 'Testeradfasdjfl;ajsdfkal;sdkfjlaksdjfl;kasjdflkjkl;djl;',
+
+    },
+    {
+      image: Image3,
+      description: 'Testeradfasdjfl;ajsdfkal;sdkfjlaksdjfl;kasjdflkjkl;djl;',
       title: 'Hotel helper',
       value: 960000,
       location: 'Delhi',
@@ -182,7 +216,7 @@ const Dashboard = ({ navigation }) =>
         </View>
       </View>
 
-      <View style={tw`flex-row items-center mb-4 mx-5`}>
+      {/* <View style={tw`flex-row items-center mb-4 mx-5`}>
         <View
           style={tw`flex-1 bg-[#F2F2F3] rounded-lg h-10 flex-row items-center pr-2`}>
           <Icon name="search" size={20} color="gray" style={tw`mx-2`} />
@@ -196,7 +230,7 @@ const Dashboard = ({ navigation }) =>
           style={tw`w-10 h-10 bg-[#F2F2F3] rounded-lg items-center justify-center ml-2`}>
           <FilterIconSVG />
         </TouchableOpacity>
-      </View>
+      </View> */}
 
 
 

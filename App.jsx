@@ -28,6 +28,7 @@ import Chat from './src/screens/chats/Chat';
 import TrackApplication from './src/screens/chats/TrackApplication';
 import DrawerNavigation from './src/screens/DrawerNavigation';
 import useLoaderStore from './src/store/loader.store';
+import SeeAll from './src/screens/see-all/SeeAll';
 
 // Navigators
 
@@ -66,83 +67,158 @@ const App = () =>
       <NavigationContainer>
         <Stack.Navigator initialRouteName={'DrawerNavigation'}>
           {/* <Stack.Navigator initialRouteName={!isLoggedIn ? 'IntroSelectLanguage' : 'DrawerNavigation'}> */}
-          {
-            !isLoggedIn ?
-              <>
-                <Stack.Screen name="IntroSelectLanguage" component={IntroSelectLanguage} options={{ title: 'Kaam', headerShown: false }} />
-                <Stack.Screen name="IntroJobSearch" component={IntroJobSearch} options={{ title: 'search-dream-job', headerShown: false, }} />
-                <Stack.Screen name="IntroScreenBrowseJobs" component={IntroScreenBrowseJobs} options={{ headerShown: false }} />
-                <Stack.Screen name="IntroScreenJobsAndInvitations" component={IntroScreenJobsAndInvitations} options={{ headerShown: false }} />
-                <Stack.Screen name="lastIntroScreen" component={LastIntroScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="registerScreen" component={RegisterScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="VerifyCode" component={VerifyCode} options={{ headerShown: true }} />
-              </>
-              :
-              <>
-                <Stack.Screen name="ChooseProfession" component={ChooseProfession} options={{ headerShown: false }} />
-                <Stack.Screen name="Chat" component={Chat} options={{ headerShown: false }} />
-                <Stack.Screen name="TrackApplication" component={TrackApplication} options={{ headerShown: false }} />
-                <Stack.Screen name="JobPreference" component={JobPreference}
-                  options={({ navigation }) => ({
-                    headerLeft: () => (
-                      <Pressable
-                        onPress={() => { navigation.goBack() }}
-                        style={({ pressed }) => [
-                          tw`rounded-full w-8 h-8 flex items-center justify-center ${ pressed ? 'bg-gray-500/30' : '' }`
-                        ]}>
-                        {({ pressed }) => (
-                          <Icon type={Icons.Ionicons} name="chevron-back" color="#000000" />
-                        )}
-                      </Pressable>
-                    ),
-                    headerTransparent: false,
-                    headerTitleAlign: 'center',
-                    headerShadowVisible: false,
-                    headerTitleStyle: { color: '#202121', fontSize: 18, fontFamily: 'Poppins-SemiBold' },
-                    headerTitle: 'Job Preferences', // Remove the title
-                    headerShown: true
-                  })}
-                />
-                <Stack.Screen name="JobSelection" component={JobSelection}
-                  options={({ navigation }) => ({
-                    headerLeft: () => (
-                      <Pressable
-                        onPress={() => { navigation.goBack() }}
-                        style={({ pressed }) => [
-                          tw`rounded-full w-8 h-8 flex items-center justify-center ${ pressed ? 'bg-gray-500/30' : '' }`
-                        ]}>
-                        {({ pressed }) => (
-                          <Icon type={Icons.Ionicons} name="close" color="#000000" size={30} />
-                        )}
-                      </Pressable>
-                    ),
-                    headerTransparent: true,
-                    headerShadowVisible: false,
-                    headerTitle: '', // Remove the title
-                    headerShown: true,
-                  })}
-                />
-                <Stack.Screen
-                  name="ApplyNow"
-                  component={ApplyNow}
-                  options={{ headerShown: false }}
-                />
+          {!isLoggedIn ? (
+            <>
+              <Stack.Screen
+                name="IntroSelectLanguage"
+                component={IntroSelectLanguage}
+                options={{title: 'Kaam', headerShown: false}}
+              />
+              <Stack.Screen
+                name="IntroJobSearch"
+                component={IntroJobSearch}
+                options={{title: 'search-dream-job', headerShown: false}}
+              />
+              <Stack.Screen
+                name="IntroScreenBrowseJobs"
+                component={IntroScreenBrowseJobs}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="IntroScreenJobsAndInvitations"
+                component={IntroScreenJobsAndInvitations}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="lastIntroScreen"
+                component={LastIntroScreen}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="registerScreen"
+                component={RegisterScreen}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="Login"
+                component={LoginScreen}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="VerifyCode"
+                component={VerifyCode}
+                options={{headerShown: true}}
+              />
+            </>
+          ) : (
+            <>
+              <Stack.Screen
+                name="ChooseProfession"
+                component={ChooseProfession}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="Chat"
+                component={Chat}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="TrackApplication"
+                component={TrackApplication}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="JobPreference"
+                component={JobPreference}
+                options={({navigation}) => ({
+                  headerLeft: () => (
+                    <Pressable
+                      onPress={() => {
+                        navigation.goBack();
+                      }}
+                      style={({pressed}) => [
+                        tw`rounded-full w-8 h-8 flex items-center justify-center ${
+                          pressed ? 'bg-gray-500/30' : ''
+                        }`,
+                      ]}>
+                      {({pressed}) => (
+                        <Icon
+                          type={Icons.Ionicons}
+                          name="chevron-back"
+                          color="#000000"
+                        />
+                      )}
+                    </Pressable>
+                  ),
+                  headerTransparent: false,
+                  headerTitleAlign: 'center',
+                  headerShadowVisible: false,
+                  headerTitleStyle: {
+                    color: '#202121',
+                    fontSize: 18,
+                    fontFamily: 'Poppins-SemiBold',
+                  },
+                  headerTitle: 'Job Preferences', // Remove the title
+                  headerShown: true,
+                })}
+              />
+              <Stack.Screen
+                name="JobSelection"
+                component={JobSelection}
+                options={({navigation}) => ({
+                  headerLeft: () => (
+                    <Pressable
+                      onPress={() => {
+                        navigation.goBack();
+                      }}
+                      style={({pressed}) => [
+                        tw`rounded-full w-8 h-8 flex items-center justify-center ${
+                          pressed ? 'bg-gray-500/30' : ''
+                        }`,
+                      ]}>
+                      {({pressed}) => (
+                        <Icon
+                          type={Icons.Ionicons}
+                          name="close"
+                          color="#000000"
+                          size={30}
+                        />
+                      )}
+                    </Pressable>
+                  ),
+                  headerTransparent: true,
+                  headerShadowVisible: false,
+                  headerTitle: '', // Remove the title
+                  headerShown: true,
+                })}
+              />
+              <Stack.Screen
+                name="ApplyNow"
+                component={ApplyNow}
+                options={{headerShown: false}}
+              />
 
-                <Stack.Screen name="DrawerNavigation"
-                  component={DrawerNavigation}
-                  options={{ headerShown: false }}
-                />
-
-              </>
-          }
-
+              <Stack.Screen
+                name="DrawerNavigation"
+                component={DrawerNavigation}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="SeeAll"
+                component={SeeAll}
+                options={{headerShown: false}}
+              />
+            </>
+          )}
         </Stack.Navigator>
       </NavigationContainer>
-      <Toast config={toastConfig} position='bottom' />
+      <Toast config={toastConfig} position="bottom" />
       <View
-        style={[tw`z-50 absolute top-0 left-0 right-0 bottom-0 justify-center items-center ${ isLoading ? 'flex' : 'hidden' }`]}
-      >
+        style={[
+          tw`z-50 absolute top-0 left-0 right-0 bottom-0 justify-center items-center ${
+            isLoading ? 'flex' : 'hidden'
+          }`,
+        ]}>
         <ActivityIndicator size={60} animating={isLoading} color="#00cc66" />
       </View>
     </>

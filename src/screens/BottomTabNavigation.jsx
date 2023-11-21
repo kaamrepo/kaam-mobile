@@ -6,6 +6,7 @@ import * as Animatable from 'react-native-animatable';
 import tw from 'twrnc';
 import Dashboard from './dashboard/Dashboard';
 import Inbox from './home/Inbox';
+import Post from './home/Postjobs';
 import Bookmark from './home/Bookmark';
 import Menu from './home/Menu';
 
@@ -21,6 +22,7 @@ import BookmarkInactiveSVG from '../assets/svgs/bookmark_inactive.svg'
 
 import MenuSVG from '../assets/svgs/menu.svg'
 import MenuInactiveSVG from '../assets/svgs/menu_inactive.svg'
+import PostJobsSVG from '../assets/svgs/job-post-plus-icon.png'
 
 
 const Tab = createBottomTabNavigator();
@@ -28,6 +30,7 @@ const Tab = createBottomTabNavigator();
 const TabArr = [
     { route: 'Dashboard', label: 'Dashboard', component: Dashboard, activeIcon: <HomeSVG width={18} height={18} />, inactiveIcon: <HomeInactiveSVG width={18} height={18} /> },
     { route: 'Inbox', label: 'Inbox', component: Inbox, activeIcon: <MailSVG width={18} height={18} />, inactiveIcon: <MailInactiveSVG width={18} height={18} /> },
+    // { route: 'Post', label: 'Post', component: Post, activeIcon: <PostJobsSVG width={18} height={18} />, inactiveIcon: <PostJobsSVG width={18} height={18} /> },
     { route: 'Bookmark', label: 'Bookmark', component: Bookmark, activeIcon: <BookmarkSVG width={18} height={18} />, inactiveIcon: <BookmarkInactiveSVG width={18} height={18} /> },
     { route: 'Menu', label: 'Menu', component: Menu, activeIcon: <MenuSVG width={18} height={18} />, inactiveIcon: <MenuInactiveSVG width={18} height={18} /> },
 ];
@@ -50,11 +53,12 @@ const BottomTabNavigation = () =>
 
                 }
             }}
+            style={tw`border-2`}
         >
             {TabArr.map((item, index) =>
             {
                 return (
-                    <Tab.Screen key={index} name={item.route} component={item.component}
+                    <Tab.Screen key={index} name={item.route} component={item.component} style={tw`border-2`}
                         options={{
                             tabBarShowLabel: false,
                             tabBarButton: (props) => <TabButton {...props} item={item} />

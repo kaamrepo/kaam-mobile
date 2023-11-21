@@ -14,8 +14,9 @@ const jobDescription = {
   image: Image1,
 };
 
-const ApplyNow = ({ route, navigation }) => {
-
+const ApplyNow = ({ route, navigation}) => {
+  const { itemData } = route.params;
+console.log("items", itemData);
   const { getNearByJobById, job, clearJob, appliedJob, applyForJob, getJobApplicationByParams, getAppliedJobDetailsById } = useJobStore();
   const { loggedInUser } = useLoginStore()
   const { isLoading } = useLoaderStore();
@@ -83,7 +84,7 @@ const ApplyNow = ({ route, navigation }) => {
               ]}>
               <Icon type={Icons.Ionicons}
                 name="chevron-back"
-                size={24}
+                size={25}
                 color={job?.styles?.color ? `${ job?.styles?.color }` : 'white'} />
             </Pressable>
 
