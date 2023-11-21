@@ -140,7 +140,7 @@ const renderItemsNearbyJobs = ({item, index, navigation}) => {
 
   return (
     <ImageBackground
-      source={require('../../assets/images/nearby_jobs_skin1.png')}
+      source={require('../../assets/images/nearby-jobs-skin-1.png')}
       style={[tw`w-full h-48 rounded-3 bg-[${nearbyJobsColorSchemes[index]}]`]}
       resizeMode="cover">
       <TouchableOpacity
