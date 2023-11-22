@@ -142,7 +142,7 @@ const Dashboard = ({navigation}) => {
     <ScrollView
       showsVerticalScrollIndicator={false}
       nestedScrollEnabled
-      style={[tw`py-10 bg-[#FAFAFD]`]}
+      style={[tw`py-10 bg-[#FAFAFD] mb-[40px]`]}
       refreshControl={
         <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
       }>

@@ -8,6 +8,7 @@ import Dashboard from './dashboard/Dashboard';
 import Inbox from './home/Inbox';
 import Bookmark from './home/Bookmark';
 import Menu from './home/Menu';
+import LinearGradient from 'react-native-linear-gradient';
 
 // svg icons
 import HomeSVG from '../assets/svgs/home.svg';
@@ -113,9 +114,9 @@ export default BottomTabNavigation;
 
 const TabButton = props => {
   const {item, onPress, accessibilityState, isMiddleElement} = props;
-  const focused = accessibilityState.selected;
   const viewRef = useRef(null);
   const [popupVisible, setPopupVisible] = useState(false);
+  const focused = accessibilityState.selected || popupVisible;
 
   useEffect(() => {
     if (!isMiddleElement) {
@@ -141,7 +142,6 @@ const TabButton = props => {
         onPress={() => {
           if (!isMiddleElement) onPress();
           else {
-            console.log('😊😊😊 pressed');
             setPopupVisible(prev => !prev);
           }
         }}
@@ -156,7 +156,7 @@ const TabButton = props => {
                 ? `${
                     focused ? 'bg-white' : 'bg-black'
                   } w-14 h-14 rounded-full shadow-lg absolute -top-[48%]`
-                : 'z-50'
+                : ''
             }`,
             styles.container,
             {zIndex: 20},
@@ -175,16 +175,36 @@ const TabButton = props => {
 };
 
 const PopupMenu = ({visible}) => (
-  <View
-    style={[
-      tw`${
-        visible
-          ? 'flex h-[120px] w-[50%] absolute left-[25%] bottom-1/2 justify-center items-center bg-white rounded-t-lg border border-gray-300 shadow'
-          : 'hidden'
-      }`,
-    ]}>
-    <Text>This is the pop-up menu</Text>
-  </View>
+  <LinearGradient
+    colors={[
+      'rgba(56, 56, 56, 0)',
+      'rgba(56, 56, 56, 0.3)',
+      'rgba(56, 56, 56, 0.6)',
+    ]}
+    style={tw`${
+      visible
+        ? 'flex h-[200px] w-full absolute left-0 right-0 bottom-[100%] justify-end items-center'
+        : 'hidden'
+    }`}>
+    <View
+      style={[
+        tw`flex h-[90px] w-[45%] mb-1 justify-center items-center bg-black rounded-t-lg`,
+      ]}>
+      <TouchableOpacity
+        onPress={() => {
+          console.log('create new job pressed!');
+        }}
+        style={tw`px-3 py-2`}>
+        <Text
+          style={[
+            tw`text-white text-[13px]`,
+            {fontFamily: 'Poppins-SemiBold'},
+          ]}>
+          Create New Job
+        </Text>
+      </TouchableOpacity>
+    </View>
+  </LinearGradient>
 );
 
 const styles = StyleSheet.create({
