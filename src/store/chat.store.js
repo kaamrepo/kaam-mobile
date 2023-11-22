@@ -26,23 +26,24 @@ const useChatStore = create((set, get) => ({
   clearChatAndMessages: () => {
     set({chat: undefined});
   },
+ 
   sendChatMessage: async (applicationid, payload) => {
-    try {
-      const res = await API.get(`${CHATS}/${chatid}`, {
-        headers: {Authorization: await getToken()},
-      });
+     try {
+       const res = await API.get(`${CHATS}/${chatid}`, {
+         headers: {Authorization: await getToken()},
+       });
 
-      if (res && res.data) {
-        set({chat: res.data});
-        return true;
-      }
-    } catch (error) {
-      console.log(
-        '\nchat.store/getChatAndMessages/error\n',
-        JSON.stringify(error, null, 5),
-      );
-      return false;
-    }
+       if (res && res.data) {
+         set({chat: res.data});
+         return true;
+       }
+     } catch (error) {
+       console.log(
+         '\nchat.store/getChatAndMessages/error\n',
+         JSON.stringify(error, null, 5),
+       );
+       return false;
+     }
   },
 }));
 

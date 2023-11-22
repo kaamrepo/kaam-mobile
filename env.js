@@ -3,7 +3,8 @@ export const REACT_APP_ENV = 'local';
 // export const REACT_APP_ENV = 'test'
 // export const REACT_APP_ENV = 'production'
 
-export const REACT_APP_LOCAL_MODE = 'https://d67f-206-84-226-171.ngrok.io';
+export const REACT_APP_LOCAL_MODE =
+  'https://f670-103-196-202-42.ngrok-free.app';
 // export const REACT_APP_DEV_MODE = 'http://3.25.210.203:8000';
 // export const REACT_APP_TEST_MODE = 'http://192.168.177.34:3030';
 // export const REACT_APP_PRODUCTION_MODE = 'http://192.168.177.34:3030';
