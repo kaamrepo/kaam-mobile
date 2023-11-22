@@ -24,6 +24,7 @@ const useJobStore = create((set, get) => ({
         headers: {Authorization: await getToken()},
         params,
       });
+      console.log(res.data);
       if (res && res.data) {
         set({nearbyjobs: res.data});
       }

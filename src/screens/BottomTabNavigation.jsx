@@ -1,6 +1,7 @@
 import {TouchableOpacity, StyleSheet, View, Modal, Text} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {useNavigation} from '@react-navigation/native';
 import Icon, {Icons} from '../components/Icons';
 import * as Animatable from 'react-native-animatable';
 import tw from 'twrnc';
@@ -174,38 +175,42 @@ const TabButton = props => {
   );
 };
 
-const PopupMenu = ({visible}) => (
-  <LinearGradient
-    colors={[
-      'rgba(56, 56, 56, 0)',
-      'rgba(56, 56, 56, 0.3)',
-      'rgba(56, 56, 56, 0.6)',
-    ]}
-    style={tw`${
-      visible
-        ? 'flex h-[200px] w-full absolute left-0 right-0 bottom-[100%] justify-end items-center'
-        : 'hidden'
-    }`}>
-    <View
-      style={[
-        tw`flex h-[90px] w-[45%] mb-1 justify-center items-center bg-black rounded-t-lg`,
-      ]}>
-      <TouchableOpacity
-        onPress={() => {
-          console.log('create new job pressed!');
-        }}
-        style={tw`px-3 py-2`}>
-        <Text
-          style={[
-            tw`text-white text-[13px]`,
-            {fontFamily: 'Poppins-SemiBold'},
-          ]}>
-          Create New Job
-        </Text>
-      </TouchableOpacity>
-    </View>
-  </LinearGradient>
-);
+const PopupMenu = ({visible}) => {
+  const navigation = useNavigation();
+  return (
+    <LinearGradient
+      colors={[
+        'rgba(56, 56, 56, 0)',
+        'rgba(56, 56, 56, 0.3)',
+        'rgba(56, 56, 56, 0.6)',
+      ]}
+      style={tw`${
+        visible
+          ? 'flex h-[200px] w-full absolute left-0 right-0 bottom-[100%] justify-end items-center'
+          : 'hidden'
+      }`}>
+      <View
+        style={[
+          tw`flex h-[90px] w-[45%] mb-1 justify-center items-center bg-black rounded-t-lg`,
+        ]}>
+        <TouchableOpacity
+          onPress={() => {
+            console.log('create new job pressed!');
+            navigation.navigate('Bookmark');
+          }}
+          style={tw`px-3 py-2`}>
+          <Text
+            style={[
+              tw`text-white text-[13px]`,
+              {fontFamily: 'Poppins-SemiBold'},
+            ]}>
+            Create New Job
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </LinearGradient>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {

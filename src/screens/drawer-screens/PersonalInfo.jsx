@@ -331,7 +331,7 @@ const PersonalInfo = ({navigation}) => {
         />
 
         {/* Resume Action Card */}
-        <View style={tw`my-3`}>
+        {/* <View style={tw`my-3`}>
           <View style={tw`px-6 flex-row justify-between`}>
             <Text
               style={[
@@ -360,7 +360,7 @@ const PersonalInfo = ({navigation}) => {
               />
             </View>
           </View>
-        </View>
+        </View> */}
         {/* Resume Action Card: Completed */}
 
         {/* About Me Action Card */}
