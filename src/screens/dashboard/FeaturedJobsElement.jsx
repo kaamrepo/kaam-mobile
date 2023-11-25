@@ -108,14 +108,18 @@ const FeaturedJobsElement = ({
                 style={[
                   tw`text-black text-[14px]`,
                   {fontFamily: 'Poppins-SemiBold'},
-                ]}>
+                ]}
+                numberOfLines={1}
+                ellipsizeMode="tail">
                 {f.title}
               </Text>
               <Text
                 style={[
                   tw`text-neutral-600 text-[14px]`,
                   {fontFamily: 'Poppins-Regular'},
-                ]}>
+                ]}
+                numberOfLines={1}
+                ellipsizeMode="tail">
                 {f.description}
               </Text>
             </View>

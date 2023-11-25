@@ -7,6 +7,7 @@ import * as Animatable from 'react-native-animatable';
 import tw from 'twrnc';
 import Dashboard from './dashboard/Dashboard';
 import Inbox from './home/Inbox';
+import Post from './home/Postjobs';
 import Bookmark from './home/Bookmark';
 import Menu from './home/Menu';
 import LinearGradient from 'react-native-linear-gradient';
@@ -22,7 +23,8 @@ import BookmarkSVG from '../assets/svgs/bookmark.svg';
 import BookmarkInactiveSVG from '../assets/svgs/bookmark_inactive.svg';
 
 import MenuSVG from '../assets/svgs/menu.svg';
-import MenuInactiveSVG from '../assets/svgs/menu_inactive.svg';
+import MenuInactiveSVG from '../assets/svgs/menu_inactive.svg';import PostJobsSVG from '../assets/svgs/job-post-plus-icon.png'
+
 
 const Tab = createBottomTabNavigator();
 
@@ -41,6 +43,7 @@ const TabArr = [
     activeIcon: <MailSVG width={18} height={18} />,
     inactiveIcon: <MailInactiveSVG width={18} height={18} />,
   },
+    // { route: 'Post', label: 'Post', component: Post, activeIcon: <PostJobsSVG width={18} height={18} />, inactiveIcon: <PostJobsSVG width={18} height={18} /> },
   {
     route: 'Plus',
     label: '+',

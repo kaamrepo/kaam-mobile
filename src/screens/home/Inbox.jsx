@@ -125,7 +125,7 @@ const Inbox = () => {
   return (
     <SafeAreaView style={tw`flex-1 px-5 bg-white`}>
       <ScrollView
-        style={[tw`my-5 mt-9`]}
+        style={[tw`my-5 mb-[75px]`]}
         contentContainerStyle={{alignItems: 'flex-start'}}
         showsVerticalScrollIndicator={false}>
         <Text

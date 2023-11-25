@@ -29,28 +29,26 @@ const IntroSelectLanguage = ({navigation}) => {
       <View style={styles.separator} />
     </View>
   );
-  const renderLanguageItem = ({item}) => (
-    <View>
-      <TouchableOpacity
-        onPress={() => {
-          handleDropdownChange(item.lang);
-          toggleModal();
-        }}
-        style={tw`flex flex-row justify-between bg-white rounded-lg py-2 px-6`}>
-        <Text style={tw`text-black text-base text-center font-bold mr-5`}>
-          {item.lang}
-        </Text>
-        {item.lang === selectedOption && (
-          <View style={tw`w-4 h-4 mt-1`}>
-            <Image
-              source={require('../../assets/images/right_tik.png')}
-              style={tw`w-[100%] h-[100%]`}
-            />
-          </View>
-        )}
+  const renderLanguageItem = ({ item }) => {
+    const isClickable = ["मराठी", "हिंदी", "English"].includes(item.lang);
+    return (<View >
+      <TouchableOpacity  onPress={() => {
+          if (isClickable) {
+            handleDropdownChange(item.lang);
+            toggleModal();
+          }
+        }} style={[
+          tw`flex flex-row justify-between bg-white rounded-lg py-2 px-6`,
+          !isClickable && tw`opacity-50`, // Add opacity for non-clickable items
+        ]}
+        disabled={!isClickable}>
+        <Text style={tw`text-black text-base text-center font-bold mr-5`}>{item.lang}</Text>
+        {item.lang === selectedOption  && isClickable  && <View style={tw`w-4 h-4 mt-1`}>
+          <Image source={require('../../assets/images/right_tik.png')} style={tw`w-[100%] h-[100%]`} />
+        </View>}
       </TouchableOpacity>
-    </View>
-  );
+    </View>)
+  };
   return (
     <SafeAreaView style={{flex: 1}}>
       <GeneralStatusBar backgroundColor={'#F2BB13'} />
