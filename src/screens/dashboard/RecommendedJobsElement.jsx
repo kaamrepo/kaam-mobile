@@ -1,4 +1,11 @@
-import {StyleSheet, Text, View, Dimensions, Image} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  Image,
+  FlatList,
+} from 'react-native';
 import React from 'react';
 import {dashboardTranslation} from './dashboardTranslation';
 import tw from 'twrnc';
@@ -91,31 +98,87 @@ const RecommendedJobsElement = ({
       <View>
         <Carousel
           layout={'default'}
+          firstItem={recommendedJobsData?.data?.length > 2 ? 1 : 0}
           layoutCardOffset={18}
           autoplay={false}
           loop={false}
           data={recommendedJobsData?.data}
-          renderItem={renderItemsRecommendedJobs}
+          renderItem={RenderItemsRecommendedJobs}
           sliderWidth={Dimensions.get('window').width}
           itemWidth={(Dimensions.get('window').width - 80) * 0.5} // Adjust the item width
           inactiveSlideOpacity={1} // To make inactive slides fully visible
         />
       </View>
+      {/* <View style={tw`w-full `}>
+        <FlatList
+          style={tw`w-full px-4 mx-3`}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          data={recommendedJobsData?.data}
+          renderItem={({item, index}) => (
+            <RenderItemsRecommendedJobsFlatList item={item} index={index} />
+          )}
+          keyExtractor={item => item._id}
+        />
+      </View> */}
     </>
   );
 };
 
 export default RecommendedJobsElement;
 
-const styles = StyleSheet.create({});
-
-const renderItemsRecommendedJobs = ({item, index}) => {
+const RenderItemsRecommendedJobsFlatList = ({item, index}) => {
   return (
     <View
       style={[
-        tw`w-full h-48 flex flex-col justify-center items-center bg-slate-100 rounded-3 p-4 m-4 text-black`,
+        tw`w-[160px] p-4 pb-10 mx-2 my-3 justify-center overflow-hidden relative items-center bg-white rounded-3  shadow-md`,
+      ]}
+      key={index}>
+      <View style={tw`items-center mb-4`}>
+        <Image source={item.image} style={tw`w-15 h-15 rounded-full`} />
+      </View>
+      <Text
+        style={[tw`text-black my-1`, {fontFamily: 'Poppins-SemiBold'}]}
+        numberOfLines={1}
+        ellipsizeMode="tail">
+        {item.title}
+      </Text>
+      <Text
+        style={[
+          tw`text-black my-1 text-[12px]`,
+          {fontFamily: 'Poppins-Regular'},
+        ]}>
+        {`₹ ${new Intl.NumberFormat('en-IN', {
+          maximumSignificantDigits: 3,
+        }).format(item.value)}/y`}
+      </Text>
+      <View
+        style={tw`absolute bottom-0 right-0 flex flex-row items-center bg-red-200/30 rounded-tl-2xl px-3`}>
+        <Icon
+          type={Icons.MaterialIcons}
+          name={'location-pin'}
+          size={16}
+          color={'#D2042D'}
+          style={tw`h-[70%]`}
+        />
+        <Text
+          style={[
+            tw`text-black text-[12px] my-1`,
+            {fontFamily: 'Poppins-Regular'},
+          ]}>
+          {item.location}
+        </Text>
+      </View>
+    </View>
+  );
+};
+const RenderItemsRecommendedJobs = ({item, index}) => {
+  return (
+    <View
+      style={[
+        tw`w-full h-48 flex flex-col justify-center items-center bg-white rounded-3 p-4 m-4 text-black`,
         {
-          elevation: 8,
+          elevation: 4,
           shadowColor: '#000',
           shadowOffset: {width: 0, height: 2},
           shadowOpacity: 0.3,
@@ -126,17 +189,29 @@ const renderItemsRecommendedJobs = ({item, index}) => {
       <View style={tw`items-center mb-4`}>
         <Image source={item.image} style={tw`w-15 h-15 rounded-full`} />
       </View>
-      <Text style={tw`text-lg my-1`} numberOfLines={1} ellipsizeMode="tail">
+      <Text
+        style={[tw`text-black my-1`, {fontFamily: 'Poppins-SemiBold'}]}
+        numberOfLines={1}
+        ellipsizeMode="tail">
         {item.title}
       </Text>
-      <Text style={[tw`my-1`, {fontFamily: 'Poppins-SemiBold'}]}>
+      <Text style={[tw`text-black my-1`, {fontFamily: 'Poppins-Regular'}]}>
         {`₹ ${new Intl.NumberFormat('en-IN', {
           maximumSignificantDigits: 3,
         }).format(item.value)}/y`}
       </Text>
-      <View style={tw`flex flex-row`}>
-        <Icon type={Icons.MaterialIcons} name={'location-pin'} size={20} />
-        <Text style={{fontFamily: 'Poppins-SemiBold'}}>{item.location}</Text>
+      <View
+        style={tw`flex flex-row items-center bg-red-200/30 rounded-full px-3 mt-1`}>
+        <Icon
+          type={Icons.MaterialIcons}
+          name={'location-pin'}
+          size={17}
+          color={'#D2042D'}
+          style={tw`h-[80%]`}
+        />
+        <Text style={[tw`text-black my-1 text-[11px]`, {fontFamily: 'Poppins-Regular'}]}>
+          {item.location}
+        </Text>
       </View>
     </View>
   );

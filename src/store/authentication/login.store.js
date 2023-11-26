@@ -53,12 +53,10 @@ const useLoginStore = create((set, get) => ({
     try {
       const res = await API.patch(GET_OTP, data);
       if (res && res.status === 200) {
-        useRegistrationStore
-          .getState()
-          .setLoginDetails({
-            phone: res.data.phone,
-            dialcode: res.data.dialcode,
-          });
+        useRegistrationStore.getState().setLoginDetails({
+          phone: res.data.phone,
+          dialcode: res.data.dialcode,
+        });
         return true;
       }
     } catch (error) {
@@ -80,7 +78,7 @@ const useLoginStore = create((set, get) => ({
       set({language: data});
       await storeUserlanguage(data);
     } catch (error) {
-      console.log('error', error);
+      console.log(JSON.stringify(error, null, 5));
     }
   },
 }));

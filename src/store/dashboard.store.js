@@ -24,7 +24,6 @@ const useJobStore = create((set, get) => ({
         headers: {Authorization: await getToken()},
         params,
       });
-      console.log(JSON.stringify(res.data, null, 4));
       if (res && res.data) {
         set({nearbyjobs: res.data});
       }
@@ -147,7 +146,7 @@ const useJobStore = create((set, get) => ({
         set({appliedJob: res.data?.data?.at(0)});
       }
     } catch (error) {
-      console.log('🍿🍿', JSON.stringify(error, null, 5));
+      console.log(JSON.stringify(error, null, 5));
       // Toast.show({
       //     type: 'tomatoToast',
       //     text1: 'Failed to get a job details!',
@@ -162,10 +161,10 @@ const useJobStore = create((set, get) => ({
 
       if (res && res.data) {
         set({appliedJob: res.data});
-        return true;
+        return res.data;
       }
     } catch (error) {
-      console.log('🍿🍿', JSON.stringify(error, null, 5));
+      console.log(JSON.stringify(error, null, 5));
       return false;
     }
   },

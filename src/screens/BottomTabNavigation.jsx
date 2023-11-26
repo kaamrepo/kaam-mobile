@@ -23,8 +23,9 @@ import BookmarkSVG from '../assets/svgs/bookmark.svg';
 import BookmarkInactiveSVG from '../assets/svgs/bookmark_inactive.svg';
 
 import MenuSVG from '../assets/svgs/menu.svg';
-import MenuInactiveSVG from '../assets/svgs/menu_inactive.svg';import PostJobsSVG from '../assets/svgs/job-post-plus-icon.png'
-
+import MenuInactiveSVG from '../assets/svgs/menu_inactive.svg';
+import PostJobsSVG from '../assets/svgs/job-post-plus-icon.png';
+import Messages from './home/Messages';
 
 const Tab = createBottomTabNavigator();
 
@@ -39,20 +40,25 @@ const TabArr = [
   {
     route: 'Inbox',
     label: 'Inbox',
-    component: Inbox,
+    component: Messages,
+    // component: Inbox,
     activeIcon: <MailSVG width={18} height={18} />,
     inactiveIcon: <MailInactiveSVG width={18} height={18} />,
   },
-    // { route: 'Post', label: 'Post', component: Post, activeIcon: <PostJobsSVG width={18} height={18} />, inactiveIcon: <PostJobsSVG width={18} height={18} /> },
   {
     route: 'Plus',
     label: '+',
     component: Inbox,
     activeIcon: (
-      <Icon type={Icons.FontAwesome5} name="plus" size={18} color={'black'} />
+      <Icon type={Icons.FontAwesome5} name="plus" size={18} color={'#ffffff'} />
     ),
     inactiveIcon: (
-      <Icon type={Icons.FontAwesome5} name="plus" size={18} color={'white'} />
+      <Icon
+        type={Icons.FontAwesome5}
+        name="plus"
+        size={18}
+        color={'rgb(59, 130, 246)'}
+      />
     ),
   },
   {
@@ -104,7 +110,6 @@ const BottomTabNavigation = () => {
                 {...props}
                 item={item}
                 isMiddleElement={Math.floor(TabArr.length / 2) === index}
-                // setPopupVisible={setPopupVisible}
               />
             ),
           }}
@@ -158,7 +163,9 @@ const TabButton = props => {
             tw`${
               isMiddleElement
                 ? `${
-                    focused ? 'bg-white' : 'bg-black'
+                    focused
+                      ? 'bg-[rgb(59,130,246)]'
+                      : 'bg-white border-2 border-[rgb(59,130,246)]'
                   } w-14 h-14 rounded-full shadow-lg absolute -top-[48%]`
                 : ''
             }`,
@@ -183,9 +190,9 @@ const PopupMenu = ({visible}) => {
   return (
     <LinearGradient
       colors={[
-        'rgba(56, 56, 56, 0)',
-        'rgba(56, 56, 56, 0.3)',
-        'rgba(56, 56, 56, 0.6)',
+        'rgba(56, 130, 246, 0)',
+        'rgba(56, 130, 246, 0.3)',
+        'rgba(56, 130, 246, 0.6)',
       ]}
       style={tw`${
         visible
@@ -194,17 +201,17 @@ const PopupMenu = ({visible}) => {
       }`}>
       <View
         style={[
-          tw`flex h-[90px] w-[45%] mb-1 justify-center items-center bg-black rounded-t-lg`,
+          tw`flex h-[90px] w-[45%] mb-1 justify-center items-center bg-white rounded-t-lg`,
         ]}>
         <TouchableOpacity
           onPress={() => {
             console.log('create new job pressed!');
             navigation.navigate('Bookmark');
           }}
-          style={tw`px-3 py-2`}>
+          style={tw`px-3 py-2 border-2 border-blue-500 rounded-md`}>
           <Text
             style={[
-              tw`text-white text-[13px]`,
+              tw`text-blue-500 text-[13px]`,
               {fontFamily: 'Poppins-SemiBold'},
             ]}>
             Create New Job

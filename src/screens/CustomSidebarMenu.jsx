@@ -5,25 +5,16 @@ import {
   StyleSheet,
   Image,
   Text,
-  Linking,
   Pressable,
 } from 'react-native';
 
-import {
-  DrawerContentScrollView,
-  DrawerItemList,
-  DrawerItem,
-} from '@react-navigation/drawer';
+import {DrawerContentScrollView} from '@react-navigation/drawer';
 import tw from 'twrnc';
 import Icon, {Icons} from '../components/Icons';
 
 // SVGIcons
 
 import PersonalInformationSVG from '../assets/svgs/Personal Information.svg';
-import ApplicationsSVG from '../assets/svgs/Applications.svg';
-import PortfolioSVG from '../assets/svgs/Portfolio.svg';
-import ProposalsSVG from '../assets/svgs/Proposals.svg';
-import ResumesSVG from '../assets/svgs/Resumes.svg';
 import SettingsSVG from '../assets/svgs/Settings.svg';
 import LogoutSVG from '../assets/svgs/Logout.svg';
 import BlueTickSVG from '../assets/svgs/Blue Tick.svg';
@@ -75,45 +66,51 @@ const CustomSidebarMenu = props => {
         <View style={tw`flex-row`}>
           <Text
             style={[
-              tw`text-[#95969D] text-[14px]`,
+              tw`text-zinc-600 text-[14px]`,
               {fontFamily: 'Poppins-Light'},
             ]}>
             UI Designer
           </Text>
           <BlueTickSVG width={20} height={20} />
         </View>
-        <Text
+        {/* <Text
           style={[
             tw`text-green-700 text-[15px]`,
             {fontFamily: 'Poppins-Regular'},
           ]}
           onPress={() => props.navigation.navigate('View Profile')}>
           View Profile
-        </Text>
+        </Text> */}
       </View>
       <DrawerContentScrollView {...props}>
-        {/* <DrawerItemList {...props} /> */}
-
         <View style={tw`px-4`}>
           <CustomDrawerItem
-            title="Personal Info"
+            title="View Profile"
             id={1}
             index={props?.state?.index}
             icon={<PersonalInformationSVG />}
             subtitle={'80% complete'}
             subtitleStyle={tw`text-[#FE6D73] text-[12px]`}
-            onPress={() => props.navigation.navigate('Personal Info')}
+            onPress={() => props.navigation.navigate('View Profile')}
+          />
+          <CustomDrawerItem
+            title="Contact & Support"
+            id={2}
+            index={props?.state?.index}
+            icon={<SettingsSVG />}
+            onPress={() => props.navigation.navigate('Contact And Support')}
           />
           <CustomDrawerItem
             title="Settings"
-            id={6}
+            id={3}
             index={props?.state?.index}
             icon={<SettingsSVG />}
             onPress={() => props.navigation.navigate('Settings')}
           />
           <CustomDrawerItem
             title="Logout"
-            id={7}
+            id={4}
+            titleStyle={{color: '#E30000'}}
             index={props?.state?.index}
             icon={<LogoutSVG />}
             onPress={() => logout()}

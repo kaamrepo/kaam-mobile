@@ -65,7 +65,9 @@ const App = () =>
   return (
     <>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName={'DrawerNavigation'}>
+        <Stack.Navigator
+          initialRouteName={'DrawerNavigation'}
+          keyboardHandlingEnabled={true}>
           {/* <Stack.Navigator initialRouteName={!isLoggedIn ? 'IntroSelectLanguage' : 'DrawerNavigation'}> */}
           {!isLoggedIn ? (
             <>

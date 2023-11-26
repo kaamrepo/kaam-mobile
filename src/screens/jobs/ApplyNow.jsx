@@ -9,6 +9,7 @@ import GeneralStatusBar from '../../components/GeneralStatusBar';
 import useLoginStore from '../../store/authentication/login.store';
 import useLoaderStore from '../../store/loader.store';
 import Icon, {Icons} from '../../components/Icons';
+import {darkenColor} from '../../helper/utils/getDarkColor';
 
 const jobDescription = {
   image: Image1,
@@ -34,12 +35,12 @@ const ApplyNow = ({route, navigation}) => {
     });
     if (res) {
       //  this will return the job application id if available or return false;
-      const success = await getAppliedJobDetailsById(res);
-      if (success) {
+      const appliedJobResponse = await getAppliedJobDetailsById(res);
+      if (appliedJobResponse) {
         // if above call success then it will return true else false;
         navigation.navigate('Chat', {
-          appliedJobId: appliedJob?._id,
-          chatid: appliedJob?.chatid,
+          appliedJobId: appliedJobResponse?._id,
+          chatid: appliedJobResponse?.chatid,
         });
       }
     }
@@ -86,13 +87,19 @@ const ApplyNow = ({route, navigation}) => {
     };
   }, []);
 
+  const tw_bgcolor = job?.styles?.bgcolor
+    ? `bg-[${job?.styles?.bgcolor}]`
+    : 'bg-[#00ff00]';
+  const tw_textcolor = job?.styles?.color
+    ? `text-[${job?.styles?.color}]`
+    : 'bg-[#0f0f0f]';
   return (
     <SafeAreaView style={tw`flex-1`} edges={['top']}>
       <GeneralStatusBar backgroundColor={job?.styles?.bgcolor} />
       <View style={tw`flex-1`}>
         <View
           style={tw`flex-1 ${
-            job?.styles?.bgcolor ? `bg-[${job?.styles?.bgcolor}]` : 'bg-white'
+            job?.styles?.bgcolor ? tw_bgcolor : 'bg-white'
           } px-5`}>
           <View style={tw`flex-row items-center justify-between py-4`}>
             <Pressable
@@ -129,9 +136,7 @@ const ApplyNow = ({route, navigation}) => {
             <Text
               style={[
                 tw`text-xl mt-2 ${
-                  job?.styles?.color
-                    ? `text-[${job?.styles?.color}]`
-                    : 'text-white'
+                  job?.styles?.color ? tw_textcolor : 'text-white'
                 }`,
                 {fontFamily: 'Poppins-Bold'},
               ]}>
@@ -139,11 +144,7 @@ const ApplyNow = ({route, navigation}) => {
             </Text>
             <Text
               style={[
-                tw`text-lg ${
-                  job?.styles?.color
-                    ? `text-[${job?.styles?.color}]`
-                    : 'text-white'
-                }`,
+                tw`text-lg ${job?.styles?.color ? tw_textcolor : 'text-white'}`,
                 {fontFamily: 'Poppins-Bold'},
               ]}>
               {job?.position}
@@ -155,9 +156,7 @@ const ApplyNow = ({route, navigation}) => {
                 key={tag}
                 style={[
                   tw`text-xs ${
-                    job?.styles?.color
-                      ? `text-[${job?.styles?.color}]`
-                      : 'text-white'
+                    job?.styles?.color ? tw_textcolor : 'text-white'
                   } px-5 py-[5px] bg-blue-200/30 rounded-full`,
                   {fontFamily: 'Poppins-Regular'},
                 ]}>
@@ -170,9 +169,7 @@ const ApplyNow = ({route, navigation}) => {
               <Text
                 style={[
                   tw`text-[14px] ${
-                    job?.styles?.color
-                      ? `text-[${job?.styles?.color}]`
-                      : 'text-white'
+                    job?.styles?.color ? tw_textcolor : 'text-white'
                   }`,
                   {fontFamily: 'Poppins-Bold'},
                 ]}>
@@ -187,9 +184,7 @@ const ApplyNow = ({route, navigation}) => {
               <Text
                 style={[
                   tw`text-[14px]  ${
-                    job?.styles?.color
-                      ? `text-[${job?.styles?.color}]`
-                      : 'text-white'
+                    job?.styles?.color ? tw_textcolor : 'text-white'
                   }`,
                   {fontFamily: 'Poppins-Bold'},
                 ]}>
@@ -261,9 +256,11 @@ const ApplyNow = ({route, navigation}) => {
                 }}
                 style={({pressed}) => [
                   {
-                    backgroundColor: pressed ? '#418c4d' : '#0E9D57',
+                    backgroundColor: pressed
+                      ? darkenColor(job?.styles?.bgcolor, 20)
+                      : job?.styles?.bgcolor,
                   },
-                  tw`px-8 py-[16px] flex justify-center items-center rounded-[16px] mx-8 mt-5 shadow-lg shadow-green-500`,
+                  tw`px-8 py-[16px] flex justify-center items-center rounded-[16px] mx-8 mt-5 shadow-lg shadow-[${job?.styles?.bgcolor}]`,
                 ]}>
                 {({pressed}) => (
                   <View style={tw`flex flex-row gap-3 items-start`}>
@@ -287,9 +284,11 @@ const ApplyNow = ({route, navigation}) => {
                 onPress={handleAppliedJob}
                 style={({pressed}) => [
                   {
-                    backgroundColor: pressed ? '#418c4d' : '#0E9D57',
+                    backgroundColor: pressed
+                      ? darkenColor(job?.styles?.bgcolor, 20)
+                      : job?.styles?.bgcolor,
                   },
-                  tw`px-8 py-[16px] flex justify-center items-center rounded-[16px] mx-8 mt-5 shadow-lg shadow-green-500`,
+                  tw`px-8 py-[16px] flex justify-center items-center rounded-[16px] mx-8 mt-5 shadow-lg shadow-[${job?.styles?.bgcolor}]`,
                 ]}>
                 {({pressed}) => (
                   <Text

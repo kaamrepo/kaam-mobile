@@ -17,37 +17,29 @@ import Icon, {Icons} from '../../components/Icons';
 import SeeAll from '../see-all/SeeAll';
 
 const nearbyJobsColorSchemes = ['#87C4FF', '#739072', '#CE5A67', '#ECEE81'];
-const NearbyJobsElement = ({language, nearbyjobs, navigation, isLoading}) => {
+const NearbyJobsElement = ({
+  language,
+  nearbyjobs,
+  navigation,
+  isLoading,
+  location,
+}) => {
   const {loggedInUser} = useLoginStore();
 
+  if (!location) {
+    return (
+      <CommonMessageForNearByJobs
+        title="Please turn on your location"
+        language={language}
+      />
+    );
+  }
   if (isLoading) {
     return (
-      <>
-        <View style={tw`flex-row justify-between items-center mb-4 mx-5`}>
-          <Text style={[tw`text-black text-xl`, {fontFamily: 'Poppins-Bold'}]}>
-            {dashboardTranslation[language]['Nearby Jobs']}
-          </Text>
-          <Text
-            style={[
-              tw`text-center text-sm leading-relaxed text-gray-600`,
-              {fontFamily: 'Poppins-Regular'},
-            ]}>
-            {dashboardTranslation[language]['See all']}
-          </Text>
-        </View>
-        <View style={tw`w-full px-5`}>
-          <View
-            style={tw`bg-gray-200 w-full h-48 rounded-3 items-center justify-center`}>
-            <Text
-              style={[
-                tw`text-neutral-700 text-sm`,
-                {fontFamily: 'Poppins-Regular'},
-              ]}>
-              Fetching jobs...
-            </Text>
-          </View>
-        </View>
-      </>
+      <CommonMessageForNearByJobs
+        title="Fetching jobs..."
+        language={language}
+      />
     );
   }
   if (
@@ -55,32 +47,10 @@ const NearbyJobsElement = ({language, nearbyjobs, navigation, isLoading}) => {
     Object.keys(nearbyjobs)?.length == 0
   ) {
     return (
-      <>
-        <View style={tw`flex-row justify-between items-center mb-4 mx-5`}>
-          <Text style={[tw`text-black text-xl`, {fontFamily: 'Poppins-Bold'}]}>
-            {dashboardTranslation[language]['Nearby Jobs']}
-          </Text>
-          <Text
-            style={[
-              tw`text-center text-sm leading-relaxed text-gray-600`,
-              {fontFamily: 'Poppins-Regular'},
-            ]}>
-            {dashboardTranslation[language]['See all']}
-          </Text>
-        </View>
-        <View style={tw`w-full px-5`}>
-          <View
-            style={tw`bg-gray-200 w-full h-48 rounded-3 items-center justify-center`}>
-            <Text
-              style={[
-                tw`text-neutral-700 text-sm`,
-                {fontFamily: 'Poppins-Regular'},
-              ]}>
-              There are no nearby jobs
-            </Text>
-          </View>
-        </View>
-      </>
+      <CommonMessageForNearByJobs
+        title="There are no nearby jobs"
+        language={language}
+      />
     );
   }
   const handleSeeAllPress = () => {
@@ -150,11 +120,11 @@ const renderItemsNearbyJobs = ({item, index, navigation}) => {
         }}
         key={item._id}
         style={tw`w-full h-48 rounded-3`}>
-        <View style={tw`flex flex-row justify-evenly p-4 h-35`}>
-          <View>
-            {/* <Image source={item.image} style={tw`w-15 h-15 rounded-full`} /> */}
-          </View>
-          <View style={tw`flex-3 items-center p-2`}>
+        <View style={tw`flex flex-row justify-between p-4 h-35`}>
+          {/* <View> 
+          <Image source={item.image} style={tw`w-15 h-15 rounded-full`} /> 
+         </View> */}
+          <View style={tw` items-center p-2`}>
             <Text
               style={[
                 tw`text-[${item?.styles?.color}] text-[20px] `,
@@ -210,3 +180,43 @@ const renderItemsNearbyJobs = ({item, index, navigation}) => {
     </ImageBackground>
   );
 };
+
+function CommonMessageForNearByJobs({title, language}) {
+  return (
+    <>
+      <View style={tw`flex-row justify-between items-center mb-4 mx-5`}>
+        <Text style={[tw`text-black text-xl`, {fontFamily: 'Poppins-Bold'}]}>
+          {dashboardTranslation[language]['Nearby Jobs']}
+        </Text>
+        <Text
+          style={[
+            tw`text-center text-sm leading-relaxed text-gray-600`,
+            {fontFamily: 'Poppins-Regular'},
+          ]}>
+          {dashboardTranslation[language]['See all']}
+        </Text>
+      </View>
+      <View style={tw`w-full px-5`}>
+        <View
+          style={tw`bg-gray-200 w-full h-48 flex flex-row gap-3 rounded-3 items-center justify-center`}>
+          {title == 'Please turn on your location' ? (
+            <Icon
+              type={Icons.MaterialIcons}
+              name={'location-off'}
+              size={25}
+              style={tw`text-red-600`}
+            />
+          ) : null}
+
+          <Text
+            style={[
+              tw`text-neutral-700 text-sm`,
+              {fontFamily: 'Poppins-Regular'},
+            ]}>
+            {title}
+          </Text>
+        </View>
+      </View>
+    </>
+  );
+}
