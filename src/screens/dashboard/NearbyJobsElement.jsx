@@ -25,7 +25,7 @@ const NearbyJobsElement = ({
   location,
 }) => {
   const {loggedInUser} = useLoginStore();
-
+  nearbyjobs.data.push({});
   if (!location) {
     return (
       <CommonMessageForNearByJobs
@@ -69,13 +69,8 @@ const NearbyJobsElement = ({
               tw`text-center text-sm leading-relaxed text-gray-600`,
               {fontFamily: 'Poppins-Regular'},
             ]}>
-            {/* <TouchableOpacity onPress={handleSeeAllPress}>
-         
-            {dashboardTranslation[language]['See all']}
-        
-        </TouchableOpacity> */}
-            See all
-          </Text>
+        See all
+        </Text>
         </TouchableOpacity>
       </View>
       <View>
@@ -85,7 +80,7 @@ const NearbyJobsElement = ({
           // autoplayInterval={5000}
           loop={false}
           data={nearbyjobs?.data}
-          renderItem={props => renderItemsNearbyJobs({...props, navigation})}
+          renderItem={props => renderItemsNearbyJobs({...props, navigation,nearbyjobs})}
           sliderWidth={Dimensions.get('window').width}
           itemWidth={Dimensions.get('window').width - 80}
         />
@@ -102,18 +97,35 @@ const handleBookmarkPress = () => {
   // Handle bookmark button press logic here
   console.log('Bookmark button pressed!');
 };
-const renderItemsNearbyJobs = ({item, index, navigation}) => {
-  // const randomColorIndex = Math.floor(
-  //   Math.random() * nearbyJobsColorSchemes.length,
-  // );
-  // const randomBackgroundColor = nearbyJobsColorSchemes[randomColorIndex];
-
+const renderItemsNearbyJobs = ({item, index, navigation,nearbyjobs}) => {
+  const isLastSlide = Object.keys(item).length;
+  console.log("isLastSlide",isLastSlide,item);
+  if (!isLastSlide) {
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('SeeAll', {jobDetails: item});
+        }}
+        style={[
+          tw`w-full h-48 flex flex-col justify-center items-center rounded-3 p-4 m-4 text-black relative`,
+        ]}
+        key={index}>
+        <Icon
+          type={Icons.Entypo}
+          name={'chevron-with-circle-right'}
+          size={45}
+          color={'green'}
+        />
+      </TouchableOpacity>
+    );
+  }
+  if (isLastSlide) {
   return (
     <ImageBackground
       source={require('../../assets/images/nearby-jobs-skin-1.png')}
       style={[tw`w-full h-48 rounded-3 bg-[${item?.styles?.bgcolor}]`]}
       resizeMode="cover">
-      <TouchableOpacity
+      <Pressable
         onPress={() => {
           console.log('pressed');
           navigation.navigate('ApplyNow', {jobDetails: item, id: item._id});
@@ -176,9 +188,10 @@ const renderItemsNearbyJobs = ({item, index, navigation}) => {
             {item.location?.name}
           </Text>
         </View>
-      </TouchableOpacity>
+      </Pressable>
     </ImageBackground>
   );
+            }
 };
 
 function CommonMessageForNearByJobs({title, language}) {
