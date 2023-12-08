@@ -1,7 +1,8 @@
-import { TouchableOpacity, StyleSheet, View } from 'react-native'
-import React, { useEffect, useRef } from 'react'
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Icon, { Icons } from '../components/Icons';
+import {TouchableOpacity, StyleSheet, View, Modal, Text} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {useNavigation} from '@react-navigation/native';
+import Icon, {Icons} from '../components/Icons';
 import * as Animatable from 'react-native-animatable';
 import tw from 'twrnc';
 import Dashboard from './dashboard/Dashboard';
@@ -9,111 +10,222 @@ import Inbox from './home/Inbox';
 import Post from './home/Postjobs';
 import Bookmark from './home/Bookmark';
 import Menu from './home/Menu';
+import LinearGradient from 'react-native-linear-gradient';
 
 // svg icons
-import HomeSVG from '../assets/svgs/home.svg'
-import HomeInactiveSVG from '../assets/svgs/home_inactive.svg'
+import HomeSVG from '../assets/svgs/home.svg';
+import HomeInactiveSVG from '../assets/svgs/home_inactive.svg';
 
-import MailSVG from '../assets/svgs/mail.svg'
-import MailInactiveSVG from '../assets/svgs/mail_inactive.svg'
+import MailSVG from '../assets/svgs/mail.svg';
+import MailInactiveSVG from '../assets/svgs/mail_inactive.svg';
 
-import BookmarkSVG from '../assets/svgs/bookmark.svg'
-import BookmarkInactiveSVG from '../assets/svgs/bookmark_inactive.svg'
+import BookmarkSVG from '../assets/svgs/bookmark.svg';
+import BookmarkInactiveSVG from '../assets/svgs/bookmark_inactive.svg';
 
-import MenuSVG from '../assets/svgs/menu.svg'
-import MenuInactiveSVG from '../assets/svgs/menu_inactive.svg'
-import PostJobsSVG from '../assets/svgs/job-post-plus-icon.png'
-
+import MenuSVG from '../assets/svgs/menu.svg';
+import MenuInactiveSVG from '../assets/svgs/menu_inactive.svg';
+import PostJobsSVG from '../assets/svgs/job-post-plus-icon.png';
+import Messages from './home/Messages';
 
 const Tab = createBottomTabNavigator();
 
 const TabArr = [
-    { route: 'Dashboard', label: 'Dashboard', component: Dashboard, activeIcon: <HomeSVG width={18} height={18} />, inactiveIcon: <HomeInactiveSVG width={18} height={18} /> },
-    { route: 'Inbox', label: 'Inbox', component: Inbox, activeIcon: <MailSVG width={18} height={18} />, inactiveIcon: <MailInactiveSVG width={18} height={18} /> },
-    // { route: 'Post', label: 'Post', component: Post, activeIcon: <PostJobsSVG width={18} height={18} />, inactiveIcon: <PostJobsSVG width={18} height={18} /> },
-    { route: 'Bookmark', label: 'Bookmark', component: Bookmark, activeIcon: <BookmarkSVG width={18} height={18} />, inactiveIcon: <BookmarkInactiveSVG width={18} height={18} /> },
-    { route: 'Menu', label: 'Menu', component: Menu, activeIcon: <MenuSVG width={18} height={18} />, inactiveIcon: <MenuInactiveSVG width={18} height={18} /> },
+  {
+    route: 'Dashboard',
+    label: 'Dashboard',
+    component: Dashboard,
+    activeIcon: <HomeSVG width={18} height={18} />,
+    inactiveIcon: <HomeInactiveSVG width={18} height={18} />,
+  },
+  {
+    route: 'Inbox',
+    label: 'Inbox',
+    component: Messages,
+    // component: Inbox,
+    activeIcon: <MailSVG width={18} height={18} />,
+    inactiveIcon: <MailInactiveSVG width={18} height={18} />,
+  },
+  {
+    route: 'Plus',
+    label: '+',
+    component: Inbox,
+    activeIcon: (
+      <Icon type={Icons.FontAwesome5} name="plus" size={18} color={'#ffffff'} />
+    ),
+    inactiveIcon: (
+      <Icon
+        type={Icons.FontAwesome5}
+        name="plus"
+        size={18}
+        color={'rgb(59, 130, 246)'}
+      />
+    ),
+  },
+  {
+    route: 'Bookmark',
+    label: 'Bookmark',
+    component: Bookmark,
+    activeIcon: <BookmarkSVG width={18} height={18} />,
+    inactiveIcon: <BookmarkInactiveSVG width={18} height={18} />,
+  },
+  {
+    route: 'Menu',
+    label: 'Menu',
+    component: Menu,
+    activeIcon: <MenuSVG width={18} height={18} />,
+    inactiveIcon: <MenuInactiveSVG width={18} height={18} />,
+  },
 ];
 
+const BottomTabNavigation = () => {
+  return (
+    <Tab.Navigator
+      initialRouteName="Dashboard"
+      screenOptions={{
+        headerShown: false,
+        tabBarHideOnKeyboard: true,
+        tabBarStyle: {
+          borderTopLeftRadius: 40,
+          borderTopRightRadius: 40,
+          height: 60,
+          position: 'absolute',
+          bottom: 0,
+          right: 0,
+          left: 0,
+        },
 
-const BottomTabNavigation = () =>
-{
-    return (
-        <Tab.Navigator
-            initialRouteName='Dashboard'
-            screenOptions={{
-                headerShown: false,
-                tabBarHideOnKeyboard: true,
-                tabBarStyle: {
-                    height: 50,
-                    // position: 'absolute',
-                    // bottom: 0,
-                    // right: 0,
-                    // left: 0,
+        headerBackgroundContainerStyle: {
+          backgroundColor: 'transparent',
+        },
+      }}>
+      {TabArr.map((item, index) => (
+        <Tab.Screen
+          key={index}
+          name={item.route}
+          component={item.component}
+          options={{
+            tabBarShowLabel: false,
+            tabBarButton: props => (
+              <TabButton
+                {...props}
+                item={item}
+                isMiddleElement={Math.floor(TabArr.length / 2) === index}
+              />
+            ),
+          }}
+        />
+      ))}
+    </Tab.Navigator>
+  );
+};
 
-                }
-            }}
-            style={tw`border-2`}
-        >
-            {TabArr.map((item, index) =>
-            {
-                return (
-                    <Tab.Screen key={index} name={item.route} component={item.component} style={tw`border-2`}
-                        options={{
-                            tabBarShowLabel: false,
-                            tabBarButton: (props) => <TabButton {...props} item={item} />
-                        }}
-                    />
-                )
-            })}
+export default BottomTabNavigation;
 
+const TabButton = props => {
+  const {item, onPress, accessibilityState, isMiddleElement} = props;
+  const viewRef = useRef(null);
+  const [popupVisible, setPopupVisible] = useState(false);
+  const focused = accessibilityState.selected || popupVisible;
 
-        </Tab.Navigator >
-    )
-}
+  useEffect(() => {
+    if (!isMiddleElement) {
+      if (focused) {
+        viewRef.current.animate({0: {scale: 1}, 1: {scale: 1.3}});
+      } else {
+        viewRef.current.animate({0: {scale: 1.3}, 1: {scale: 1}});
+      }
+    } else {
+      // if this is middle tab button
+      if (focused) {
+        viewRef.current.animate({0: {rotate: '0deg'}, 1: {rotate: '45deg'}});
+      } else {
+        viewRef.current.animate({0: {rotate: '45deg'}, 1: {rotate: '0deg'}});
+      }
+    }
+  }, [focused]);
 
-export default BottomTabNavigation
+  return (
+    <>
+      <PopupMenu visible={popupVisible} />
+      <TouchableOpacity
+        onPress={() => {
+          if (!isMiddleElement) onPress();
+          else {
+            setPopupVisible(prev => !prev);
+          }
+        }}
+        activeOpacity={1}
+        style={[tw`relative`, styles.container]}>
+        <Animatable.View
+          ref={viewRef}
+          duration={1000}
+          style={[
+            tw`${
+              isMiddleElement
+                ? `${
+                    focused
+                      ? 'bg-[rgb(59,130,246)]'
+                      : 'bg-white border-2 border-[rgb(59,130,246)]'
+                  } w-14 h-14 rounded-full shadow-lg absolute -top-[48%]`
+                : ''
+            }`,
+            styles.container,
+            {zIndex: 20},
+          ]}>
+          {focused ? item.activeIcon : item.inactiveIcon}
+          {!isMiddleElement && (
+            <View
+              style={tw`mt-[2px] w-[3px] h-[3px] rounded-full z-50 ${
+                focused ? `bg-green-600 shadow shadow-green-600` : 'bg-white'
+              }`}></View>
+          )}
+        </Animatable.View>
+      </TouchableOpacity>
+    </>
+  );
+};
 
-const TabButton = (props) =>
-{
-    const { item, onPress, accessibilityState } = props;
-    const focused = accessibilityState.selected;
-    const viewRef = useRef(null);
-
-    useEffect(() =>
-    {
-        if (focused)
-        {
-            viewRef.current.animate({ 0: { scale: 1 }, 1: { scale: 1.3 } });
-        } else
-        {
-            viewRef.current.animate({ 0: { scale: 1.3 }, 1: { scale: 1 } });
-        }
-    }, [focused])
-
-    return (
+const PopupMenu = ({visible}) => {
+  const navigation = useNavigation();
+  return (
+    <LinearGradient
+      colors={[
+        'rgba(56, 130, 246, 0)',
+        'rgba(56, 130, 246, 0.3)',
+        'rgba(56, 130, 246, 0.6)',
+      ]}
+      style={tw`${
+        visible
+          ? 'flex h-[200px] w-full absolute left-0 right-0 bottom-[100%] justify-end items-center'
+          : 'hidden'
+      }`}>
+      <View
+        style={[
+          tw`flex h-[90px] w-[45%] mb-1 justify-center items-center bg-white rounded-t-lg`,
+        ]}>
         <TouchableOpacity
-            onPress={onPress}
-            activeOpacity={1}
-            style={styles.container}>
-            <Animatable.View
-                ref={viewRef}
-                duration={1000}
-                style={styles.container}>
-                {focused ? item.activeIcon : item.inactiveIcon}
-                {/* <Icon type={item.type} name={focused ? item.activeIcon : item.inActiveIcon} color={item.iconColor} size={20} /> */}
-                <View style={tw`mt-[2px] w-[3px] h-[3px] rounded-full ${ focused ? `bg-green-600 shadow shadow-green-600` : "bg-white" }`}></View>
-            </Animatable.View>
+          onPress={() => {
+            console.log('create new job pressed!');
+            navigation.navigate('Bookmark');
+          }}
+          style={tw`px-3 py-2 border-2 border-blue-500 rounded-md`}>
+          <Text
+            style={[
+              tw`text-blue-500 text-[13px]`,
+              {fontFamily: 'Poppins-SemiBold'},
+            ]}>
+            Create New Job
+          </Text>
         </TouchableOpacity>
-    )
-}
-
-
+      </View>
+    </LinearGradient>
+  );
+};
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    }
-})
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});

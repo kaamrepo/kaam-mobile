@@ -1,15 +1,15 @@
-import { create } from 'zustand';
+import {create} from 'zustand';
 import API from '../../helper/API';
-import { USER } from '../../helper/endpoints';
+import {USER} from '../../helper/endpoints';
 import Toast from 'react-native-toast-message';
-import useLoginStore, { getToken, retrieveUserSession } from './login.store';
+import useLoginStore, {getToken, retrieveUserSession} from './login.store';
 // import { getTimeZone } from "react-native-localize";
 
 const useUsersStore = create((set, get) => ({
   updateAboutMeStore: async (userid, data) => {
     try {
-      const res = await API.patch(`${ USER }/${ userid }`, data, {
-        headers: { Authorization: await getToken() },
+      const res = await API.patch(`${USER}/${userid}`, data, {
+        headers: {Authorization: await getToken()},
       });
 
       if (res && res.data) {
@@ -35,9 +35,9 @@ const useUsersStore = create((set, get) => ({
         dateofbirth: new Date(data.dateofbirth).toISOString(),
       };
 
-      const res = await API.patch(`${ USER }/${ userid }`, data, {
+      const res = await API.patch(`${USER}/${userid}`, data, {
         headers: {
-          Authorization: await getToken()
+          Authorization: await getToken(),
         },
       });
 
@@ -50,7 +50,7 @@ const useUsersStore = create((set, get) => ({
         return true;
       }
     } catch (error) {
-      console.log("🍿🍿🍿", error)
+      console.log(JSON.stringify(error, null, 5));
       Toast.show({
         type: 'tomatoToast',
         text1: 'Failed to save data!',
@@ -61,9 +61,9 @@ const useUsersStore = create((set, get) => ({
   updateAddressStore: async (userid, data) => {
     try {
       const res = await API.patch(
-        `${ USER }/${ userid }`,
-        { address: data },
-        { headers: { Authorization: await getToken() } },
+        `${USER}/${userid}`,
+        {address: data},
+        {headers: {Authorization: await getToken()}},
       );
 
       if (res && res.data) {
@@ -84,8 +84,8 @@ const useUsersStore = create((set, get) => ({
   },
   updateAadharInfoStore: async (userid, data) => {
     try {
-      const res = await API.patch(`${ USER }/${ userid }`, data, {
-        headers: { Authorization: await getToken() },
+      const res = await API.patch(`${USER}/${userid}`, data, {
+        headers: {Authorization: await getToken()},
       });
 
       if (res && res.data) {
@@ -106,8 +106,8 @@ const useUsersStore = create((set, get) => ({
   },
   updatePANInfoStore: async (userid, data) => {
     try {
-      const res = await API.patch(`${ USER }/${ userid }`, data, {
-        headers: { Authorization: await getToken() },
+      const res = await API.patch(`${USER}/${userid}`, data, {
+        headers: {Authorization: await getToken()},
       });
 
       if (res?.data) {
@@ -128,7 +128,7 @@ const useUsersStore = create((set, get) => ({
   },
   updateUserProfileStore: async (userid, data) => {
     try {
-      const res = await API.patch(`${ USER }/${ userid }`, data, {
+      const res = await API.patch(`${USER}/${userid}`, data, {
         headers: {
           Authorization: await getToken(),
           'Content-Type': 'multipart/form-data',

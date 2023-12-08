@@ -4,14 +4,12 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
-  TextInput,
   Text,
   Pressable,
   RefreshControl,
 } from 'react-native';
 
 import tw from 'twrnc';
-import Icon from 'react-native-vector-icons/Feather';
 import Image1 from '../../assets/images/browse-jobs.png';
 import Image2 from '../../assets/images/IntroScreenJobsAndInvitations.png';
 import Image3 from '../../assets/images/search-dream-job.png';
@@ -35,7 +33,7 @@ const Dashboard = ({navigation}) => {
   const {loggedInUser, language} = useLoginStore();
   const {getNearByJobs} = useJobStore();
   const {isLoading} = useLoaderStore();
-  const [location, setLocation] = useState(false);
+  const [location, setLocation] = useState(undefined);
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);

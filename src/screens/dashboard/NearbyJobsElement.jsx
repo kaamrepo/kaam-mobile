@@ -14,38 +14,32 @@ import {dashboardTranslation} from './dashboardTranslation';
 import Carousel from 'react-native-snap-carousel';
 import useLoginStore from '../../store/authentication/login.store';
 import Icon, {Icons} from '../../components/Icons';
+import SeeAll from '../see-all/SeeAll';
+
 const nearbyJobsColorSchemes = ['#87C4FF', '#739072', '#CE5A67', '#ECEE81'];
-const NearbyJobsElement = ({language, nearbyjobs, navigation, isLoading}) => {
+const NearbyJobsElement = ({
+  language,
+  nearbyjobs,
+  navigation,
+  isLoading,
+  location,
+}) => {
   const {loggedInUser} = useLoginStore();
   nearbyjobs.data.push({});
+  if (!location) {
+    return (
+      <CommonMessageForNearByJobs
+        title="Please turn on your location"
+        language={language}
+      />
+    );
+  }
   if (isLoading) {
     return (
-      <>
-        <View style={tw`flex-row justify-between items-center mb-4 mx-5`}>
-          <Text style={[tw`text-black text-xl`, {fontFamily: 'Poppins-Bold'}]}>
-            {dashboardTranslation[language]['Nearby Jobs']}
-          </Text>
-          <Text
-            style={[
-              tw`text-center text-sm leading-relaxed text-gray-600`,
-              {fontFamily: 'Poppins-Regular'},
-            ]}>
-            {dashboardTranslation[language]['See all']}
-          </Text>
-        </View>
-        <View style={tw`w-full px-5`}>
-          <View
-            style={tw`bg-gray-200 w-full h-48 rounded-3 items-center justify-center`}>
-            <Text
-              style={[
-                tw`text-neutral-700 text-sm`,
-                {fontFamily: 'Poppins-Regular'},
-              ]}>
-              Fetching jobs...
-            </Text>
-          </View>
-        </View>
-      </>
+      <CommonMessageForNearByJobs
+        title="Fetching jobs..."
+        language={language}
+      />
     );
   }
   if (
@@ -53,36 +47,14 @@ const NearbyJobsElement = ({language, nearbyjobs, navigation, isLoading}) => {
     Object.keys(nearbyjobs)?.length == 0
   ) {
     return (
-      <>
-        <View style={tw`flex-row justify-between items-center mb-4 mx-5`}>
-          <Text style={[tw`text-black text-xl`, {fontFamily: 'Poppins-Bold'}]}>
-            {dashboardTranslation[language]['Nearby Jobs']}
-          </Text>
-          <Text
-            style={[
-              tw`text-center text-sm leading-relaxed text-gray-600`,
-              {fontFamily: 'Poppins-Regular'},
-            ]}>
-            {dashboardTranslation[language]['See all']}
-          </Text>
-        </View>
-        <View style={tw`w-full px-5`}>
-          <View
-            style={tw`bg-gray-200 w-full h-48 rounded-3 items-center justify-center`}>
-            <Text
-              style={[
-                tw`text-neutral-700 text-sm`,
-                {fontFamily: 'Poppins-Regular'},
-              ]}>
-              There are no nearby jobs
-            </Text>
-          </View>
-        </View>
-      </>
+      <CommonMessageForNearByJobs
+        title="There are no nearby jobs"
+        language={language}
+      />
     );
   }
   const handleSeeAllPress = () => {
-    navigation.navigate('SeeAll',{isLoading});
+    navigation.navigate('SeeAll', {isLoading});
   };
 
   return (
@@ -92,7 +64,7 @@ const NearbyJobsElement = ({language, nearbyjobs, navigation, isLoading}) => {
           {dashboardTranslation[language]['Nearby Jobs']}
         </Text>
         <TouchableOpacity onPress={handleSeeAllPress}>
-        <Text
+          <Text
             style={[
               tw`text-center text-sm leading-relaxed text-gray-600`,
               {fontFamily: 'Poppins-Regular'},
@@ -151,28 +123,34 @@ const renderItemsNearbyJobs = ({item, index, navigation,nearbyjobs}) => {
   return (
     <ImageBackground
       source={require('../../assets/images/nearby-jobs-skin-1.png')}
-      style={[tw`w-full h-48 rounded-3 bg-[${nearbyJobsColorSchemes[index]}]`]}
+      style={[tw`w-full h-48 rounded-3 bg-[${item?.styles?.bgcolor}]`]}
       resizeMode="cover">
       <Pressable
         onPress={() => {
           console.log('pressed');
-          navigation.navigate('ApplyNow', {jobDetails: item});
+          navigation.navigate('ApplyNow', {jobDetails: item, id: item._id});
         }}
         key={item._id}
         style={tw`w-full h-48 rounded-3`}>
-        <View style={tw`flex flex-row justify-evenly p-4 h-35`}>
-          <View>
-            <Image source={item.image} style={tw`w-15 h-15 rounded-full`} />
-          </View>
-          <View style={tw`flex-3 items-center p-2`}>
+        <View style={tw`flex flex-row justify-between p-4 h-35`}>
+          {/* <View> 
+          <Image source={item.image} style={tw`w-15 h-15 rounded-full`} /> 
+         </View> */}
+          <View style={tw` items-center p-2`}>
             <Text
-              style={tw`text-white text-xl font-bold`}
+              style={[
+                tw`text-[${item?.styles?.color}] text-[20px] `,
+                {fontFamily: 'Poppins-SemiBold'},
+              ]}
               numberOfLines={1}
               ellipsizeMode="tail">
-              {item.title}
+              {item.position}
             </Text>
             <Text
-              style={tw`text-white text-lg font-bold`}
+              style={[
+                tw`text-[${item?.styles?.color}] text-[16px]`,
+                {fontFamily: 'Poppins-Regular'},
+              ]}
               numberOfLines={1}
               ellipsizeMode="tail">
               {item.description}
@@ -195,11 +173,63 @@ const renderItemsNearbyJobs = ({item, index, navigation,nearbyjobs}) => {
         </View>
 
         <View style={tw`flex flex-row justify-between px-5 py-2`}>
-          <Text style={tw`text-white text-lg`}>{item.value} Rs</Text>
-          <Text style={tw`text-white text-lg`}>{item.location}</Text>
+          <Text
+            style={[
+              tw`text-[${item?.styles?.color}] text-[16px]`,
+              {fontFamily: 'Poppins-Regular'},
+            ]}>
+            ₹. {item.salary}
+          </Text>
+          <Text
+            style={[
+              tw`text-[${item?.styles?.color}] text-[16px]`,
+              {fontFamily: 'Poppins-Regular'},
+            ]}>
+            {item.location?.name}
+          </Text>
         </View>
       </Pressable>
     </ImageBackground>
   );
             }
 };
+
+function CommonMessageForNearByJobs({title, language}) {
+  return (
+    <>
+      <View style={tw`flex-row justify-between items-center mb-4 mx-5`}>
+        <Text style={[tw`text-black text-xl`, {fontFamily: 'Poppins-Bold'}]}>
+          {dashboardTranslation[language]['Nearby Jobs']}
+        </Text>
+        <Text
+          style={[
+            tw`text-center text-sm leading-relaxed text-gray-600`,
+            {fontFamily: 'Poppins-Regular'},
+          ]}>
+          {dashboardTranslation[language]['See all']}
+        </Text>
+      </View>
+      <View style={tw`w-full px-5`}>
+        <View
+          style={tw`bg-gray-200 w-full h-48 flex flex-row gap-3 rounded-3 items-center justify-center`}>
+          {title == 'Please turn on your location' ? (
+            <Icon
+              type={Icons.MaterialIcons}
+              name={'location-off'}
+              size={25}
+              style={tw`text-red-600`}
+            />
+          ) : null}
+
+          <Text
+            style={[
+              tw`text-neutral-700 text-sm`,
+              {fontFamily: 'Poppins-Regular'},
+            ]}>
+            {title}
+          </Text>
+        </View>
+      </View>
+    </>
+  );
+}

@@ -26,6 +26,7 @@ const useChatStore = create((set, get) => ({
   clearChatAndMessages: () => {
     set({chat: undefined});
   },
+ 
   sendChatMessage: async (applicationid, payload) => {
      try {
        const res = await API.get(`${CHATS}/${chatid}`, {

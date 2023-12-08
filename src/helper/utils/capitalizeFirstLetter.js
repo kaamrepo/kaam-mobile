@@ -1,11 +1,9 @@
-const capitalizeFirstLetter = (word) =>
-{
-    if (typeof word !== 'string' || word.length === 0)
-    {
-        return word;
-    }
+const capitalizeFirstLetter = word => {
+  if (typeof word !== 'string' || word.length === 0) {
+    return word;
+  }
 
-    return word.charAt(0).toUpperCase() + word.slice(1);
-}
+  return word.charAt(0).toUpperCase() + word.slice(1);
+};
 
 export default capitalizeFirstLetter;

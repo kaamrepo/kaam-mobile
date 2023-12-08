@@ -105,6 +105,7 @@ const RecommendedJobsElement = ({
       <View>
         <Carousel
           layout={'default'}
+          firstItem={recommendedJobsData?.data?.length > 2 ? 1 : 0}
           layoutCardOffset={18}
           autoplay={false}
           loop={false}
@@ -122,6 +123,18 @@ const RecommendedJobsElement = ({
           inactiveSlideOpacity={1} // To make inactive slides fully visible
         />
       </View>
+      {/* <View style={tw`w-full `}>
+        <FlatList
+          style={tw`w-full px-4 mx-3`}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          data={recommendedJobsData?.data}
+          renderItem={({item, index}) => (
+            <RenderItemsRecommendedJobsFlatList item={item} index={index} />
+          )}
+          keyExtractor={item => item._id}
+        />
+      </View> */}
     </>
   );
 };
