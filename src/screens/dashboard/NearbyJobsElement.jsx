@@ -14,12 +14,10 @@ import {dashboardTranslation} from './dashboardTranslation';
 import Carousel from 'react-native-snap-carousel';
 import useLoginStore from '../../store/authentication/login.store';
 import Icon, {Icons} from '../../components/Icons';
-import SeeAll from '../see-all/SeeAll';
-// const image = {uri: 'nearby-jobs-skin-1.png'};
 const nearbyJobsColorSchemes = ['#87C4FF', '#739072', '#CE5A67', '#ECEE81'];
 const NearbyJobsElement = ({language, nearbyjobs, navigation, isLoading}) => {
   const {loggedInUser} = useLoginStore();
-
+  nearbyjobs.data.push({});
   if (isLoading) {
     return (
       <>
@@ -99,12 +97,7 @@ const NearbyJobsElement = ({language, nearbyjobs, navigation, isLoading}) => {
               tw`text-center text-sm leading-relaxed text-gray-600`,
               {fontFamily: 'Poppins-Regular'},
             ]}>
-        {/* <TouchableOpacity onPress={handleSeeAllPress}>
-         
-            {dashboardTranslation[language]['See all']}
-        
-        </TouchableOpacity> */}
-        test
+        See all
         </Text>
         </TouchableOpacity>
       </View>
@@ -115,7 +108,7 @@ const NearbyJobsElement = ({language, nearbyjobs, navigation, isLoading}) => {
           // autoplayInterval={5000}
           loop={false}
           data={nearbyjobs?.data}
-          renderItem={props => renderItemsNearbyJobs({...props, navigation})}
+          renderItem={props => renderItemsNearbyJobs({...props, navigation,nearbyjobs})}
           sliderWidth={Dimensions.get('window').width}
           itemWidth={Dimensions.get('window').width - 80}
         />
@@ -132,18 +125,35 @@ const handleBookmarkPress = () => {
   // Handle bookmark button press logic here
   console.log('Bookmark button pressed!');
 };
-const renderItemsNearbyJobs = ({item, index, navigation}) => {
-  const randomColorIndex = Math.floor(
-    Math.random() * nearbyJobsColorSchemes.length,
-  );
-  const randomBackgroundColor = nearbyJobsColorSchemes[randomColorIndex];
-
+const renderItemsNearbyJobs = ({item, index, navigation,nearbyjobs}) => {
+  const isLastSlide = Object.keys(item).length;
+  console.log("isLastSlide",isLastSlide,item);
+  if (!isLastSlide) {
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('SeeAll', {jobDetails: item});
+        }}
+        style={[
+          tw`w-full h-48 flex flex-col justify-center items-center rounded-3 p-4 m-4 text-black relative`,
+        ]}
+        key={index}>
+        <Icon
+          type={Icons.Entypo}
+          name={'chevron-with-circle-right'}
+          size={45}
+          color={'green'}
+        />
+      </TouchableOpacity>
+    );
+  }
+  if (isLastSlide) {
   return (
     <ImageBackground
       source={require('../../assets/images/nearby-jobs-skin-1.png')}
       style={[tw`w-full h-48 rounded-3 bg-[${nearbyJobsColorSchemes[index]}]`]}
       resizeMode="cover">
-      <TouchableOpacity
+      <Pressable
         onPress={() => {
           console.log('pressed');
           navigation.navigate('ApplyNow', {jobDetails: item});
@@ -188,7 +198,8 @@ const renderItemsNearbyJobs = ({item, index, navigation}) => {
           <Text style={tw`text-white text-lg`}>{item.value} Rs</Text>
           <Text style={tw`text-white text-lg`}>{item.location}</Text>
         </View>
-      </TouchableOpacity>
+      </Pressable>
     </ImageBackground>
   );
+            }
 };
