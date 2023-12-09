@@ -26,6 +26,12 @@ import MenuSVG from '../assets/svgs/menu.svg';
 import MenuInactiveSVG from '../assets/svgs/menu_inactive.svg';
 import PostJobsSVG from '../assets/svgs/job-post-plus-icon.png';
 import Messages from './home/Messages';
+import {
+  primaryBGColor,
+  primaryColor,
+  primaryTextColor,
+  secondaryTextColor,
+} from '../helper/utils/colors';
 
 const Tab = createBottomTabNavigator();
 
@@ -50,14 +56,19 @@ const TabArr = [
     label: '+',
     component: Inbox,
     activeIcon: (
-      <Icon type={Icons.FontAwesome5} name="plus" size={18} color={'#ffffff'} />
+      <Icon
+        type={Icons.FontAwesome5}
+        name="plus"
+        size={18}
+        color={secondaryTextColor}
+      />
     ),
     inactiveIcon: (
       <Icon
         type={Icons.FontAwesome5}
         name="plus"
         size={18}
-        color={'rgb(59, 130, 246)'}
+        color={primaryTextColor}
       />
     ),
   },
@@ -146,14 +157,16 @@ const TabButton = props => {
 
   return (
     <>
-      <PopupMenu visible={popupVisible} />
+      {/* <PopupMenu visible={popupVisible} /> */}
       <TouchableOpacity
-        onPress={() => {
-          if (!isMiddleElement) onPress();
-          else {
-            setPopupVisible(prev => !prev);
-          }
-        }}
+        // onPress={() => {
+
+        // if (!isMiddleElement) onPress();
+        // else {
+        //   // setPopupVisible(prev => !prev);
+        // }
+        // }}
+        onPress={onPress}
         activeOpacity={1}
         style={[tw`relative`, styles.container]}>
         <Animatable.View
@@ -164,8 +177,8 @@ const TabButton = props => {
               isMiddleElement
                 ? `${
                     focused
-                      ? 'bg-[rgb(59,130,246)]'
-                      : 'bg-white border-2 border-[rgb(59,130,246)]'
+                      ? `bg-[${primaryBGColor}]`
+                      : `bg-white border-2 border-[${primaryTextColor}]`
                   } w-14 h-14 rounded-full shadow-lg absolute -top-[48%]`
                 : ''
             }`,

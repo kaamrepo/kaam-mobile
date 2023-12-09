@@ -4,8 +4,6 @@ import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import useLoginStore, { retrieveLoggedInState, retrieveUserSession } from "./src/store/authentication/login.store"
-
-import { BlurView } from "@react-native-community/blur";
 // Screens
 
 import RegisterScreen from './src/screens/login/RegisterScreen';
