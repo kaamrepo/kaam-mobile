@@ -31,12 +31,13 @@ import {useFocusEffect} from '@react-navigation/native';
 const Dashboard = ({navigation}) => {
   const [refreshing, setRefreshing] = useState(false);
   const {loggedInUser, language} = useLoginStore();
-  const {getNearByJobs} = useJobStore();
+  const {getNearByJobs, nearbyjobs} = useJobStore();
   const {isLoading} = useLoaderStore();
   const [location, setLocation] = useState(undefined);
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
+
     if (location) {
       getNearByJobs(0, 5, [
         location?.coords?.longitude,
@@ -66,6 +67,7 @@ const Dashboard = ({navigation}) => {
   );
   useFocusEffect(
     useCallback(() => {
+      console.log('\n\nasdfasdsadsa\n\n', location);
       if (location) {
         getNearByJobs(0, 5, [
           location?.coords?.longitude,
@@ -138,39 +140,40 @@ const Dashboard = ({navigation}) => {
       },
     ],
   };
-  const nearbyjobs = {
-    total: 3,
-    skip: 0,
-    limit: 0,
-    data: [
-      {
-        image: Image1,
-        title: 'Homemade Cook',
-        description: 'Testeradfasdjfl;ajsdfkal;sdkfjlaksdjfl;kasjdflkjkl;djl;',
-        value: 960000,
-        location: 'Mumbai',
-        bgcolor: '#28282B',
-        // skin:nearby_jobs_skin1
-      },
-      {
-        image: Image2,
-        title: 'Maid',
-        value: 960000,
-        location: 'Pune',
-        bgcolor: '#80461b',
-        description: 'Testeradfasdjfl;ajsdfkal;sdkfjlaksdjfl;kasjdflkjkl;djl;',
-      },
-      {
-        image: Image3,
-        description: 'Testeradfasdjfl;ajsdfkal;sdkfjlaksdjfl;kasjdflkjkl;djl;',
-        title: 'Hotel helper',
-        value: 960000,
-        location: 'Delhi',
-        bgcolor: '#ce5f38',
-      },
-    ],
-  };
+  // const nearbyjobs = {
+  //   total: 3,
+  //   skip: 0,
+  //   limit: 0,
+  //   data: [
+  //     {
+  //       image: Image1,
+  //       title: 'Homemade Cook',
+  //       description: 'Testeradfasdjfl;ajsdfkal;sdkfjlaksdjfl;kasjdflkjkl;djl;',
+  //       value: 960000,
+  //       location: 'Mumbai',
+  //       bgcolor: '#28282B',
+  //       // skin:nearby_jobs_skin1
+  //     },
+  //     {
+  //       image: Image2,
+  //       title: 'Maid',
+  //       value: 960000,
+  //       location: 'Pune',
+  //       bgcolor: '#80461b',
+  //       description: 'Testeradfasdjfl;ajsdfkal;sdkfjlaksdjfl;kasjdflkjkl;djl;',
+  //     },
+  //     {
+  //       image: Image3,
+  //       description: 'Testeradfasdjfl;ajsdfkal;sdkfjlaksdjfl;kasjdflkjkl;djl;',
+  //       title: 'Hotel helper',
+  //       value: 960000,
+  //       location: 'Delhi',
+  //       bgcolor: '#ce5f38',
+  //     },
+  //   ],
+  // };
 
+  console.log('\n\n\n\n\n\n\n nearbyjobs', nearbyjobs);
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -227,7 +230,9 @@ const Dashboard = ({navigation}) => {
           </TouchableOpacity>
         </View>
       </View>
-      <NearbyJobsElement {...{language, nearbyjobs, isLoading, navigation}} />
+      <NearbyJobsElement
+        {...{language, nearbyjobs, isLoading, navigation, location}}
+      />
       <RecommendedJobsElement
         {...{language, recommendedJobsData, isLoading, navigation}}
       />

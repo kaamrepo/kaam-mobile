@@ -25,7 +25,7 @@ const NearbyJobsElement = ({
   location,
 }) => {
   const {loggedInUser} = useLoginStore();
-  nearbyjobs.data.push({});
+  
   if (!location) {
     return (
       <CommonMessageForNearByJobs
@@ -69,8 +69,8 @@ const NearbyJobsElement = ({
               tw`text-center text-sm leading-relaxed text-gray-600`,
               {fontFamily: 'Poppins-Regular'},
             ]}>
-        See all
-        </Text>
+            See all
+          </Text>
         </TouchableOpacity>
       </View>
       <View>
@@ -80,7 +80,9 @@ const NearbyJobsElement = ({
           // autoplayInterval={5000}
           loop={false}
           data={nearbyjobs?.data}
-          renderItem={props => renderItemsNearbyJobs({...props, navigation,nearbyjobs})}
+          renderItem={props =>
+            renderItemsNearbyJobs({...props, navigation, nearbyjobs})
+          }
           sliderWidth={Dimensions.get('window').width}
           itemWidth={Dimensions.get('window').width - 80}
         />
