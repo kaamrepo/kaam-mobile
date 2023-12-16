@@ -6,6 +6,8 @@ import useLoginStore, {getToken} from './authentication/login.store';
 
 const useJobStore = create((set, get) => ({
   nearbyjobs: {},
+  recommendedJobs: {},
+  featuredJobs: {},
   job: {},
   appliedJob: undefined,
   getNearByJobs: async (skip = 0, limit = 5, coordinates) => {
@@ -34,8 +36,61 @@ const useJobStore = create((set, get) => ({
       //     text1: 'Failed to get jobs!',
       // });
     }
+  }, 
+   getRecommendedJobs: async (skip = 0, limit = 10) => {
+    try {
+      const userid = useLoginStore.getState().loggedInUser?._id;
+      let params = {
+        skip,
+        limit,
+        createdby: {
+          $nin: [userid],
+        },
+      };
+      const res = await API.get(`${JOBS}/`, {
+        headers: {Authorization: await getToken()},
+        params,
+      });
+      if (res && res.data) {
+        set({recommendedJobs: res.data});
+      }
+      console.log("recommended jobs data called",recommendedJobs );
+    } catch (error) {
+      console.log(JSON.stringify(error, null, 5));
+      Toast.show({
+          type: 'tomatoToast',
+          text1: 'Failed to get jobs!',
+      });
+    }
+  }, 
+   getFeaturedJobs: async (skip = 0, limit = 10) => {
+    try {
+      const userid = useLoginStore.getState().loggedInUser?._id;
+      let params = {
+        skip,
+        limit,
+        createdby: {
+          $nin: [userid],
+        },
+      };
+      const res = await API.get(`${JOBS}/`, {
+        headers: {Authorization: await getToken()},
+        params,
+      });
+      if (res && res.data) {
+        set({featuredJobs: res.data});
+      }
+    } catch (error) {
+      console.log(JSON.stringify(error, null, 5));
+      Toast.show({
+          type: 'tomatoToast',
+          text1: 'Failed to get jobs!',
+      });
+    }
   },
   clearNearByJobs: () => set({nearbyjobs: {}}),
+  clearRecommendedJobs: () => set({recommendedJobs: {}}),
+  clearFeaturedJobs: () => set({featuredJobs: {}}),
   clearJob: () => set({job: {}, appliedJob: undefined}),
   getNearByJobById: async id => {
     try {

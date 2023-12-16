@@ -15,12 +15,10 @@ import Icon, {Icons} from '../../components/Icons';
 
 const RecommendedJobsElement = ({
   language,
-  recommendedJobsData,
+  recommendedJobs,
   isLoading,
   navigation,
 }) => {
-  recommendedJobsData.data.push({});
-
   if (isLoading) {
     return (
       <>
@@ -53,7 +51,7 @@ const RecommendedJobsElement = ({
       </>
     );
   }
-  if (recommendedJobsData && recommendedJobsData?.total == 0) {
+  if (recommendedJobs && recommendedJobs?.total == 0) {
     return (
       <>
         <View style={tw`flex-row justify-between items-center mt-5 mb-4 mx-5`}>
@@ -105,16 +103,16 @@ const RecommendedJobsElement = ({
       <View>
         <Carousel
           layout={'default'}
-          firstItem={recommendedJobsData?.data?.length > 2 ? 1 : 0}
+          firstItem={recommendedJobs?.data?.length > 2 ? 1 : 0}
           layoutCardOffset={18}
           autoplay={false}
           loop={false}
-          data={recommendedJobsData?.data}
+          data={recommendedJobs?.data}
           // renderItem={renderItemsRecommendedJobs}
           renderItem={props =>
             renderItemsRecommendedJobs({
               ...props,
-              recommendedJobsData,
+              recommendedJobs,
               navigation,
             })
           }
@@ -123,18 +121,6 @@ const RecommendedJobsElement = ({
           inactiveSlideOpacity={1} // To make inactive slides fully visible
         />
       </View>
-      {/* <View style={tw`w-full `}>
-        <FlatList
-          style={tw`w-full px-4 mx-3`}
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          data={recommendedJobsData?.data}
-          renderItem={({item, index}) => (
-            <RenderItemsRecommendedJobsFlatList item={item} index={index} />
-          )}
-          keyExtractor={item => item._id}
-        />
-      </View> */}
     </>
   );
 };
@@ -147,9 +133,9 @@ const renderItemsRecommendedJobs = ({
   item,
   index,
   navigation,
-  recommendedJobsData,
+  recommendedJobs,
 }) => {
-  const isLastSlide = index === recommendedJobsData.data.length - 1;
+  const isLastSlide = index === recommendedJobs.data.length - 1;
   if (isLastSlide) {
     return (
       <TouchableOpacity
@@ -192,20 +178,30 @@ const renderItemsRecommendedJobs = ({
           style={tw`w-full h-full`}
           key={index}>
           <View style={tw`items-center mb-4`}>
-            <Image source={item.image} style={tw`w-15 h-15 rounded-full`} />
+            {item.profilepic ? (
+              <Image source={item?.profilepic} style={tw`w-15 h-15 rounded-full`} />
+            ) : (
+              <Icon
+                type={Icons.Ionicons}
+                name={'person'}
+                size={45}
+                color={'green'}
+              />
+            )}
           </View>
+
           <Text style={tw`text-lg my-1`} numberOfLines={1} ellipsizeMode="tail">
-            {item.title}
+            {item?.position}
           </Text>
           <Text style={[tw`my-1`, {fontFamily: 'Poppins-SemiBold'}]}>
             {`₹ ${new Intl.NumberFormat('en-IN', {
               maximumSignificantDigits: 3,
-            }).format(item.value)}/y`}
+            }).format(item?.salary)}/y`}
           </Text>
           <View style={tw`flex flex-row`}>
             <Icon type={Icons.MaterialIcons} name={'location-pin'} size={20} />
             <Text style={{fontFamily: 'Poppins-SemiBold'}}>
-              {item.location}
+              {item?.location?.name}
             </Text>
           </View>
         </Pressable>
