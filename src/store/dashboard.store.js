@@ -21,6 +21,7 @@ const useJobStore = create((set, get) => ({
         },
         coordinates,
         sortDesc: ['createdat'],
+        type:'nearby'
       };
       const res = await API.get(`${JOBS}/`, {
         headers: {Authorization: await getToken()},
@@ -46,6 +47,7 @@ const useJobStore = create((set, get) => ({
         createdby: {
           $nin: [userid],
         },
+        type:'recommended'
       };
       const res = await API.get(`${JOBS}/`, {
         headers: {Authorization: await getToken()},
@@ -57,10 +59,10 @@ const useJobStore = create((set, get) => ({
       console.log("recommended jobs data called",recommendedJobs );
     } catch (error) {
       console.log(JSON.stringify(error, null, 5));
-      Toast.show({
-          type: 'tomatoToast',
-          text1: 'Failed to get jobs!',
-      });
+      // Toast.show({
+      //     type: 'tomatoToast',
+      //     text1: 'Failed to get jobs!',
+      // });
     }
   }, 
    getFeaturedJobs: async (skip = 0, limit = 10) => {
@@ -72,6 +74,7 @@ const useJobStore = create((set, get) => ({
         createdby: {
           $nin: [userid],
         },
+        type:'featured'
       };
       const res = await API.get(`${JOBS}/`, {
         headers: {Authorization: await getToken()},
@@ -82,10 +85,10 @@ const useJobStore = create((set, get) => ({
       }
     } catch (error) {
       console.log(JSON.stringify(error, null, 5));
-      Toast.show({
-          type: 'tomatoToast',
-          text1: 'Failed to get jobs!',
-      });
+      // Toast.show({
+      //     type: 'tomatoToast',
+      //     text1: 'Failed to get jobs!',
+      // });
     }
   },
   clearNearByJobs: () => set({nearbyjobs: {}}),

@@ -82,8 +82,8 @@ const Dashboard = ({navigation}) => {
   useEffect(()=>{
     clearRecommendedJobs();
     clearFeaturedJobs();
-  getRecommendedJobs();
-  getFeaturedJobs()
+  // getRecommendedJobs();
+  // getFeaturedJobs()
   },[])
 
 

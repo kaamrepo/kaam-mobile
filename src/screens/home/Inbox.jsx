@@ -525,7 +525,7 @@ const Inbox = () => {
                 tw`text-white text-[20px]`,
                 {fontFamily: 'Poppins-SemiBold'},
               ]}>
-              Post a Job
+              Post a Job test
             </Text>
           </Pressable>
         </View>
