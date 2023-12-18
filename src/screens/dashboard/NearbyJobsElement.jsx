@@ -17,7 +17,15 @@ import Icon, {Icons} from '../../components/Icons';
 import SeeAll from '../see-all/SeeAll';
 import {primaryBGColor} from '../../helper/utils/colors';
 
-const nearbyJobsColorSchemes = ['#87C4FF', '#739072', '#CE5A67', '#ECEE81'];
+const nearbyJobsColorSchemes = ['#2B2A4C', '#CE5A67', '#392467', '#739072'];
+const getRandomColor = index => {
+  return index <= nearbyJobsColorSchemes.length
+    ? nearbyJobsColorSchemes[index]
+    : nearbyJobsColorSchemes[
+        Math.floor(Math.random() * nearbyJobsColorSchemes.length)
+      ];
+};
+
 const NearbyJobsElement = ({
   language,
   nearbyjobs,
@@ -126,7 +134,10 @@ const renderItemsNearbyJobs = ({item, index, navigation, nearbyjobs}) => {
     return (
       <ImageBackground
         source={require('../../assets/images/nearby-jobs-skin-1.png')}
-        style={[tw`w-full h-48 rounded-3 bg-[${item?.styles?.bgcolor}]`]}
+        style={[
+          tw`w-full h-48 rounded-6`,
+          {backgroundColor: getRandomColor(index)},
+        ]}
         resizeMode="cover">
         <Pressable
           onPress={() => {
@@ -136,10 +147,26 @@ const renderItemsNearbyJobs = ({item, index, navigation, nearbyjobs}) => {
           key={item._id}
           style={tw`w-full h-48 rounded-3`}>
           <View style={tw`flex flex-row justify-between p-4 h-35`}>
-            <View style={tw`p-2 w-[70%]`}>
+            <View style={tw`h-15 w-15 flex-2`}>
+              {item.profilepic ? (
+                <Image
+                  source={item?.profilepic}
+                  style={tw`h-10 w-10 rounded-xl`}
+                />
+              ) : (
+                <Icon
+                  type={Icons.Ionicons}
+                  name={'person-circle-outline'}
+                  size={55}
+                  color={'white'}
+                />
+              )}
+            </View>
+            <View
+              style={tw`py-2 w-[70%] pl-5 justify-start`}>
               <Text
                 style={[
-                  tw`text-[${item?.styles?.color}] text-[20px]`,
+                  tw`text-white text-[20px]`,
                   {fontFamily: 'Poppins-SemiBold'},
                 ]}
                 numberOfLines={1}
@@ -156,6 +183,7 @@ const renderItemsNearbyJobs = ({item, index, navigation, nearbyjobs}) => {
                 {item.description}
               </Text>
             </View>
+
             <View style={tw`items-end`}>
               <Pressable
                 onPress={handleBookmarkPress}
