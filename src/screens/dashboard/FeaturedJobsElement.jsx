@@ -2,7 +2,8 @@ import {View, Text, Pressable, Image} from 'react-native';
 import tw from 'twrnc';
 import React from 'react';
 import {dashboardTranslation} from './dashboardTranslation';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import Icon, {Icons} from '../../components/Icons';
 
 
 const FeaturedJobsElement = ({
@@ -78,7 +79,7 @@ const FeaturedJobsElement = ({
   }
 
   return (
-    <>
+    <ScrollView>
       <View style={tw`flex-row justify-between items-center mt-5 mb-4 mx-5`}>
         <Text style={[tw`text-black text-xl`, {fontFamily: 'Poppins-Bold'}]}>
           {dashboardTranslation[language]['Featured Jobs']}
@@ -99,7 +100,7 @@ const FeaturedJobsElement = ({
             key={item._id}
             onPress={() => {
           console.log('pressed recommended jobs');
-          navigation.navigate('ApplyNow',{jobDetails: item});
+          navigation.navigate('ApplyNow', {jobDetails: item, id: item._id});
         }}
             style={({pressed}) =>
               tw`my-1 w-full flex-row justify-between border border-gray-200 rounded-3 py-3 px-5 ${
@@ -107,12 +108,19 @@ const FeaturedJobsElement = ({
               }`
             }>
             <View style={tw`h-10 w-10 flex-2`}>
-              <Image
-                source={item.image}
-                style={tw`h-10 w-10 rounded-xl`}
-                resizeMode="contain"
+            {item.profilepic ? (
+              <Image source={item?.profilepic}
+              style={tw`h-10 w-10 rounded-xl`}
+               />
+            ) : (
+              <Icon
+                type={Icons.Ionicons}
+                name={'person'}
+                size={45}
+                color={'green'}
               />
-            </View>
+            )}
+          </View>
             <View style={tw` flex-4`}>
               <Text
                 style={[
@@ -121,7 +129,7 @@ const FeaturedJobsElement = ({
                 ]}
                 numberOfLines={1}
                 ellipsizeMode="tail">
-                {item.title}
+                {item?.position}
               </Text>
               <Text
                 style={[
@@ -130,7 +138,7 @@ const FeaturedJobsElement = ({
                 ]}
                 numberOfLines={1}
                 ellipsizeMode="tail">
-                {item.description}
+                {item?.description}
               </Text>
             </View>
             <View style={tw` flex-2`}>
@@ -139,20 +147,20 @@ const FeaturedJobsElement = ({
                   tw`text-black text-[14px]`,
                   {fontFamily: 'Poppins-SemiBold'},
                 ]}>
-                ₹: {item.value}
+                ₹: {item?.salary}
               </Text>
               <Text
                 style={[
                   tw`text-neutral-600 text-[14px]`,
                   {fontFamily: 'Poppins-Regular'},
                 ]}>
-                {item.location}
+                {item?.location?.name}
               </Text>
             </View>
           </Pressable>
         ))}
       </View>
-    </>
+    </ScrollView>
   );
 };
 

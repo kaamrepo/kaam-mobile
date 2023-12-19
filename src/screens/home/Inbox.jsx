@@ -19,6 +19,8 @@ import Icon, {Icons} from '../../components/Icons';
 import WhiteTickSMSVG from '../../assets/svgs/WhiteTickSM.svg';
 import useLoginStore from '../../store/authentication/login.store';
 import useJobStore from '../../store/dashboard.store';
+import {requestLocationPermission} from '../../helper/utils/getGeoLocation';
+import Geolocation from 'react-native-geolocation-service';
 
 const colors = [
   '#ffffff',
@@ -63,7 +65,7 @@ const Inbox = () => {
   const [tags, setTags] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
   const [selectedChip, setSelectedChip] = useState(null);
-
+  const [location, setLocation] = useState(undefined);
   const {
     control,
     handleSubmit,
@@ -87,7 +89,8 @@ const Inbox = () => {
     </Pressable>
   );
 
-  const createJob = data => {
+  const createJob = async data => {
+    console.log('in the create');
     if (tags?.length === 0) {
       setErrorMessage('#Tags are required!');
       return;
@@ -96,7 +99,49 @@ const Inbox = () => {
       setErrorMessage('Add 3 tags to the job');
       return;
     }
+    const result = requestLocationPermission();
+    result.then(async res => {
+      if (res) {
+        const locationAccess = Geolocation.getCurrentPosition(
+          positionData => {
+            setLocation(positionData);
+          },
+          error => {
+            console.log(error.code, error.message);
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 20000,
+            maximumAge: 1000,
+          }
+        );
+      }
+    }); 
+   if (location && location.coords) {
+    const { latitude, longitude } = location.coords;
+    console.log("Latitude:", latitude);
+    console.log("Longitude:", longitude);
+    try {
+      const response = await fetch(apiUrl);
+      const data = await response.json();
+    
+      const apiUrl = `https://api.postalpincode.in/pincode/${latitude},${longitude}`;
+      // Check if the API request was successful
+      if (data && data[0].Status === 'Success') {
+        // Extract the place name or other relevant information from the response
+        const placeName = data[0].PostOffice[0].Name;
+        console.log('Place Name:', placeName);
+      } else {
+        console.error('Failed to fetch place name:', data[0].Message);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  } else {
+    console.error("Location or coords is undefined.");
+  }
 
+  
     let payload = {
       ...data,
       tags: tags,
@@ -112,7 +157,7 @@ const Inbox = () => {
       },
     };
 
-    postJobs(payload);
+    // postJobs(payload);
     setTags([]);
     reset();
     setSelectedChip(null);

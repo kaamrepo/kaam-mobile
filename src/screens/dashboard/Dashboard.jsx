@@ -31,7 +31,10 @@ import {useFocusEffect} from '@react-navigation/native';
 const Dashboard = ({navigation}) => {
   const [refreshing, setRefreshing] = useState(false);
   const {loggedInUser, language} = useLoginStore();
-  const {getNearByJobs, nearbyjobs} = useJobStore();
+  const {getNearByJobs, nearbyjobs,getRecommendedJobs,
+    recommendedJobs,clearRecommendedJobs,clearFeaturedJobs,getFeaturedJobs,
+    featuredJobs
+  } = useJobStore();
   const {isLoading} = useLoaderStore();
   const [location, setLocation] = useState(undefined);
 
@@ -55,11 +58,13 @@ const Dashboard = ({navigation}) => {
           Geolocation.getCurrentPosition(
             position => {
               setLocation(position);
+              console.log('locationAccess in dsshboard', position); // Move the log here
+
             },
             error => {
               console.log(error.code, error.message);
             },
-            {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+            {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
           );
         }
       });
@@ -67,7 +72,6 @@ const Dashboard = ({navigation}) => {
   );
   useFocusEffect(
     useCallback(() => {
-      console.log('\n\nasdfasdsadsa\n\n', location);
       if (location) {
         getNearByJobs(0, 5, [
           location?.coords?.longitude,
@@ -77,103 +81,14 @@ const Dashboard = ({navigation}) => {
     }, [location]),
   );
 
-  const featuredJobs = {
-    total: 3,
-    skip: 0,
-    limit: 0,
-    data: [
-      {
-        _id: 'fghjkl',
-        image: Image1,
-        title: 'Jr Executive',
-        description: 'Tester',
-        value: 960000,
-        location: 'Delhi',
-      },
-      {
-        _id: 'fghgjkl',
-        image: Image2,
-        title: 'Jr Engineer',
-        description: 'Devloper',
-        value: 98765,
-        location: 'Pune',
-      },
-      {
-        _id: 'fghjksl',
-        image: Image3,
-        title: 'Sr tester',
-        description: 'Automation',
-        value: 576778,
-        location: 'Mumbai',
-      },
-    ],
-  };
+  useEffect(()=>{
+    clearRecommendedJobs();
+    clearFeaturedJobs();
+  getRecommendedJobs();
+  getFeaturedJobs()
+  },[])
 
-  const recommendedJobsData = {
-    total: 3,
-    skip: 0,
-    limit: 0,
-    data: [
-      {
-        image: Image1,
-        title: 'Homemade Cook',
-        value: 960000,
-        location: 'Mumbai',
-        bgcolor: '#28282B',
-        _id: '1',
-      },
-      {
-        image: Image2,
-        title: 'Maid',
-        value: 960000,
-        location: 'Pune',
-        bgcolor: '#80461b',
-        _id: '2',
-      },
-      {
-        image: Image3,
-        title: 'Hotel helper',
-        value: 960000,
-        location: 'Delhi',
-        bgcolor: '#ce5f38',
-        _id: '3',
-      },
-    ],
-  };
-  // const nearbyjobs = {
-  //   total: 3,
-  //   skip: 0,
-  //   limit: 0,
-  //   data: [
-  //     {
-  //       image: Image1,
-  //       title: 'Homemade Cook',
-  //       description: 'Testeradfasdjfl;ajsdfkal;sdkfjlaksdjfl;kasjdflkjkl;djl;',
-  //       value: 960000,
-  //       location: 'Mumbai',
-  //       bgcolor: '#28282B',
-  //       // skin:nearby_jobs_skin1
-  //     },
-  //     {
-  //       image: Image2,
-  //       title: 'Maid',
-  //       value: 960000,
-  //       location: 'Pune',
-  //       bgcolor: '#80461b',
-  //       description: 'Testeradfasdjfl;ajsdfkal;sdkfjlaksdjfl;kasjdflkjkl;djl;',
-  //     },
-  //     {
-  //       image: Image3,
-  //       description: 'Testeradfasdjfl;ajsdfkal;sdkfjlaksdjfl;kasjdflkjkl;djl;',
-  //       title: 'Hotel helper',
-  //       value: 960000,
-  //       location: 'Delhi',
-  //       bgcolor: '#ce5f38',
-  //     },
-  //   ],
-  // };
 
-  console.log('\n\n\n\n\n\n\n nearbyjobs', nearbyjobs);
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -234,7 +149,7 @@ const Dashboard = ({navigation}) => {
         {...{language, nearbyjobs, isLoading, navigation, location}}
       />
       <RecommendedJobsElement
-        {...{language, recommendedJobsData, isLoading, navigation}}
+        {...{language, recommendedJobs, isLoading, navigation}}
       />
       <FeaturedJobsElement
         featuredJobs={featuredJobs}
