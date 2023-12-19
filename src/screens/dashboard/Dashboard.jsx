@@ -58,11 +58,13 @@ const Dashboard = ({navigation}) => {
           Geolocation.getCurrentPosition(
             position => {
               setLocation(position);
+              console.log('locationAccess in dsshboard', position); // Move the log here
+
             },
             error => {
               console.log(error.code, error.message);
             },
-            {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+            {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
           );
         }
       });
@@ -82,43 +84,10 @@ const Dashboard = ({navigation}) => {
   useEffect(()=>{
     clearRecommendedJobs();
     clearFeaturedJobs();
-  // getRecommendedJobs();
-  // getFeaturedJobs()
+  getRecommendedJobs();
+  getFeaturedJobs()
   },[])
 
-
-  // const nearbyjobs = {
-  //   total: 3,
-  //   skip: 0,
-  //   limit: 0,
-  //   data: [
-  //     {
-  //       image: Image1,
-  //       title: 'Homemade Cook',
-  //       description: 'Testeradfasdjfl;ajsdfkal;sdkfjlaksdjfl;kasjdflkjkl;djl;',
-  //       value: 960000,
-  //       location: 'Mumbai',
-  //       bgcolor: '#28282B',
-  //       // skin:nearby_jobs_skin1
-  //     },
-  //     {
-  //       image: Image2,
-  //       title: 'Maid',
-  //       value: 960000,
-  //       location: 'Pune',
-  //       bgcolor: '#80461b',
-  //       description: 'Testeradfasdjfl;ajsdfkal;sdkfjlaksdjfl;kasjdflkjkl;djl;',
-  //     },
-  //     {
-  //       image: Image3,
-  //       description: 'Testeradfasdjfl;ajsdfkal;sdkfjlaksdjfl;kasjdflkjkl;djl;',
-  //       title: 'Hotel helper',
-  //       value: 960000,
-  //       location: 'Delhi',
-  //       bgcolor: '#ce5f38',
-  //     },
-  //   ],
-  // };
 
   return (
     <ScrollView

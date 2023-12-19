@@ -1,36 +1,7 @@
-// import {PermissionsAndroid} from 'react-native';
-
-// export const requestLocationPermission = async () => {
-//   console.log('asking permission');
-//   try {
-//     const granted = await PermissionsAndroid.request(
-//       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-//       {
-//         title: 'Geolocation Permission',
-//         message: 'Can we access your location?',
-//         buttonNeutral: 'Ask Me Later',
-//         buttonNegative: 'Cancel',
-//         buttonPositive: 'OK',
-//       },
-//     );
-//     if (granted === 'granted') {
-//       return true;
-//     } else {
-//       return false;
-//     }
-//   } catch (err) {
-//     return false;
-//   }
-// };
-
 import { Platform } from 'react-native';
-// import { check, request, PERMISSIONS, RESULTS } from '@react-native-community/permissions';
-import {check,request,PERMISSIONS, RESULTS} from 'react-native-permissions';
-
+import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 
 export const requestLocationPermission = async () => {
-  console.log('asking permission');
-
   try {
     // Determine the appropriate location permission based on the platform
     const locationPermission =
@@ -39,7 +10,7 @@ export const requestLocationPermission = async () => {
         : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
 
     // Check the current status of the location permission
-    const permissionStatus = await check(locationPermission);
+    let permissionStatus = await check(locationPermission);
 
     // If the permission is already granted, log a message and return true
     if (permissionStatus === RESULTS.GRANTED) {
@@ -48,7 +19,13 @@ export const requestLocationPermission = async () => {
     }
 
     // If the permission is not granted, request the permission
-    const requestResult = await request(locationPermission);
+    const requestResult = await request(locationPermission, {
+      title: 'Geolocation Permission',
+      message: 'Can we access your location for hacking',
+      buttonNeutral: 'Ask Me Later',
+      buttonNegative: 'Cancel',
+      buttonPositive: 'OK',
+    });
 
     // Check the result of the permission request
     if (requestResult === RESULTS.GRANTED) {
@@ -56,6 +33,10 @@ export const requestLocationPermission = async () => {
       return true;
     } else {
       console.log('Permission denied');
+
+      // Check the permission status again to reevaluate
+      permissionStatus = await check(locationPermission);
+
       return false;
     }
   } catch (err) {

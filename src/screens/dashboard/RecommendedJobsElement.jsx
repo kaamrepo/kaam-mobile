@@ -173,7 +173,7 @@ const renderItemsRecommendedJobs = ({
         <Pressable
           onPress={() => {
             console.log('pressed');
-            navigation.navigate('ApplyNow', {jobDetails: item});
+            navigation.navigate('ApplyNow', {jobDetails: item, id: item._id});
           }}
           style={tw`w-full h-full`}
           key={index}>

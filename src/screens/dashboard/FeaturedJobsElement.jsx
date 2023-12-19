@@ -100,7 +100,7 @@ const FeaturedJobsElement = ({
             key={item._id}
             onPress={() => {
           console.log('pressed recommended jobs');
-          navigation.navigate('ApplyNow',{jobDetails: item});
+          navigation.navigate('ApplyNow', {jobDetails: item, id: item._id});
         }}
             style={({pressed}) =>
               tw`my-1 w-full flex-row justify-between border border-gray-200 rounded-3 py-3 px-5 ${

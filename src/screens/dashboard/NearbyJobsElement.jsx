@@ -33,8 +33,6 @@ const NearbyJobsElement = ({
   isLoading,
   location,
 }) => {
-  const {loggedInUser} = useLoginStore();
-
   if (!location) {
     return (
       <CommonMessageForNearByJobs
@@ -108,9 +106,8 @@ const handleBookmarkPress = () => {
   // Handle bookmark button press logic here
   console.log('Bookmark button pressed!');
 };
-const renderItemsNearbyJobs = ({item, index, navigation, nearbyjobs}) => {
+const renderItemsNearbyJobs = ({item, index, navigation}) => {
   const isLastSlide = Object.keys(item).length;
-  console.log('isLastSlide', isLastSlide, item);
   if (!isLastSlide) {
     return (
       <TouchableOpacity
