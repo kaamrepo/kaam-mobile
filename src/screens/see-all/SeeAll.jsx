@@ -8,6 +8,7 @@ import {
   Image,
   ScrollView,
   Modal,
+  FlatList
 } from 'react-native';
 import tw from 'twrnc';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -17,8 +18,21 @@ import Icon, {Icons} from '../../components/Icons';
 import Image1 from '../../assets/images/browse-jobs.png';
 import Image2 from '../../assets/images/IntroScreenJobsAndInvitations.png';
 import Image3 from '../../assets/images/search-dream-job.png';
+import useJobStore from '../../store/dashboard.store';
+
 
 const SeeAll = ({navigation, isLoading}) => {
+  const {getSearchedJobs,clearsearchedJobs,searchedJobs
+  } = useJobStore(); 
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const handleSearch = async () => {
+    try {
+     
+    } catch (error) {
+      console.error('Error fetching search results:', error);
+    }
+  };
   const featuredJobs = {
     total: 3,
     skip: 0,
@@ -31,206 +45,6 @@ const SeeAll = ({navigation, isLoading}) => {
         description: 'Tester',
         value: 960000,
         location: 'Delhi',
-      },
-      {
-        _id: 'fghgjkl',
-        image: Image2,
-        title: 'Jr Engineer',
-        description: 'Devloper',
-        value: 98765,
-        location: 'Pune',
-      },
-      {
-        _id: 'fghjksl',
-        image: Image3,
-        title: 'Sr tester',
-        description: 'Automation',
-        value: 576778,
-        location: 'Mumbai',
-      },
-      {
-        _id: 'fghjkl',
-        image: Image1,
-        title: 'Jr Executive',
-        description: 'Tester',
-        value: 960000,
-        location: 'Delhi',
-      },
-      {
-        _id: 'fghgjkl',
-        image: Image2,
-        title: 'Jr Engineer',
-        description: 'Devloper',
-        value: 98765,
-        location: 'Pune',
-      },
-      {
-        _id: 'fghjksl',
-        image: Image3,
-        title: 'Sr tester',
-        description: 'Automation',
-        value: 576778,
-        location: 'Mumbai',
-      },
-      {
-        _id: 'fghjkl',
-        image: Image1,
-        title: 'Jr Executive',
-        description: 'Tester',
-        value: 960000,
-        location: 'Delhi',
-      },
-      {
-        _id: 'fghgjkl',
-        image: Image2,
-        title: 'Jr Engineer',
-        description: 'Devloper',
-        value: 98765,
-        location: 'Pune',
-      },
-      {
-        _id: 'fghjksl',
-        image: Image3,
-        title: 'Sr tester',
-        description: 'Automation',
-        value: 576778,
-        location: 'Mumbai',
-      },
-      {
-        _id: 'fghjkl',
-        image: Image1,
-        title: 'Jr Executive',
-        description: 'Tester',
-        value: 960000,
-        location: 'Delhi',
-      },
-      {
-        _id: 'fghgjkl',
-        image: Image2,
-        title: 'Jr Engineer',
-        description: 'Devloper',
-        value: 98765,
-        location: 'Pune',
-      },
-      {
-        _id: 'fghjksl',
-        image: Image3,
-        title: 'Sr tester',
-        description: 'Automation',
-        value: 576778,
-        location: 'Mumbai',
-      },
-      {
-        _id: 'fghjkl',
-        image: Image1,
-        title: 'Jr Executive',
-        description: 'Tester',
-        value: 960000,
-        location: 'Delhi',
-      },
-      {
-        _id: 'fghgjkl',
-        image: Image2,
-        title: 'Jr Engineer',
-        description: 'Devloper',
-        value: 98765,
-        location: 'Pune',
-      },
-      {
-        _id: 'fghjksl',
-        image: Image3,
-        title: 'Sr tester',
-        description: 'Automation',
-        value: 576778,
-        location: 'Mumbai',
-      },
-      {
-        _id: 'fghjkl',
-        image: Image1,
-        title: 'Jr Executive',
-        description: 'Tester',
-        value: 960000,
-        location: 'Delhi',
-      },
-      {
-        _id: 'fghgjkl',
-        image: Image2,
-        title: 'Jr Engineer',
-        description: 'Devloper',
-        value: 98765,
-        location: 'Pune',
-      },
-      {
-        _id: 'fghjksl',
-        image: Image3,
-        title: 'Sr tester',
-        description: 'Automation',
-        value: 576778,
-        location: 'Mumbai',
-      },
-      {
-        _id: 'fghjkl',
-        image: Image1,
-        title: 'Jr Executive',
-        description: 'Tester',
-        value: 960000,
-        location: 'Delhi',
-      },
-      {
-        _id: 'fghgjkl',
-        image: Image2,
-        title: 'Jr Engineer',
-        description: 'Devloper',
-        value: 98765,
-        location: 'Pune',
-      },
-      {
-        _id: 'fghjksl',
-        image: Image3,
-        title: 'Sr tester',
-        description: 'Automation',
-        value: 576778,
-        location: 'Mumbai',
-      },
-      {
-        _id: 'fghjkl',
-        image: Image1,
-        title: 'Jr Executive',
-        description: 'Tester',
-        value: 960000,
-        location: 'Delhi',
-      },
-      {
-        _id: 'fghgjkl',
-        image: Image2,
-        title: 'Jr Engineer',
-        description: 'Devloper',
-        value: 98765,
-        location: 'Pune',
-      },
-      {
-        _id: 'fghjksl',
-        image: Image3,
-        title: 'Sr tester',
-        description: 'Automation',
-        value: 576778,
-        location: 'Mumbai',
-      },
-      {
-        _id: 'fghjkl',
-        image: Image1,
-        title: 'Jr Executive',
-        description: 'Tester',
-        value: 960000,
-        location: 'Delhi',
-      },
-      {
-        _id: 'fghgjkl',
-        image: Image2,
-        title: 'Jr Engineer',
-        description: 'Devloper',
-        value: 98765,
-        location: 'Pune',
       },
       {
         _id: 'fghjksl',
@@ -474,6 +288,8 @@ const SeeAll = ({navigation, isLoading}) => {
             style={tw`flex-1 text-sm text-black`}
             placeholder="Search"
             placeholderTextColor="gray"
+            onChangeText={text => setSearchQuery(text)}
+            onBlur={handleSearch}
           />
         </View>
         <TouchableOpacity
@@ -545,8 +361,12 @@ const SeeAll = ({navigation, isLoading}) => {
       </View>
       <View style={tw`mb-14`}>
         <ScrollView>
-          {featuredJobs?.data?.map((item, index) => (
-            <Pressable
+        <FlatList
+        data={searchResults}
+        keyExtractor={(item) => item._id}
+        renderItem={({ item ,index}) => (
+          /* Render each search result item as needed */
+          <Pressable
               key={index}
               onPress={() => {
                 console.log('pressed');
@@ -613,7 +433,11 @@ const SeeAll = ({navigation, isLoading}) => {
                 )}
               </Pressable>
             </Pressable>
-          ))}
+        )}
+      />
+          {/* {featuredJobs?.data?.map((item, index) => (
+            console.log
+          ))} */}
         </ScrollView>
       </View>
     </SafeAreaView>
