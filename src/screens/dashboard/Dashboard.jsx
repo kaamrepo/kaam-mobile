@@ -10,11 +10,7 @@ import {
 } from 'react-native';
 
 import tw from 'twrnc';
-import Image1 from '../../assets/images/browse-jobs.png';
-import Image2 from '../../assets/images/IntroScreenJobsAndInvitations.png';
-import Image3 from '../../assets/images/search-dream-job.png';
 import MenuIconSVG from '../../assets/svgs/Menu Icon.svg';
-import FilterIconSVG from '../../assets/svgs/FilterIcon.svg';
 import useLoginStore from '../../store/authentication/login.store';
 import capitalizeFirstLetter from '../../helper/utils/capitalizeFirstLetter';
 import GeneralStatusBar from '../../components/GeneralStatusBar';
@@ -33,7 +29,7 @@ const Dashboard = ({navigation}) => {
   const {loggedInUser, language} = useLoginStore();
   const {getNearByJobs, nearbyjobs,getRecommendedJobs,
     recommendedJobs,clearRecommendedJobs,clearFeaturedJobs,getFeaturedJobs,
-    featuredJobs
+    featuredJobs,searchedJobs
   } = useJobStore();
   const {isLoading} = useLoaderStore();
   const [location, setLocation] = useState(undefined);
@@ -58,7 +54,6 @@ const Dashboard = ({navigation}) => {
           Geolocation.getCurrentPosition(
             position => {
               setLocation(position);
-              console.log('locationAccess in dsshboard', position); // Move the log here
 
             },
             error => {

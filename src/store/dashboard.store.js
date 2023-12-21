@@ -113,7 +113,7 @@ const useJobStore = create((set, get) => ({
         params,
       });
       if (res && res.data) {
-        set({featuredJobs: res.data});
+        set({searchedJobs: res.data});
       }
     } catch (error) {
       console.log(JSON.stringify(error, null, 5));
