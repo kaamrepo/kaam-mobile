@@ -97,7 +97,7 @@ const useJobStore = create((set, get) => ({
   clearFeaturedJobs: () => set({featuredJobs: {}}),
   clearsearchedJobs: () => set({searchedJobs: {}}),
   clearJob: () => set({job: {}, appliedJob: undefined}),
-  getSearchedJobs: async (skip = 0, limit = 10,searchParam) => {
+  getSearchedJobs: async (skip = 0, limit = 10,{type,coordinates}) => {
     try {
       const userid = useLoginStore.getState().loggedInUser?._id;
       let params = {
@@ -106,14 +106,15 @@ const useJobStore = create((set, get) => ({
         createdby: {
           $nin: [userid],
         },
-        // type:searchParam.type
+        type,
+        coordinates
       };
       const res = await API.get(`${JOBS}/`, {
         headers: {Authorization: await getToken()},
         params,
       });
       if (res && res.data) {
-        set({featuredJobs: res.data});
+        set({searchedJobs: res.data});
       }
     } catch (error) {
       console.log(JSON.stringify(error, null, 5));

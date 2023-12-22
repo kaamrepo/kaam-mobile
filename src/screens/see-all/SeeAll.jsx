@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Text,
   View,
@@ -19,13 +19,21 @@ import Image1 from '../../assets/images/browse-jobs.png';
 import Image2 from '../../assets/images/IntroScreenJobsAndInvitations.png';
 import Image3 from '../../assets/images/search-dream-job.png';
 import useJobStore from '../../store/dashboard.store';
+import useLoginStore from '../../store/authentication/login.store';
+import { dashboardTranslation } from '../dashboard/dashboardTranslation';
+import { getCoordinates } from '../../helper/utils/getGeoLocation';
 
 
-const SeeAll = ({navigation, isLoading}) => {
+const SeeAll = ({navigation, isLoading,...props}) => {
+  const {loggedInUser, language} = useLoginStore();
   const {getSearchedJobs,clearsearchedJobs,searchedJobs
   } = useJobStore(); 
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+ useEffect(()=>{
+  getSearchedJobs(0,10,{type:props?.route?.params.type,coordinates:props?.route?.params?.coordinates});
+ },[])
+ console.log("searchedJobs",searchedJobs);
   const handleSearch = async () => {
     try {
      
@@ -33,173 +41,8 @@ const SeeAll = ({navigation, isLoading}) => {
       console.error('Error fetching search results:', error);
     }
   };
-  const featuredJobs = {
-    total: 3,
-    skip: 0,
-    limit: 0,
-    data: [
-      {
-        _id: 'fghjkl',
-        image: Image1,
-        title: 'Jr Executive',
-        description: 'Tester',
-        value: 960000,
-        location: 'Delhi',
-      },
-      {
-        _id: 'fghjksl',
-        image: Image3,
-        title: 'Sr tester',
-        description: 'Automation',
-        value: 576778,
-        location: 'Mumbai',
-      },
-      {
-        _id: 'fghjkl',
-        image: Image1,
-        title: 'Jr Executive',
-        description: 'Tester',
-        value: 960000,
-        location: 'Delhi',
-      },
-      {
-        _id: 'fghgjkl',
-        image: Image2,
-        title: 'Jr Engineer',
-        description: 'Devloper',
-        value: 98765,
-        location: 'Pune',
-      },
-      {
-        _id: 'fghjksl',
-        image: Image3,
-        title: 'Sr tester',
-        description: 'Automation',
-        value: 576778,
-        location: 'Mumbai',
-      },
-      {
-        _id: 'fghjkl',
-        image: Image1,
-        title: 'Jr Executive',
-        description: 'Tester',
-        value: 960000,
-        location: 'Delhi',
-      },
-      {
-        _id: 'fghgjkl',
-        image: Image2,
-        title: 'Jr Engineer',
-        description: 'Devloper',
-        value: 98765,
-        location: 'Pune',
-      },
-      {
-        _id: 'fghjksl',
-        image: Image3,
-        title: 'Sr tester',
-        description: 'Automation',
-        value: 576778,
-        location: 'Mumbai',
-      },
-      {
-        _id: 'fghjkl',
-        image: Image1,
-        title: 'Jr Executive',
-        description: 'Tester',
-        value: 960000,
-        location: 'Delhi',
-      },
-      {
-        _id: 'fghgjkl',
-        image: Image2,
-        title: 'Jr Engineer',
-        description: 'Devloper',
-        value: 98765,
-        location: 'Pune',
-      },
-      {
-        _id: 'fghjksl',
-        image: Image3,
-        title: 'Sr tester',
-        description: 'Automation',
-        value: 576778,
-        location: 'Mumbai',
-      },
-      {
-        _id: 'fghjkl',
-        image: Image1,
-        title: 'Jr Executive',
-        description: 'Tester',
-        value: 960000,
-        location: 'Delhi',
-      },
-      {
-        _id: 'fghgjkl',
-        image: Image2,
-        title: 'Jr Engineer',
-        description: 'Devloper',
-        value: 98765,
-        location: 'Pune',
-      },
-      {
-        _id: 'fghjksl',
-        image: Image3,
-        title: 'Sr tester',
-        description: 'Automation',
-        value: 576778,
-        location: 'Mumbai',
-      },
-      {
-        _id: 'fghjkl',
-        image: Image1,
-        title: 'Jr Executive',
-        description: 'Tester',
-        value: 960000,
-        location: 'Delhi',
-      },
-      {
-        _id: 'fghgjkl',
-        image: Image2,
-        title: 'Jr Engineer',
-        description: 'Devloper',
-        value: 98765,
-        location: 'Pune',
-      },
-      {
-        _id: 'fghjksl',
-        image: Image3,
-        title: 'Sr tester',
-        description: 'Automation',
-        value: 576778,
-        location: 'Mumbai',
-      },
-      {
-        _id: 'fghjkl',
-        image: Image1,
-        title: 'Jr Executive',
-        description: 'Tester',
-        value: 960000,
-        location: 'Delhi',
-      },
-      {
-        _id: 'fghgjkl',
-        image: Image2,
-        title: 'Jr Engineer',
-        description: 'Devloper',
-        value: 98765,
-        location: 'Pune',
-      },
-      {
-        _id: 'fghjksl',
-        image: Image3,
-        title: 'Sr tester',
-        description: 'Automation',
-        value: 576778,
-        location: 'Mumbai',
-      },
-    ],
-  };
+
+ 
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedOption, setSelectedOption] = useState('Option1');
 
@@ -242,24 +85,24 @@ const SeeAll = ({navigation, isLoading}) => {
       </>
     );
   }
-  if (featuredJobs && featuredJobs?.total == 0) {
-    return (
-      <>
+    // Check for empty data state
+    if (!searchedJobs || searchedJobs?.total === 0 || Object.keys(searchedJobs)?.length === 0) {
+      console.log("in the no data view");
+      return (
         <View style={tw`px-5 mb-14 w-full`}>
-          <View
-            style={tw`w-full h-30 bg-gray-200 rounded-3 items-center justify-center`}>
-            <Text
-              style={[
-                tw`text-neutral-700 text-sm`,
-                {fontFamily: 'Poppins-Regular'},
-              ]}>
+          <View style={tw`text-slate-950 w-full bg-gray-200 rounded-3 items-center justify-center`}>
+            <Text style={[tw`text-slate-950 text-sm`, {fontFamily: 'Poppins-Regular'}]}>
               There are no featured jobs
+              <Image
+        source={{ uri: 'https://cdn.pixabay.com/photo/2023/10/29/12/29/pumpkin-8349988_1280.jpg' }}
+   style={tw`border-2 h-30 w-30`}
+      />
             </Text>
           </View>
         </View>
-      </>
-    );
-  }
+      );
+    }
+  
   return (
     <SafeAreaView style={tw`flex-1 bg-slate-50`} edges={['top']}>
       <View style={tw`flex-row items-center mb-4 mt-2`}>
@@ -360,87 +203,37 @@ const SeeAll = ({navigation, isLoading}) => {
         </Modal>
       </View>
       <View style={tw`mb-14`}>
-        <ScrollView>
-        <FlatList
-        data={searchResults}
-        keyExtractor={(item) => item._id}
-        renderItem={({ item ,index}) => (
-          /* Render each search result item as needed */
-          <Pressable
-              key={index}
-              onPress={() => {
-                console.log('pressed');
-                navigation.navigate('ApplyNow', {jobDetails: item});
-              }}
-              style={({pressed}) =>
-                tw`my-1 w-full flex-row justify-between border border-gray-200 rounded-3 py-3 px-5 ${
-                  pressed ? 'bg-green-100/10' : 'bg-white'
-                }`
-              }>
-              <View style={tw`h-10 w-10 flex-2`}>
-                <Image
-                  source={item.image}
-                  style={tw`h-10 w-10 rounded-xl`}
-                  resizeMode="contain"
-                />
-              </View>
-              <View style={tw` flex-4`}>
-                <Text
-                  style={[
-                    tw`text-black text-[14px]`,
-                    {fontFamily: 'Poppins-SemiBold'},
-                  ]}
-                  numberOfLines={1}
-                  ellipsizeMode="tail">
-                  {item.title}
-                </Text>
-                <Text
-                  style={[
-                    tw`text-neutral-600 text-[14px]`,
-                    {fontFamily: 'Poppins-Regular'},
-                  ]}
-                  numberOfLines={1}
-                  ellipsizeMode="tail">
-                  {item.description}
-                </Text>
-              </View>
-              <View style={tw` flex-2`}>
-                <Text
-                  style={[
-                    tw`text-black text-[14px]`,
-                    {fontFamily: 'Poppins-SemiBold'},
-                  ]}>
-                  ₹: {item.value}
-                </Text>
-                <Text
-                  style={[
-                    tw`text-neutral-600 text-[14px]`,
-                    {fontFamily: 'Poppins-Regular'},
-                  ]}>
-                  {item.location}
-                </Text>
-              </View>
-              <Pressable
-                onPress={handleBookmarkPress}
-                style={({pressed}) => [tw`p-0  rounded-full`]}>
-                {({pressed}) => (
-                  <Icon
-                    type={Icons.Ionicons}
-                    name="bookmark"
-                    size={22}
-                    color={pressed ? 'orange' : 'green'} // Adjust the colors accordingly
-                  />
-                )}
-              </Pressable>
-            </Pressable>
-        )}
-      />
-          {/* {featuredJobs?.data?.map((item, index) => (
+      <FlatList
+  data={searchedJobs}
+  keyExtractor={(item) => item._id}
+  renderItem={({ item, index }) => {
+    console.log('Rendering item at index:', index, 'with data:', item);
+    return (
+      /* Render each search result item as needed */
+      <Pressable
+        key={index}
+        onPress={() => {
+          console.log('pressed');
+          navigation.navigate('ApplyNow', { jobDetails: item });
+        }}
+        style={({ pressed }) =>
+          tw`my-1 w-full flex-row justify-between border border-gray-200 rounded-3 py-3 px-5 ${
+            pressed ? 'bg-green-100/10' : 'bg-white'
+          }`
+        }>
+        {/* Rest of your UI components */}
+      </Pressable>
+    );
+  }}
+/>
+
+      </View>
+          {/* {searchedJobs?.data?.map((item, index) => (
             console.log
           ))} */}
-        </ScrollView>
-      </View>
     </SafeAreaView>
+    
   );
 };
 export default SeeAll;
+
