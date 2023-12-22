@@ -8,7 +8,8 @@ import {
   Image,
   ScrollView,
   Modal,
-  FlatList
+  FlatList,
+  StyleSheet,
 } from 'react-native';
 import tw from 'twrnc';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -20,29 +21,28 @@ import Image2 from '../../assets/images/IntroScreenJobsAndInvitations.png';
 import Image3 from '../../assets/images/search-dream-job.png';
 import useJobStore from '../../store/dashboard.store';
 import useLoginStore from '../../store/authentication/login.store';
-import { dashboardTranslation } from '../dashboard/dashboardTranslation';
-import { getCoordinates } from '../../helper/utils/getGeoLocation';
+import {dashboardTranslation} from '../dashboard/dashboardTranslation';
+import {getCoordinates} from '../../helper/utils/getGeoLocation';
 
-
-const SeeAll = ({navigation, isLoading,...props}) => {
+const SeeAll = ({navigation, isLoading, ...props}) => {
   const {loggedInUser, language} = useLoginStore();
-  const {getSearchedJobs,clearsearchedJobs,searchedJobs
-  } = useJobStore(); 
+  const {getSearchedJobs, clearsearchedJobs, searchedJobs} = useJobStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
- useEffect(()=>{
-  getSearchedJobs(0,10,{type:props?.route?.params.type,coordinates:props?.route?.params?.coordinates});
- },[])
- console.log("searchedJobs",searchedJobs);
+  useEffect(() => {
+    getSearchedJobs(0, 10, {
+      type: props?.route?.params.type,
+      coordinates: props?.route?.params?.coordinates,
+    });
+  }, []);
+  console.log('searchedJobs', searchedJobs);
   const handleSearch = async () => {
     try {
-     
     } catch (error) {
       console.error('Error fetching search results:', error);
     }
   };
 
- 
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedOption, setSelectedOption] = useState('Option1');
 
@@ -85,24 +85,68 @@ const SeeAll = ({navigation, isLoading,...props}) => {
       </>
     );
   }
-    // Check for empty data state
-    if (!searchedJobs || searchedJobs?.total === 0 || Object.keys(searchedJobs)?.length === 0) {
-      console.log("in the no data view");
-      return (
-        <View style={tw`px-5 mb-14 w-full`}>
-          <View style={tw`text-slate-950 w-full bg-gray-200 rounded-3 items-center justify-center`}>
-            <Text style={[tw`text-slate-950 text-sm`, {fontFamily: 'Poppins-Regular'}]}>
-              There are no featured jobs
-              <Image
-        source={{ uri: 'https://cdn.pixabay.com/photo/2023/10/29/12/29/pumpkin-8349988_1280.jpg' }}
-   style={tw`border-2 h-30 w-30`}
-      />
-            </Text>
-          </View>
+  // Check for empty data state
+  if (
+    !searchedJobs ||
+    searchedJobs?.total === 0 ||
+    Object.keys(searchedJobs)?.length === 0
+  ) {
+    console.log('in the no data view');
+    return (
+      <View style={tw`px-5 mb-14 w-full`}>
+        <View
+          style={tw`text-slate-950 w-full bg-gray-200 rounded-3 items-center justify-center`}>
+          <Text
+            style={[
+              tw`text-slate-950 text-sm`,
+              {fontFamily: 'Poppins-Regular'},
+            ]}>
+            There are no featured jobs
+            <Image
+              source={{
+                uri: 'https://cdn.pixabay.com/photo/2023/10/29/12/29/pumpkin-8349988_1280.jpg',
+              }}
+              style={tw`border-2 h-30 w-30`}
+            />
+          </Text>
         </View>
-      );
-    }
-  
+      </View>
+    );
+  }
+
+  // State to track the selected item
+  const [selectedItem, setSelectedItem] = useState(null);
+  // Render function for each item in the FlatList
+  const renderItem = ({item, index}) => (
+    <Pressable
+      key={index}
+      onPress={() => {
+        console.log('pressed');
+        navigation.navigate('ApplyNow', {jobDetails: item});
+      }}
+      style={({pressed}) =>
+        tw`my-1 w-full flex-row justify-between border border-gray-200 rounded-3 py-3 px-5 ${
+          pressed ? 'bg-green-100/10' : 'bg-slate-200'
+        }`
+      }>
+      {item.profilepic ? (
+        <Image source={item?.profilepic} style={tw`h-10 w-10 rounded-xl`} />
+      ) : (
+        <Icon
+          type={Icons.Ionicons}
+          name={'person-circle-outline'}
+          size={55}
+          color={'green'}
+        />
+      )}
+      {/* Rest of your UI components */}
+    </Pressable>
+  );
+
+  // Key extractor function to get unique keys for each item
+  const keyExtractor = item => item.id;
+
+  // Flatlist test
   return (
     <SafeAreaView style={tw`flex-1 bg-slate-50`} edges={['top']}>
       <View style={tw`flex-row items-center mb-4 mt-2`}>
@@ -203,37 +247,18 @@ const SeeAll = ({navigation, isLoading,...props}) => {
         </Modal>
       </View>
       <View style={tw`mb-14`}>
-      <FlatList
-  data={searchedJobs}
-  keyExtractor={(item) => item._id}
-  renderItem={({ item, index }) => {
-    console.log('Rendering item at index:', index, 'with data:', item);
-    return (
-      /* Render each search result item as needed */
-      <Pressable
-        key={index}
-        onPress={() => {
-          console.log('pressed');
-          navigation.navigate('ApplyNow', { jobDetails: item });
-        }}
-        style={({ pressed }) =>
-          tw`my-1 w-full flex-row justify-between border border-gray-200 rounded-3 py-3 px-5 ${
-            pressed ? 'bg-green-100/10' : 'bg-white'
-          }`
-        }>
-        {/* Rest of your UI components */}
-      </Pressable>
-    );
-  }}
-/>
-
+        <FlatList
+          data={searchedJobs?.data}
+          renderItem={renderItem}
+          keyExtractor={keyExtractor}
+          extraData={selectedItem} // Re-render the FlatList when selectedItem changes
+          onPress={() => setSelectedItem(item._id)} // Handle item press
+        />
       </View>
-          {/* {searchedJobs?.data?.map((item, index) => (
+      {/* {searchedJobs?.data?.map((item, index) => (
             console.log
           ))} */}
     </SafeAreaView>
-    
   );
 };
 export default SeeAll;
-
