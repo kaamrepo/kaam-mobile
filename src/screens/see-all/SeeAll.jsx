@@ -21,6 +21,7 @@ import Image3 from '../../assets/images/search-dream-job.png';
 import useJobStore from '../../store/dashboard.store';
 import useLoginStore from '../../store/authentication/login.store';
 import { dashboardTranslation } from '../dashboard/dashboardTranslation';
+import { getCoordinates } from '../../helper/utils/getGeoLocation';
 
 
 const SeeAll = ({navigation, isLoading,...props}) => {
@@ -29,11 +30,10 @@ const SeeAll = ({navigation, isLoading,...props}) => {
   } = useJobStore(); 
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
-useEffect(()=>{
-console.log("props",props);
-},[])
-
-  console.log("searchedJobs",searchedJobs);
+ useEffect(()=>{
+  getSearchedJobs(0,10,{type:props?.route?.params.type,coordinates:props?.route?.params?.coordinates});
+ },[])
+ console.log("searchedJobs",searchedJobs);
   const handleSearch = async () => {
     try {
      
@@ -85,6 +85,23 @@ console.log("props",props);
       </>
     );
   }
+    // Check for empty data state
+    if (!searchedJobs || searchedJobs?.total === 0 || Object.keys(searchedJobs)?.length === 0) {
+      console.log("in the no data view");
+      return (
+        <View style={tw`px-5 mb-14 w-full`}>
+          <View style={tw`text-slate-950 w-full bg-gray-200 rounded-3 items-center justify-center`}>
+            <Text style={[tw`text-slate-950 text-sm`, {fontFamily: 'Poppins-Regular'}]}>
+              There are no featured jobs
+              <Image
+        source={{ uri: 'https://cdn.pixabay.com/photo/2023/10/29/12/29/pumpkin-8349988_1280.jpg' }}
+   style={tw`border-2 h-30 w-30`}
+      />
+            </Text>
+          </View>
+        </View>
+      );
+    }
   
   return (
     <SafeAreaView style={tw`flex-1 bg-slate-50`} edges={['top']}>
@@ -186,80 +203,30 @@ console.log("props",props);
         </Modal>
       </View>
       <View style={tw`mb-14`}>
-        <FlatList
-        data={searchedJobs}
-        keyExtractor={(item) => item._id}
-        renderItem={({ item ,index}) => (
-          /* Render each search result item as needed */
-          <Pressable
-              key={index}
-              onPress={() => {
-                console.log('pressed');
-                navigation.navigate('ApplyNow', {jobDetails: item});
-              }}
-              style={({pressed}) =>
-                tw`my-1 w-full flex-row justify-between border border-gray-200 rounded-3 py-3 px-5 ${
-                  pressed ? 'bg-green-100/10' : 'bg-white'
-                }`
-              }>
-              <View style={tw`h-10 w-10 flex-2`}>
-                <Image
-                  source={item.image}
-                  style={tw`h-10 w-10 rounded-xl`}
-                  resizeMode="contain"
-                />
-              </View>
-              <View style={tw` flex-4`}>
-                <Text
-                  style={[
-                    tw`text-black text-[14px]`,
-                    {fontFamily: 'Poppins-SemiBold'},
-                  ]}
-                  numberOfLines={1}
-                  ellipsizeMode="tail">
-                  {item.title}
-                </Text>
-                <Text
-                  style={[
-                    tw`text-neutral-600 text-[14px]`,
-                    {fontFamily: 'Poppins-Regular'},
-                  ]}
-                  numberOfLines={1}
-                  ellipsizeMode="tail">
-                  {item.description}
-                </Text>
-              </View>
-              <View style={tw` flex-2`}>
-                <Text
-                  style={[
-                    tw`text-black text-[14px]`,
-                    {fontFamily: 'Poppins-SemiBold'},
-                  ]}>
-                  ₹: {item.value}
-                </Text>
-                <Text
-                  style={[
-                    tw`text-neutral-600 text-[14px]`,
-                    {fontFamily: 'Poppins-Regular'},
-                  ]}>
-                  {item.location}
-                </Text>
-              </View>
-              <Pressable
-                onPress={handleBookmarkPress}
-                style={({pressed}) => [tw`p-0  rounded-full`]}>
-                {({pressed}) => (
-                  <Icon
-                    type={Icons.Ionicons}
-                    name="bookmark"
-                    size={22}
-                    color={pressed ? 'orange' : 'green'} // Adjust the colors accordingly
-                  />
-                )}
-              </Pressable>
-            </Pressable>
-        )}
-      />
+      <FlatList
+  data={searchedJobs}
+  keyExtractor={(item) => item._id}
+  renderItem={({ item, index }) => {
+    console.log('Rendering item at index:', index, 'with data:', item);
+    return (
+      /* Render each search result item as needed */
+      <Pressable
+        key={index}
+        onPress={() => {
+          console.log('pressed');
+          navigation.navigate('ApplyNow', { jobDetails: item });
+        }}
+        style={({ pressed }) =>
+          tw`my-1 w-full flex-row justify-between border border-gray-200 rounded-3 py-3 px-5 ${
+            pressed ? 'bg-green-100/10' : 'bg-white'
+          }`
+        }>
+        {/* Rest of your UI components */}
+      </Pressable>
+    );
+  }}
+/>
+
       </View>
           {/* {searchedJobs?.data?.map((item, index) => (
             console.log

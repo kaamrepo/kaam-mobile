@@ -15,6 +15,7 @@ import Carousel from 'react-native-snap-carousel';
 import Icon, {Icons} from '../../components/Icons';
 import {primaryBGColor} from '../../helper/utils/colors';
 import useJobStore from '../../store/dashboard.store';
+import { getCoordinates } from '../../helper/utils/getGeoLocation';
 
 const nearbyJobsColorSchemes = ['#2B2A4C', '#CE5A67', '#392467', '#739072'];
 const getRandomColor = index => {
@@ -60,9 +61,9 @@ const NearbyJobsElement = ({
       />
     );
   }
-  const handleSeeAllPress = () => {
-    console.log("see all pressed");
-    navigation.navigate('SeeAll', {isLoading,type:'nearby'});
+  const handleSeeAllPress = async () => {
+    const position = await getCoordinates();
+    navigation.navigate('SeeAll', {isLoading,type:'nearby',coordinates:[position.coords.longitude,position.coords.latitude]});
   };
 
   return (
