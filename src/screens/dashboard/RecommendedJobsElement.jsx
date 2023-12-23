@@ -179,7 +179,10 @@ const renderItemsRecommendedJobs = ({
           key={index}>
           <View style={tw`items-center mb-4`}>
             {item.profilepic ? (
-              <Image source={item?.profilepic} style={tw`w-15 h-15 rounded-full`} />
+              <Image
+                source={item?.profilepic}
+                style={tw`w-15 h-15 rounded-full`}
+              />
             ) : (
               <Icon
                 type={Icons.Ionicons}
@@ -200,7 +203,10 @@ const renderItemsRecommendedJobs = ({
           </Text>
           <View style={tw`flex flex-row`}>
             <Icon type={Icons.MaterialIcons} name={'location-pin'} size={20} />
-            <Text style={{fontFamily: 'Poppins-SemiBold'}}>
+            <Text
+              style={{fontFamily: 'Poppins-SemiBold'}}
+              numberOfLines={1}
+              ellipsizeMode="tail">
               {item?.location?.name}
             </Text>
           </View>

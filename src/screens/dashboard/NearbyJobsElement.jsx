@@ -15,7 +15,7 @@ import Carousel from 'react-native-snap-carousel';
 import Icon, {Icons} from '../../components/Icons';
 import {primaryBGColor} from '../../helper/utils/colors';
 import useJobStore from '../../store/dashboard.store';
-import { getCoordinates } from '../../helper/utils/getGeoLocation';
+import {getCoordinates} from '../../helper/utils/getGeoLocation';
 
 const nearbyJobsColorSchemes = ['#2B2A4C', '#CE5A67', '#392467', '#739072'];
 const getRandomColor = index => {
@@ -63,7 +63,11 @@ const NearbyJobsElement = ({
   }
   const handleSeeAllPress = async () => {
     const position = await getCoordinates();
-    navigation.navigate('SeeAll', {isLoading,type:'nearby',coordinates:[position.coords.longitude,position.coords.latitude]});
+    navigation.navigate('SeeAll', {
+      isLoading,
+      type: 'nearby',
+      coordinates: [position.coords.longitude, position.coords.latitude],
+    });
   };
 
   return (
@@ -108,14 +112,14 @@ const handleBookmarkPress = () => {
   // Handle bookmark button press logic here
   console.log('Bookmark button pressed!');
 };
-const renderItemsNearbyJobs = ({item, index, navigation,nearbyjobs}) => {
+const renderItemsNearbyJobs = ({item, index, navigation, nearbyjobs}) => {
   const isLastSlide = index === nearbyjobs.data.length - 1;
   if (isLastSlide) {
     return (
       <TouchableOpacity
         onPress={() => {
-          console.log("sell all pressed differently")
-          navigation.navigate('SeeAll', {type:'nearby'});
+          console.log('sell all pressed differently');
+          navigation.navigate('SeeAll', {type: 'nearby'});
         }}
         style={[
           tw`w-full h-48 flex flex-col justify-center items-center rounded-3 p-4 m-4 text-black relative`,
@@ -211,7 +215,9 @@ const renderItemsNearbyJobs = ({item, index, navigation,nearbyjobs}) => {
               style={[
                 tw`text-[${item?.styles?.color}] text-[16px]`,
                 {fontFamily: 'Poppins-Regular'},
-              ]}>
+              ]}
+              numberOfLines={1}
+              ellipsizeMode="tail">
               {item.location?.name}
             </Text>
           </View>

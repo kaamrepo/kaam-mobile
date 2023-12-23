@@ -2,9 +2,8 @@ import {View, Text, Pressable, Image} from 'react-native';
 import tw from 'twrnc';
 import React from 'react';
 import {dashboardTranslation} from './dashboardTranslation';
-import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import Icon, {Icons} from '../../components/Icons';
-
 
 const FeaturedJobsElement = ({
   featuredJobs,
@@ -13,7 +12,7 @@ const FeaturedJobsElement = ({
   navigation,
 }) => {
   const handleSeeAllPress = () => {
-    navigation.navigate('SeeAll',{isLoading});
+    navigation.navigate('SeeAll', {isLoading});
   };
   if (isLoading) {
     return (
@@ -85,13 +84,13 @@ const FeaturedJobsElement = ({
           {dashboardTranslation[language]['Featured Jobs']}
         </Text>
         <TouchableOpacity onPress={handleSeeAllPress}>
-        <Text
+          <Text
             style={[
               tw`text-center text-sm leading-relaxed text-gray-600`,
               {fontFamily: 'Poppins-Regular'},
             ]}>
-        See all
-        </Text>
+            See all
+          </Text>
         </TouchableOpacity>
       </View>
       <View style={tw`px-5 mb-14`}>
@@ -99,28 +98,29 @@ const FeaturedJobsElement = ({
           <Pressable
             key={item._id}
             onPress={() => {
-          console.log('pressed recommended jobs');
-          navigation.navigate('ApplyNow', {jobDetails: item, id: item._id});
-        }}
+              console.log('pressed recommended jobs');
+              navigation.navigate('ApplyNow', {jobDetails: item, id: item._id});
+            }}
             style={({pressed}) =>
               tw`my-1 w-full flex-row justify-between border border-gray-200 rounded-3 py-3 px-5 ${
                 pressed ? 'bg-green-100/10' : 'bg-white'
               }`
             }>
             <View style={tw`h-10 w-10 flex-2`}>
-            {item.profilepic ? (
-              <Image source={item?.profilepic}
-              style={tw`h-10 w-10 rounded-xl`}
-               />
-            ) : (
-              <Icon
-                type={Icons.Ionicons}
-                name={'person'}
-                size={45}
-                color={'green'}
-              />
-            )}
-          </View>
+              {item.profilepic ? (
+                <Image
+                  source={item?.profilepic}
+                  style={tw`h-10 w-10 rounded-xl`}
+                />
+              ) : (
+                <Icon
+                  type={Icons.Ionicons}
+                  name={'person'}
+                  size={45}
+                  color={'green'}
+                />
+              )}
+            </View>
             <View style={tw` flex-4`}>
               <Text
                 style={[
@@ -153,7 +153,9 @@ const FeaturedJobsElement = ({
                 style={[
                   tw`text-neutral-600 text-[14px]`,
                   {fontFamily: 'Poppins-Regular'},
-                ]}>
+                ]}
+                numberOfLines={1}
+                ellipsizeMode="tail">
                 {item?.location?.name}
               </Text>
             </View>

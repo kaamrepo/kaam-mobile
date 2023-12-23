@@ -114,7 +114,6 @@ const useJobStore = create((set, get) => ({
       if (searchText?.length) {
         params.text=searchText
       }
-      console.log("params beofre search call", params);
       const res = await API.get(`${JOBS}/`, {
         headers: {Authorization: await getToken()},
         params,
@@ -122,6 +121,7 @@ const useJobStore = create((set, get) => ({
       if (res && res.data) {
         set({searchedJobs: res.data});
       }
+      console.log("searched response", res.data);
     } catch (error) {
       console.log("errororoo",JSON.stringify(error, null, 5));
       // Toast.show({
