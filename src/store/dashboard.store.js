@@ -97,7 +97,7 @@ const useJobStore = create((set, get) => ({
   clearFeaturedJobs: () => set({featuredJobs: {}}),
   clearsearchedJobs: () => set({searchedJobs: {}}),
   clearJob: () => set({job: {}, appliedJob: undefined}),
-  getSearchedJobs: async (skip = 0, limit = 10,{type,coordinates}) => {
+  getSearchedJobs: async (skip = 0, limit = 10,{type,coordinates,searchText}) => {
     try {
       const userid = useLoginStore.getState().loggedInUser?._id;
       let params = {
@@ -107,8 +107,14 @@ const useJobStore = create((set, get) => ({
           $nin: [userid],
         },
         type,
-        coordinates
       };
+      if (coordinates?.length) {
+        params.coordinates=coordinates
+      }
+      if (searchText?.length) {
+        params.text=searchText
+      }
+      console.log("params beofre search call", params);
       const res = await API.get(`${JOBS}/`, {
         headers: {Authorization: await getToken()},
         params,
@@ -117,7 +123,7 @@ const useJobStore = create((set, get) => ({
         set({searchedJobs: res.data});
       }
     } catch (error) {
-      console.log(JSON.stringify(error, null, 5));
+      console.log("errororoo",JSON.stringify(error, null, 5));
       // Toast.show({
       //     type: 'tomatoToast',
       //     text1: 'Failed to get jobs!',

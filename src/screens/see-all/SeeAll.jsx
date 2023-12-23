@@ -16,28 +16,28 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {RadioButton} from 'react-native-paper';
 import FilterIconSVG from '../../assets/svgs/FilterIcon.svg';
 import Icon, {Icons} from '../../components/Icons';
-import Image1 from '../../assets/images/browse-jobs.png';
-import Image2 from '../../assets/images/IntroScreenJobsAndInvitations.png';
-import Image3 from '../../assets/images/search-dream-job.png';
 import useJobStore from '../../store/dashboard.store';
 import useLoginStore from '../../store/authentication/login.store';
-import {dashboardTranslation} from '../dashboard/dashboardTranslation';
-import {getCoordinates} from '../../helper/utils/getGeoLocation';
+import { getCoordinates } from '../../helper/utils/getGeoLocation';
 
 const SeeAll = ({navigation, isLoading, ...props}) => {
-  const {loggedInUser, language} = useLoginStore();
   const {getSearchedJobs, clearsearchedJobs, searchedJobs} = useJobStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  
   useEffect(() => {
     getSearchedJobs(0, 10, {
       type: props?.route?.params.type,
       coordinates: props?.route?.params?.coordinates,
     });
-  }, []);
-  console.log('searchedJobs', searchedJobs);
-  const handleSearch = async () => {
+  }, [props?.route?.params.type, props?.route?.params?.coordinates]);
+  
+  console.log('searchedJobs---------', searchedJobs?.data?.length);
+  // console.log('searchedJobs', searchedJobs);
+  const handleSearch = async (text) => {
     try {
+      console.log("before search call");
+      getSearchedJobs(0,10,{type:props?.route?.params.type,coordinates:props?.route?.params?.coordinates,searchText:text})
     } catch (error) {
       console.error('Error fetching search results:', error);
     }
@@ -86,51 +86,26 @@ const SeeAll = ({navigation, isLoading, ...props}) => {
     );
   }
   // Check for empty data state
-  if (
-    !searchedJobs ||
-    searchedJobs?.total === 0 ||
-    Object.keys(searchedJobs)?.length === 0
-  ) {
-    console.log('in the no data view');
-    return (
-      <View style={tw`px-5 mb-14 w-full`}>
-        <View
-          style={tw`text-slate-950 w-full bg-gray-200 rounded-3 items-center justify-center`}>
-          <Text
-            style={[
-              tw`text-slate-950 text-sm`,
-              {fontFamily: 'Poppins-Regular'},
-            ]}>
-            There are no featured jobs
-            <Image
-              source={{
-                uri: 'https://cdn.pixabay.com/photo/2023/10/29/12/29/pumpkin-8349988_1280.jpg',
-              }}
-              style={tw`border-2 h-30 w-30`}
-            />
-          </Text>
-        </View>
-      </View>
-    );
-  }
+
 
   // State to track the selected item
   const [selectedItem, setSelectedItem] = useState(null);
   // Render function for each item in the FlatList
   const renderItem = ({item, index}) => (
     <Pressable
-      key={index}
-      onPress={() => {
-        console.log('pressed');
-        navigation.navigate('ApplyNow', {jobDetails: item});
-      }}
-      style={({pressed}) =>
-        tw`my-1 w-full flex-row justify-between border border-gray-200 rounded-3 py-3 px-5 ${
-          pressed ? 'bg-green-100/10' : 'bg-slate-200'
-        }`
-      }>
-      {item.profilepic ? (
-        <Image source={item?.profilepic} style={tw`h-10 w-10 rounded-xl`} />
+    key={index}
+    onPress={() => {
+      console.log('pressed');
+      navigation.navigate('ApplyNow', {jobDetails: item});
+    }}
+    style={({pressed}) =>
+      tw`my-1 flex-row justify-between border border-gray-200 rounded-3 py-3 px-5 ${
+        pressed ? 'bg-green-100/10' : 'bg-white'
+      }`
+    }>
+    <View style={tw`h-auto w-auto flex`}>
+      {item?.profilepic ? (
+        <Image source={item?.profilepic} style={tw`h-12 w-12 rounded-xl`} />
       ) : (
         <Icon
           type={Icons.Ionicons}
@@ -139,12 +114,62 @@ const SeeAll = ({navigation, isLoading, ...props}) => {
           color={'green'}
         />
       )}
-      {/* Rest of your UI components */}
+    </View>
+    <View style={tw`flex w-35`}>
+      <Text
+        style={[
+          tw`text-black text-[14px]`,
+          {fontFamily: 'Poppins-SemiBold'},
+        ]}
+        numberOfLines={1}
+        ellipsizeMode="tail">
+        {item?.position}
+      </Text>
+      <Text
+        style={[
+          tw`text-neutral-600 text-[14px]`,
+          {fontFamily: 'Poppins-Regular'},
+        ]}
+        numberOfLines={1}
+        ellipsizeMode="tail">
+        {item?.description}
+      </Text>
+    </View>
+    <View style={tw` flex`}>
+      <Text
+        style={[
+          tw`text-black text-[14px]`,
+          {fontFamily: 'Poppins-SemiBold'},
+        ]}>
+        ₹: {item?.salary}
+      </Text>
+      <Text
+        style={[
+          tw`w-30 text-neutral-600 text-[14px]`,
+          {fontFamily: 'Poppins-Regular'},
+        ]}
+        numberOfLines={1}
+        ellipsizeMode="tail">
+        {item?.location?.name}
+      </Text>
+    </View>
+    <Pressable
+      onPress={handleBookmarkPress}
+      style={({pressed}) => [tw`p-0  rounded-full`]}>
+      {({pressed}) => (
+        <Icon
+          type={Icons.Ionicons}
+          name="bookmarks-outline"
+          size={22}
+          color={pressed ? 'orange' : 'green'} // Adjust the colors accordingly
+        />
+      )}
     </Pressable>
+  </Pressable>
   );
 
   // Key extractor function to get unique keys for each item
-  const keyExtractor = item => item.id;
+  const keyExtractor = item => item._id;
 
   // Flatlist test
   return (
@@ -175,8 +200,7 @@ const SeeAll = ({navigation, isLoading, ...props}) => {
             style={tw`flex-1 text-sm text-black`}
             placeholder="Search"
             placeholderTextColor="gray"
-            onChangeText={text => setSearchQuery(text)}
-            onBlur={handleSearch}
+            onChangeText={text => handleSearch(text)}
           />
         </View>
         <TouchableOpacity
@@ -255,9 +279,6 @@ const SeeAll = ({navigation, isLoading, ...props}) => {
           onPress={() => setSelectedItem(item._id)} // Handle item press
         />
       </View>
-      {/* {searchedJobs?.data?.map((item, index) => (
-            console.log
-          ))} */}
     </SafeAreaView>
   );
 };
