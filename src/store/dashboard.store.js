@@ -9,7 +9,7 @@ const useJobStore = create((set, get) => ({
   recommendedJobs: {},
   featuredJobs: {},
   job: {},
-  searchedJobs:{},
+  searchedJobs: {},
   appliedJob: undefined,
   getNearByJobs: async (skip = 0, limit = 5, coordinates) => {
     try {
@@ -22,7 +22,7 @@ const useJobStore = create((set, get) => ({
         },
         coordinates,
         sortDesc: ['createdat'],
-        type:'nearby'
+        type: 'nearby',
       };
       const res = await API.get(`${JOBS}/`, {
         headers: {Authorization: await getToken()},
@@ -38,8 +38,8 @@ const useJobStore = create((set, get) => ({
       //     text1: 'Failed to get jobs!',
       // });
     }
-  }, 
-   getRecommendedJobs: async (skip = 0, limit = 10) => {
+  },
+  getRecommendedJobs: async (skip = 0, limit = 10) => {
     try {
       const userid = useLoginStore.getState().loggedInUser?._id;
       let params = {
@@ -48,7 +48,7 @@ const useJobStore = create((set, get) => ({
         createdby: {
           $nin: [userid],
         },
-        type:'recommended'
+        type: 'recommended',
       };
       const res = await API.get(`${JOBS}/`, {
         headers: {Authorization: await getToken()},
@@ -57,7 +57,6 @@ const useJobStore = create((set, get) => ({
       if (res && res.data) {
         set({recommendedJobs: res.data});
       }
-      console.log("recommended jobs data called",recommendedJobs );
     } catch (error) {
       console.log(JSON.stringify(error, null, 5));
       // Toast.show({
@@ -65,8 +64,8 @@ const useJobStore = create((set, get) => ({
       //     text1: 'Failed to get jobs!',
       // });
     }
-  }, 
-   getFeaturedJobs: async (skip = 0, limit = 10) => {
+  },
+  getFeaturedJobs: async (skip = 0, limit = 10) => {
     try {
       const userid = useLoginStore.getState().loggedInUser?._id;
       let params = {
@@ -75,7 +74,7 @@ const useJobStore = create((set, get) => ({
         createdby: {
           $nin: [userid],
         },
-        type:'featured'
+        type: 'featured',
       };
       const res = await API.get(`${JOBS}/`, {
         headers: {Authorization: await getToken()},
@@ -97,7 +96,15 @@ const useJobStore = create((set, get) => ({
   clearFeaturedJobs: () => set({featuredJobs: {}}),
   clearsearchedJobs: () => set({searchedJobs: {}}),
   clearJob: () => set({job: {}, appliedJob: undefined}),
-  getSearchedJobs: async (skip = 0, limit = 10,{type,coordinates,searchText}) => {
+  getSearchedJobs: async (
+    skip = 0,
+    limit = 10,
+    {type, coordinates, searchText, salary},
+  ) => {
+    console.log('in the store type', type);
+    console.log('in the store coordinates', coordinates);
+    console.log('in the store searchText', searchText);
+    console.log('in the store salary', salary);
     try {
       const userid = useLoginStore.getState().loggedInUser?._id;
       let params = {
@@ -107,12 +114,15 @@ const useJobStore = create((set, get) => ({
           $nin: [userid],
         },
         type,
+        
       };
+      if (salary === -1) params.sortDesc=['salary']
+      if (salary === 1) params.sortAsc=['salary']
       if (coordinates?.length) {
-        params.coordinates=coordinates
+        params.coordinates = coordinates;
       }
       if (searchText?.length) {
-        params.text=searchText
+        params.text = searchText;
       }
       const res = await API.get(`${JOBS}/`, {
         headers: {Authorization: await getToken()},
@@ -121,9 +131,8 @@ const useJobStore = create((set, get) => ({
       if (res && res.data) {
         set({searchedJobs: res.data});
       }
-      console.log("searched response", res.data);
     } catch (error) {
-      console.log("errororoo",JSON.stringify(error, null, 5));
+      console.log('errororoo',error);
       // Toast.show({
       //     type: 'tomatoToast',
       //     text1: 'Failed to get jobs!',
@@ -131,7 +140,7 @@ const useJobStore = create((set, get) => ({
     }
   },
   getNearByJobById: async id => {
-    try {
+    try {Fcreatedat
       let params = {};
       const res = await API.get(`${JOBS}/${id}`, {
         headers: {Authorization: await getToken()},
@@ -158,7 +167,6 @@ const useJobStore = create((set, get) => ({
       });
 
       if (res?.data) {
-        // console.log(JSON.stringify(res?.data, null, 4));
         Toast.show({
           type: 'success',
           text1: 'Applied successfully!',

@@ -24,35 +24,57 @@ const SeeAll = ({navigation, isLoading, ...props}) => {
   const {getSearchedJobs, clearsearchedJobs, searchedJobs} = useJobStore();
   const [searchDefaultQuery, setDefaultSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
-
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(null);
   useEffect(() => {
     setDefaultSearchQuery({
       type: props?.route?.params.type,
       coordinates: props?.route?.params?.coordinates,
     });
-    getSearchedJobs(0, 10, {
-      type: props?.route?.params.type,
-      coordinates: props?.route?.params?.coordinates,
-    });
+    switch (props?.route?.params.type) {
+      case 'nearby':
+        setDefaultSearchQuery({
+          type: props?.route?.params.type,
+          coordinates: props?.route?.params?.coordinates,
+        });
+        getSearchedJobs(0, 10, {
+          type: props?.route?.params.type,
+          coordinates: props?.route?.params?.coordinates,
+        });
+        break;
+
+      default:
+        setDefaultSearchQuery({
+          type: props?.route?.params.type,
+        });
+        break;
+    }
   }, [props?.route?.params.type, props?.route?.params?.coordinates]);
 
-  console.log('searchedJobs---------', searchedJobs?.data?.length);
-  // console.log('searchedJobs', searchedJobs);
   const handleSearch = async text => {
     try {
       clearsearchedJobs();
-      getSearchedJobs(0, 10, {
-        type: props?.route?.params.type,
-        coordinates: props?.route?.params?.coordinates,
-        searchText: text,
-      });
+      switch (props?.route?.params.type) {
+        case 'nearby':
+          setDefaultSearchQuery({
+            type: props?.route?.params.type,
+            coordinates: props?.route?.params?.coordinates,
+            searchText: text,
+          });
+          getSearchedJobs(0, 10, {
+            type: props?.route?.params.type,
+            coordinates: props?.route?.params?.coordinates,
+            searchText: text,
+          });
+          break;
+
+        default:
+          break;
+      }
     } catch (error) {
       console.error('Error fetching search results:', error);
     }
   };
-
-  const [isModalVisible, setModalVisible] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(null);
 
   const showModal = () => {
     setModalVisible(true);
@@ -61,34 +83,19 @@ const SeeAll = ({navigation, isLoading, ...props}) => {
   const hideModal = () => {
     setModalVisible(false);
   };
-  const handleOptionChange = value => {
-    // Update the searchQuery based on the selected sorting option
-    let updatedSearchQuery = {
-      type: props?.route?.params.type,
-      coordinates: props?.route?.params?.coordinates,
+  const handleOptionChange = async value => {
+    setSelectedOption(value);
+    const updatedSearchQuery = {
+      ...searchDefaultQuery,
+      salary:value
     };
-  
-    switch (value) {
-      case 'Option1':
-        updatedSearchQuery = {
-          ...updatedSearchQuery,
-          sort: { salary: -1 }, // Sort by salary in descending order (highest to lowest)
-        };
-        break;
-      // Add cases for other sorting options if needed
-  
-      default:
-        break;
-    }
-  
-    // Update the state and trigger a new search
-    setDefaultSearchQuery(updatedSearchQuery);
-    getSearchedJobs(0, 10, updatedSearchQuery);
+    await setDefaultSearchQuery(updatedSearchQuery);
+    getSearchedJobs(0,10,updatedSearchQuery)
+
   };
-  
+
   const handleBackPress = () => {
     // Handle back button press logic here
-    console.log('Back button pressed!');
     navigation.goBack();
   };
   const handleBookmarkPress = () => {
@@ -124,7 +131,6 @@ const SeeAll = ({navigation, isLoading, ...props}) => {
     <Pressable
       key={index}
       onPress={() => {
-        console.log('pressed');
         navigation.navigate('ApplyNow', {jobDetails: item});
       }}
       style={({pressed}) =>
@@ -248,46 +254,25 @@ const SeeAll = ({navigation, isLoading, ...props}) => {
               {/* Radio buttons */}
               <View style={tw`flex-row items-center mb-2`}>
                 <RadioButton
-                  value="Option1"
+                  value="1"
                   status={
-                    selectedOption === 'Option1' ? 'checked' : 'unchecked'
+                    selectedOption === 1 ? 'checked' : 'unchecked'
                   }
-                  onPress={() => handleOptionChange('Option1')}
+                  onPress={() => handleOptionChange(1)}
                 />
                 <Text style={tw`ml-2`}>Salary High to Low</Text>
               </View>
 
               <View style={tw`flex-row items-center mb-2`}>
                 <RadioButton
-                  value="Option2"
+                  value="-1"
                   status={
-                    selectedOption === 'Option2' ? 'checked' : 'unchecked'
+                    selectedOption === -1 ? 'checked' : 'unchecked'
                   }
-                  onPress={() => handleOptionChange('Option2')}
+                  onPress={() => handleOptionChange(-1)}
                 />
-                <Text style={tw`ml-2`}>Salary Low to Low</Text>
+                <Text style={tw`ml-2`}>Salary Low to High</Text>
               </View>
-              <View style={tw`flex-row items-center mb-2`}>
-                <RadioButton
-                  value="Option3"
-                  status={
-                    selectedOption === 'Option3' ? 'checked' : 'unchecked'
-                  }
-                  onPress={() => handleOptionChange('Option3')}
-                />
-                <Text style={tw`ml-2`}>Job Posting Newest</Text>
-              </View>
-              <View style={tw`flex-row items-center mb-2`}>
-                <RadioButton
-                  value="Option4"
-                  status={
-                    selectedOption === 'Option4' ? 'checked' : 'unchecked'
-                  }
-                  onPress={() => handleOptionChange('Option4')}
-                />
-                <Text style={tw`ml-2`}>Job Posting Oldest</Text>
-              </View>
-
               {/* Close modal button */}
               <TouchableOpacity onPress={hideModal} style={tw`mt-4`}>
                 <Text style={tw`text-blue-500`}>Close</Text>
