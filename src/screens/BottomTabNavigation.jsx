@@ -6,7 +6,7 @@ import Icon, {Icons} from '../components/Icons';
 import * as Animatable from 'react-native-animatable';
 import tw from 'twrnc';
 import Dashboard from './dashboard/Dashboard';
-import Inbox from './home/Inbox';
+import JobPostingForm from './home/JobPostingForm';
 import Post from './home/Postjobs';
 import Bookmark from './home/Bookmark';
 import Menu from './home/Menu';
@@ -24,7 +24,6 @@ import BookmarkInactiveSVG from '../assets/svgs/bookmark_inactive.svg';
 
 import MenuSVG from '../assets/svgs/menu.svg';
 import MenuInactiveSVG from '../assets/svgs/menu_inactive.svg';
-import PostJobsSVG from '../assets/svgs/job-post-plus-icon.png';
 import Messages from './home/Messages';
 import {
   primaryBGColor,
@@ -47,14 +46,13 @@ const TabArr = [
     route: 'Inbox',
     label: 'Inbox',
     component: Messages,
-    // component: Inbox,
     activeIcon: <MailSVG width={18} height={18} />,
     inactiveIcon: <MailInactiveSVG width={18} height={18} />,
   },
   {
     route: 'Plus',
     label: '+',
-    component: Inbox,
+    component: JobPostingForm,
     activeIcon: (
       <Icon
         type={Icons.FontAwesome5}

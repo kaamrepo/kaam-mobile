@@ -2,7 +2,6 @@ import {
   StyleSheet,
   Text,
   View,
-  FlatList,
   Pressable,
   TextInput,
   ScrollView,
@@ -15,50 +14,34 @@ import {useForm, Controller} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import Icon, {Icons} from '../../components/Icons';
-
-import WhiteTickSMSVG from '../../assets/svgs/WhiteTickSM.svg';
 import useLoginStore from '../../store/authentication/login.store';
-import useJobStore from '../../store/dashboard.store';
 import {requestLocationPermission} from '../../helper/utils/getGeoLocation';
 import Geolocation from 'react-native-geolocation-service';
 
-const colors = [
-  '#ffffff',
-  '#000000',
-  '#264653',
-  '#bc6c25',
-  '#f4acb7',
-  '#2a9d8f',
-  '#e76f51',
-  '#fca311',
-  '#023e8a',
-  '#588157',
-  '#48cae4',
-  '#ffd6ff',
-  '#ae2012',
-  '#1b263b',
-  '#e0e1dd',
-  '#333333',
-  '#e63946',
-  '#3a86ff',
-  '#ffc300',
-  '#a8dadc',
-  '#ffd60a',
-  '#38b000',
+let salaryBasisOptionsArray = [
+  {label: 'Monthly', value: 'month'},
+  {label: 'Weekly', value: 'week'},
+  {label: 'Yearly', value: 'year'},
 ];
-
 const createJobSchema = yup.object({
-  position: yup.string().required('Job position is required!'),
+  jobTitle: yup.string().required('Job title is required!'),
   description: yup.string().required('Job description is required!'),
-  requirements: yup.string().required('Job requirements is required!'),
-  tags: yup.array().of(yup.string()).min(1).max(3),
-  about: yup.string().required('Mention about the job!'),
-  salary: yup.number().required('Job salary in required!'),
+  // tags: yup.array().of(yup.string()).min(1).max(3),
+  salary: yup
+    .number()
+    .typeError('Job salary in required!')
+    .required('Job salary in required!'),
+
+  tags: yup
+    .array()
+    .of(yup.string().required('Tag is required'))
+    .unique('Tags must be unique')
+    .min(3, 'Must have at least 3 tags')
+    .max(3, 'Can have a maximum of 3 tags'),
 });
 
-const Inbox = () => {
+const JobPostingForm = () => {
   const {loggedInUser} = useLoginStore();
-  const {postJobs} = useJobStore();
   const [selectedBGColor, setSelectedBGColor] = useState('#3a86ff');
   const [selectedColor, setSelectedColor] = useState('#e0e1dd');
   const [tagText, setTagText] = useState('');
@@ -76,21 +59,7 @@ const Inbox = () => {
     mode: 'onChange',
   });
 
-  const Item = ({color, setColor, c}) => (
-    <Pressable
-      key={color}
-      style={({pressed}) => [
-        tw` h-10 w-10 mr-2 shadow-lg rounded-2 overflow-hidden`,
-      ]}
-      onPress={() => setColor(color)}>
-      <View style={[tw`h-10 w-10`, {backgroundColor: color}]}>
-        {color === c ? <WhiteTickSMSVG /> : null}
-      </View>
-    </Pressable>
-  );
-
   const createJob = async data => {
-    console.log('in the create');
     if (tags?.length === 0) {
       setErrorMessage('#Tags are required!');
       return;
@@ -99,10 +68,11 @@ const Inbox = () => {
       setErrorMessage('Add 3 tags to the job');
       return;
     }
-    const result = requestLocationPermission();
+    const result = await requestLocationPermission();
+    console.log('result ❤️❤️❤️', result);
     result.then(async res => {
       if (res) {
-        const locationAccess = Geolocation.getCurrentPosition(
+        Geolocation.getCurrentPosition(
           positionData => {
             setLocation(positionData);
           },
@@ -113,35 +83,13 @@ const Inbox = () => {
             enableHighAccuracy: true,
             timeout: 20000,
             maximumAge: 1000,
-          }
+          },
         );
       }
-    }); 
-   if (location && location.coords) {
-    const { latitude, longitude } = location.coords;
-    console.log("Latitude:", latitude);
-    console.log("Longitude:", longitude);
-    try {
-      const response = await fetch(apiUrl);
-      const data = await response.json();
-    
-      const apiUrl = `https://api.postalpincode.in/pincode/${latitude},${longitude}`;
-      // Check if the API request was successful
-      if (data && data[0].Status === 'Success') {
-        // Extract the place name or other relevant information from the response
-        const placeName = data[0].PostOffice[0].Name;
-        console.log('Place Name:', placeName);
-      } else {
-        console.error('Failed to fetch place name:', data[0].Message);
-      }
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  } else {
-    console.error("Location or coords is undefined.");
-  }
+    });
 
-  
+    const {latitude, longitude} = location.coords;
+    console.log(location.coords);
     let payload = {
       ...data,
       tags: tags,
@@ -191,14 +139,14 @@ const Inbox = () => {
         <View style={tw`w-full`}>
           <Text
             style={[
-              tw`text-gray-600 w-full text-[11px] text-left px-2`,
+              tw`text-gray-600 w-full text-[12px] text-left px-2`,
               {fontFamily: 'Poppins-Regular'},
             ]}>
-            position:
+            Job Title:
           </Text>
           <Controller
             control={control}
-            name="position"
+            name="jobTitle"
             render={({field: {onChange, onBlur, value}}) => (
               <TextInput
                 value={value}
@@ -220,18 +168,17 @@ const Inbox = () => {
               tw`text-red-600 w-full text-[10px] text-right px-2 py-1`,
               {fontFamily: 'Poppins-Regular'},
             ]}>
-            {' '}
-            {errors?.position?.message}
+            {errors?.jobTitle?.message}
           </Text>
         </View>
 
         <View style={tw`w-full`}>
           <Text
             style={[
-              tw`text-gray-600 w-full text-[11px] text-left px-2`,
+              tw`text-gray-600 w-full text-[12px] text-left px-2`,
               {fontFamily: 'Poppins-Regular'},
             ]}>
-            Description:
+            Job Description:
           </Text>
           <Controller
             control={control}
@@ -266,83 +213,7 @@ const Inbox = () => {
         <View style={tw`w-full`}>
           <Text
             style={[
-              tw`text-gray-600 w-full text-[11px] text-left px-2`,
-              {fontFamily: 'Poppins-Regular'},
-            ]}>
-            Requirements:
-          </Text>
-          <Controller
-            control={control}
-            name="requirements"
-            render={({field: {onChange, onBlur, value}}) => (
-              <TextInput
-                value={value}
-                multiline
-                keyboardType="default"
-                autoCapitalize="sentences"
-                onChangeText={onChange}
-                onBlur={onBlur}
-                style={[
-                  {fontFamily: 'Poppins-Regular'},
-                  tw`text-black text-[14px] px-4 py-2 border-[1px] border-slate-300 w-full rounded-lg`,
-                ]}
-                placeholder={`eg. 1. Highly skilled in Javascript programming...`}
-                placeholderTextColor={'rgb(163 163 163)'}
-              />
-            )}
-          />
-          <Text
-            style={[
-              tw`text-red-600 w-full text-[10px] text-right px-2 py-1`,
-              {fontFamily: 'Poppins-Regular'},
-            ]}>
-            {' '}
-            {errors?.requirements?.message}
-          </Text>
-        </View>
-
-        <View style={tw`w-full`}>
-          <Text
-            style={[
-              tw`text-gray-600 w-full text-[11px] text-left px-2`,
-              {fontFamily: 'Poppins-Regular'},
-            ]}>
-            About:
-          </Text>
-          <Controller
-            control={control}
-            name="about"
-            render={({field: {onChange, onBlur, value}}) => (
-              <TextInput
-                value={value}
-                keyboardType="default"
-                multiline
-                autoCapitalize="sentences"
-                onChangeText={onChange}
-                onBlur={onBlur}
-                style={[
-                  {fontFamily: 'Poppins-Regular'},
-                  tw`text-black text-[14px] px-4 py-2 border-[1px] border-slate-300 w-full rounded-lg`,
-                ]}
-                placeholder="eg. Related to web development..."
-                placeholderTextColor={'rgb(163 163 163)'}
-              />
-            )}
-          />
-          <Text
-            style={[
-              tw`text-red-600 w-full text-[10px] text-right px-2 py-1`,
-              {fontFamily: 'Poppins-Regular'},
-            ]}>
-            {' '}
-            {errors?.about?.message}
-          </Text>
-        </View>
-
-        <View style={tw`w-full`}>
-          <Text
-            style={[
-              tw`text-gray-600 w-full text-[11px] text-left px-2`,
+              tw`text-gray-600 w-full text-[12px] text-left px-2`,
               {fontFamily: 'Poppins-Regular'},
             ]}>
             Salary:
@@ -379,35 +250,28 @@ const Inbox = () => {
         <View style={tw`w-full mb-3`}>
           <Text
             style={[
-              tw`text-gray-600 w-full text-[11px] text-left px-2`,
+              tw`text-gray-600 w-full text-[12px] text-left px-2`,
               {fontFamily: 'Poppins-Regular'},
             ]}>
             Salary basis:
           </Text>
 
           <View style={tw`flex flex-row justify-start gap-2 my-2`}>
-            <Chip
-              label="Monthly"
-              selected={selectedChip === 'month'}
-              onPress={() => setSelectedChip('month')}
-            />
-            <Chip
-              label="Weekly"
-              selected={selectedChip === 'week'}
-              onPress={() => setSelectedChip('week')}
-            />
-            <Chip
-              label="Yearly"
-              selected={selectedChip === 'year'}
-              onPress={() => setSelectedChip('year')}
-            />
+            {salaryBasisOptionsArray?.map(salaryBasis => (
+              <Chip
+                key={salaryBasis?.label}
+                label={salaryBasis?.label}
+                selected={selectedChip === salaryBasis?.value}
+                onPress={() => setSelectedChip(salaryBasis?.value)}
+              />
+            ))}
           </View>
         </View>
 
         <View style={[tw`w-full`]}>
           <Text
             style={[
-              tw`text-gray-600 w-full text-[11px] text-left px-2`,
+              tw`text-gray-600 w-full text-[12px] text-left px-2`,
               {fontFamily: 'Poppins-Regular'},
             ]}>
             #Tags:
@@ -431,14 +295,17 @@ const Inbox = () => {
                 if (tagText) {
                   if (tags?.length === 0)
                     setErrorMessage('#Tags are required!');
-                  if (tags?.length < 3)
+                  else if (tags?.findIndex(tag => tag === tagText))
+                    setErrorMessage('Tag already added');
+                  else if (tags?.length < 3)
                     setErrorMessage('Add 3 tags to the job');
-                  if (!tags) {
+                  else if (!tags) {
                     setTags([tagText]);
+                    setTagText('');
                   } else {
                     setTags([...tags, tagText]);
+                    setTagText('');
                   }
-                  setTagText('');
                 }
               }}
               style={({pressed}) =>
@@ -493,64 +360,6 @@ const Inbox = () => {
           </View>
         </View>
 
-        <View>
-          <Text
-            style={[
-              tw`text-gray-600 w-full text-[11px] text-left px-2`,
-              {fontFamily: 'Poppins-Medium'},
-            ]}>
-            Theme:
-          </Text>
-          <Text
-            style={[
-              tw`text-gray-600 w-full text-[11px] text-left px-2 mb-1`,
-              {fontFamily: 'Poppins-Regular'},
-            ]}>
-            Background Color:
-          </Text>
-
-          <View style={tw`h-10 mb-2 rounded-2`}>
-            <FlatList
-              showsHorizontalScrollIndicator={false}
-              scrollEnabled
-              horizontal={true}
-              data={colors}
-              renderItem={({item}) => (
-                <Item
-                  color={item}
-                  c={selectedBGColor}
-                  setColor={setSelectedBGColor}
-                />
-              )}
-              keyExtractor={item => item}
-            />
-          </View>
-          <Text
-            style={[
-              tw`text-gray-600 w-full text-[11px] text-left px-2  mb-1`,
-              {fontFamily: 'Poppins-Regular'},
-            ]}>
-            Text Color:
-          </Text>
-
-          <View style={tw`h-10 mb-2`}>
-            <FlatList
-              showsHorizontalScrollIndicator={false}
-              scrollEnabled
-              horizontal={true}
-              data={colors}
-              renderItem={({item}) => (
-                <Item
-                  color={item}
-                  c={selectedColor}
-                  setColor={setSelectedColor}
-                />
-              )}
-              keyExtractor={item => item}
-            />
-          </View>
-        </View>
-
         <View style={tw`w-full mt-5 items-center`}>
           <Pressable
             onPress={handleSubmit(createJob)}
@@ -579,7 +388,7 @@ const Inbox = () => {
   );
 };
 
-export default Inbox;
+export default JobPostingForm;
 
 const styles = StyleSheet.create({});
 

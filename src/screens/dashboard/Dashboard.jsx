@@ -31,9 +31,15 @@ import {useFocusEffect} from '@react-navigation/native';
 const Dashboard = ({navigation}) => {
   const [refreshing, setRefreshing] = useState(false);
   const {loggedInUser, language} = useLoginStore();
-  const {getNearByJobs, nearbyjobs,getRecommendedJobs,
-    recommendedJobs,clearRecommendedJobs,clearFeaturedJobs,getFeaturedJobs,
-    featuredJobs
+  const {
+    getNearByJobs,
+    nearbyjobs,
+    getRecommendedJobs,
+    recommendedJobs,
+    clearRecommendedJobs,
+    clearFeaturedJobs,
+    getFeaturedJobs,
+    featuredJobs,
   } = useJobStore();
   const {isLoading} = useLoaderStore();
   const [location, setLocation] = useState(undefined);
@@ -58,8 +64,6 @@ const Dashboard = ({navigation}) => {
           Geolocation.getCurrentPosition(
             position => {
               setLocation(position);
-              console.log('locationAccess in dsshboard', position); // Move the log here
-
             },
             error => {
               console.log(error.code, error.message);
@@ -81,13 +85,12 @@ const Dashboard = ({navigation}) => {
     }, [location]),
   );
 
-  useEffect(()=>{
+  useEffect(() => {
     clearRecommendedJobs();
     clearFeaturedJobs();
-  getRecommendedJobs();
-  getFeaturedJobs()
-  },[])
-
+    getRecommendedJobs();
+    getFeaturedJobs();
+  }, []);
 
   return (
     <ScrollView
