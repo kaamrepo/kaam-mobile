@@ -12,10 +12,10 @@ import React from 'react';
 import tw from 'twrnc';
 import {dashboardTranslation} from './dashboardTranslation';
 import Carousel from 'react-native-snap-carousel';
-import useLoginStore from '../../store/authentication/login.store';
 import Icon, {Icons} from '../../components/Icons';
-import SeeAll from '../see-all/SeeAll';
 import {primaryBGColor} from '../../helper/utils/colors';
+import useJobStore from '../../store/dashboard.store';
+import { getCoordinates } from '../../helper/utils/getGeoLocation';
 
 const nearbyJobsColorSchemes = ['#2B2A4C', '#CE5A67', '#392467', '#739072'];
 const getRandomColor = index => {
@@ -33,6 +33,7 @@ const NearbyJobsElement = ({
   isLoading,
   location,
 }) => {
+  const {getSearchedJobs} = useJobStore();
   if (!location) {
     return (
       <CommonMessageForNearByJobs
@@ -60,8 +61,9 @@ const NearbyJobsElement = ({
       />
     );
   }
-  const handleSeeAllPress = () => {
-    navigation.navigate('SeeAll', {isLoading});
+  const handleSeeAllPress = async () => {
+    const position = await getCoordinates();
+    navigation.navigate('SeeAll', {isLoading,type:'nearby',coordinates:[position.coords.longitude,position.coords.latitude]});
   };
 
   return (
@@ -106,13 +108,14 @@ const handleBookmarkPress = () => {
   // Handle bookmark button press logic here
   console.log('Bookmark button pressed!');
 };
-const renderItemsNearbyJobs = ({item, index, navigation}) => {
-  const isLastSlide = Object.keys(item).length;
-  if (!isLastSlide) {
+const renderItemsNearbyJobs = ({item, index, navigation,nearbyjobs}) => {
+  const isLastSlide = index === nearbyjobs.data.length - 1;
+  if (isLastSlide) {
     return (
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate('SeeAll', {jobDetails: item});
+          console.log("sell all pressed differently")
+          navigation.navigate('SeeAll', {type:'nearby'});
         }}
         style={[
           tw`w-full h-48 flex flex-col justify-center items-center rounded-3 p-4 m-4 text-black relative`,
@@ -127,7 +130,7 @@ const renderItemsNearbyJobs = ({item, index, navigation}) => {
       </TouchableOpacity>
     );
   }
-  if (isLastSlide) {
+  if (!isLastSlide) {
     return (
       <ImageBackground
         source={require('../../assets/images/nearby-jobs-skin-1.png')}

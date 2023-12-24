@@ -1,5 +1,7 @@
 import { Platform } from 'react-native';
 import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
+import Geolocation from 'react-native-geolocation-service';
+
 
 export const requestLocationPermission = async () => {
   try {
@@ -45,3 +47,29 @@ export const requestLocationPermission = async () => {
     return false;
   }
 };
+
+export const getCoordinates = async () => {
+  console.log("In the coordinates function");
+  try {
+    const permissionGranted = await requestLocationPermission();
+
+    if (permissionGranted) {
+      const position = await new Promise((resolve, reject) => {
+        Geolocation.getCurrentPosition(
+          resolve,
+          reject,
+          { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 },
+        );
+      });
+
+      return position;
+    } else {
+      console.log('Permission denied');
+      return null;
+    }
+  } catch (error) {
+    console.error('Error getting coordinates:', error);
+    return null;
+  }
+};
+
