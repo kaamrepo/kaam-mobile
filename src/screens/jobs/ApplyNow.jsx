@@ -147,7 +147,7 @@ const ApplyNow = ({route, navigation}) => {
                 tw`text-lg ${job?.styles?.color ? tw_textcolor : 'text-white'}`,
                 {fontFamily: 'Poppins-Bold'},
               ]}>
-              {job?.position}
+              {job?.jobtitle}
             </Text>
           </View>
           <View style={tw`flex-row justify-around items-center my-1`}>

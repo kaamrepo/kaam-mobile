@@ -102,7 +102,7 @@ const JobApplicationsComponent = ({jobapplications}) => {
               tw`text-[16px] text-black`,
               {fontFamily: 'Poppins-SemiBold'},
             ]}>
-            {jobapp?.jobDetails?.position}
+            {jobapp?.jobDetails?.jobtitle}
           </Text>
 
           <Text

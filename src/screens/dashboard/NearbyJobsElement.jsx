@@ -159,8 +159,7 @@ const renderItemsNearbyJobs = ({item, index, navigation}) => {
                 />
               )}
             </View>
-            <View
-              style={tw`py-2 w-[70%] pl-5 justify-start`}>
+            <View style={tw`py-2 w-[70%] pl-5 justify-start`}>
               <Text
                 style={[
                   tw`text-white text-[20px]`,
@@ -168,7 +167,7 @@ const renderItemsNearbyJobs = ({item, index, navigation}) => {
                 ]}
                 numberOfLines={1}
                 ellipsizeMode="tail">
-                {item.position}
+                {item.jobtitle}
               </Text>
               <Text
                 style={[

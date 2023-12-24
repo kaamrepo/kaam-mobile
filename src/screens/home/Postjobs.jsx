@@ -5,4 +5,4 @@ import React from 'react'
     <div>Postjobs</div>
   )
 }
-export default Postjobs
+export default Postjobs;

@@ -7,7 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import tw from 'twrnc';
 import {useForm, Controller} from 'react-hook-form';
@@ -17,6 +17,8 @@ import Icon, {Icons} from '../../components/Icons';
 import useLoginStore from '../../store/authentication/login.store';
 import {requestLocationPermission} from '../../helper/utils/getGeoLocation';
 import Geolocation from 'react-native-geolocation-service';
+import {primaryBGColor} from '../../helper/utils/colors';
+import useJobStore from '../../store/dashboard.store';
 
 let salaryBasisOptionsArray = [
   {label: 'Monthly', value: 'month'},
@@ -24,103 +26,118 @@ let salaryBasisOptionsArray = [
   {label: 'Yearly', value: 'year'},
 ];
 const createJobSchema = yup.object({
-  jobTitle: yup.string().required('Job title is required!'),
+  jobtitle: yup.string().required('Job title is required!'),
   description: yup.string().required('Job description is required!'),
-  // tags: yup.array().of(yup.string()).min(1).max(3),
+  fulladdress: yup.string().required('Job location is required!'),
   salary: yup
     .number()
     .typeError('Job salary in required!')
     .required('Job salary in required!'),
-
   tags: yup
-    .array()
+    .array('Tags are required!')
     .of(yup.string().required('Tag is required'))
-    .unique('Tags must be unique')
-    .min(3, 'Must have at least 3 tags')
-    .max(3, 'Can have a maximum of 3 tags'),
+    .required('Tags are required!')
+    .typeError('Tags are required!'),
 });
 
 const JobPostingForm = () => {
   const {loggedInUser} = useLoginStore();
-  const [selectedBGColor, setSelectedBGColor] = useState('#3a86ff');
-  const [selectedColor, setSelectedColor] = useState('#e0e1dd');
-  const [tagText, setTagText] = useState('');
-  const [tags, setTags] = useState([]);
-  const [errorMessage, setErrorMessage] = useState('');
   const [selectedChip, setSelectedChip] = useState(null);
-  const [location, setLocation] = useState(undefined);
+  const {postJobs} = useJobStore();
   const {
     control,
     handleSubmit,
     reset,
+    setValue,
+    watch,
+    getValues,
+    resetField,
+    setError,
+    clearErrors,
     formState: {errors},
   } = useForm({
     resolver: yupResolver(createJobSchema),
     mode: 'onChange',
+    defaultValues: {
+      tags: [],
+    },
   });
 
+  let tags = watch('tags');
+
   const createJob = async data => {
-    if (tags?.length === 0) {
-      setErrorMessage('#Tags are required!');
-      return;
-    }
-    if (tags?.length < 3) {
-      setErrorMessage('Add 3 tags to the job');
-      return;
-    }
-    const result = await requestLocationPermission();
-    console.log('result ❤️❤️❤️', result);
-    result.then(async res => {
+    const result =  requestLocationPermission();
+
+    result.then(res => {
       if (res) {
         Geolocation.getCurrentPosition(
-          positionData => {
-            setLocation(positionData);
+          async position => {
+            let payload = {
+              ...data,
+              salarybasis: selectedChip,
+              createdby: loggedInUser?._id,
+              location: {
+                fulladdress: data?.fulladdress,
+                coordinates: [
+                  position?.coords?.longitude,
+                  position?.coords?.latitude,
+                ],
+              },
+            };
+            delete payload.fulladdress;
+            delete payload.tagtext;
+            const success = await postJobs(payload);
+            if (success) {
+              reset();
+              setSelectedChip(null);
+            }
           },
           error => {
             console.log(error.code, error.message);
           },
-          {
-            enableHighAccuracy: true,
-            timeout: 20000,
-            maximumAge: 1000,
-          },
+          {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
         );
       }
     });
-
-    const {latitude, longitude} = location.coords;
-    console.log(location.coords);
-    let payload = {
-      ...data,
-      tags: tags,
-      salarybasis: selectedChip,
-      createdby: loggedInUser?._id,
-      location: {
-        coordinates: [73.79129551693173, 18.54582873149234],
-        name: 'Pune, Pashan',
-      },
-      styles: {
-        bgcolor: selectedBGColor,
-        color: selectedColor,
-      },
-    };
-
-    // postJobs(payload);
-    setTags([]);
-    reset();
-    setSelectedChip(null);
   };
 
-  useEffect(() => {
-    if (tags?.length === 3) setErrorMessage('');
-  }, [tags]);
+  const handleAddTag = value => {
+    if (value) {
+      if (tags?.findIndex(d => d === value) !== -1) {
+        setError('tags', {
+          type: 'custom',
+          message: 'A unique tag is expected.',
+        });
+        return;
+      }
+      if (tags?.length < 3) {
+        setValue('tags', [...getValues('tags'), value]);
+      } else if (tags?.length === 0) {
+        setValue('tags', [value]);
+      } else {
+        setError('tags', {type: 'custom', message: 'Maximum 3 tags allowed'});
+      }
+      resetField('tagtext');
+      clearErrors('tags');
+    } else {
+      setError('tags', {type: 'custom', message: 'Please add a tag'});
+    }
+  };
+
+  const handleRemoveTag = index => {
+    setValue(
+      'tags',
+      tags.filter((tag, i) => i !== index),
+    );
+  };
 
   return (
     <SafeAreaView style={tw`flex-1 px-5 bg-white`}>
       <ScrollView
         style={[tw`my-5 mb-[75px]`]}
         contentContainerStyle={{alignItems: 'flex-start'}}
-        showsVerticalScrollIndicator={false}>
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled">
         <Text
           style={[
             tw`w-auto rounded border-b-4 border-black text-black text-[20px]`,
@@ -146,7 +163,7 @@ const JobPostingForm = () => {
           </Text>
           <Controller
             control={control}
-            name="jobTitle"
+            name="jobtitle"
             render={({field: {onChange, onBlur, value}}) => (
               <TextInput
                 value={value}
@@ -158,7 +175,7 @@ const JobPostingForm = () => {
                   {fontFamily: 'Poppins-Regular'},
                   tw`text-black text-[14px] px-4 py-2 border-[1px] border-slate-300 w-full rounded-lg`,
                 ]}
-                placeholder="eg. Software Engineer."
+                placeholder="eg. Maid"
                 placeholderTextColor={'rgb(163 163 163)'}
               />
             )}
@@ -168,7 +185,7 @@ const JobPostingForm = () => {
               tw`text-red-600 w-full text-[10px] text-right px-2 py-1`,
               {fontFamily: 'Poppins-Regular'},
             ]}>
-            {errors?.jobTitle?.message}
+            {errors?.jobtitle?.message}
           </Text>
         </View>
 
@@ -195,7 +212,7 @@ const JobPostingForm = () => {
                   {fontFamily: 'Poppins-Regular'},
                   tw`text-black text-[14px] px-4 py-2 border-[1px] border-slate-300 w-full rounded-lg`,
                 ]}
-                placeholder="eg. A senior developer role that require high skills..."
+                placeholder="eg. Who can cook healthy Veg Food"
                 placeholderTextColor={'rgb(163 163 163)'}
               />
             )}
@@ -205,8 +222,44 @@ const JobPostingForm = () => {
               tw`text-red-600 w-full text-[10px] text-right px-2 py-1`,
               {fontFamily: 'Poppins-Regular'},
             ]}>
-            {' '}
             {errors?.description?.message}
+          </Text>
+        </View>
+
+        <View style={tw`w-full`}>
+          <Text
+            style={[
+              tw`text-gray-600 w-full text-[12px] text-left px-2`,
+              {fontFamily: 'Poppins-Regular'},
+            ]}>
+            Job Location:
+          </Text>
+          <Controller
+            control={control}
+            name="fulladdress"
+            render={({field: {onChange, onBlur, value}}) => (
+              <TextInput
+                value={value}
+                multiline
+                keyboardType="default"
+                autoCapitalize="sentences"
+                onChangeText={onChange}
+                onBlur={onBlur}
+                style={[
+                  {fontFamily: 'Poppins-Regular'},
+                  tw`text-black text-[14px] px-4 py-2 border-[1px] border-slate-300 w-full rounded-lg`,
+                ]}
+                placeholder="eg. Wing A, Ashok Deluxe Appartment, Andheri East."
+                placeholderTextColor={'rgb(163 163 163)'}
+              />
+            )}
+          />
+          <Text
+            style={[
+              tw`text-red-600 w-full text-[10px] text-right px-2 py-1`,
+              {fontFamily: 'Poppins-Regular'},
+            ]}>
+            {errors?.fulladdress?.message}
           </Text>
         </View>
 
@@ -232,7 +285,7 @@ const JobPostingForm = () => {
                   {fontFamily: 'Poppins-Regular'},
                   tw`text-black text-[14px] px-4 py-2 border-[1px] border-slate-300 w-full rounded-lg`,
                 ]}
-                placeholder="eg. ₹ 34,600"
+                placeholder="eg. ₹ 6,600"
                 placeholderTextColor={'rgb(163 163 163)'}
               />
             )}
@@ -242,7 +295,6 @@ const JobPostingForm = () => {
               tw`text-red-600 w-full text-[10px] text-right px-2 py-1`,
               {fontFamily: 'Poppins-Regular'},
             ]}>
-            {' '}
             {errors?.salary?.message}
           </Text>
         </View>
@@ -267,49 +319,50 @@ const JobPostingForm = () => {
             ))}
           </View>
         </View>
-
         <View style={[tw`w-full`]}>
           <Text
             style={[
               tw`text-gray-600 w-full text-[12px] text-left px-2`,
               {fontFamily: 'Poppins-Regular'},
             ]}>
-            #Tags:
+            Tags:
           </Text>
-          <View style={[tw`w-full flex-row`]}>
-            <TextInput
-              maxLength={100}
-              value={tagText}
-              keyboardType="default"
-              autoCapitalize="sentences"
-              onChangeText={setTagText}
-              style={[
-                {fontFamily: 'Poppins-Regular'},
-                tw`text-black text-[14px] px-4 py-2 border-[1px] border-slate-300 w-[88%] rounded-l-lg`,
-              ]}
-              placeholder="Add tags here"
-              placeholderTextColor={'rgb(163 163 163)'}
-            />
+          <View style={[tw`w-full flex-row justify-between items-start`]}>
+            <View style={[tw`w-[85%]`]}>
+              <Controller
+                control={control}
+                name="tagtext"
+                render={({field: {onChange, onBlur, value}}) => (
+                  <TextInput
+                    value={value}
+                    multiline
+                    keyboardType="default"
+                    autoCapitalize="sentences"
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    style={[
+                      {fontFamily: 'Poppins-Regular'},
+                      tw`text-black text-[14px] px-4 py-2 border-[1px] border-slate-300 w-full rounded-lg`,
+                    ]}
+                    placeholder="eg. Add tags here"
+                    placeholderTextColor={'rgb(163 163 163)'}
+                  />
+                )}
+              />
+              <Text
+                style={[
+                  tw`text-red-600 w-full text-[10px] text-right px-2 py-1`,
+                  {fontFamily: 'Poppins-Regular'},
+                ]}>
+                {errors?.tags?.message}
+              </Text>
+            </View>
             <Pressable
               onPress={() => {
-                if (tagText) {
-                  if (tags?.length === 0)
-                    setErrorMessage('#Tags are required!');
-                  else if (tags?.findIndex(tag => tag === tagText))
-                    setErrorMessage('Tag already added');
-                  else if (tags?.length < 3)
-                    setErrorMessage('Add 3 tags to the job');
-                  else if (!tags) {
-                    setTags([tagText]);
-                    setTagText('');
-                  } else {
-                    setTags([...tags, tagText]);
-                    setTagText('');
-                  }
-                }
+                handleAddTag(watch('tagtext'));
               }}
               style={({pressed}) =>
-                tw`flex-row items-center justify-center rounded-r-xl w-[12%] ${
+                tw`flex-row items-center justify-center rounded-lg py-2.5 w-[12%] ${
                   pressed ? 'bg-[#3F3D56]' : 'bg-black'
                 }`
               }>
@@ -321,43 +374,7 @@ const JobPostingForm = () => {
               />
             </Pressable>
           </View>
-          <Text
-            style={[
-              tw`text-red-600 w-full text-[10px] text-right px-2 py-1`,
-              {fontFamily: 'Poppins-Regular'},
-            ]}>
-            {' '}
-            {errorMessage}
-          </Text>
-
-          <View style={[tw`flex flex-row flex-wrap gap-2 mb-1`]}>
-            {tags?.map((tag, index) => (
-              <View
-                key={index}
-                style={tw`bg-orange-100 border border-orange-500 py-[2px] pl-2 pr-[2px] rounded-full flex-row gap-2 justify-between items-center `}>
-                <Text
-                  style={[
-                    tw`text-black mx-1`,
-                    {fontFamily: 'Poppins-Regular'},
-                  ]}>
-                  {tag?.length > 30 ? tag?.slice(0, 30) + '...' : tag}
-                </Text>
-                <View
-                  style={tw`rounded-full bg-white  h-7 w-7 items-center justify-center`}>
-                  <Icon
-                    type={Icons.Ionicons}
-                    name={'close'}
-                    style={tw``}
-                    onPress={() => {
-                      setTags(tags.filter((t, i) => i !== index));
-                    }}
-                    color={'black'}
-                    size={15}
-                  />
-                </View>
-              </View>
-            ))}
-          </View>
+          <TagsChips tags={tags} handleRemoveTag={handleRemoveTag} />
         </View>
 
         <View style={tw`w-full mt-5 items-center`}>
@@ -397,17 +414,49 @@ const Chip = ({label, selected, onPress}) => {
     <TouchableOpacity
       onPress={onPress}
       style={[
-        tw`bg-gray-200 px-4 py-[6px] rounded-full border border-transparent`,
-        selected ? tw`bg-[#282828]` : null,
+        tw`bg-white px-4 py-[6px] rounded-full border ${
+          selected
+            ? `bg-[${primaryBGColor}] border-[${primaryBGColor}]`
+            : `border-[${primaryBGColor}]`
+        }`,
       ]}>
       <Text
         style={[
-          tw`text-neutral-700`,
-          selected ? tw`text-white` : null,
+          tw`text-neutral-700 
+          ${selected ? `text-white` : `text-[${primaryBGColor}]`}`,
           {fontFamily: 'Poppins-Regular'},
         ]}>
         {label}
       </Text>
     </TouchableOpacity>
+  );
+};
+
+const TagsChips = ({tags, handleRemoveTag}) => {
+  return (
+    <View style={[tw`flex flex-row flex-wrap gap-2 mb-1`]}>
+      {tags?.map((tag, index) => (
+        <View
+          key={index}
+          style={tw`bg-orange-100 border border-orange-500 py-[2px] pl-2 pr-[2px] rounded-full flex-row gap-2 justify-between items-center `}>
+          <Text style={[tw`text-black mx-1`, {fontFamily: 'Poppins-Regular'}]}>
+            {tag?.length > 30 ? tag?.slice(0, 30) + '...' : tag}
+          </Text>
+          <View
+            style={tw`rounded-full bg-white  h-7 w-7 items-center justify-center`}>
+            <Icon
+              type={Icons.Ionicons}
+              name={'close'}
+              style={tw``}
+              onPress={() => {
+                handleRemoveTag(index);
+              }}
+              color={'black'}
+              size={15}
+            />
+          </View>
+        </View>
+      ))}
+    </View>
   );
 };

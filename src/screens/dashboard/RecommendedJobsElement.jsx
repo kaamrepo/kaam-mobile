@@ -179,7 +179,10 @@ const renderItemsRecommendedJobs = ({
           key={index}>
           <View style={tw`items-center mb-4`}>
             {item.profilepic ? (
-              <Image source={item?.profilepic} style={tw`w-15 h-15 rounded-full`} />
+              <Image
+                source={item?.profilepic}
+                style={tw`w-15 h-15 rounded-full`}
+              />
             ) : (
               <Icon
                 type={Icons.Ionicons}
@@ -191,7 +194,7 @@ const renderItemsRecommendedJobs = ({
           </View>
 
           <Text style={tw`text-lg my-1`} numberOfLines={1} ellipsizeMode="tail">
-            {item?.position}
+            {item?.jobtitle}
           </Text>
           <Text style={[tw`my-1`, {fontFamily: 'Poppins-SemiBold'}]}>
             {`₹ ${new Intl.NumberFormat('en-IN', {
