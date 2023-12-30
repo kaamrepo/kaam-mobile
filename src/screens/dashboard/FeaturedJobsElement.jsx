@@ -129,7 +129,7 @@ const FeaturedJobsElement = ({
                 ]}
                 numberOfLines={1}
                 ellipsizeMode="tail">
-                {item?.position}
+                {item?.jobtitle}
               </Text>
               <Text
                 style={[

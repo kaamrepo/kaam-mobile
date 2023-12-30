@@ -60,9 +60,20 @@ const MenuLoadingComponent = () => {
 };
 const NoDataMenuComponent = () => {
   return (
-    <Text style={[tw`text-lg`, {fontFamily: 'Poppins-SemiBold'}]}>
-      No data found!
-    </Text>
+    <View style={tw`w-full h-full gap-4`}>
+      <Text
+        style={[
+          tw`text-[18px] w-auto text-black text-center`,
+          {fontFamily: 'Poppins-Bold'},
+        ]}>
+        Job Applications
+      </Text>
+      <View style={tw`flex-1 justify-center items-center`}>
+        <Text style={[tw`text-lg`, {fontFamily: 'Poppins-SemiBold'}]}>
+          No data found!
+        </Text>
+      </View>
+    </View>
   );
 };
 
@@ -102,7 +113,7 @@ const JobApplicationsComponent = ({jobapplications}) => {
               tw`text-[16px] text-black`,
               {fontFamily: 'Poppins-SemiBold'},
             ]}>
-            {jobapp?.jobDetails?.position}
+            {jobapp?.jobDetails?.jobtitle}
           </Text>
 
           <Text

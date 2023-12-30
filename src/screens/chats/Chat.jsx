@@ -17,16 +17,6 @@ import useLoginStore from '../../store/authentication/login.store';
 import Icon, {Icons} from '../../components/Icons';
 import dayjs from 'dayjs';
 
-const colors = {
-  primaryColor: '#054af7',
-  secondaryColor: '#ffffff',
-  statusBarBgColor: '#054af7',
-  chatSenderTextColor: '#ffffff',
-  chatSenderBgColor: '#054af7',
-  chatReceiverBgColor: '#ffffff',
-  chatReceiverTextColor: '#054af7',
-};
-
 const Chat = ({route, navigation}) => {
   const [messageText, setMessageText] = useState('');
   const {getChatAndMessages, chat, clearChatAndMessages, sendChatMessage} =
@@ -35,11 +25,7 @@ const Chat = ({route, navigation}) => {
   const handleBackPress = () => {
     navigation.goBack();
   };
-  const messages = [{id: 1, text: 'Hi Eric', sent: true}];
-
-  console.log('🍟🍟🍟', route?.params);
-  console.log('\n\n🍟🍟🍟 chat \n\n', chat);
-
+  const bgColor = route?.params?.bgColor ?? '#000000';
   useFocusEffect(
     useCallback(() => {
       if (route?.params?.chatid) {
@@ -53,18 +39,18 @@ const Chat = ({route, navigation}) => {
 
   const renderMessage = ({item}) => (
     <View style={tw`flex-row my-1`}>
-      {item?.type === 'initial' ? (
+      {item?.messageType === 'initial' ? (
         <View
-          style={tw`flex flex-row gap-3 items-center justify-center mx-auto w-[80%] rounded-lg bg-white border border-[${colors.primaryColor}] text-black px-2 py-3 mb-2`}>
+          style={tw`flex flex-row gap-3 items-center justify-center mx-auto w-[80%] rounded-lg bg-white border border-[${route?.params?.bgColor}] text-black px-2 py-3 mb-2`}>
           <Icon
             type={Icons.Ionicons}
             size={30}
             name={'briefcase-outline'}
-            style={tw`text-[${colors.primaryColor}]`}
+            style={tw`text-[${bgColor}]`}
           />
           <Text
             style={[
-              tw`text-[${colors.primaryColor}] text-center`,
+              tw`text-[${bgColor}] text-center`,
               {fontFamily: 'Poppins-Italic'},
             ]}>
             {loggedInUser?._id !== item?.senderid
@@ -78,15 +64,15 @@ const Chat = ({route, navigation}) => {
         <View
           style={tw`flex py-2 px-3 pr-10 max-w-[80%] relative rounded-3xl shadow ${
             loggedInUser?._id === item?.senderid
-              ? `ml-auto bg-[${colors.chatSenderBgColor}]`
-              : `bg-[${colors.chatReceiverBgColor}]`
+              ? `ml-auto bg-[${bgColor}]`
+              : `bg-white`
           }`}>
           <Text
             style={[
               tw`${
                 loggedInUser?._id === item?.senderid
-                  ? `text-[${colors.chatSenderTextColor}]`
-                  : `text-[${colors.chatReceiverTextColor}]`
+                  ? `text-white`
+                  : `text-[${bgColor}]`
               }`,
               {fontFamily: 'Poppins-Regular'},
             ]}>
@@ -97,8 +83,8 @@ const Chat = ({route, navigation}) => {
               size={16}
               style={tw`${
                 loggedInUser?._id === item?.senderid
-                  ? `text-[${colors.chatSenderTextColor}]`
-                  : `text-[${colors.chatReceiverTextColor}]`
+                  ? `text-white`
+                  : `text-[${bgColor}]`
               }`}
               type={Icons.Ionicons}
               name={item.isseen ? 'checkmark-done' : 'checkmark'}
@@ -111,21 +97,21 @@ const Chat = ({route, navigation}) => {
 
   const handleSendMessage = () => {
     let chat_message = {
-      type: 'later',
-      senderid: loggedInUser?._id,
-      text: 'Hi, doing well',
+      messageType: 'text',
+      text: messageText,
       createdat: new Date().toISOString(),
       isseen: false,
     };
-    sendChatMessage(chat?._id, {chat_message});
+    sendChatMessage(chat?._id, chat_message);
+    setMessageText('');
   };
 
   return (
     <SafeAreaView style={tw`flex-1`} edges={['top']}>
-      <GeneralStatusBar backgroundColor={colors.statusBarBgColor} />
+      <GeneralStatusBar backgroundColor={bgColor} />
       {/* Top Bar */}
       <View
-        style={tw`flex-row justify-between items-center p-4 shadow shadow-[#fcb603] bg-[${colors.primaryColor}]`}>
+        style={tw`flex-row justify-between items-center p-4 shadow shadow-[#fcb603] bg-[${bgColor}]`}>
         {/* Left Column */}
         <View style={tw`flex-row items-center`}>
           <View>
@@ -133,14 +119,13 @@ const Chat = ({route, navigation}) => {
               <Ionicons
                 name="chevron-back"
                 size={24}
-                style={tw`mr-2 text-[${colors.secondaryColor}]`}
+                style={tw`mr-2 text-white`}
               />
             </TouchableOpacity>
           </View>
           <View style={tw`rounded-full w-10 h-10 bg-gray-300`} />
-          <Text
-            style={tw`ml-2 text-lg font-bold text-[${colors.secondaryColor}]`}>
-            Erik John
+          <Text style={tw`ml-2 text-lg font-bold text-white`}>
+            {route?.params?.employerName}
           </Text>
         </View>
         {/* Right Column */}
@@ -150,7 +135,7 @@ const Chat = ({route, navigation}) => {
               type={Icons.MaterialIcons}
               size={24}
               name={'call'}
-              style={tw`text-[${colors.secondaryColor}]`}
+              style={tw`text-white`}
             />
           </TouchableOpacity>
           <TouchableOpacity
@@ -160,8 +145,21 @@ const Chat = ({route, navigation}) => {
             <Icon
               type={Icons.MaterialCommunityIcons}
               size={24}
-              style={tw`text-[${colors.secondaryColor}]`}
+              style={tw`text-white`}
               name={'google-maps'}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              if (route?.params?.chatid) {
+                getChatAndMessages(route?.params?.chatid);
+              }
+            }}>
+            <Icon
+              type={Icons.MaterialCommunityIcons}
+              size={24}
+              style={tw`text-white`}
+              name={'refresh'}
             />
           </TouchableOpacity>
         </View>
@@ -202,9 +200,7 @@ const Chat = ({route, navigation}) => {
               name="send"
               size={20}
               style={tw`ml-[3px] ${
-                messageText?.length
-                  ? `text-[${colors.primaryColor}]`
-                  : 'text-slate-400'
+                messageText?.length ? `text-[${bgColor}]` : 'text-slate-400'
               }`}
             />
           </Pressable>

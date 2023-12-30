@@ -13,18 +13,9 @@ import tw from 'twrnc';
 import {dashboardTranslation} from './dashboardTranslation';
 import Carousel from 'react-native-snap-carousel';
 import Icon, {Icons} from '../../components/Icons';
-import {primaryBGColor} from '../../helper/utils/colors';
+import {getRandomColor, primaryBGColor} from '../../helper/utils/colors';
 import useJobStore from '../../store/dashboard.store';
 import {getCoordinates} from '../../helper/utils/getGeoLocation';
-
-const nearbyJobsColorSchemes = ['#2B2A4C', '#CE5A67', '#392467', '#739072'];
-const getRandomColor = index => {
-  return index <= nearbyJobsColorSchemes.length
-    ? nearbyJobsColorSchemes[index]
-    : nearbyJobsColorSchemes[
-        Math.floor(Math.random() * nearbyJobsColorSchemes.length)
-      ];
-};
 
 const NearbyJobsElement = ({
   language,
@@ -146,7 +137,11 @@ const renderItemsNearbyJobs = ({item, index, navigation, nearbyjobs}) => {
         <Pressable
           onPress={() => {
             console.log('pressed');
-            navigation.navigate('ApplyNow', {jobDetails: item, id: item._id});
+            navigation.navigate('ApplyNow', {
+              jobDetails: item,
+              id: item._id,
+              index,
+            });
           }}
           key={item._id}
           style={tw`w-full h-48 rounded-3`}>
@@ -174,11 +169,11 @@ const renderItemsNearbyJobs = ({item, index, navigation, nearbyjobs}) => {
                 ]}
                 numberOfLines={1}
                 ellipsizeMode="tail">
-                {item.position}
+                {item.jobtitle}
               </Text>
               <Text
                 style={[
-                  tw`text-[${item?.styles?.color}] text-[16px]`,
+                  tw`text-white text-[16px]`,
                   {fontFamily: 'Poppins-Regular'},
                 ]}
                 numberOfLines={1}
@@ -206,19 +201,18 @@ const renderItemsNearbyJobs = ({item, index, navigation, nearbyjobs}) => {
           <View style={tw`flex flex-row justify-between px-5 py-2`}>
             <Text
               style={[
-                tw`text-[${item?.styles?.color}] text-[16px]`,
+                tw`text-white text-[16px]`,
                 {fontFamily: 'Poppins-Regular'},
               ]}>
               ₹. {item.salary}
             </Text>
             <Text
               style={[
-                tw`text-[${item?.styles?.color}] text-[16px]`,
+                tw`text-white text-[16px]`,
                 {fontFamily: 'Poppins-Regular'},
-              ]}
-              numberOfLines={1}
-              ellipsizeMode="tail">
-              {item.location?.name}
+              ]}>
+              {item.location?.name ??
+                item.location?.fulladdress?.substring(0, 10)}
             </Text>
           </View>
         </Pressable>

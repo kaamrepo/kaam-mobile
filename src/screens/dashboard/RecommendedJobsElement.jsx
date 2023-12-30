@@ -194,7 +194,7 @@ const renderItemsRecommendedJobs = ({
           </View>
 
           <Text style={tw`text-lg my-1`} numberOfLines={1} ellipsizeMode="tail">
-            {item?.position}
+            {item?.jobtitle}
           </Text>
           <Text style={[tw`my-1`, {fontFamily: 'Poppins-SemiBold'}]}>
             {`₹ ${new Intl.NumberFormat('en-IN', {
