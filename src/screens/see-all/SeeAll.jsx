@@ -6,10 +6,8 @@ import {
   TouchableOpacity,
   Pressable,
   Image,
-  ScrollView,
   Modal,
   FlatList,
-  StyleSheet,
 } from 'react-native';
 import tw from 'twrnc';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -17,16 +15,18 @@ import {RadioButton} from 'react-native-paper';
 import FilterIconSVG from '../../assets/svgs/FilterIcon.svg';
 import Icon, {Icons} from '../../components/Icons';
 import useJobStore from '../../store/dashboard.store';
-import useLoginStore from '../../store/authentication/login.store';
-import {getCoordinates} from '../../helper/utils/getGeoLocation';
-
 const SeeAll = ({navigation, isLoading, ...props}) => {
   const {getSearchedJobs, clearsearchedJobs, searchedJobs} = useJobStore();
   const [searchDefaultQuery, setDefaultSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const keyExtractor = item => item._id;
+  const [page, setPage] = useState(0);
+
+
   useEffect(() => {
+    clearsearchedJobs();
     setDefaultSearchQuery({
       type: props?.route?.params.type,
       coordinates: props?.route?.params?.coordinates,
@@ -37,10 +37,7 @@ const SeeAll = ({navigation, isLoading, ...props}) => {
           type: props?.route?.params.type,
           coordinates: props?.route?.params?.coordinates,
         });
-        getSearchedJobs(0, 10, {
-          type: props?.route?.params.type,
-          coordinates: props?.route?.params?.coordinates,
-        });
+        getSearchDatahandler();
         break;
 
       default:
@@ -49,7 +46,17 @@ const SeeAll = ({navigation, isLoading, ...props}) => {
         });
         break;
     }
-  }, [props?.route?.params.type, props?.route?.params?.coordinates]);
+  }, [props?.route?.params.type, props?.route?.params?.coordinates,page]);
+
+  const getSearchDatahandler =()=>{
+    const skip = page * 10;
+      const limit = 10;
+      getSearchedJobs(skip, limit, {
+        type: props?.route?.params.type,
+        coordinates: props?.route?.params?.coordinates,
+      });
+
+  }
 
   const handleSearch = async text => {
     try {
@@ -95,7 +102,6 @@ const SeeAll = ({navigation, isLoading, ...props}) => {
   };
 
   const handleBackPress = () => {
-    // Handle back button press logic here
     navigation.goBack();
   };
   const handleBookmarkPress = () => {
@@ -122,14 +128,13 @@ const SeeAll = ({navigation, isLoading, ...props}) => {
       </>
     );
   }
-  // Check for empty data state
 
-  // State to track the selected item
-  const [selectedItem, setSelectedItem] = useState(null);
   // Render function for each item in the FlatList
-  const renderItem = ({item, index}) => (
+  const renderItem = ({item, index}) => {
+    console.log("item in render", item?._id)
+    return(
     <Pressable
-      key={index}
+      key={item?._id}
       onPress={() => {
         navigation.navigate('ApplyNow', {jobDetails: item});
       }}
@@ -199,9 +204,7 @@ const SeeAll = ({navigation, isLoading, ...props}) => {
       </Pressable>
     </Pressable>
   );
-
-  // Key extractor function to get unique keys for each item
-  const keyExtractor = item => item._id;
+        }
 
   // Flatlist test
   return (
@@ -260,7 +263,7 @@ const SeeAll = ({navigation, isLoading, ...props}) => {
                   }
                   onPress={() => handleOptionChange(1)}
                 />
-                <Text style={tw`ml-2`}>Salary High to Low</Text>
+                <Text style={tw`ml-2`}>Salary Low to High</Text>
               </View>
 
               <View style={tw`flex-row items-center mb-2`}>
@@ -271,7 +274,7 @@ const SeeAll = ({navigation, isLoading, ...props}) => {
                   }
                   onPress={() => handleOptionChange(-1)}
                 />
-                <Text style={tw`ml-2`}>Salary Low to High</Text>
+                <Text style={tw`ml-2`}>Salary High to Low</Text>
               </View>
               {/* Close modal button */}
               <TouchableOpacity onPress={hideModal} style={tw`mt-4`}>
@@ -283,11 +286,13 @@ const SeeAll = ({navigation, isLoading, ...props}) => {
       </View>
       <View style={tw`mb-14`}>
         <FlatList
-          data={searchedJobs?.data}
+          data={searchedJobs}
           renderItem={renderItem}
           keyExtractor={keyExtractor}
           extraData={selectedItem} // Re-render the FlatList when selectedItem changes
           onPress={() => setSelectedItem(item._id)} // Handle item press
+          onEndReached={()=>{return setPage((prevPage) => prevPage + 1);}}
+          onEndReachedThreshold={0.2}
         />
       </View>
     </SafeAreaView>

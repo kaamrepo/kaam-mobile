@@ -101,10 +101,6 @@ const useJobStore = create((set, get) => ({
     limit = 10,
     {type, coordinates, searchText, salary},
   ) => {
-    console.log('in the store type', type);
-    console.log('in the store coordinates', coordinates);
-    console.log('in the store searchText', searchText);
-    console.log('in the store salary', salary);
     try {
       const userid = useLoginStore.getState().loggedInUser?._id;
       let params = {
@@ -128,8 +124,13 @@ const useJobStore = create((set, get) => ({
         headers: {Authorization: await getToken()},
         params,
       });
+      let currentSearchedJobs = get().searchedJobs;
+      console.log("this ++++++++++++++",get().searchedJobs?.length,"+++++++++++++++++++++");
+      console.log("res.data---------------------",res?.data?.data?.length,"-------------------")
       if (res && res.data) {
-        set({searchedJobs: res.data});
+        set({
+       searchedJobs: currentSearchedJobs?.length?[...currentSearchedJobs,...res?.data?.data]:[...res?.data?.data],
+        });
       }
     } catch (error) {
       console.log('errororoo',error);
