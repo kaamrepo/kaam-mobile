@@ -79,6 +79,7 @@ const ApplyNow = ({route, navigation}) => {
 
   useEffect(() => {
     if (route?.params?.id) {
+      console.log(route?.params?.id);
       getNearByJobById(route?.params?.id);
     }
   }, [route?.params?.id]);

@@ -37,6 +37,8 @@ const Chat = ({route, navigation}) => {
     }, [route?.params?.chatid]),
   );
 
+  
+
   const renderMessage = ({item}) => (
     <View style={tw`flex-row my-1`}>
       {item?.messageType === 'initial' ? (

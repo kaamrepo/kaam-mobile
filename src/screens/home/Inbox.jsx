@@ -7,6 +7,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import useLoginStore from '../../store/authentication/login.store';
 import useInboxStore from '../../store/inbox.store';
 import useLoaderStore from '../../store/loader.store';
+import dayjs from 'dayjs';
 
 const Inbox = ({navigation}) => {
   const {loggedInUser} = useLoginStore();
@@ -26,79 +27,19 @@ const Inbox = ({navigation}) => {
       <View style={[tw`my-5 mb-[75px]`]}>
         <Headers />
         <SearchComponent placeholder={'Search...'} />
-        <MessageList inboxList={inboxList} isLoading={isLoading} />
+        <MessageList
+          inboxList={inboxList}
+          isLoading={isLoading}
+          loggedInUserId={loggedInUser?._id}
+        />
       </View>
     </SafeAreaView>
   );
 };
 
 export default Inbox;
-const DATA = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    orgName: 'Google',
-    lastMessage: 'are you available for an interview',
-    count: 99,
-    time: '08:10 am',
-  },
-  {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-    orgName: 'Facebook',
-    lastMessage: 'are you available for an interview',
-    count: 201,
-    time: '07:10 pm',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d72',
-    orgName: 'GeeksForGeeks',
-    lastMessage: 'are you available for an interview',
-    count: 20,
-    time: '04:10 am',
-  },
-  {
-    id: 'bd7acbea-c1b1-a6c2-aed5-3ad53abb28ba',
-    orgName: 'Google',
-    lastMessage: 'are you available for an interview',
-    count: 99,
-    time: '08:10 am',
-  },
-  {
-    id: '3ac68afc-c605-4fd3-a4f8-fbd91aa97f63',
-    orgName: 'Facebook',
-    lastMessage: 'are you available for an interview',
-    count: 201,
-    time: '07:10 pm',
-  },
-  {
-    id: '58694a0f-3da1-471g-bd96-145571e29d72',
-    orgName: 'GeeksForGeeks',
-    lastMessage: 'are you available for an interview',
-    count: 20,
-    time: '04:10 am',
-  },
-  {
-    id: 'bd7acbea-c1b1-46c1-aed5-3ad53abb28ba',
-    orgName: 'Google',
-    lastMessage: 'are you available for an interview',
-    count: 99,
-    time: '08:10 am',
-  },
-  {
-    id: '3acq8afc-c605-48d3-a4fw-fbd91aa97f63',
-    orgName: 'Facebook',
-    lastMessage: 'are you available for an interview',
-    count: 201,
-    time: '07:10 pm',
-  },
-  {
-    id: '586a4a0f-3da1-471f-bda6-145571e29d72',
-    orgName: 'GeeksForGeeks',
-    lastMessage: 'are you available for an interview',
-    count: 20,
-    time: '04:10 am',
-  },
-];
-const MessageList = ({isLoading, inboxList}) => {
+
+const MessageList = ({isLoading, inboxList, loggedInUserId}) => {
   if (isLoading) {
     return (
       <View style={[tw`my-2 w-full h-full flex justify-center items-center`]}>
@@ -116,41 +57,53 @@ const MessageList = ({isLoading, inboxList}) => {
   return (
     <View style={[tw`my-2 w-full`]}>
       <FlatList
-        data={DATA}
+        data={inboxList?.data}
         style={[tw`py-1`]}
-        renderItem={({item}) => <MessageListItem item={item} />}
-        keyExtractor={item => item.id}
+        renderItem={({item, index}) => (
+          <MessageListItem
+            item={item}
+            loggedInUserId={loggedInUserId}
+            isLastItem={index === inboxList?.total - 1}
+          />
+        )}
+        keyExtractor={item => item._id}
         showsVerticalScrollIndicator={false}
       />
     </View>
   );
 };
 
-const MessageListItem = ({item}) => {
+const MessageListItem = ({item, loggedInUserId, isLastItem}) => {
   return (
     <View
       style={[
-        tw`w-full px-1 py-2 my-1 flex flex-row gap-2 items-center bg-white rounded-lg border`,
+        tw`w-full px-1 py-2 flex flex-row items-center bg-white ${
+          isLastItem ? '' : 'border-b border-gray-50'
+        }`,
       ]}>
       <View style={[tw`flex-1 justify-center items-center`]}>
         <View style={[tw`w-10 h-10 rounded-full bg-blue-300`]}>
           {/* image */}
         </View>
       </View>
-      <View style={[tw`flex-4`]}>
+      <View style={[tw`flex-3`]}>
         <Text style={[tw`text-black`, {fontFamily: 'Poppins-SemiBold'}]}>
-          {item?.orgName}
+          {item?.applicationDetails?.jobDetails?.employerDetails?.firstname +
+            ' ' +
+            item?.applicationDetails?.jobDetails?.employerDetails?.lastname}
         </Text>
         <Text
           numberOfLines={1}
           ellipsizeMode="tail"
           style={[tw`text-black`, {fontFamily: 'Poppins-Regular'}]}>
-          {item?.lastMessage}
+          {item?.messages?.at(-1)?.text}
         </Text>
       </View>
       <View style={[tw`flex-1 items-center`]}>
         <Text style={[tw`text-black`, {fontFamily: 'Poppins-Regular'}]}>
-          {item?.time || '08:10 am'}
+          {item?.messages?.at(-1)?.createdat
+            ? dayjs(item?.messages?.at(-1)?.createdat).format('hh:mm a')
+            : ''}
         </Text>
         <View
           style={[
@@ -161,7 +114,9 @@ const MessageListItem = ({item}) => {
               tw`text-white text-[12px]`,
               {fontFamily: 'Poppins-SemiBold'},
             ]}>
-            {item?.count > 99 ? `99+` : '2'}
+            {countNewMessages(item?.messages, loggedInUserId) > 99
+              ? `99+`
+              : countNewMessages(item?.messages, loggedInUserId)}
           </Text>
         </View>
       </View>
@@ -219,3 +174,13 @@ const SearchComponent = ({placeholder}) => {
     </View>
   );
 };
+
+function countNewMessages(array, loggedInUserId) {
+  return array?.reduce(
+    (total, current) =>
+      current?.senderid !== loggedInUserId && current?.isseen === false
+        ? (total = total + 1)
+        : total,
+    0,
+  );
+}

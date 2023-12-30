@@ -83,7 +83,7 @@ const NearbyJobsElement = ({
           autoplay={false}
           // autoplayInterval={5000}
           loop={false}
-          data={nearbyjobs?.data}
+          data={nearbyjobs.data}
           renderItem={props =>
             renderItemsNearbyJobs({...props, navigation, nearbyjobs})
           }
@@ -104,27 +104,27 @@ const handleBookmarkPress = () => {
   console.log('Bookmark button pressed!');
 };
 const renderItemsNearbyJobs = ({item, index, navigation, nearbyjobs}) => {
-  const isLastSlide = index === nearbyjobs.data.length - 1;
-  if (isLastSlide) {
-    return (
-      <TouchableOpacity
-        onPress={() => {
-          console.log('sell all pressed differently');
-          navigation.navigate('SeeAll', {type: 'nearby'});
-        }}
-        style={[
-          tw`w-full h-48 flex flex-col justify-center items-center rounded-3 p-4 m-4 text-black relative`,
-        ]}
-        key={index}>
-        <Icon
-          type={Icons.Entypo}
-          name={'chevron-with-circle-right'}
-          size={45}
-          color={primaryBGColor}
-        />
-      </TouchableOpacity>
-    );
-  }
+  const isLastSlide = index === nearbyjobs.total - 1;
+  // if (isLastSlide) {
+  //   return (
+  //     <TouchableOpacity
+  //       onPress={() => {
+  //         console.log('sell all pressed differently');
+  //         navigation.navigate('SeeAll', {type: 'nearby'});
+  //       }}
+  //       style={[
+  //         tw`w-full h-48 flex flex-col justify-center items-center rounded-3 p-4 m-4 text-black relative`,
+  //       ]}
+  //       key={index}>
+  //       <Icon
+  //         type={Icons.Entypo}
+  //         name={'chevron-with-circle-right'}
+  //         size={45}
+  //         color={primaryBGColor}
+  //       />
+  //     </TouchableOpacity>
+  //   );
+  // }
   if (!isLastSlide) {
     return (
       <ImageBackground

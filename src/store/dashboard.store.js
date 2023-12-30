@@ -110,10 +110,9 @@ const useJobStore = create((set, get) => ({
           $nin: [userid],
         },
         type,
-        
       };
-      if (salary === -1) params.sortDesc=['salary']
-      if (salary === 1) params.sortAsc=['salary']
+      if (salary === -1) params.sortDesc = ['salary'];
+      if (salary === 1) params.sortAsc = ['salary'];
       if (coordinates?.length) {
         params.coordinates = coordinates;
       }
@@ -125,15 +124,25 @@ const useJobStore = create((set, get) => ({
         params,
       });
       let currentSearchedJobs = get().searchedJobs;
-      console.log("this ++++++++++++++",get().searchedJobs?.length,"+++++++++++++++++++++");
-      console.log("res.data---------------------",res?.data?.data?.length,"-------------------")
+      console.log(
+        'this ++++++++++++++',
+        get().searchedJobs?.length,
+        '+++++++++++++++++++++',
+      );
+      console.log(
+        'res.data---------------------',
+        res?.data?.data?.length,
+        '-------------------',
+      );
       if (res && res.data) {
         set({
-       searchedJobs: currentSearchedJobs?.length?[...currentSearchedJobs,...res?.data?.data]:[...res?.data?.data],
+          searchedJobs: currentSearchedJobs?.length
+            ? [...currentSearchedJobs, ...res?.data?.data]
+            : [...res?.data?.data],
         });
       }
     } catch (error) {
-      console.log('errororoo',error);
+      console.log('errororoo', error);
       // Toast.show({
       //     type: 'tomatoToast',
       //     text1: 'Failed to get jobs!',
@@ -141,7 +150,7 @@ const useJobStore = create((set, get) => ({
     }
   },
   getNearByJobById: async id => {
-    try {Fcreatedat
+    try {
       let params = {};
       const res = await API.get(`${JOBS}/${id}`, {
         headers: {Authorization: await getToken()},
@@ -152,6 +161,7 @@ const useJobStore = create((set, get) => ({
         set({job: res.data});
       }
     } catch (error) {
+      console.log(error);
       console.log(JSON.stringify(error, null, 5));
       Toast.show({
         type: 'tomatoToast',
