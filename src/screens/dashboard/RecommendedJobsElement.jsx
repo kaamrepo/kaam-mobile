@@ -203,7 +203,10 @@ const renderItemsRecommendedJobs = ({
           </Text>
           <View style={tw`flex flex-row`}>
             <Icon type={Icons.MaterialIcons} name={'location-pin'} size={20} />
-            <Text style={{fontFamily: 'Poppins-SemiBold'}}>
+            <Text
+              style={{fontFamily: 'Poppins-SemiBold'}}
+              numberOfLines={1}
+              ellipsizeMode="tail">
               {item?.location?.name}
             </Text>
           </View>
