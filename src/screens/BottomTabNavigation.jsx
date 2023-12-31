@@ -31,6 +31,7 @@ import {
   primaryTextColor,
   secondaryTextColor,
 } from '../helper/utils/colors';
+import {TopTabNavigationsMenu} from './TopTabNavigationsMenu';
 
 const Tab = createBottomTabNavigator();
 
@@ -80,7 +81,8 @@ const TabArr = [
   {
     route: 'Menu',
     label: 'Menu',
-    component: Menu,
+    // component: Menu,
+    component: TopTabNavigationsMenu,
     activeIcon: <MenuSVG width={18} height={18} />,
     inactiveIcon: <MenuInactiveSVG width={18} height={18} />,
   },
