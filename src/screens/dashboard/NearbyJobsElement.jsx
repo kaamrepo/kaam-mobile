@@ -125,7 +125,7 @@ const renderItemsNearbyJobs = ({item, index, navigation, nearbyjobs}) => {
   //     </TouchableOpacity>
   //   );
   // }
-  if (!isLastSlide) {
+  if (true) {
     return (
       <ImageBackground
         source={require('../../assets/images/nearby-jobs-skin-1.png')}

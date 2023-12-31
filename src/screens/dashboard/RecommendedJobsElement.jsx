@@ -136,28 +136,28 @@ const renderItemsRecommendedJobs = ({
   recommendedJobs,
 }) => {
   const isLastSlide = index === recommendedJobs.data.length - 1;
-  if (isLastSlide) {
-    return (
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate('SeeAll', {jobDetails: item});
-        }}
-        style={[
-          tw`w-full h-48 flex flex-col justify-center items-center rounded-3 p-4 m-4 text-black relative`,
-        ]}
-        key={index}>
-        <Icon
-          type={Icons.Entypo}
-          name={'chevron-with-circle-right'}
-          size={45}
-          color={'green'}
-        />
-      </TouchableOpacity>
-    );
-  }
+  // if (isLastSlide) {
+  //   return (
+  //     <TouchableOpacity
+  //       onPress={() => {
+  //         navigation.navigate('SeeAll', {jobDetails: item});
+  //       }}
+  //       style={[
+  //         tw`w-full h-48 flex flex-col justify-center items-center rounded-3 p-4 m-4 text-black relative`,
+  //       ]}
+  //       key={index}>
+  //       <Icon
+  //         type={Icons.Entypo}
+  //         name={'chevron-with-circle-right'}
+  //         size={45}
+  //         color={'green'}
+  //       />
+  //     </TouchableOpacity>
+  //   );
+  // }
 
   // Render regular card for other items
-  if (!isLastSlide) {
+  if (true) {
     return (
       <View
         style={[
