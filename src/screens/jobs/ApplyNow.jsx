@@ -49,7 +49,6 @@ const ApplyNow = ({route, navigation}) => {
       }
     }
   };
-  const [activeTab, setActiveTab] = useState('description');
   const bgColor = getRandomColor(route?.params?.index);
 
   const handleBackPress = () => {
@@ -61,10 +60,6 @@ const ApplyNow = ({route, navigation}) => {
   const handleBookmarkPress = () => {
     // Handle bookmark button press logic here
     console.log('Bookmark button pressed!');
-  };
-
-  const handleTabChange = tab => {
-    setActiveTab(tab);
   };
 
   const handleChatNavigation = appliedJob => {
@@ -96,11 +91,26 @@ const ApplyNow = ({route, navigation}) => {
     };
   }, []);
 
+  if (isLoading) {
+    return (
+      <SafeAreaView style={tw`flex-1`} edges={['top']}>
+        <GeneralStatusBar backgroundColor={bgColor} />
+        <View style={tw`flex w-full h-full justify-center items-center`}>
+          <View
+            style={tw`w-full h-1/2 bg-[${
+              bgColor ? bgColor : '#000000'
+            }]`}></View>
+          <View style={tw`w-full h-1/2 bg-white`}></View>
+        </View>
+      </SafeAreaView>
+    );
+  }
   return (
     <SafeAreaView style={tw`flex-1`} edges={['top']}>
       <GeneralStatusBar backgroundColor={bgColor} />
       <View style={tw`flex-1`}>
         <View style={tw`flex-1 bg-[${bgColor}] px-5`}>
+          {/* chevron and bookmark button */}
           <View style={tw`flex-row items-center justify-between py-4`}>
             <Pressable
               onPress={handleBackPress}
@@ -128,7 +138,9 @@ const ApplyNow = ({route, navigation}) => {
               />
             </Pressable>
           </View>
-          <View style={tw`flex items-center justify-center py-3`}>
+
+          {/* Image and employer name */}
+          <View style={tw`flex items-center justify-center my-1`}>
             <Image
               source={jobDescription.image}
               style={tw`w-28 h-28 rounded-full`}
@@ -138,25 +150,28 @@ const ApplyNow = ({route, navigation}) => {
                 tw`text-xl mt-2 text-white`,
                 {fontFamily: 'Poppins-Bold'},
               ]}>
-              {job?.employerDetails?.firstname}
-            </Text>
-            <Text
-              style={[tw`text-lg text-white`, {fontFamily: 'Poppins-Bold'}]}>
-              {job?.jobtitle}
+              Employer:{' '}
+              {job?.employerDetails?.firstname +
+                ' ' +
+                job?.employerDetails?.lastname}
             </Text>
           </View>
+
+          {/* Job Tags */}
           <View style={tw`flex-row justify-around items-center my-1`}>
             {job?.tags?.map(tag => (
               <Text
                 key={tag}
                 style={[
-                  tw`text-xs text-white px-5 py-[5px] shadow-lg bg-blue-200/30 rounded-full`,
+                  tw`text-sm text-white px-5 py-[5px] shadow-lg bg-blue-200/30 rounded-full`,
                   {fontFamily: 'Poppins-Regular'},
                 ]}>
                 {tag}
               </Text>
             ))}
           </View>
+
+          {/* Salary and Location */}
           <View style={tw`flex-row justify-between items-center my-3`}>
             <View>
               <Text
@@ -183,44 +198,12 @@ const ApplyNow = ({route, navigation}) => {
             </View>
           </View>
         </View>
+
+        {/* 2nd Half */}
         <View style={tw`flex-1 bg-[#f5f5f5] justify-between pb-5`}>
-          <View style={tw`w-full gap-2 h-4/5 p-4`}>
-            <View
-              style={[
-                tw`relative bg-white p-4 overflow-hidden w-full rounded-xl shadow`,
-              ]}>
-              <Text
-                style={[
-                  tw`absolute top-0 left-0 px-5 rounded-br-full  bg-[${bgColor}] text-white text-[8px]`,
-                  {fontFamily: 'Poppins-SemiBold'},
-                ]}>
-                Job Title
-              </Text>
-              <Text
-                style={[tw`text-black text-xl`, {fontFamily: 'Poppins-Bold'}]}>
-                {job?.jobtitle}
-              </Text>
-            </View>
-            <View
-              style={[
-                tw`relative bg-white p-4 overflow-hidden w-full rounded-xl shadow`,
-              ]}>
-              <Text
-                style={[
-                  tw`absolute top-0 left-0 px-5 rounded-br-full bg-[${bgColor}] text-white text-[8px]`,
-                  {fontFamily: 'Poppins-SemiBold'},
-                ]}>
-                Job Description
-              </Text>
-              <Text
-                style={[
-                  tw`text-black text-sm`,
-                  {fontFamily: 'Poppins-Regular'},
-                ]}>
-                {job?.description}
-              </Text>
-            </View>
-          </View>
+          <JobDetails job={job} bgColor={bgColor} />
+
+          {/* Apply Now / Chat Call To Action buttons */}
           {!isLoading ? (
             appliedJob && Object.keys(appliedJob)?.length ? (
               <Pressable
@@ -352,9 +335,39 @@ const Tabs = ({label, value}) => {
   );
 };
 
-[
-  {
-    value: 'description',
-    label: 'Description',
-  },
-];
+const JobDetails = ({job, bgColor}) => {
+  return (
+    <View style={tw`w-full gap-2 h-4/5 p-4`}>
+      <View
+        style={[
+          tw`relative bg-white p-4 overflow-hidden w-full rounded-xl shadow`,
+        ]}>
+        <Text
+          style={[
+            tw`absolute top-0 left-0 px-5 rounded-br-full  bg-[${bgColor}] text-white text-[8px]`,
+            {fontFamily: 'Poppins-SemiBold'},
+          ]}>
+          Job Title
+        </Text>
+        <Text style={[tw`text-black text-xl`, {fontFamily: 'Poppins-Bold'}]}>
+          {job?.jobtitle}
+        </Text>
+      </View>
+      <View
+        style={[
+          tw`relative bg-white p-4 overflow-hidden w-full rounded-xl shadow`,
+        ]}>
+        <Text
+          style={[
+            tw`absolute top-0 left-0 px-5 rounded-br-full bg-[${bgColor}] text-white text-[8px]`,
+            {fontFamily: 'Poppins-SemiBold'},
+          ]}>
+          Job Description
+        </Text>
+        <Text style={[tw`text-black text-sm`, {fontFamily: 'Poppins-Regular'}]}>
+          {job?.description}
+        </Text>
+      </View>
+    </View>
+  );
+};
