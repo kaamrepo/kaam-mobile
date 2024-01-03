@@ -126,7 +126,7 @@ const Dashboard = ({navigation}) => {
             </View>
           </View>
           <TouchableOpacity
-            onPress={() => navigation.navigate('View Profile')}
+            onPress={() => navigation.navigate('Personal Info')}
             style={tw`w-12 h-12`}>
             <View
               style={tw`w-12 h-12  rounded-lg shadow-2xl shadow-orange-800`}>

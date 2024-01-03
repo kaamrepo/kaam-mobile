@@ -29,8 +29,8 @@ function DrawerNavigation() {
         component={BottomTabNavigation}
         options={{headerShown: false, drawerItemStyle: {display: 'none'}}}
       />
-      <Drawer.Screen name="View Profile" component={PersonalInfo} />
-      {/* <Drawer.Screen name="View Profile" component={ViewProfile} /> */}
+      <Drawer.Screen name="Personal Info" component={PersonalInfo} />
+      <Drawer.Screen name="View Profile" component={ViewProfile} />
       <Drawer.Screen
         name="Settings"
         component={Settings}

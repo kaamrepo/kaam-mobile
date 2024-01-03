@@ -73,14 +73,14 @@ const CustomSidebarMenu = props => {
           </Text>
           <BlueTickSVG width={20} height={20} />
         </View>
-        {/* <Text
+        <Text
           style={[
             tw`text-green-700 text-[15px]`,
             {fontFamily: 'Poppins-Regular'},
           ]}
           onPress={() => props.navigation.navigate('View Profile')}>
           View Profile
-        </Text> */}
+        </Text>
       </View>
       <DrawerContentScrollView {...props}>
         <View style={tw`px-4`}>
