@@ -7,10 +7,7 @@ const Drawer = createDrawerNavigator();
 import BottomTabNavigation from './BottomTabNavigation';
 import CustomSidebarMenu from './CustomSidebarMenu';
 import PersonalInfo from './drawer-screens/PersonalInfo';
-import Applications from './drawer-screens/Applications';
-import Proposals from './drawer-screens/Proposals';
-import Resumes from './drawer-screens/Resumes';
-import Portfolio from './drawer-screens/Portfolio';
+
 import Settings from './drawer-screens/Settings';
 import Icon, {Icons} from '../components/Icons';
 import tw from 'twrnc';

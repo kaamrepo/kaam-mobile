@@ -2,9 +2,8 @@ import {View, Text, Pressable, Image} from 'react-native';
 import tw from 'twrnc';
 import React from 'react';
 import {dashboardTranslation} from './dashboardTranslation';
-import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import Icon, {Icons} from '../../components/Icons';
-
 
 const FeaturedJobsElement = ({
   featuredJobs,
@@ -13,7 +12,7 @@ const FeaturedJobsElement = ({
   navigation,
 }) => {
   const handleSeeAllPress = () => {
-    navigation.navigate('SeeAll',{isLoading});
+    navigation.navigate('SeeAll', {isLoading});
   };
   if (isLoading) {
     return (
@@ -154,7 +153,9 @@ const FeaturedJobsElement = ({
                 style={[
                   tw`text-neutral-600 text-[14px]`,
                   {fontFamily: 'Poppins-Regular'},
-                ]}>
+                ]}
+                numberOfLines={1}
+                ellipsizeMode="tail">
                 {item?.location?.name}
               </Text>
             </View>

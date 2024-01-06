@@ -6,45 +6,82 @@ import {
   TouchableOpacity,
   Pressable,
   Image,
-  ScrollView,
   Modal,
-  FlatList
+  FlatList,
 } from 'react-native';
 import tw from 'twrnc';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {RadioButton} from 'react-native-paper';
 import FilterIconSVG from '../../assets/svgs/FilterIcon.svg';
 import Icon, {Icons} from '../../components/Icons';
-import Image1 from '../../assets/images/browse-jobs.png';
-import Image2 from '../../assets/images/IntroScreenJobsAndInvitations.png';
-import Image3 from '../../assets/images/search-dream-job.png';
 import useJobStore from '../../store/dashboard.store';
-import useLoginStore from '../../store/authentication/login.store';
-import { dashboardTranslation } from '../dashboard/dashboardTranslation';
-import { getCoordinates } from '../../helper/utils/getGeoLocation';
+const SeeAll = ({navigation, isLoading, ...props}) => {
+  const {getSearchedJobs, clearsearchedJobs, searchedJobs} = useJobStore();
+  const [searchDefaultQuery, setDefaultSearchQuery] = useState('');
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const keyExtractor = item => item._id;
+  const [page, setPage] = useState(0);
 
 
-const SeeAll = ({navigation, isLoading,...props}) => {
-  const {loggedInUser, language} = useLoginStore();
-  const {getSearchedJobs,clearsearchedJobs,searchedJobs
-  } = useJobStore(); 
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
- useEffect(()=>{
-  getSearchedJobs(0,10,{type:props?.route?.params.type,coordinates:props?.route?.params?.coordinates});
- },[])
- console.log("searchedJobs",searchedJobs);
-  const handleSearch = async () => {
+  useEffect(() => {
+    clearsearchedJobs();
+    setDefaultSearchQuery({
+      type: props?.route?.params.type,
+      coordinates: props?.route?.params?.coordinates,
+    });
+    switch (props?.route?.params.type) {
+      case 'nearby':
+        setDefaultSearchQuery({
+          type: props?.route?.params.type,
+          coordinates: props?.route?.params?.coordinates,
+        });
+        getSearchDatahandler();
+        break;
+
+      default:
+        setDefaultSearchQuery({
+          type: props?.route?.params.type,
+        });
+        break;
+    }
+  }, [props?.route?.params.type, props?.route?.params?.coordinates,page]);
+
+  const getSearchDatahandler =()=>{
+    const skip = page * 10;
+      const limit = 10;
+      getSearchedJobs(skip, limit, {
+        type: props?.route?.params.type,
+        coordinates: props?.route?.params?.coordinates,
+      });
+
+  }
+
+  const handleSearch = async text => {
     try {
-     
+      clearsearchedJobs();
+      switch (props?.route?.params.type) {
+        case 'nearby':
+          setDefaultSearchQuery({
+            type: props?.route?.params.type,
+            coordinates: props?.route?.params?.coordinates,
+            searchText: text,
+          });
+          getSearchedJobs(0, 10, {
+            type: props?.route?.params.type,
+            coordinates: props?.route?.params?.coordinates,
+            searchText: text,
+          });
+          break;
+
+        default:
+          break;
+      }
     } catch (error) {
       console.error('Error fetching search results:', error);
     }
   };
-
- 
-  const [isModalVisible, setModalVisible] = useState(false);
-  const [selectedOption, setSelectedOption] = useState('Option1');
 
   const showModal = () => {
     setModalVisible(true);
@@ -53,12 +90,18 @@ const SeeAll = ({navigation, isLoading,...props}) => {
   const hideModal = () => {
     setModalVisible(false);
   };
-  const handleOptionChange = value => {
+  const handleOptionChange = async value => {
     setSelectedOption(value);
+    const updatedSearchQuery = {
+      ...searchDefaultQuery,
+      salary:value
+    };
+    await setDefaultSearchQuery(updatedSearchQuery);
+    getSearchedJobs(0,10,updatedSearchQuery)
+
   };
+
   const handleBackPress = () => {
-    // Handle back button press logic here
-    console.log('Back button pressed!');
     navigation.goBack();
   };
   const handleBookmarkPress = () => {
@@ -85,24 +128,85 @@ const SeeAll = ({navigation, isLoading,...props}) => {
       </>
     );
   }
-    // Check for empty data state
-    if (!searchedJobs || searchedJobs?.total === 0 || Object.keys(searchedJobs)?.length === 0) {
-      console.log("in the no data view");
-      return (
-        <View style={tw`px-5 mb-14 w-full`}>
-          <View style={tw`text-slate-950 w-full bg-gray-200 rounded-3 items-center justify-center`}>
-            <Text style={[tw`text-slate-950 text-sm`, {fontFamily: 'Poppins-Regular'}]}>
-              There are no featured jobs
-              <Image
-        source={{ uri: 'https://cdn.pixabay.com/photo/2023/10/29/12/29/pumpkin-8349988_1280.jpg' }}
-   style={tw`border-2 h-30 w-30`}
-      />
-            </Text>
-          </View>
-        </View>
-      );
-    }
-  
+
+  // Render function for each item in the FlatList
+  const renderItem = ({item, index}) => {
+    console.log("item in render", item?._id)
+    return(
+    <Pressable
+      key={item?._id}
+      onPress={() => {
+        navigation.navigate('ApplyNow', {jobDetails: item});
+      }}
+      style={({pressed}) =>
+        tw`my-1 flex-row justify-between border border-gray-200 rounded-3 py-3 px-5 ${
+          pressed ? 'bg-green-100/10' : 'bg-white'
+        }`
+      }>
+      <View style={tw`h-auto w-auto flex`}>
+        {item?.profilepic ? (
+          <Image source={item?.profilepic} style={tw`h-12 w-12 rounded-xl`} />
+        ) : (
+          <Icon
+            type={Icons.Ionicons}
+            name={'person-circle-outline'}
+            size={55}
+            color={'green'}
+          />
+        )}
+      </View>
+      <View style={tw`flex w-35`}>
+        <Text
+          style={[tw`text-black text-[14px]`, {fontFamily: 'Poppins-SemiBold'}]}
+          numberOfLines={1}
+          ellipsizeMode="tail">
+          {item?.position}
+        </Text>
+        <Text
+          style={[
+            tw`text-neutral-600 text-[14px]`,
+            {fontFamily: 'Poppins-Regular'},
+          ]}
+          numberOfLines={1}
+          ellipsizeMode="tail">
+          {item?.description}
+        </Text>
+      </View>
+      <View style={tw` flex`}>
+        <Text
+          style={[
+            tw`text-black text-[14px]`,
+            {fontFamily: 'Poppins-SemiBold'},
+          ]}>
+          ₹: {item?.salary}
+        </Text>
+        <Text
+          style={[
+            tw`w-30 text-neutral-600 text-[14px]`,
+            {fontFamily: 'Poppins-Regular'},
+          ]}
+          numberOfLines={1}
+          ellipsizeMode="tail">
+          {item?.location?.name}
+        </Text>
+      </View>
+      <Pressable
+        onPress={handleBookmarkPress}
+        style={({pressed}) => [tw`p-0  rounded-full`]}>
+        {({pressed}) => (
+          <Icon
+            type={Icons.Ionicons}
+            name="bookmarks-outline"
+            size={22}
+            color={pressed ? 'orange' : 'green'} // Adjust the colors accordingly
+          />
+        )}
+      </Pressable>
+    </Pressable>
+  );
+        }
+
+  // Flatlist test
   return (
     <SafeAreaView style={tw`flex-1 bg-slate-50`} edges={['top']}>
       <View style={tw`flex-row items-center mb-4 mt-2`}>
@@ -131,8 +235,7 @@ const SeeAll = ({navigation, isLoading,...props}) => {
             style={tw`flex-1 text-sm text-black`}
             placeholder="Search"
             placeholderTextColor="gray"
-            onChangeText={text => setSearchQuery(text)}
-            onBlur={handleSearch}
+            onChangeText={text => handleSearch(text)}
           />
         </View>
         <TouchableOpacity
@@ -154,46 +257,25 @@ const SeeAll = ({navigation, isLoading,...props}) => {
               {/* Radio buttons */}
               <View style={tw`flex-row items-center mb-2`}>
                 <RadioButton
-                  value="Option1"
+                  value="1"
                   status={
-                    selectedOption === 'Option1' ? 'checked' : 'unchecked'
+                    selectedOption === 1 ? 'checked' : 'unchecked'
                   }
-                  onPress={() => handleOptionChange('Option1')}
+                  onPress={() => handleOptionChange(1)}
+                />
+                <Text style={tw`ml-2`}>Salary Low to High</Text>
+              </View>
+
+              <View style={tw`flex-row items-center mb-2`}>
+                <RadioButton
+                  value="-1"
+                  status={
+                    selectedOption === -1 ? 'checked' : 'unchecked'
+                  }
+                  onPress={() => handleOptionChange(-1)}
                 />
                 <Text style={tw`ml-2`}>Salary High to Low</Text>
               </View>
-
-              <View style={tw`flex-row items-center mb-2`}>
-                <RadioButton
-                  value="Option2"
-                  status={
-                    selectedOption === 'Option2' ? 'checked' : 'unchecked'
-                  }
-                  onPress={() => handleOptionChange('Option2')}
-                />
-                <Text style={tw`ml-2`}>Salary Low to Low</Text>
-              </View>
-              <View style={tw`flex-row items-center mb-2`}>
-                <RadioButton
-                  value="Option3"
-                  status={
-                    selectedOption === 'Option3' ? 'checked' : 'unchecked'
-                  }
-                  onPress={() => handleOptionChange('Option3')}
-                />
-                <Text style={tw`ml-2`}>Job Posting Newest</Text>
-              </View>
-              <View style={tw`flex-row items-center mb-2`}>
-                <RadioButton
-                  value="Option4"
-                  status={
-                    selectedOption === 'Option4' ? 'checked' : 'unchecked'
-                  }
-                  onPress={() => handleOptionChange('Option4')}
-                />
-                <Text style={tw`ml-2`}>Job Posting Oldest</Text>
-              </View>
-
               {/* Close modal button */}
               <TouchableOpacity onPress={hideModal} style={tw`mt-4`}>
                 <Text style={tw`text-blue-500`}>Close</Text>
@@ -203,37 +285,17 @@ const SeeAll = ({navigation, isLoading,...props}) => {
         </Modal>
       </View>
       <View style={tw`mb-14`}>
-      <FlatList
-  data={searchedJobs}
-  keyExtractor={(item) => item._id}
-  renderItem={({ item, index }) => {
-    console.log('Rendering item at index:', index, 'with data:', item);
-    return (
-      /* Render each search result item as needed */
-      <Pressable
-        key={index}
-        onPress={() => {
-          console.log('pressed');
-          navigation.navigate('ApplyNow', { jobDetails: item });
-        }}
-        style={({ pressed }) =>
-          tw`my-1 w-full flex-row justify-between border border-gray-200 rounded-3 py-3 px-5 ${
-            pressed ? 'bg-green-100/10' : 'bg-white'
-          }`
-        }>
-        {/* Rest of your UI components */}
-      </Pressable>
-    );
-  }}
-/>
-
+        <FlatList
+          data={searchedJobs}
+          renderItem={renderItem}
+          keyExtractor={keyExtractor}
+          extraData={selectedItem} // Re-render the FlatList when selectedItem changes
+          onPress={() => setSelectedItem(item._id)} // Handle item press
+          onEndReached={()=>{return setPage((prevPage) => prevPage + 1);}}
+          onEndReachedThreshold={0.2}
+        />
       </View>
-          {/* {searchedJobs?.data?.map((item, index) => (
-            console.log
-          ))} */}
     </SafeAreaView>
-    
   );
 };
 export default SeeAll;
-

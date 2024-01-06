@@ -1,4 +1,4 @@
-import {TouchableOpacity, StyleSheet, View, Modal, Text} from 'react-native';
+import {TouchableOpacity, StyleSheet, View, Text} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {useNavigation} from '@react-navigation/native';
@@ -7,7 +7,6 @@ import * as Animatable from 'react-native-animatable';
 import tw from 'twrnc';
 import Dashboard from './dashboard/Dashboard';
 import JobPostingForm from './home/JobPostingForm';
-import Post from './home/Postjobs';
 import Bookmark from './home/Bookmark';
 import Menu from './home/Menu';
 import LinearGradient from 'react-native-linear-gradient';
@@ -24,14 +23,12 @@ import BookmarkInactiveSVG from '../assets/svgs/bookmark_inactive.svg';
 
 import MenuSVG from '../assets/svgs/menu.svg';
 import MenuInactiveSVG from '../assets/svgs/menu_inactive.svg';
-import Messages from './home/Messages';
+import Inbox from './home/Inbox';
 import {
   primaryBGColor,
-  primaryColor,
   primaryTextColor,
   secondaryTextColor,
 } from '../helper/utils/colors';
-
 const Tab = createBottomTabNavigator();
 
 const TabArr = [
@@ -45,7 +42,7 @@ const TabArr = [
   {
     route: 'Inbox',
     label: 'Inbox',
-    component: Messages,
+    component: Inbox,
     activeIcon: <MailSVG width={18} height={18} />,
     inactiveIcon: <MailInactiveSVG width={18} height={18} />,
   },
@@ -81,6 +78,7 @@ const TabArr = [
     route: 'Menu',
     label: 'Menu',
     component: Menu,
+
     activeIcon: <MenuSVG width={18} height={18} />,
     inactiveIcon: <MenuInactiveSVG width={18} height={18} />,
   },

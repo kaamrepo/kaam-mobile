@@ -13,18 +13,9 @@ import tw from 'twrnc';
 import {dashboardTranslation} from './dashboardTranslation';
 import Carousel from 'react-native-snap-carousel';
 import Icon, {Icons} from '../../components/Icons';
-import {primaryBGColor} from '../../helper/utils/colors';
+import {getRandomColor, primaryBGColor} from '../../helper/utils/colors';
 import useJobStore from '../../store/dashboard.store';
-import { getCoordinates } from '../../helper/utils/getGeoLocation';
-
-const nearbyJobsColorSchemes = ['#2B2A4C', '#CE5A67', '#392467', '#739072'];
-const getRandomColor = index => {
-  return index <= nearbyJobsColorSchemes.length
-    ? nearbyJobsColorSchemes[index]
-    : nearbyJobsColorSchemes[
-        Math.floor(Math.random() * nearbyJobsColorSchemes.length)
-      ];
-};
+import {getCoordinates} from '../../helper/utils/getGeoLocation';
 
 const NearbyJobsElement = ({
   language,
@@ -63,7 +54,11 @@ const NearbyJobsElement = ({
   }
   const handleSeeAllPress = async () => {
     const position = await getCoordinates();
-    navigation.navigate('SeeAll', {isLoading,type:'nearby',coordinates:[position.coords.longitude,position.coords.latitude]});
+    navigation.navigate('SeeAll', {
+      isLoading,
+      type: 'nearby',
+      coordinates: [position.coords.longitude, position.coords.latitude],
+    });
   };
 
   return (
@@ -88,7 +83,7 @@ const NearbyJobsElement = ({
           autoplay={false}
           // autoplayInterval={5000}
           loop={false}
-          data={nearbyjobs?.data}
+          data={nearbyjobs.data}
           renderItem={props =>
             renderItemsNearbyJobs({...props, navigation, nearbyjobs})
           }
@@ -108,28 +103,28 @@ const handleBookmarkPress = () => {
   // Handle bookmark button press logic here
   console.log('Bookmark button pressed!');
 };
-const renderItemsNearbyJobs = ({item, index, navigation,nearbyjobs}) => {
-  const isLastSlide = index === nearbyjobs.data.length - 1;
-  if (isLastSlide) {
-    return (
-      <TouchableOpacity
-        onPress={() => {
-          console.log("sell all pressed differently")
-          navigation.navigate('SeeAll', {type:'nearby'});
-        }}
-        style={[
-          tw`w-full h-48 flex flex-col justify-center items-center rounded-3 p-4 m-4 text-black relative`,
-        ]}
-        key={index}>
-        <Icon
-          type={Icons.Entypo}
-          name={'chevron-with-circle-right'}
-          size={45}
-          color={primaryBGColor}
-        />
-      </TouchableOpacity>
-    );
-  }
+const renderItemsNearbyJobs = ({item, index, navigation, nearbyjobs}) => {
+  const isLastSlide = index === nearbyjobs.total - 1;
+  // if (isLastSlide) {
+  //   return (
+  //     <TouchableOpacity
+  //       onPress={() => {
+  //         console.log('sell all pressed differently');
+  //         navigation.navigate('SeeAll', {type: 'nearby'});
+  //       }}
+  //       style={[
+  //         tw`w-full h-48 flex flex-col justify-center items-center rounded-3 p-4 m-4 text-black relative`,
+  //       ]}
+  //       key={index}>
+  //       <Icon
+  //         type={Icons.Entypo}
+  //         name={'chevron-with-circle-right'}
+  //         size={45}
+  //         color={primaryBGColor}
+  //       />
+  //     </TouchableOpacity>
+  //   );
+  // }
   if (!isLastSlide) {
     return (
       <ImageBackground
@@ -142,7 +137,11 @@ const renderItemsNearbyJobs = ({item, index, navigation,nearbyjobs}) => {
         <Pressable
           onPress={() => {
             console.log('pressed');
-            navigation.navigate('ApplyNow', {jobDetails: item, id: item._id});
+            navigation.navigate('ApplyNow', {
+              jobDetails: item,
+              id: item._id,
+              index,
+            });
           }}
           key={item._id}
           style={tw`w-full h-48 rounded-3`}>
@@ -174,7 +173,7 @@ const renderItemsNearbyJobs = ({item, index, navigation,nearbyjobs}) => {
               </Text>
               <Text
                 style={[
-                  tw`text-[${item?.styles?.color}] text-[16px]`,
+                  tw`text-white text-[16px]`,
                   {fontFamily: 'Poppins-Regular'},
                 ]}
                 numberOfLines={1}
@@ -202,17 +201,18 @@ const renderItemsNearbyJobs = ({item, index, navigation,nearbyjobs}) => {
           <View style={tw`flex flex-row justify-between px-5 py-2`}>
             <Text
               style={[
-                tw`text-[${item?.styles?.color}] text-[16px]`,
+                tw`text-white text-[16px]`,
                 {fontFamily: 'Poppins-Regular'},
               ]}>
               ₹. {item.salary}
             </Text>
             <Text
               style={[
-                tw`text-[${item?.styles?.color}] text-[16px]`,
+                tw`text-white text-[16px]`,
                 {fontFamily: 'Poppins-Regular'},
               ]}>
-              {item.location?.name}
+              {item.location?.name ??
+                item.location?.fulladdress?.substring(0, 10)}
             </Text>
           </View>
         </Pressable>

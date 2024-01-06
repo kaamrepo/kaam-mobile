@@ -26,3 +26,12 @@ export const colors = [
   '#ffd60a',
   '#38b000',
 ];
+export const jobsColorSchemes = ['#2B2A4C', '#CE5A67', '#392467', '#739072'];
+
+export const getRandomColor = (index: number) => {
+  return index <= jobsColorSchemes.length
+    ? jobsColorSchemes[index]
+    : jobsColorSchemes[Math.floor(Math.random() * jobsColorSchemes.length)];
+};
+export const getRandomBackgroundColor = () =>
+  jobsColorSchemes[Math.floor(Math.random() * jobsColorSchemes.length)];
