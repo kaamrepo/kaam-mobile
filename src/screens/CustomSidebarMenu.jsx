@@ -68,19 +68,12 @@ const CustomSidebarMenu = props => {
             style={[
               tw`text-zinc-600 text-[14px]`,
               {fontFamily: 'Poppins-Light'},
-            ]}>
+            ]}
+            onPress={() => props.navigation.navigate('View Profile')}>
             UI Designer
           </Text>
           <BlueTickSVG width={20} height={20} />
         </View>
-        <Text
-          style={[
-            tw`text-green-700 text-[15px]`,
-            {fontFamily: 'Poppins-Regular'},
-          ]}
-          onPress={() => props.navigation.navigate('View Profile')}>
-          View Profile
-        </Text>
       </View>
       <DrawerContentScrollView {...props}>
         <View style={tw`px-4`}>
@@ -101,15 +94,22 @@ const CustomSidebarMenu = props => {
             onPress={() => props.navigation.navigate('Contact And Support')}
           />
           <CustomDrawerItem
-            title="Settings"
+            title="Switch To Employer"
             id={3}
+            index={props?.state?.index}
+            icon={<SettingsSVG />}
+            // onPress={() => props.navigation.navigate('Contact And Support')}
+          />
+          <CustomDrawerItem
+            title="Settings"
+            id={4}
             index={props?.state?.index}
             icon={<SettingsSVG />}
             onPress={() => props.navigation.navigate('Settings')}
           />
           <CustomDrawerItem
             title="Logout"
-            id={4}
+            id={5}
             titleStyle={{color: '#E30000'}}
             index={props?.state?.index}
             icon={<LogoutSVG />}

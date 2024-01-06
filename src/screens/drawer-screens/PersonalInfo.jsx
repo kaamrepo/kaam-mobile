@@ -26,7 +26,8 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import API from '../../helper/API';
 import {Dropdown} from 'react-native-element-dropdown';
-
+import {launchImageLibrary} from 'react-native-image-picker';
+import CommonAppBar from '../../components/CommonAppBar';
 const detailsSchema = yup.object({
   phone: yup
     .string()
@@ -45,6 +46,7 @@ const addressSchema = yup.object({
   state: yup.string().required('State is required!'),
   country: yup.string().required('Country is required!'),
 });
+
 const aadharSchema = yup.object({
   aadharno: yup
     .string()
@@ -73,8 +75,33 @@ const PersonalInfo = ({navigation}) => {
     updateAddressStore,
     updateAadharInfoStore,
     updatePANInfoStore,
+    updateUserProfileStore,
   } = useUsersStore();
-
+  let options = {
+    title: 'Select Image',
+    type: 'library',
+    options: {
+      maxHeight: 200,
+      maxWidth: 200,
+      selectionLimit: 1,
+      mediaType: 'photo',
+      includeBase64: false,
+      quality: 0.7,
+    },
+  };
+  const uploadProfile = async () => {
+    const image = await launchImageLibrary(options);
+    if (image) {
+      const formData = new FormData();
+      formData.append('source', 'uploadProfile');
+      formData.append('profilepic', {
+        uri: image.assets[0].uri,
+        type: image.assets[0].type,
+        name: image.assets[0].fileName,
+      });
+      await updateUserProfileStore(loggedInUser?._id, formData);
+    }
+  };
   const snapPoints = useMemo(() => ['35%', '60%', '75%'], []);
   const isKeyboardVisible = useKeyboardStatus();
 
@@ -82,7 +109,24 @@ const PersonalInfo = ({navigation}) => {
     loggedInUser?.aboutme ?? '',
   );
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedFirstName, setEditedFirstName] = useState(
+    loggedInUser?.firstname || '',
+  );
+  const [editedLastName, setEditedLastName] = useState(
+    loggedInUser?.lastname || '',
+  );
 
+  const handleEditPress = () => {
+    setIsEditing(true);
+  };
+  const handleSavePress = () => {
+    const editedData = {
+      firstName: editedFirstName,
+      lastName: editedLastName,
+    };
+    setIsEditing(false);
+  };
   const bottomSheetAboutMeRef = useRef(null);
   const bottomSheetDetailsRef = useRef(null);
   const bottomSheetAddressRef = useRef(null);
@@ -259,62 +303,114 @@ const PersonalInfo = ({navigation}) => {
   };
 
   return (
-    <SafeAreaView style={tw`flex-1 p-4 px-5 bg-[#FAFAFD]`}>
-      <View>
+    <SafeAreaView style={tw`flex-1`}>
+      <View
+        style={tw`py-3 px-2 mb-4 flex flex-row gap-2 items-center bg-white shadow-lg`}>
         <Pressable
           style={({pressed}) =>
-            tw`h-10 w-10 items-center justify-center rounded-full ${
+            tw`w-12 h-12 flex items-center justify-center rounded-full ${
               pressed ? 'bg-gray-200' : ''
             } `
           }
           onPress={() => {
             navigation.goBack();
-            navigation.openDrawer();
+            // navigation.openDrawer();
           }}>
           <Icon
             type={Icons.Ionicons}
             name={'chevron-back'}
-            size={25}
+            size={28}
             color={'black'}
           />
         </Pressable>
+        <Text
+          style={[
+            tw`text-[#0D0D26] text-[22px] `,
+            {fontFamily: 'Poppins-Bold'},
+          ]}>
+          Edit Profile
+        </Text>
       </View>
       <View
-        style={tw`my-2 flex-row gap-4 items-center justify-center py-3 bg-white rounded-[20px] border border-gray-100`}>
-        {loggedInUser?.profilepic ? (
-          <Image
-            source={{uri: loggedInUser?.profilepic}}
-            style={[tw`h-16 w-16 rounded-full`]}
+        style={tw` flex-row gap-4 items-start justify-center  rounded-[20px] border border-gray-100`}>
+        <View style={tw`flex-row items-center`}>
+          {loggedInUser?.profilepic ? (
+            <Image
+              source={{uri: loggedInUser.profilepic}}
+              style={[tw`h-22 w-22 rounded-full`]}
+            />
+          ) : (
+            <Image
+              source={require('../../assets/images/default-profile.jpg')}
+              style={[tw`h-22 w-22 rounded-full`]}
+            />
+          )}
+          <Icon
+            type={Icons.MaterialCommunityIcons}
+            name={'camera'}
+            size={20}
+            color={'white'}
+            onPress={() => {
+              uploadProfile();
+            }}
+            style={tw`absolute bottom-1 right-1 bg-blue-300/50 rounded-full p-1`}
           />
-        ) : (
-          <Image
-            source={require('../../assets/images/default-profile.jpg')}
-            style={[tw`h-16 w-16 rounded-full`]}
-          />
-        )}
-
-        <View>
-          <View style={tw`flex-row gap-5 items-center`}>
-            <Text
-              style={[
-                tw`text-[#0D0D26] text-[20px]`,
-                {fontFamily: 'Poppins-Bold'},
-              ]}>{`${capitalizeFirstLetter(
-              loggedInUser?.firstname,
-            )} ${capitalizeFirstLetter(loggedInUser?.lastname)}`}</Text>
-            {/* <Icon type={Icons.MaterialCommunityIcons} name={"pencil"} size={20} color={"black"} onPress={() => { }} /> */}
+        </View>
+        <View style={[tw`my-5`]}>
+          <View style={tw`flex-row gap-3 items-center`}>
+            {isEditing ? (
+              <>
+                <TextInput
+                  value={editedFirstName}
+                  onChangeText={text => setEditedFirstName(text)}
+                  style={{
+                    color: '#0D0D26',
+                    fontSize: 18,
+                    fontFamily: 'Poppins-Bold',
+                  }}
+                />
+                <TextInput
+                  value={editedLastName}
+                  onChangeText={text => setEditedLastName(text)}
+                  style={{
+                    color: '#0D0D26',
+                    fontSize: 18,
+                    fontFamily: 'Poppins-Bold',
+                  }}
+                />
+              </>
+            ) : (
+              <Text
+                style={[
+                  {
+                    color: '#0D0D26',
+                    fontSize: 22,
+                    fontFamily: 'Poppins-Bold',
+                  },
+                ]}>
+                {`${capitalizeFirstLetter(
+                  loggedInUser?.firstname,
+                )} ${capitalizeFirstLetter(loggedInUser?.lastname)}`}
+              </Text>
+            )}
+            <Icon
+              type={Icons.MaterialCommunityIcons}
+              name={isEditing ? 'check-bold' : 'pencil'}
+              size={20}
+              color={'black'}
+              onPress={isEditing ? handleSavePress : handleEditPress}
+            />
           </View>
-
           <Text
             style={[
-              tw`text-[#FE6D73] text-[12px]`,
+              tw`text-[#FE6D73] text-[13px]`,
               {fontFamily: 'Poppins-Light'},
             ]}>
-            {80 + '% Complete'}
+            {80 + '% Completed'}
           </Text>
         </View>
       </View>
-      <ScrollView style={tw``} showsVerticalScrollIndicator={false}>
+      <ScrollView style={tw`px-5`} showsVerticalScrollIndicator={false}>
         <InformationCard
           title="Details"
           onPress={() => {
@@ -332,35 +428,35 @@ const PersonalInfo = ({navigation}) => {
 
         {/* Resume Action Card */}
         {/* <View style={tw`my-3`}>
-          <View style={tw`px-6 flex-row justify-between`}>
-            <Text
-              style={[
-                tw`text-[#0D0D26] text-[18px]`,
-                {fontFamily: 'Poppins-Bold'},
-              ]}>
-              Resume
-            </Text>
-          </View>
-          <View
-            style={tw`px-6 py-4 bg-white rounded-[20px] border border-gray-100`}>
-            <View style={tw`flex-row justify-between `}>
+            <View style={tw`px-6 flex-row justify-between`}>
               <Text
                 style={[
-                  tw`text-[#0D0D26]/50`,
-                  {fontFamily: 'Poppins-SemiBold'},
+                  tw`text-[#0D0D26] text-[18px]`,
+                  {fontFamily: 'Poppins-Bold'},
                 ]}>
-                Create Resume
+                Resume
               </Text>
-              <Icon
-                type={Icons.MaterialCommunityIcons}
-                name={'pencil'}
-                size={20}
-                color={'black'}
-                onPress={() => {}}
-              />
             </View>
-          </View>
-        </View> */}
+            <View
+              style={tw`px-6 py-4 bg-white rounded-[20px] border border-gray-100`}>
+              <View style={tw`flex-row justify-between `}>
+                <Text
+                  style={[
+                    tw`text-[#0D0D26]/50`,
+                    {fontFamily: 'Poppins-SemiBold'},
+                  ]}>
+                  Create Resume
+                </Text>
+                <Icon
+                  type={Icons.MaterialCommunityIcons}
+                  name={'pencil'}
+                  size={20}
+                  color={'black'}
+                  onPress={() => {}}
+                />
+              </View>
+            </View>
+          </View> */}
         {/* Resume Action Card: Completed */}
 
         {/* About Me Action Card */}
@@ -398,63 +494,6 @@ const PersonalInfo = ({navigation}) => {
             </View>
           </View>
         </View>
-
-        {/* Profile Verification */}
-        <View style={tw`my-3`}>
-          <View style={tw`px-6 flex-row justify-between`}>
-            <Text
-              style={[
-                tw`text-[#0D0D26] text-[18px]`,
-                {fontFamily: 'Poppins-Bold'},
-              ]}>
-              Profile Verification
-            </Text>
-          </View>
-          <View
-            style={tw`px-6 py-4 bg-white rounded-[20px] gap-3 border border-gray-100`}>
-            <View style={tw`flex-row justify-between `}>
-              <Text
-                style={[
-                  tw`text-[#0D0D26]/50`,
-                  {fontFamily: 'Poppins-SemiBold'},
-                ]}>
-                Aadhar Verification
-              </Text>
-
-              <Icon
-                type={Icons.MaterialCommunityIcons}
-                style={tw`pl-2`}
-                name={'pencil'}
-                size={20}
-                color={'black'}
-                onPress={() => {
-                  bottomSheetAadharVerificationRef.current.snapToIndex(0);
-                }}
-              />
-            </View>
-            <View style={tw`flex-row justify-between `}>
-              <Text
-                style={[
-                  tw`text-[#0D0D26]/50`,
-                  {fontFamily: 'Poppins-SemiBold'},
-                ]}>
-                PAN Verification
-              </Text>
-
-              <Icon
-                type={Icons.MaterialCommunityIcons}
-                style={tw`pl-2`}
-                name={'pencil'}
-                size={20}
-                color={'black'}
-                onPress={() => {
-                  bottomSheetPANVerificationRef.current.snapToIndex(0);
-                }}
-              />
-            </View>
-          </View>
-        </View>
-        {/* Profile Verification */}
       </ScrollView>
 
       {/* Details bottom sheet */}
@@ -1080,4 +1119,19 @@ const PersonalInfo = ({navigation}) => {
 
 export default PersonalInfo;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  ProfileIcon: {
+    // resizeMode: 'center',
+    width: 100,
+    height: 100,
+    borderRadius: 100 / 2,
+    alignSelf: 'center',
+  },
+  itemImage: {
+    width: 100,
+    height: 100,
+    alignSelf: 'center',
+    resizeMode: 'center',
+    borderRadius: 5,
+  },
+});

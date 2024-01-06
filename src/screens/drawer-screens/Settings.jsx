@@ -30,20 +30,8 @@ const Settings = ({navigation}) => {
 
   const applcationOptions = [
     {
-      icon: <ProfileSVG />,
-      title: 'Profile Visibility',
-      titleClass: 'text-[#0D0D26]',
-      handleNavigation: () => {},
-    },
-    {
       icon: <NotificationsSVG />,
       title: 'Notification',
-      titleClass: 'text-[#0D0D26]',
-      handleNavigation: () => {},
-    },
-    {
-      icon: <ChangePasswordSVG />,
-      title: 'Change Password',
       titleClass: 'text-[#0D0D26]',
       handleNavigation: () => {},
     },
@@ -100,7 +88,6 @@ const Settings = ({navigation}) => {
       handleNavigation: () => {},
     },
   ];
-
   return (
     <SafeAreaView style={tw`flex-1 p-4 px-8 bg-[#FAFAFD]`}>
       <Text

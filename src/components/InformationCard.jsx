@@ -26,7 +26,7 @@ const InformationCard = props => {
       <View
         style={tw`px-6 py-4 bg-white rounded-[20px] border border-gray-100`}>
         {Object.entries(props.informationArray).map(([key, value], index) => (
-          <View key={index} style={tw`flex-row justify-between `}>
+          <View key={index} style={tw`flex-row justify-between py-1`}>
             <Text
               style={[tw`text-[#0D0D26]/50`, {fontFamily: 'Poppins-SemiBold'}]}>
               {key}
