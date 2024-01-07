@@ -27,7 +27,6 @@ import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import API from '../../helper/API';
 import {Dropdown} from 'react-native-element-dropdown';
 import {launchImageLibrary} from 'react-native-image-picker';
-import CommonAppBar from '../../components/CommonAppBar';
 import {primaryBGColor} from '../../helper/utils/colors';
 const detailsSchema = yup.object({
   phone: yup

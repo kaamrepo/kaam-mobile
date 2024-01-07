@@ -7,7 +7,6 @@ import {
   Text,
   Pressable,
 } from 'react-native';
-
 import {DrawerContentScrollView} from '@react-navigation/drawer';
 import tw from 'twrnc';
 import Icon, {Icons} from '../components/Icons';
@@ -97,7 +96,14 @@ const CustomSidebarMenu = props => {
             title="Switch To Employer"
             id={3}
             index={props?.state?.index}
-            icon={<SettingsSVG />}
+            icon={
+              <Icon
+                type={Icons.Ionicons}
+                name={'refresh'}
+                size={28}
+                color={'gray'}
+              />
+            }
             // onPress={() => props.navigation.navigate('Contact And Support')}
           />
           <CustomDrawerItem
