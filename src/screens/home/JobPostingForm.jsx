@@ -22,6 +22,7 @@ import useJobStore from '../../store/dashboard.store';
 import {useFocusEffect} from '@react-navigation/native';
 import Header from '../../components/Header';
 import wordsFilter from '../../helper/utils/profane';
+import useLoaderStore from '../../store/loader.store';
 
 let salaryBasisOptionsArray = [
   {label: 'Monthly', value: 'month'},
@@ -68,6 +69,7 @@ const createJobSchema = yup.object({
 });
 
 const JobPostingForm = ({navigation}) => {
+  const {setLoading} = useLoaderStore();
   const {loggedInUser} = useLoginStore();
   const {postJobs} = useJobStore();
   const {
@@ -84,18 +86,13 @@ const JobPostingForm = ({navigation}) => {
   } = useForm({
     resolver: yupResolver(createJobSchema),
     mode: 'onChange',
-    // defaultValues: {
-    //   tags: [],
-    // },
   });
 
   let tags = watch('tags');
 
   const createJob = async data => {
     const result = requestLocationPermission();
-
     const {tags} = data;
-    console.log(data);
     if (tags?.length < 3) {
       setError('tags', {
         type: 'custom',
@@ -105,11 +102,11 @@ const JobPostingForm = ({navigation}) => {
     }
     result.then(res => {
       if (res) {
+        setLoading(true);
         Geolocation.getCurrentPosition(
           async position => {
             let payload = {
               ...data,
-              salarybasis: selectedChip,
               createdby: loggedInUser?._id,
               location: {
                 fulladdress: data?.fulladdress,
@@ -124,7 +121,6 @@ const JobPostingForm = ({navigation}) => {
             const success = await postJobs(payload);
             if (success) {
               reset();
-              setSelectedChip(null);
               navigation.navigate('Dashboard');
             }
           },
@@ -138,8 +134,12 @@ const JobPostingForm = ({navigation}) => {
   };
 
   const handleAddTag = value => {
+    console.log('value', value);
+    console.log('tags', tags);
+
     if (value) {
-      if (tags?.findIndex(d => d === value) !== -1) {
+      if (tags && tags.findIndex(d => d === value) !== -1) {
+        console.log(tags?.findIndex(d => d === value) !== -1);
         setError('tags', {
           type: 'custom',
           message: 'A unique tag is expected.',
@@ -148,7 +148,7 @@ const JobPostingForm = ({navigation}) => {
       }
       if (tags?.length < 3) {
         setValue('tags', [...getValues('tags'), value]);
-      } else if (tags?.length === 0) {
+      } else if (tags?.length === 0 || !tags) {
         setValue('tags', [value]);
       } else {
         setError('tags', {type: 'custom', message: 'Maximum 3 tags allowed'});
