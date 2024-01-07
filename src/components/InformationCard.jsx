@@ -13,15 +13,13 @@ const InformationCard = props => {
           ]}>
           {props.title}
         </Text>
-        <Text
-          style={[
-            tw`text-[#0D0D26] text-[12px]`,
-            {fontFamily: 'Poppins-Regular'},
-          ]}
-          onPress={props.onPress}>
-          Edit
-        </Text>
-        {/* <Icon type={Icons.MaterialCommunityIcons} name={"pencil"} size={20} color={"black"} onPress={props.onPress} /> */}
+        <Icon
+          type={Icons.MaterialCommunityIcons}
+          name={'pencil'}
+          size={18}
+          color={'black'}
+          onPress={props.onPress}
+        />
       </View>
       <View
         style={tw`px-6 py-4 bg-white rounded-[20px] border border-gray-100`}>

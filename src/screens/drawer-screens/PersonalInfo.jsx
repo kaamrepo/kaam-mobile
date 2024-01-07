@@ -28,6 +28,7 @@ import API from '../../helper/API';
 import {Dropdown} from 'react-native-element-dropdown';
 import {launchImageLibrary} from 'react-native-image-picker';
 import CommonAppBar from '../../components/CommonAppBar';
+import {primaryBGColor} from '../../helper/utils/colors';
 const detailsSchema = yup.object({
   phone: yup
     .string()
@@ -76,6 +77,7 @@ const PersonalInfo = ({navigation}) => {
     updateAadharInfoStore,
     updatePANInfoStore,
     updateUserProfileStore,
+    updateNameStore,
   } = useUsersStore();
   let options = {
     title: 'Select Image',
@@ -120,11 +122,12 @@ const PersonalInfo = ({navigation}) => {
   const handleEditPress = () => {
     setIsEditing(true);
   };
-  const handleSavePress = () => {
+  const handleSavePress = async () => {
     const editedData = {
-      firstName: editedFirstName,
-      lastName: editedLastName,
+      firstname: editedFirstName,
+      lastname: editedLastName,
     };
+    await updateNameStore(loggedInUser?._id, editedData);
     setIsEditing(false);
   };
   const bottomSheetAboutMeRef = useRef(null);
@@ -314,7 +317,6 @@ const PersonalInfo = ({navigation}) => {
           }
           onPress={() => {
             navigation.goBack();
-            // navigation.openDrawer();
           }}>
           <Icon
             type={Icons.Ionicons}
@@ -363,20 +365,18 @@ const PersonalInfo = ({navigation}) => {
                 <TextInput
                   value={editedFirstName}
                   onChangeText={text => setEditedFirstName(text)}
-                  style={{
-                    color: '#0D0D26',
-                    fontSize: 18,
-                    fontFamily: 'Poppins-Bold',
-                  }}
+                  style={[
+                    {fontFamily: 'Poppins-Regular'},
+                    tw`text-black max-h-10 px-2  border-[1px] bg-slate-100/40 border-slate-300 `,
+                  ]}
                 />
                 <TextInput
                   value={editedLastName}
                   onChangeText={text => setEditedLastName(text)}
-                  style={{
-                    color: '#0D0D26',
-                    fontSize: 18,
-                    fontFamily: 'Poppins-Bold',
-                  }}
+                  style={[
+                    {fontFamily: 'Poppins-Regular'},
+                    tw`text-black  max-h-10 px-2 border-[1px] bg-slate-100/40 border-slate-300  `,
+                  ]}
                 />
               </>
             ) : (
@@ -396,8 +396,8 @@ const PersonalInfo = ({navigation}) => {
             <Icon
               type={Icons.MaterialCommunityIcons}
               name={isEditing ? 'check-bold' : 'pencil'}
-              size={20}
-              color={'black'}
+              size={28}
+              color={isEditing ? primaryBGColor : 'black'}
               onPress={isEditing ? handleSavePress : handleEditPress}
             />
           </View>
@@ -425,40 +425,6 @@ const PersonalInfo = ({navigation}) => {
           }}
           informationArray={address}
         />
-
-        {/* Resume Action Card */}
-        {/* <View style={tw`my-3`}>
-            <View style={tw`px-6 flex-row justify-between`}>
-              <Text
-                style={[
-                  tw`text-[#0D0D26] text-[18px]`,
-                  {fontFamily: 'Poppins-Bold'},
-                ]}>
-                Resume
-              </Text>
-            </View>
-            <View
-              style={tw`px-6 py-4 bg-white rounded-[20px] border border-gray-100`}>
-              <View style={tw`flex-row justify-between `}>
-                <Text
-                  style={[
-                    tw`text-[#0D0D26]/50`,
-                    {fontFamily: 'Poppins-SemiBold'},
-                  ]}>
-                  Create Resume
-                </Text>
-                <Icon
-                  type={Icons.MaterialCommunityIcons}
-                  name={'pencil'}
-                  size={20}
-                  color={'black'}
-                  onPress={() => {}}
-                />
-              </View>
-            </View>
-          </View> */}
-        {/* Resume Action Card: Completed */}
-
         {/* About Me Action Card */}
         <View style={tw`my-3`}>
           <View style={tw`px-6 flex-row justify-between`}>
