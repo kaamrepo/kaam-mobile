@@ -21,9 +21,7 @@ import {primaryBGColor, primaryBGDarkColor} from '../../helper/utils/colors';
 import useJobStore from '../../store/dashboard.store';
 import {useFocusEffect} from '@react-navigation/native';
 import Header from '../../components/Header';
-import badWords from 'bad-words';
-
-wordsFilter = new badWords();
+import wordsFilter from '../../helper/utils/profane';
 
 let salaryBasisOptionsArray = [
   {label: 'Monthly', value: 'month'},
@@ -85,7 +83,7 @@ const JobPostingForm = ({navigation}) => {
     formState: {errors, isSubmitting},
   } = useForm({
     resolver: yupResolver(createJobSchema),
-    // mode: 'onChange',
+    mode: 'onChange',
     // defaultValues: {
     //   tags: [],
     // },
