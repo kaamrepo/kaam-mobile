@@ -4,6 +4,7 @@ import React from 'react';
 import {dashboardTranslation} from './dashboardTranslation';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import Icon, {Icons} from '../../components/Icons';
+import {primaryBGColor} from '../../helper/utils/colors';
 
 const FeaturedJobsElement = ({
   featuredJobs,
@@ -102,26 +103,26 @@ const FeaturedJobsElement = ({
               navigation.navigate('ApplyNow', {jobDetails: item, id: item._id});
             }}
             style={({pressed}) =>
-              tw`my-1 w-full flex-row justify-between border border-gray-200 rounded-3 py-3 px-5 ${
+              tw`my-1 w-full flex-row items-center gap-1 border border-gray-200 rounded-3 px-2.5 pb-2.5 pt-4 relative overflow-hidden ${
                 pressed ? 'bg-green-100/10' : 'bg-white'
               }`
             }>
-            <View style={tw`h-10 w-10 flex-2`}>
-              {item.profilepic ? (
+            <View style={tw`h-10 w-10 flex-1`}>
+              {item.employerDetails.profilepic ? (
                 <Image
-                  source={item?.profilepic}
-                  style={tw`h-10 w-10 rounded-xl`}
+                  source={{uri: item.employerDetails.profilepic}}
+                  style={tw`h-10 w-10 rounded`}
                 />
               ) : (
                 <Icon
                   type={Icons.Ionicons}
                   name={'person'}
                   size={45}
-                  color={'green'}
+                  color={primaryBGColor}
                 />
               )}
             </View>
-            <View style={tw` flex-4`}>
+            <View style={tw`flex-5`}>
               <Text
                 style={[
                   tw`text-black text-[14px]`,
@@ -141,24 +142,13 @@ const FeaturedJobsElement = ({
                 {item?.description}
               </Text>
             </View>
-            <View style={tw` flex-2`}>
-              <Text
-                style={[
-                  tw`text-black text-[14px]`,
-                  {fontFamily: 'Poppins-SemiBold'},
-                ]}>
-                ₹: {item?.salary}
-              </Text>
-              <Text
-                style={[
-                  tw`text-neutral-600 text-[14px]`,
-                  {fontFamily: 'Poppins-Regular'},
-                ]}
-                numberOfLines={1}
-                ellipsizeMode="tail">
-                {item?.location?.name}
-              </Text>
-            </View>
+            <Text
+              style={[
+                tw`text-white text-[12px] absolute top-0 right-0 px-2 rounded-bl-xl bg-[${primaryBGColor}]`,
+                {fontFamily: 'Poppins-SemiBold'},
+              ]}>
+              ₹: {item?.salary}
+            </Text>
           </Pressable>
         ))}
       </View>

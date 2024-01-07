@@ -36,7 +36,6 @@ const Dashboard = ({navigation}) => {
     clearFeaturedJobs,
     getFeaturedJobs,
     featuredJobs,
-    searchedJobs,
   } = useJobStore();
   const {isLoading} = useLoaderStore();
   const [location, setLocation] = useState(undefined);
@@ -50,6 +49,8 @@ const Dashboard = ({navigation}) => {
         location?.coords?.latitude,
       ]);
     }
+    getRecommendedJobs();
+    getFeaturedJobs();
     setRefreshing(false);
   }, [location]);
 

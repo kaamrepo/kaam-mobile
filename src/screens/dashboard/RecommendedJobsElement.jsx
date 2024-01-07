@@ -12,6 +12,7 @@ import {dashboardTranslation} from './dashboardTranslation';
 import tw from 'twrnc';
 import Carousel from 'react-native-snap-carousel';
 import Icon, {Icons} from '../../components/Icons';
+import {primaryBGColor} from '../../helper/utils/colors';
 
 const RecommendedJobsElement = ({
   language,
@@ -135,83 +136,86 @@ const renderItemsRecommendedJobs = ({
   navigation,
   recommendedJobs,
 }) => {
-  const isLastSlide = index === recommendedJobs.data.length - 1;
-  if (isLastSlide) {
-    return (
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate('SeeAll', {jobDetails: item});
-        }}
-        style={[
-          tw`w-full h-48 flex flex-col justify-center items-center rounded-3 p-4 m-4 text-black relative`,
-        ]}
-        key={index}>
-        <Icon
-          type={Icons.Entypo}
-          name={'chevron-with-circle-right'}
-          size={45}
-          color={'green'}
-        />
-      </TouchableOpacity>
-    );
-  }
+  // const isLastSlide = index === recommendedJobs.data.length - 1;
+  // if (isLastSlide) {
+  //   return (
+  //     <TouchableOpacity
+  //       onPress={() => {
+  //         navigation.navigate('SeeAll', {jobDetails: item});
+  //       }}
+  //       style={[
+  //         tw`w-full h-48 flex flex-col justify-center items-center rounded-3 p-4 m-4 text-black relative`,
+  //       ]}
+  //       key={index}>
+  //       <Icon
+  //         type={Icons.Entypo}
+  //         name={'chevron-with-circle-right'}
+  //         size={45}
+  //         color={'green'}
+  //       />
+  //     </TouchableOpacity>
+  //   );
+  // }
 
   // Render regular card for other items
-  if (!isLastSlide) {
-    return (
-      <View
-        style={[
-          tw`w-full h-48 flex flex-col justify-center items-center bg-slate-100 rounded-3 p-4 m-4 text-black relative`,
-          {
-            elevation: 8,
-            shadowColor: '#000',
-            shadowOffset: {width: 0, height: 2},
-            shadowOpacity: 0.3,
-            shadowRadius: 10,
-          },
-        ]}>
-        <Pressable
-          onPress={() => {
-            console.log('pressed');
-            navigation.navigate('ApplyNow', {jobDetails: item, id: item._id});
-          }}
-          style={tw`w-full h-full`}
-          key={index}>
-          <View style={tw`items-center mb-4`}>
-            {item.profilepic ? (
-              <Image
-                source={item?.profilepic}
-                style={tw`w-15 h-15 rounded-full`}
-              />
-            ) : (
-              <Icon
-                type={Icons.Ionicons}
-                name={'person'}
-                size={45}
-                color={'green'}
-              />
-            )}
-          </View>
+  // if (!isLastSlide) {
 
-          <Text style={tw`text-lg my-1`} numberOfLines={1} ellipsizeMode="tail">
-            {item?.jobtitle}
-          </Text>
-          <Text style={[tw`my-1`, {fontFamily: 'Poppins-SemiBold'}]}>
-            {`₹ ${new Intl.NumberFormat('en-IN', {
-              maximumSignificantDigits: 3,
-            }).format(item?.salary)}/y`}
-          </Text>
-          <View style={tw`flex flex-row`}>
-            <Icon type={Icons.MaterialIcons} name={'location-pin'} size={20} />
-            <Text
-              style={{fontFamily: 'Poppins-SemiBold'}}
-              numberOfLines={1}
-              ellipsizeMode="tail">
-              {item?.location?.name}
-            </Text>
-          </View>
-        </Pressable>
+  return (
+    <Pressable
+      onPress={() => {
+        navigation.navigate('ApplyNow', {jobDetails: item, id: item._id});
+      }}
+      style={[
+        tw`w-full flex flex-col items-center overflow-hidden bg-white rounded-3xl pt-4 m-4 text-black shadow-md`,
+      ]}
+      key={index}>
+      <View
+        style={tw`flex justify-center items-center mb-2 px-4 w-15 h-15 rounded-full bg-gray-100`}>
+        {item?.employerDetails?.profilepic ? (
+          <Image
+            source={{uri: item.employerDetails.profilepic}}
+            style={tw`w-15 h-15 rounded-full`}
+          />
+        ) : (
+          <Icon
+            type={Icons.Ionicons}
+            name={'person'}
+            size={30}
+            color={primaryBGColor}
+          />
+        )}
       </View>
-    );
-  }
+
+      <Text
+        style={[tw`text-lg my-1 text-black`, {fontFamily: 'Poppins-Bold'}]}
+        numberOfLines={1}
+        ellipsizeMode="tail">
+        {item?.jobtitle}
+      </Text>
+
+      <Text style={[tw`my-1 text-black`, {fontFamily: 'Poppins-SemiBold'}]}>
+        {`₹ ${new Intl.NumberFormat('en-IN', {
+          maximumSignificantDigits: 3,
+        }).format(item?.salary)}/y`}
+      </Text>
+
+      <View
+        style={tw`w-full py-2 flex flex-row gap-2 justify-center items-end bg-gray-100`}>
+        <Icon
+          type={Icons.MaterialIcons}
+          name={'location-pin'}
+          size={20}
+          color={'#E34133'}
+        />
+        <Text
+          style={[tw`text-black`, {fontFamily: 'Poppins-Regular'}]}
+          numberOfLines={1}
+          ellipsizeMode="tail">
+          {item.location?.name ??
+            item.location?.fulladdress?.substring(0, 15) + '...'}
+        </Text>
+      </View>
+    </Pressable>
+  );
+  // }
 };

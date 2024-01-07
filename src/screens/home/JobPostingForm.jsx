@@ -32,6 +32,7 @@ let salaryBasisOptionsArray = [
 const createJobSchema = yup.object({
   jobtitle: yup
     .string()
+    .trim()
     .required('Job title is required!')
     .test(
       'noBadWords',
@@ -40,6 +41,7 @@ const createJobSchema = yup.object({
     ),
   description: yup
     .string()
+    .trim()
     .required('Job description is required!')
     .test(
       'noBadWords',
@@ -48,6 +50,7 @@ const createJobSchema = yup.object({
     ),
   fulladdress: yup
     .string()
+    .trim()
     .required('Job location is required!')
     .test(
       'noBadWords',
@@ -58,11 +61,11 @@ const createJobSchema = yup.object({
     .number()
     .typeError('Job salary is required!')
     .required('Job salary is required!'),
-  salarybasis: yup.string().required('Please select a salary basis'),
+  salarybasis: yup.string().trim().required('Please select a salary basis'),
   tags: yup
     .array('Tags are required!')
     .typeError('Tags are required!')
-    .of(yup.string().required('Tag is required'))
+    .of(yup.string().trim().required('Tag is required'))
     .required('Tags are required!')
     .min(3)
     .max(3),

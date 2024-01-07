@@ -25,6 +25,7 @@ const NearbyJobsElement = ({
   location,
 }) => {
   const {getSearchedJobs} = useJobStore();
+
   if (!location) {
     return (
       <CommonMessageForNearByJobs
@@ -41,10 +42,7 @@ const NearbyJobsElement = ({
       />
     );
   }
-  if (
-    (nearbyjobs && nearbyjobs?.total == 0) ||
-    Object.keys(nearbyjobs)?.length == 0
-  ) {
+  if (nearbyjobs == undefined || nearbyjobs?.total === 0) {
     return (
       <CommonMessageForNearByJobs
         title="There are no nearby jobs"
@@ -52,6 +50,17 @@ const NearbyJobsElement = ({
       />
     );
   }
+  // if (
+  //   (nearbyjobs && nearbyjobs?.total == 0) ||
+  //   Object.keys(nearbyjobs)?.length == 0
+  // ) {
+  //   return (
+  //     <CommonMessageForNearByJobs
+  //       title="There are no nearby jobs"
+  //       language={language}
+  //     />
+  //   );
+  // }
   const handleSeeAllPress = async () => {
     const position = await getCoordinates();
     navigation.navigate('SeeAll', {
@@ -104,121 +113,98 @@ const handleBookmarkPress = () => {
   console.log('Bookmark button pressed!');
 };
 const renderItemsNearbyJobs = ({item, index, navigation, nearbyjobs}) => {
-  const isLastSlide = index === nearbyjobs.total - 1;
-  // if (isLastSlide) {
-  //   return (
-  //     <TouchableOpacity
-  //       onPress={() => {
-  //         console.log('sell all pressed differently');
-  //         navigation.navigate('SeeAll', {type: 'nearby'});
-  //       }}
-  //       style={[
-  //         tw`w-full h-48 flex flex-col justify-center items-center rounded-3 p-4 m-4 text-black relative`,
-  //       ]}
-  //       key={index}>
-  //       <Icon
-  //         type={Icons.Entypo}
-  //         name={'chevron-with-circle-right'}
-  //         size={45}
-  //         color={primaryBGColor}
-  //       />
-  //     </TouchableOpacity>
-  //   );
-  // }
-  if (!isLastSlide) {
-    return (
-      <ImageBackground
-        source={require('../../assets/images/nearby-jobs-skin-1.png')}
-        style={[
-          tw`w-full h-48 rounded-6`,
-          {backgroundColor: getRandomColor(index)},
-        ]}
-        resizeMode="cover">
-        <Pressable
-          onPress={() => {
-            console.log('pressed');
-            navigation.navigate('ApplyNow', {
-              jobDetails: item,
-              id: item._id,
-              index,
-            });
-          }}
-          key={item._id}
-          style={tw`w-full h-48 rounded-3`}>
-          <View style={tw`flex flex-row justify-between p-4 h-35`}>
-            <View style={tw`h-15 w-15 flex-2`}>
-              {item.profilepic ? (
-                <Image
-                  source={item?.profilepic}
-                  style={tw`h-10 w-10 rounded-xl`}
-                />
-              ) : (
-                <Icon
-                  type={Icons.Ionicons}
-                  name={'person-circle-outline'}
-                  size={55}
-                  color={'white'}
-                />
-              )}
-            </View>
-            <View style={tw`py-2 w-[70%] pl-5 justify-start`}>
-              <Text
-                style={[
-                  tw`text-white text-[20px]`,
-                  {fontFamily: 'Poppins-SemiBold'},
-                ]}
-                numberOfLines={1}
-                ellipsizeMode="tail">
-                {item.jobtitle}
-              </Text>
-              <Text
-                style={[
-                  tw`text-white text-[16px]`,
-                  {fontFamily: 'Poppins-Regular'},
-                ]}
-                numberOfLines={1}
-                ellipsizeMode="tail">
-                {item.description}
-              </Text>
-            </View>
-
-            <View style={tw`items-end`}>
-              <Pressable
-                onPress={handleBookmarkPress}
-                style={({pressed}) => [
-                  tw`p-2 rounded-full ${pressed ? 'bg-black/20' : ''}`,
-                ]}>
-                <Icon
-                  type={Icons.Ionicons}
-                  name="bookmark"
-                  size={24}
-                  color={'white'}
-                />
-              </Pressable>
-            </View>
+  return (
+    <ImageBackground
+      source={require('../../assets/images/nearby-jobs-skin-1.png')}
+      style={[
+        tw`w-full h-48 rounded-6`,
+        {backgroundColor: getRandomColor(index)},
+      ]}
+      resizeMode="cover">
+      <Pressable
+        onPress={() => {
+          console.log('pressed');
+          navigation.navigate('ApplyNow', {
+            jobDetails: item,
+            id: item._id,
+            index,
+          });
+        }}
+        key={item._id}
+        style={tw`w-full h-48 rounded-3`}>
+        <View style={tw`flex flex-row justify-between p-4 h-35`}>
+          <View style={tw`h-15 w-15 flex-2`}>
+            {item.employerDetails.profilepic ? (
+              <Image
+                source={{uri: item.employerDetails.profilepic}}
+                style={tw`h-13 w-13 rounded-xl`}
+              />
+            ) : (
+              <Icon
+                type={Icons.Ionicons}
+                name={'person-circle-outline'}
+                size={55}
+                color={'white'}
+              />
+            )}
           </View>
-
-          <View style={tw`flex flex-row justify-between px-5 py-2`}>
+          <View style={tw`py-2 w-[70%] pl-5 justify-start`}>
             <Text
               style={[
-                tw`text-white text-[16px]`,
-                {fontFamily: 'Poppins-Regular'},
-              ]}>
-              ₹. {item.salary}
+                tw`text-white text-[20px]`,
+                {fontFamily: 'Poppins-SemiBold'},
+              ]}
+              numberOfLines={1}
+              ellipsizeMode="tail">
+              {item.jobtitle}
             </Text>
             <Text
               style={[
                 tw`text-white text-[16px]`,
                 {fontFamily: 'Poppins-Regular'},
-              ]}>
-              {item.location?.name ??
-                item.location?.fulladdress?.substring(0, 10)}
+              ]}
+              numberOfLines={1}
+              ellipsizeMode="tail">
+              {item.description}
             </Text>
           </View>
-        </Pressable>
-      </ImageBackground>
-    );
-  }
+
+          <View style={tw`items-end`}>
+            <Pressable
+              onPress={handleBookmarkPress}
+              style={({pressed}) => [
+                tw`p-2 rounded-full ${pressed ? 'bg-black/20' : ''}`,
+              ]}>
+              <Icon
+                type={Icons.Ionicons}
+                name="bookmark"
+                size={24}
+                color={'white'}
+              />
+            </Pressable>
+          </View>
+        </View>
+
+        <View style={tw`flex flex-row justify-between px-5 py-2`}>
+          <Text
+            style={[
+              tw`text-white text-[16px]`,
+              {fontFamily: 'Poppins-Regular'},
+            ]}>
+            ₹. {item.salary}
+          </Text>
+          <Text
+            style={[
+              tw`text-white text-[16px]`,
+              {fontFamily: 'Poppins-Regular'},
+            ]}>
+            {item.location?.name ??
+              item.location?.fulladdress?.substring(0, 15) + '...'}
+          </Text>
+        </View>
+      </Pressable>
+    </ImageBackground>
+  );
 };
 
 function CommonMessageForNearByJobs({title, language}) {
