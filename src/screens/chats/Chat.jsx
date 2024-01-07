@@ -37,13 +37,11 @@ const Chat = ({route, navigation}) => {
     }, [route?.params?.chatid]),
   );
 
-  
-
   const renderMessage = ({item}) => (
     <View style={tw`flex-row my-1`}>
       {item?.messageType === 'initial' ? (
         <View
-          style={tw`flex flex-row gap-3 items-center justify-center mx-auto w-[80%] rounded-lg bg-white border border-[${route?.params?.bgColor}] text-black px-2 py-3 mb-2`}>
+          style={tw`flex flex-row gap-3 mx-auto items-center justify-center w-[80%] rounded-lg bg-white border border-[${bgColor}] text-black px-5 py-3 mb-2`}>
           <Icon
             type={Icons.Ionicons}
             size={30}
@@ -52,7 +50,7 @@ const Chat = ({route, navigation}) => {
           />
           <Text
             style={[
-              tw`text-[${bgColor}] text-center`,
+              tw`text-[${bgColor}] text-center px-2`,
               {fontFamily: 'Poppins-Italic'},
             ]}>
             {loggedInUser?._id !== item?.senderid

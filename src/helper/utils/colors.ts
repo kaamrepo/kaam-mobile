@@ -1,6 +1,7 @@
 export const primaryBGColor = '#4A9D58';
 export const secondaryBGColor = '#ffffff';
 export const primaryTextColor = '#4A9D58';
+export const primaryBGDarkColor = '#2f753b';
 export const secondaryTextColor = '#ffffff';
 export const colors = [
   '#ffffff',

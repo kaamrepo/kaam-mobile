@@ -24,6 +24,7 @@
     "@react-navigation/native": "^6.1.6",
     "@react-navigation/native-stack": "^6.9.12",
     "axios": "^1.4.0",
+    "bad-words": "^3.0.4",
     "dayjs": "^1.11.8",
     "react": "18.2.0",
     "react-hook-form": "^7.44.1",

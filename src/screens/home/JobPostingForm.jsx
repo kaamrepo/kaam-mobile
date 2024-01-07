@@ -7,7 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import tw from 'twrnc';
 import {useForm, Controller} from 'react-hook-form';
@@ -17,8 +17,13 @@ import Icon, {Icons} from '../../components/Icons';
 import useLoginStore from '../../store/authentication/login.store';
 import {requestLocationPermission} from '../../helper/utils/getGeoLocation';
 import Geolocation from 'react-native-geolocation-service';
-import {primaryBGColor} from '../../helper/utils/colors';
+import {primaryBGColor, primaryBGDarkColor} from '../../helper/utils/colors';
 import useJobStore from '../../store/dashboard.store';
+import {useFocusEffect} from '@react-navigation/native';
+import Header from '../../components/Header';
+import badWords from 'bad-words';
+
+wordsFilter = new badWords();
 
 let salaryBasisOptionsArray = [
   {label: 'Monthly', value: 'month'},
@@ -26,23 +31,46 @@ let salaryBasisOptionsArray = [
   {label: 'Yearly', value: 'year'},
 ];
 const createJobSchema = yup.object({
-  jobtitle: yup.string().required('Job title is required!'),
-  description: yup.string().required('Job description is required!'),
-  fulladdress: yup.string().required('Job location is required!'),
+  jobtitle: yup
+    .string()
+    .required('Job title is required!')
+    .test(
+      'noBadWords',
+      'Inappropriate language detected',
+      value => !wordsFilter.isProfane(value),
+    ),
+  description: yup
+    .string()
+    .required('Job description is required!')
+    .test(
+      'noBadWords',
+      'Inappropriate language detected',
+      value => !wordsFilter.isProfane(value),
+    ),
+  fulladdress: yup
+    .string()
+    .required('Job location is required!')
+    .test(
+      'noBadWords',
+      'Inappropriate language detected',
+      value => !wordsFilter.isProfane(value),
+    ),
   salary: yup
     .number()
-    .typeError('Job salary in required!')
-    .required('Job salary in required!'),
+    .typeError('Job salary is required!')
+    .required('Job salary is required!'),
+  salarybasis: yup.string().required('Please select a salary basis'),
   tags: yup
     .array('Tags are required!')
+    .typeError('Tags are required!')
     .of(yup.string().required('Tag is required'))
     .required('Tags are required!')
-    .typeError('Tags are required!'),
+    .min(3)
+    .max(3),
 });
 
-const JobPostingForm = () => {
+const JobPostingForm = ({navigation}) => {
   const {loggedInUser} = useLoginStore();
-  const [selectedChip, setSelectedChip] = useState(null);
   const {postJobs} = useJobStore();
   const {
     control,
@@ -54,20 +82,29 @@ const JobPostingForm = () => {
     resetField,
     setError,
     clearErrors,
-    formState: {errors},
+    formState: {errors, isSubmitting},
   } = useForm({
     resolver: yupResolver(createJobSchema),
-    mode: 'onChange',
-    defaultValues: {
-      tags: [],
-    },
+    // mode: 'onChange',
+    // defaultValues: {
+    //   tags: [],
+    // },
   });
 
   let tags = watch('tags');
 
   const createJob = async data => {
-    const result =  requestLocationPermission();
+    const result = requestLocationPermission();
 
+    const {tags} = data;
+    console.log(data);
+    if (tags?.length < 3) {
+      setError('tags', {
+        type: 'custom',
+        message: 'Atleas 3 tags are required',
+      });
+      return;
+    }
     result.then(res => {
       if (res) {
         Geolocation.getCurrentPosition(
@@ -90,6 +127,7 @@ const JobPostingForm = () => {
             if (success) {
               reset();
               setSelectedChip(null);
+              navigation.navigate('Dashboard');
             }
           },
           error => {
@@ -131,6 +169,12 @@ const JobPostingForm = () => {
     );
   };
 
+  useFocusEffect(
+    useCallback(() => {
+      return () => reset();
+    }, []),
+  );
+
   return (
     <SafeAreaView style={tw`flex-1 px-5 bg-white`}>
       <ScrollView
@@ -138,13 +182,7 @@ const JobPostingForm = () => {
         contentContainerStyle={{alignItems: 'flex-start'}}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled">
-        <Text
-          style={[
-            tw`w-auto rounded border-b-4 border-black text-black text-[20px]`,
-            {fontFamily: 'Poppins-Bold'},
-          ]}>
-          Be a Job Provider
-        </Text>
+        <Header title={'Be a Job Provider'} />
         <Text
           style={[
             tw`w-full text-black text-sm my-2 mt-10`,
@@ -152,7 +190,6 @@ const JobPostingForm = () => {
           ]}>
           Fill out the following details to post the job.
         </Text>
-
         <View style={tw`w-full`}>
           <Text
             style={[
@@ -188,7 +225,6 @@ const JobPostingForm = () => {
             {errors?.jobtitle?.message}
           </Text>
         </View>
-
         <View style={tw`w-full`}>
           <Text
             style={[
@@ -225,7 +261,6 @@ const JobPostingForm = () => {
             {errors?.description?.message}
           </Text>
         </View>
-
         <View style={tw`w-full`}>
           <Text
             style={[
@@ -262,7 +297,6 @@ const JobPostingForm = () => {
             {errors?.fulladdress?.message}
           </Text>
         </View>
-
         <View style={tw`w-full`}>
           <Text
             style={[
@@ -298,7 +332,6 @@ const JobPostingForm = () => {
             {errors?.salary?.message}
           </Text>
         </View>
-
         <View style={tw`w-full mb-3`}>
           <Text
             style={[
@@ -307,17 +340,29 @@ const JobPostingForm = () => {
             ]}>
             Salary basis:
           </Text>
-
-          <View style={tw`flex flex-row justify-start gap-2 my-2`}>
-            {salaryBasisOptionsArray?.map(salaryBasis => (
-              <Chip
-                key={salaryBasis?.label}
-                label={salaryBasis?.label}
-                selected={selectedChip === salaryBasis?.value}
-                onPress={() => setSelectedChip(salaryBasis?.value)}
-              />
-            ))}
-          </View>
+          <Controller
+            control={control}
+            render={({field}) => (
+              <View style={tw`flex flex-row justify-start gap-2 my-2`}>
+                {salaryBasisOptionsArray?.map(salaryBasis => (
+                  <Chip
+                    key={salaryBasis?.label}
+                    label={salaryBasis?.label}
+                    selected={field.value === salaryBasis?.value}
+                    onPress={() => field.onChange(salaryBasis?.value)}
+                  />
+                ))}
+              </View>
+            )}
+            name="salarybasis"
+          />
+          <Text
+            style={[
+              tw`text-red-600 w-full text-[10px] text-left px-2 py-1`,
+              {fontFamily: 'Poppins-Regular'},
+            ]}>
+            {errors?.salarybasis?.message}
+          </Text>
         </View>
         <View style={[tw`w-full`]}>
           <Text
@@ -363,7 +408,9 @@ const JobPostingForm = () => {
               }}
               style={({pressed}) =>
                 tw`flex-row items-center justify-center rounded-lg py-2.5 w-[12%] ${
-                  pressed ? 'bg-[#3F3D56]' : 'bg-black'
+                  pressed
+                    ? `bg-[${primaryBGDarkColor}]`
+                    : `bg-[${primaryBGColor}]`
                 }`
               }>
               <Icon
@@ -376,13 +423,15 @@ const JobPostingForm = () => {
           </View>
           <TagsChips tags={tags} handleRemoveTag={handleRemoveTag} />
         </View>
-
         <View style={tw`w-full mt-5 items-center`}>
           <Pressable
+            disabled={isSubmitting}
             onPress={handleSubmit(createJob)}
             style={({pressed}) =>
               tw`my-3 px-5 py-2 w-1/2 flex-row gap-2 items-baseline justify-center rounded-xl shadow shadow-zinc-800 ${
-                pressed ? 'bg-black' : 'bg-[#0D0D0D]'
+                pressed
+                  ? `bg-[${primaryBGDarkColor}]`
+                  : `bg-[${primaryBGColor}]`
               }`
             }>
             <Icon
