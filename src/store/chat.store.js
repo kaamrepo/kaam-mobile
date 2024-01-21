@@ -2,6 +2,7 @@ import {create} from 'zustand';
 import API from '../helper/API';
 import useLoginStore, {getToken} from './authentication/login.store';
 import {CHATS} from '../helper/endpoints';
+import client from '../../feathers';
 
 const useChatStore = create((set, get) => ({
   chat: undefined,
@@ -34,7 +35,11 @@ const useChatStore = create((set, get) => ({
       });
 
       if (res && res.data) {
-        set({chat: res.data});
+        set({ chat: res.data });
+        
+        client.service(CHATS).on('patch', data => {
+          console.log('\n\n😜😜😜😜😜 store \n\n', data);
+        });
         return true;
       }
     } catch (error) {

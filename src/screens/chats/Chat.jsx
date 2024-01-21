@@ -6,6 +6,7 @@ import {
   FlatList,
   TouchableOpacity,
   Pressable,
+  Image,
 } from 'react-native';
 import tw from 'twrnc';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -16,15 +17,14 @@ import useChatStore from '../../store/chat.store';
 import useLoginStore from '../../store/authentication/login.store';
 import Icon, {Icons} from '../../components/Icons';
 import dayjs from 'dayjs';
+import client from '../../../feathers';
+import { CHATS } from '../../helper/endpoints';
 
 const Chat = ({route, navigation}) => {
   const [messageText, setMessageText] = useState('');
   const {getChatAndMessages, chat, clearChatAndMessages, sendChatMessage} =
     useChatStore();
   const {loggedInUser} = useLoginStore();
-  const handleBackPress = () => {
-    navigation.goBack();
-  };
   const bgColor = route?.params?.bgColor ?? '#000000';
   useFocusEffect(
     useCallback(() => {
@@ -103,8 +103,15 @@ const Chat = ({route, navigation}) => {
       isseen: false,
     };
     sendChatMessage(chat?._id, chat_message);
+
+    client.service(CHATS).create()
     setMessageText('');
   };
+
+
+   client.service(CHATS).on('patched', data => {
+     console.log('\n\n😜😜😜😜😜 chat.jsx \n\n', data);
+   });
 
   return (
     <SafeAreaView style={tw`flex-1`} edges={['top']}>
@@ -115,7 +122,7 @@ const Chat = ({route, navigation}) => {
         {/* Left Column */}
         <View style={tw`flex-row items-center`}>
           <View>
-            <TouchableOpacity onPress={handleBackPress}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
               <Ionicons
                 name="chevron-back"
                 size={24}
@@ -123,9 +130,24 @@ const Chat = ({route, navigation}) => {
               />
             </TouchableOpacity>
           </View>
-          <View style={tw`rounded-full w-10 h-10 bg-gray-300`} />
+          <View
+            style={tw`rounded-full w-10 h-10 justify-center items-center bg-white/10 overflow-hidden`}>
+            {route?.params?.employerDetails?.profilepic ? (
+              <Image
+                source={{uri: route?.params?.employerDetails?.profilepic}}
+                style={tw`w-10 h-10 rounded-full`}
+              />
+            ) : (
+              <Icon
+                name={'user-circle'}
+                type={Icons.FontAwesome5}
+                size={20}
+                style={tw`text-white/40 rounded-full`}
+              />
+            )}
+          </View>
           <Text style={tw`ml-2 text-lg font-bold text-white`}>
-            {route?.params?.employerName}
+            {route?.params?.employerDetails?.name}
           </Text>
         </View>
         {/* Right Column */}
@@ -138,10 +160,7 @@ const Chat = ({route, navigation}) => {
               style={tw`text-white`}
             />
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              // navigation.navigate('TrackApplication');
-            }}>
+          <TouchableOpacity onPress={() => {}}>
             <Icon
               type={Icons.MaterialCommunityIcons}
               size={24}

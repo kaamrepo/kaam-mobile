@@ -50,17 +50,6 @@ const NearbyJobsElement = ({
       />
     );
   }
-  // if (
-  //   (nearbyjobs && nearbyjobs?.total == 0) ||
-  //   Object.keys(nearbyjobs)?.length == 0
-  // ) {
-  //   return (
-  //     <CommonMessageForNearByJobs
-  //       title="There are no nearby jobs"
-  //       language={language}
-  //     />
-  //   );
-  // }
   const handleSeeAllPress = async () => {
     const position = await getCoordinates();
     navigation.navigate('SeeAll', {
@@ -106,13 +95,10 @@ const NearbyJobsElement = ({
 
 export default NearbyJobsElement;
 
-const styles = StyleSheet.create({});
-
 const handleBookmarkPress = () => {
-  // Handle bookmark button press logic here
   console.log('Bookmark button pressed!');
 };
-const renderItemsNearbyJobs = ({item, index, navigation, nearbyjobs}) => {
+const renderItemsNearbyJobs = ({ item, index, navigation, nearbyjobs }) => {
   return (
     <ImageBackground
       source={require('../../assets/images/nearby-jobs-skin-1.png')}
@@ -123,7 +109,6 @@ const renderItemsNearbyJobs = ({item, index, navigation, nearbyjobs}) => {
       resizeMode="cover">
       <Pressable
         onPress={() => {
-          console.log('pressed');
           navigation.navigate('ApplyNow', {
             jobDetails: item,
             id: item._id,

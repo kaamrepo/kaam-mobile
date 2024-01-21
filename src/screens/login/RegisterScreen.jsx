@@ -23,11 +23,12 @@ import {RegistrationTranslation} from './loginTranslation';
 import useRegistrationStore from '../../store/authentication/registration.store';
 import useLoginStore from '../../store/authentication/login.store';
 const validationSchema = yup.object().shape({
-  firstname: yup.string().required('First Name is required').trim(),
-  lastname: yup.string().required('Last Name is required').trim(),
-  email: yup.string().email('Invalid email format').trim(),
+  firstname: yup.string().trim().required('First Name is required').trim(),
+  lastname: yup.string().trim().required('Last Name is required').trim(),
+  email: yup.string().trim().email('Invalid email format').trim(),
   phone: yup
     .string()
+    .trim()
     .min(10, 'Phone number must be of 10 characters.')
     .max(10, 'Phone number must be of 10 characters.')
     .required('Mobile number is required')
@@ -43,7 +44,7 @@ const RegisterScreen = ({navigation}) => {
     resolver: yupResolver(validationSchema),
     mode: 'onChange',
   });
-  const {loggedInUser, language} = useLoginStore();
+  const {language} = useLoginStore();
   const [show, setShow] = useState(false);
   const [countryCode, setCountryCode] = useState({dialcode: '+91', flag: '🇮🇳'});
   const {registerUser} = useRegistrationStore();

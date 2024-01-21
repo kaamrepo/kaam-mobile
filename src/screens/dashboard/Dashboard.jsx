@@ -94,57 +94,67 @@ const Dashboard = ({navigation}) => {
     <ScrollView
       showsVerticalScrollIndicator={false}
       nestedScrollEnabled
-      style={[tw`py-10 bg-[#FAFAFD]`]}
+      style={[tw`pb-10 pt-8 mb-12 bg-[#FAFAFD]`]}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }>
       <GeneralStatusBar backgroundColor={'#d6d6d6'} />
-      <View style={tw`mx-5 mb-4 rounded-3 justify-center`}>
-        <View style={tw`flex-row justify-between items-center`}>
-          <View style={tw`flex-row items-center gap-5`}>
-            <Pressable
-              onPress={() => {
-                navigation.openDrawer();
-              }}
-              style={({pressed}) => [
-                tw`p-2 h-12 w-12 rounded-full flex-row justify-center items-center ${
-                  pressed ? 'bg-slate-200' : ''
-                }`,
-              ]}>
-              <MenuIconSVG width={25} height={25} />
-            </Pressable>
-            <View style={tw`justify-center`}>
-              <Text
-                style={[tw`text-slate-600`, {fontFamily: 'Poppins-Regular'}]}>
-                {dashboardTranslation[language]['Welcome']},
-              </Text>
-              <Text
-                style={[tw`text-xl text-black`, {fontFamily: 'Poppins-Bold'}]}>
-                {`${capitalizeFirstLetter(
-                  loggedInUser?.firstname,
-                )} ${capitalizeFirstLetter(loggedInUser?.lastname)}`}{' '}
-              </Text>
-            </View>
-          </View>
+      <View style={tw`mx-5 my-4 rounded-3 justify-center bg-gray-100 relative`}>
+        <View style={tw`flex flex-row gap-5 justify-between items-center`}>
+          <Pressable
+            onPress={() => {
+              navigation.openDrawer();
+            }}
+            style={({pressed}) => [
+              tw`p-2 h-12 w-12 rounded-full flex-row justify-center items-center ${
+                pressed ? 'bg-slate-200' : ''
+              }`,
+            ]}>
+            <MenuIconSVG width={25} height={25} />
+          </Pressable>
+
           <TouchableOpacity
             onPress={() => navigation.navigate('View Profile')}
-            style={tw`w-12 h-12`}>
+            style={tw`flex flex-row items-center gap-4`}>
+            <View style={tw`justify-center`}>
+              <Text
+                style={[
+                  tw`text-slate-600 text-right`,
+                  {fontFamily: 'Poppins-Regular'},
+                ]}>
+                {dashboardTranslation[language]['Welcome']}
+              </Text>
+              <Text
+                style={[
+                  tw`text-xl text-black text-right`,
+                  {fontFamily: 'Poppins-Bold'},
+                ]}>
+                {`${capitalizeFirstLetter(
+                  loggedInUser?.firstname,
+                )} ${capitalizeFirstLetter(loggedInUser?.lastname)}`}
+              </Text>
+            </View>
             <View
-              style={tw`w-12 h-12  rounded-lg shadow-2xl shadow-orange-800`}>
+              style={tw`w-12 h-12 bg-gray-100 rounded-lg justify-center items-center`}>
               {loggedInUser?.profilepic ? (
                 <Image
                   source={{uri: loggedInUser.profilepic}}
-                  style={[tw`w-[48px] h-[48px] rounded-3`]}
+                  style={[tw`w-12 h-12 rounded-3`]}
                 />
               ) : (
                 <Image
                   source={require('../../assets/images/default-profile.jpg')}
-                  style={[tw`w-[48px] h-[48px] rounded-3`]}
+                  style={[tw`w-12 h-12 rounded-3`]}
                 />
               )}
             </View>
           </TouchableOpacity>
         </View>
+        <View
+          style={[
+            tw`w-18 h-18 rounded-full absolute -top-3 -right-3 bottom-0 bg-gray-100`,
+            {zIndex: -10},
+          ]}></View>
       </View>
       <NearbyJobsElement
         {...{language, nearbyjobs, isLoading, navigation, location}}

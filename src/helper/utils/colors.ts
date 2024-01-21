@@ -27,10 +27,23 @@ export const colors = [
   '#ffd60a',
   '#38b000',
 ];
-export const jobsColorSchemes = ['#2B2A4C', '#CE5A67', '#392467', '#739072'];
+export const jobsColorSchemes = [
+  '#2B2A4C',
+  '#CE5A67',
+  '#392467',
+  '#2F6B2D',
+  '#6DA4AA',
+  '#1F1717',
+  '#B06161',
+  '#3081D0',
+  '#163020',
+  '#EE7214',
+  '#186F65',
+  '#FF004D',
+];
 
 export const getRandomColor = (index: number) => {
-  return index <= jobsColorSchemes.length
+  return index < jobsColorSchemes.length
     ? jobsColorSchemes[index]
     : jobsColorSchemes[Math.floor(Math.random() * jobsColorSchemes.length)];
 };

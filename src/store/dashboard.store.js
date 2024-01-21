@@ -272,7 +272,7 @@ const useJobStore = create((set, get) => ({
       });
 
       if (res && res.data) {
-        set({appliedJob: res.data});
+        await get().getNearByJobById(res.data.jobid);
         return res.data;
       }
     } catch (error) {
