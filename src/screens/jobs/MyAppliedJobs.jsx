@@ -75,7 +75,7 @@ const JobApplicationsComponent = ({jobapplications}) => {
       {jobapplications?.map((jobapp, index) => (
         <TouchableOpacity
           key={jobapp?._id}
-          style={tw`w-full bg-white px-5 gap-1 py-3 rounded relative border-l-4 border-r-4  ${
+          style={tw`w-full bg-white my-0.6 px-5 gap-1 py-3 rounded relative border-l-4 border-r-4 shadow ${
             status[jobapp?.status]['border']
           }`}>
           <Text

@@ -6,6 +6,7 @@ import useLoginStore, {getToken} from './authentication/login.store';
 const useMenuStore = create((set, get) => ({
   jobapplications: undefined,
   postedJobs: undefined,
+  applicantList: undefined,
   getJobApplications: async () => {
     try {
       const userid = useLoginStore.getState().loggedInUser?._id;
@@ -26,7 +27,7 @@ const useMenuStore = create((set, get) => ({
   getPostedJobs: async () => {
     try {
       const userid = useLoginStore.getState().loggedInUser?._id;
-      console.log('AALO');
+
       const res = await API.get(JOBS, {
         headers: {Authorization: await getToken()},
         params: {createdby: userid},
@@ -39,6 +40,32 @@ const useMenuStore = create((set, get) => ({
     }
   },
   clearPostedJobs: () => set({postedJobs: undefined}),
+
+  getApplicantsList: async (skip = 0, limit = 10, jobid) => {
+    try {
+      const userid = useLoginStore.getState().loggedInUser?._id;
+      const res = await API.get(JOBS_APPLICATIONS, {
+        headers: {Authorization: await getToken()},
+        params: {
+          jobid,
+          employerid: userid,
+          $skip: skip,
+          $limit: limit,
+        },
+      });
+      if (skip == 0) {
+        set({applicantList: res.data});
+      } else {
+        let responseData = {
+          total: get().applicantList.total,
+          skip,
+          limit,
+          data: [...get().applicantList.data, ...res.data.data],
+        };
+        set({applicantList: responseData});
+      }
+    } catch (error) {}
+  },
 }));
 
 export default useMenuStore;

@@ -41,7 +41,7 @@ const ApplyNow = ({route, navigation}) => {
       appliedJobId: job.jobAppliedDetails._id,
       chatid: job.jobAppliedDetails.chatid,
       bgColor,
-      employerName: `${job.employerDetails.firstname} ${job.employerDetails.lastname}`,
+      name: `${job.employerDetails.firstname} ${job.employerDetails.lastname}`,
     });
   };
 

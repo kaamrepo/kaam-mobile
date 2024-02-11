@@ -11,7 +11,6 @@ import tw from 'twrnc';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import GeneralStatusBar from '../../components/GeneralStatusBar';
-import {useFocusEffect} from '@react-navigation/native';
 import useChatStore from '../../store/chat.store';
 import useLoginStore from '../../store/authentication/login.store';
 import Icon, {Icons} from '../../components/Icons';
@@ -28,16 +27,6 @@ const Chat = ({route, navigation}) => {
     navigation.goBack();
   };
   const bgColor = route?.params?.bgColor ?? '#000000';
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     if (route?.params?.chatid) {
-  //       getChatAndMessages(route?.params?.chatid);
-  //     }
-  //     return () => {
-  //       clearChatAndMessages();
-  //     };
-  //   }, [route?.params?.chatid]),
-  // );
 
   const renderMessage = ({item}) => (
     <View style={tw`flex-row my-1`}>
@@ -140,7 +129,7 @@ const Chat = ({route, navigation}) => {
           </View>
           <View style={tw`rounded-full w-10 h-10 bg-gray-300`} />
           <Text style={tw`ml-2 text-lg font-bold text-white`}>
-            {route?.params?.employerName}
+            {route?.params?.name}
           </Text>
         </View>
         {/* Right Column */}

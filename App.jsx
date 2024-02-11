@@ -1,9 +1,12 @@
 import 'react-native-gesture-handler';
-import { StyleSheet, Pressable, ActivityIndicator, View } from 'react-native';
-import React, { useEffect } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import useLoginStore, { retrieveLoggedInState, retrieveUserSession } from "./src/store/authentication/login.store"
+import {StyleSheet, Pressable, ActivityIndicator, View} from 'react-native';
+import React, {useEffect} from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import useLoginStore, {
+  retrieveLoggedInState,
+  retrieveUserSession,
+} from './src/store/authentication/login.store';
 // Screens
 
 import RegisterScreen from './src/screens/login/RegisterScreen';
@@ -13,13 +16,13 @@ import LastIntroScreen from './src/screens/intro/LastIntroScreen';
 import IntroJobSearch from './src/screens/intro/IntroJobSearch';
 import VerifyCode from './src/screens/login/VerifyCode';
 import ChooseProfession from './src/screens/login/ChooseProfession';
-import SplashScreen from 'react-native-splash-screen'
+import SplashScreen from 'react-native-splash-screen';
 import IntroScreenBrowseJobs from './src/screens/intro/IntroScreenBrowseJobs';
-import LoginScreen from "./src/screens/login/Login"
+import LoginScreen from './src/screens/login/Login';
 import JobPreference from './src/screens/login/JobPreference';
-import Icon, { Icons } from './src/components/Icons';
+import Icon, {Icons} from './src/components/Icons';
 import tw from 'twrnc';
-import Toast, { BaseToast, ErrorToast } from 'react-native-toast-message';
+import Toast, {BaseToast, ErrorToast} from 'react-native-toast-message';
 import JobSelection from './src/screens/login/JobSelection';
 import ApplyNow from './src/screens/jobs/ApplyNow';
 import Chat from './src/screens/chats/Chat';
@@ -27,38 +30,33 @@ import TrackApplication from './src/screens/chats/TrackApplication';
 import DrawerNavigation from './src/screens/DrawerNavigation';
 import useLoaderStore from './src/store/loader.store';
 import SeeAll from './src/screens/see-all/SeeAll';
+import {ApplicantListScreen} from './src/screens/jobs/Applicants';
 
 // Navigators
 
 const Stack = createNativeStackNavigator();
-const App = () =>
-{
+const App = () => {
+  const {isLoggedIn, setLoggedInUserDetails, getLanguage} = useLoginStore();
+  const {isLoading} = useLoaderStore();
 
-  const { isLoggedIn, setLoggedInUserDetails, getLanguage } = useLoginStore()
-  const { isLoading } = useLoaderStore()
-
-  useEffect(() =>
-  {
-    setTimeout(() =>
-    {
-      SplashScreen.hide()
+  useEffect(() => {
+    setTimeout(() => {
+      SplashScreen.hide();
     }, 1000);
 
-    async function getData()
-    {
-      const isLoggedInState = await retrieveLoggedInState()
-      const userSession = await retrieveUserSession()
+    async function getData() {
+      const isLoggedInState = await retrieveLoggedInState();
+      const userSession = await retrieveUserSession();
 
-      if (isLoggedInState && isLoggedInState.isLoggedIn)
-      {
+      if (isLoggedInState && isLoggedInState.isLoggedIn) {
         const userData = JSON.parse(userSession);
-        setLoggedInUserDetails(userData.user, isLoggedInState.isLoggedIn)
+        setLoggedInUserDetails(userData.user, isLoggedInState.isLoggedIn);
       }
     }
-    getData()
+    getData();
 
-    getLanguage()
-  }, [isLoggedIn])
+    getLanguage();
+  }, [isLoggedIn]);
 
   return (
     <>
@@ -208,6 +206,11 @@ const App = () =>
                 component={SeeAll}
                 options={{headerShown: false}}
               />
+              <Stack.Screen
+                name="ApplicantListScreen"
+                component={ApplicantListScreen}
+                options={{headerShown: false}}
+              />
             </>
           )}
         </Stack.Navigator>
@@ -229,7 +232,7 @@ export default App;
 
 const styles = StyleSheet.create({
   blurView: {
-    position: "absolute",
+    position: 'absolute',
     top: 0,
     left: 0,
     bottom: 0,
@@ -237,28 +240,24 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
 });
-
-
-
-
 
 const toastConfig = {
   /*
     Overwrite 'success' type,
     by modifying the existing `BaseToast` component
   */
-  success: (props) => (
+  success: props => (
     <BaseToast
       {...props}
-      style={{ borderLeftColor: 'green', backgroundColor: '#22b556', }}
-      contentContainerStyle={{ paddingHorizontal: 15 }}
+      style={{borderLeftColor: 'green', backgroundColor: '#22b556'}}
+      contentContainerStyle={{paddingHorizontal: 15}}
       text1Style={{
         fontSize: 15,
         fontWeight: '400',
-        color: 'white'
+        color: 'white',
       }}
     />
   ),
@@ -266,14 +265,14 @@ const toastConfig = {
     Overwrite 'error' type,
     by modifying the existing `ErrorToast` component
   */
-  error: (props) => (
+  error: props => (
     <ErrorToast
       {...props}
       text1Style={{
-        fontSize: 17
+        fontSize: 17,
       }}
       text2Style={{
-        fontSize: 15
+        fontSize: 15,
       }}
     />
   ),
@@ -284,20 +283,20 @@ const toastConfig = {
     I can consume any custom `props` I want.
     They will be passed when calling the `show` method (see below)
   */
-  tomatoToast: (props) => (
+  tomatoToast: props => (
     <BaseToast
       {...props}
-      style={{ borderLeftColor: '#ff0000', backgroundColor: '#ffa3a3' }}
-      contentContainerStyle={{ paddingHorizontal: 15, }}
+      style={{borderLeftColor: '#ff0000', backgroundColor: '#ffa3a3'}}
+      contentContainerStyle={{paddingHorizontal: 15}}
       text1Style={{
         color: 'black',
         fontSize: 13,
-        fontWeight: '400'
+        fontWeight: '400',
       }}
       text2Style={{
         color: 'black',
         fontSize: 11,
-        fontWeight: '400'
+        fontWeight: '400',
       }}
     />
   ),

@@ -2,8 +2,7 @@ import React, {useCallback} from 'react';
 import {View, Text, TouchableOpacity, ScrollView} from 'react-native';
 import useMenuStore from '../../store/menu.store';
 import useLoaderStore from '../../store/loader.store';
-import {useFocusEffect} from '@react-navigation/native';
-import dayjs from 'dayjs';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import tw from 'twrnc';
 
 const MyPostedJobs = () => {
@@ -51,7 +50,10 @@ const NoDataMenuComponent = ({message}) => {
 };
 
 const JobPostedComponent = ({postedJobs}) => {
-  console.log('postedJobs', JSON.stringify(postedJobs, null, 4));
+  const navigation = useNavigation();
+  const handleNavigationToAppliacants = job => {
+    navigation.navigate('ApplicantListScreen', {job});
+  };
   return (
     <ScrollView
       style={[tw`h-full gap-2`]}
@@ -61,7 +63,8 @@ const JobPostedComponent = ({postedJobs}) => {
       {postedJobs?.map((job, index) => (
         <TouchableOpacity
           key={job?._id}
-          style={tw`w-full bg-white px-5 gap-1 py-3 rounded border-l-4 border-r-4 `}>
+          style={tw`w-full bg-white px-5 my-0.6 gap-1 py-3 rounded border-l-4 border-r-4 shadow`}
+          onPress={() => handleNavigationToAppliacants(job)}>
           <View style={tw`flex flex-row justify-between items-start`}>
             <Text
               style={[
@@ -85,22 +88,17 @@ const JobPostedComponent = ({postedJobs}) => {
           </View>
 
           <View style={tw`flex-row justify-between`}>
-            <Text
-              style={[
-                tw`text-xs text-gray-700`,
-                {fontFamily: 'Poppins-Regular'},
-              ]}></Text>
             <View style={tw`flex flex-row gap-2 items-center`}>
               <Text
                 style={[
                   tw`text-xs text-gray-700`,
                   {fontFamily: 'Poppins-Regular'},
                 ]}>
-                Applications
+                Applicants
               </Text>
               <Text
                 style={[
-                  tw`text-xs text-white bg-sky-600 px-2 py-0.3 rounded-xl`,
+                  tw`text-xs text-white bg-zinc-700 px-2 py-0.3 rounded-xl`,
                   {fontFamily: 'Poppins-SemiBold'},
                 ]}>
                 {job?.appliedCount}
