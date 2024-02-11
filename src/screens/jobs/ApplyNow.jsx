@@ -63,13 +63,15 @@ const ApplyNow = ({route, navigation}) => {
   };
 
   const handleChatNavigation = appliedJob => {
+    console.log(JSON.stringify(appliedJob, null, 4));
     const employerName = `${appliedJob?.jobDetails?.employerDetails?.firstname} ${appliedJob?.jobDetails?.employerDetails?.lastname}`;
-    navigation.navigate('Chat', {
-      appliedJobId: appliedJob?._id,
-      chatid: appliedJob?.chatid,
-      bgColor,
-      employerName,
-    });
+    console.log('employerName', employerName);
+    // navigation.navigate('Chat', {
+    //   appliedJobId: appliedJob?._id,
+    //   chatid: appliedJob?.chatid,
+    //   bgColor,
+    //   employerName,
+    // });
   };
 
   useEffect(() => {

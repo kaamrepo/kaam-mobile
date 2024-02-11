@@ -1,17 +1,11 @@
 import React, {useCallback} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Dimensions,
-  ScrollView,
-} from 'react-native';
+import {View, Text, TouchableOpacity, ScrollView} from 'react-native';
 import useMenuStore from '../../store/menu.store';
 import useLoaderStore from '../../store/loader.store';
 import {useFocusEffect} from '@react-navigation/native';
 import dayjs from 'dayjs';
 import tw from 'twrnc';
-const screenWidth = Dimensions.get('window').width;
+
 const MyAppliedJobs = () => {
   const {jobapplications, getJobApplications, clearJobApplications} =
     useMenuStore();
@@ -28,7 +22,7 @@ const MyAppliedJobs = () => {
   return isLoading ? (
     <MenuLoadingComponent />
   ) : jobapplications?.total == 0 ? (
-    <NoDataMenuComponent />
+    <NoDataMenuComponent message={'No applications found!'} />
   ) : (
     <JobApplicationsComponent jobapplications={jobapplications?.data} />
   );
@@ -45,12 +39,12 @@ const MenuLoadingComponent = () => {
     </View>
   );
 };
-const NoDataMenuComponent = () => {
+const NoDataMenuComponent = ({message}) => {
   return (
     <View style={tw`w-full h-full gap-4`}>
       <View style={tw`flex-1 justify-center items-center`}>
         <Text style={[tw`text-lg`, {fontFamily: 'Poppins-SemiBold'}]}>
-          No data found!
+          {message}
         </Text>
       </View>
     </View>
@@ -78,14 +72,6 @@ const JobApplicationsComponent = ({jobapplications}) => {
       contentContainerStyle={{
         gap: 2,
       }}>
-      {/* <Text
-        style={[
-          tw`text-[18px] w-auto text-black text-center`,
-          {fontFamily: 'Poppins-Bold'},
-        ]}>
-        Job Applications
-      </Text> */}
-
       {jobapplications?.map((jobapp, index) => (
         <TouchableOpacity
           key={jobapp?._id}

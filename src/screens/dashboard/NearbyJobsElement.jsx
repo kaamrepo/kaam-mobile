@@ -50,17 +50,6 @@ const NearbyJobsElement = ({
       />
     );
   }
-  // if (
-  //   (nearbyjobs && nearbyjobs?.total == 0) ||
-  //   Object.keys(nearbyjobs)?.length == 0
-  // ) {
-  //   return (
-  //     <CommonMessageForNearByJobs
-  //       title="There are no nearby jobs"
-  //       language={language}
-  //     />
-  //   );
-  // }
   const handleSeeAllPress = async () => {
     const position = await getCoordinates();
     navigation.navigate('SeeAll', {

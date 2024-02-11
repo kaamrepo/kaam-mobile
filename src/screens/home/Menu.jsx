@@ -60,19 +60,6 @@ const Menu = ({navigation}) => {
 
 export default Menu;
 
-const RenderFlatListItem = ({item, index}) => {
-  // Render content for each tab based on index
-  console.log(item);
-  console.log('index 🙌', index);
-  // return (
-  //   <View style={styles.flatListItemContainer}>
-  //     <Text style={styles.flatListItemText}>Content for Tab {index + 1}</Text>
-  //     {/* Add vertically scrollable content here if needed */}
-  //   </View>
-  // );
-  return <item.component />;
-};
-
 const styles = StyleSheet.create({
   navbarButton: {
     marginHorizontal: 10,
