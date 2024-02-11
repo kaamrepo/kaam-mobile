@@ -11,7 +11,8 @@ const API = axios.create({
 
 //interceptor which calls custom enable loader function when the request is sent through axios
 API.interceptors.request.use(async request => {
-  useLoaderStore.getState().setLoading(true);
+  if (!/\/api\/chats\//gi.test(request.url))
+    useLoaderStore.getState().setLoading(true);
   return request;
 });
 

@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import {
   View,
   Text,
@@ -16,6 +16,8 @@ import useChatStore from '../../store/chat.store';
 import useLoginStore from '../../store/authentication/login.store';
 import Icon, {Icons} from '../../components/Icons';
 import dayjs from 'dayjs';
+import {feathersServices} from '../../helper/endpoints';
+import client from '../../../client';
 
 const Chat = ({route, navigation}) => {
   const [messageText, setMessageText] = useState('');
@@ -26,16 +28,16 @@ const Chat = ({route, navigation}) => {
     navigation.goBack();
   };
   const bgColor = route?.params?.bgColor ?? '#000000';
-  useFocusEffect(
-    useCallback(() => {
-      if (route?.params?.chatid) {
-        getChatAndMessages(route?.params?.chatid);
-      }
-      return () => {
-        clearChatAndMessages();
-      };
-    }, [route?.params?.chatid]),
-  );
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     if (route?.params?.chatid) {
+  //       getChatAndMessages(route?.params?.chatid);
+  //     }
+  //     return () => {
+  //       clearChatAndMessages();
+  //     };
+  //   }, [route?.params?.chatid]),
+  // );
 
   const renderMessage = ({item}) => (
     <View style={tw`flex-row my-1`}>
@@ -105,6 +107,19 @@ const Chat = ({route, navigation}) => {
     sendChatMessage(chat?._id, chat_message);
     setMessageText('');
   };
+
+  useEffect(() => {
+    if (route?.params?.chatid) {
+      getChatAndMessages(route?.params?.chatid);
+      client.service(feathersServices.chats).on('patched', getChatAndMessages);
+    }
+
+    return () => {
+      client
+        .service(feathersServices.chats)
+        .removeListener('patched', getChatAndMessages);
+    };
+  });
 
   return (
     <SafeAreaView style={tw`flex-1`} edges={['top']}>

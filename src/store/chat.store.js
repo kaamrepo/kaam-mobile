@@ -1,6 +1,6 @@
 import {create} from 'zustand';
 import API from '../helper/API';
-import useLoginStore, {getToken} from './authentication/login.store';
+import {getToken} from './authentication/login.store';
 import {CHATS} from '../helper/endpoints';
 
 const useChatStore = create((set, get) => ({

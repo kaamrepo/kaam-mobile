@@ -1,10 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback} from 'react';
 import {View, Text, Image, Pressable} from 'react-native';
 import tw from 'twrnc';
 import Image1 from '../../assets/images/browse-jobs.png';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import useJobStore from '../../store/dashboard.store';
-import {WebView} from 'react-native-webview';
 import GeneralStatusBar from '../../components/GeneralStatusBar';
 import useLoginStore from '../../store/authentication/login.store';
 import useLoaderStore from '../../store/loader.store';
@@ -14,135 +13,69 @@ import {
   getRandomBackgroundColor,
   getRandomColor,
 } from '../../helper/utils/colors';
+import {useFocusEffect} from '@react-navigation/native';
 
 const jobDescription = {
   image: Image1,
 };
 
 const ApplyNow = ({route, navigation}) => {
-  const {
-    getNearByJobById,
-    job,
-    clearJob,
-    appliedJob,
-    applyForJob,
-    getJobApplicationByParams,
-    getAppliedJobDetailsById,
-  } = useJobStore();
-  const {loggedInUser} = useLoginStore();
-  const {isLoading} = useLoaderStore();
+  const bgColor = getRandomColor(route?.params?.index);
+  const {getNearByJobById, job, clearJob, applyForJob} = useJobStore();
+
+  useFocusEffect(
+    useCallback(() => {
+      if (route.params.id) getNearByJobById(route.params.id);
+      return () => {
+        clearJob();
+      };
+    }, [route.params.id]),
+  );
+
+  const handleBookmarkPress = () => {
+    console.log('Bookmark button pressed!');
+  };
+
+  const handleChatNavigation = () => {
+    navigation.navigate('Chat', {
+      appliedJobId: job.jobAppliedDetails._id,
+      chatid: job.jobAppliedDetails.chatid,
+      bgColor,
+      employerName: `${job.employerDetails.firstname} ${job.employerDetails.lastname}`,
+    });
+  };
 
   const handleAppliedJob = async () => {
     const res = await applyForJob({
       jobid: job?._id,
       employerid: job?.createdby,
     });
-    if (res) {
-      //  this will return the job application id if available or return false;
-      const appliedJobResponse = await getAppliedJobDetailsById(res);
-      if (appliedJobResponse) {
-        // if above call success then it will return true else false;
-        navigation.navigate('Chat', {
-          appliedJobId: appliedJobResponse?._id,
-          chatid: appliedJobResponse?.chatid,
-        });
-      }
-    }
-  };
-  const bgColor = getRandomColor(route?.params?.index);
-
-  const handleBackPress = () => {
-    // Handle back button press logic here
-    console.log('Back button pressed!');
-    navigation.goBack();
+    res && getNearByJobById(job?._id);
   };
 
-  const handleBookmarkPress = () => {
-    // Handle bookmark button press logic here
-    console.log('Bookmark button pressed!');
-  };
-
-  const handleChatNavigation = appliedJob => {
-    console.log(JSON.stringify(appliedJob, null, 4));
-    const employerName = `${appliedJob?.jobDetails?.employerDetails?.firstname} ${appliedJob?.jobDetails?.employerDetails?.lastname}`;
-    console.log('employerName', employerName);
-    // navigation.navigate('Chat', {
-    //   appliedJobId: appliedJob?._id,
-    //   chatid: appliedJob?.chatid,
-    //   bgColor,
-    //   employerName,
-    // });
-  };
-
-  useEffect(() => {
-    if (route?.params?.id) {
-      console.log(route?.params?.id);
-      getNearByJobById(route?.params?.id);
-    }
-  }, [route?.params?.id]);
-
-  useEffect(() => {
-    if (job && Object.keys(job)?.length && loggedInUser) {
-      getJobApplicationByParams(job?._id, loggedInUser?._id);
-    }
-  }, [job, loggedInUser]);
-
-  useEffect(() => {
-    return () => {
-      clearJob();
-    };
-  }, []);
-
-  if (isLoading) {
-    return (
-      <SafeAreaView style={tw`flex-1`} edges={['top']}>
-        <GeneralStatusBar backgroundColor={bgColor} />
-        <View style={tw`flex w-full h-full justify-center items-center`}>
-          <View
-            style={tw`w-full h-1/2 bg-[${
-              bgColor ? bgColor : '#000000'
-            }]`}></View>
-          <View style={tw`w-full h-1/2 bg-white`}></View>
-        </View>
-      </SafeAreaView>
-    );
-  }
   return (
     <SafeAreaView style={tw`flex-1`} edges={['top']}>
       <GeneralStatusBar backgroundColor={bgColor} />
       <View style={tw`flex-1`}>
-        <View style={tw`flex-1 bg-[${bgColor}] px-5`}>
+        <View
+          style={tw`px-5 py-4 w-full gap-8 h-1/2 bg-[${
+            bgColor ? bgColor : '#000000'
+          }]`}>
           {/* chevron and bookmark button */}
-          <View style={tw`flex-row items-center justify-between py-4`}>
-            <Pressable
-              onPress={handleBackPress}
-              style={({pressed}) => [
-                tw`p-2 rounded-full ${pressed ? 'bg-black/20' : ''}`,
-              ]}>
-              <Icon
-                type={Icons.Ionicons}
-                name="chevron-back"
-                size={24}
-                color={'white'}
-              />
-            </Pressable>
-
-            <Pressable
+          <View style={tw`flex-row justify-between items-center`}>
+            <PressableButton
+              iconname={'chevron-back'}
+              onPress={() => navigation.goBack()}
+            />
+            <PressableButton
+              iconname={'bookmark'}
               onPress={handleBookmarkPress}
-              style={({pressed}) => [
-                tw`p-2 rounded-full ${pressed ? 'bg-black/20' : ''}`,
-              ]}>
-              <Icon
-                type={Icons.Ionicons}
-                name="bookmark"
-                size={24}
-                color={'white'}
-              />
-            </Pressable>
+            />
           </View>
+          {/* completed:chevron and bookmark button */}
 
-          {/* Image and employer name */}
-          <View style={tw`flex items-center justify-center my-1`}>
+          {/* image and employer name */}
+          <View style={tw`flex gap-4 justify-center items-center`}>
             <Image
               source={jobDescription.image}
               style={tw`w-28 h-28 rounded-full`}
@@ -152,15 +85,16 @@ const ApplyNow = ({route, navigation}) => {
                 tw`text-xl mt-2 text-white`,
                 {fontFamily: 'Poppins-Bold'},
               ]}>
-              Employer:{' '}
-              {job?.employerDetails?.firstname +
-                ' ' +
-                job?.employerDetails?.lastname}
+              {job?.employerDetails
+                ? `Employer - ${job?.employerDetails?.firstname} ${job?.employerDetails?.lastname}`
+                : ''}
             </Text>
           </View>
+          {/* completed:image and employer name */}
 
-          {/* Job Tags */}
-          <View style={tw`flex-row justify-around items-center my-1`}>
+          {/* job tags */}
+          <View
+            style={tw`w-full flex-row flex-wrap gap-2 justify-around items-center`}>
             {job?.tags?.map(tag => (
               <Text
                 key={tag}
@@ -172,9 +106,10 @@ const ApplyNow = ({route, navigation}) => {
               </Text>
             ))}
           </View>
+          {/* completed:job tags */}
 
-          {/* Salary and Location */}
-          <View style={tw`flex-row justify-between items-center my-3`}>
+          {/* salary and location */}
+          <View style={tw`flex-row justify-around items-center`}>
             <View>
               <Text
                 style={[
@@ -195,73 +130,30 @@ const ApplyNow = ({route, navigation}) => {
                   {fontFamily: 'Poppins-Bold'},
                 ]}>
                 {job?.location?.name ??
-                  job?.location?.fulladdress?.substring(0, 10)}
+                  job?.location?.fulladdress?.substring(0, 15)}
               </Text>
             </View>
           </View>
+          {/* completed:salary and location */}
         </View>
-
-        {/* 2nd Half */}
-        <View style={tw`flex-1 bg-[#f5f5f5] justify-between pb-5`}>
+        <View style={tw`p-2 w-full h-1/2 bg-white justify-around`}>
           <JobDetails job={job} bgColor={bgColor} />
-
-          {/* Apply Now / Chat Call To Action buttons */}
-          {!isLoading ? (
-            appliedJob && Object.keys(appliedJob)?.length ? (
-              <Pressable
-                onPress={() => {
-                  handleChatNavigation(appliedJob);
-                }}
-                style={({pressed}) => [
-                  {
-                    backgroundColor: pressed
-                      ? darkenColor(bgColor, 20)
-                      : bgColor,
-                  },
-                  tw`px-8 py-[16px] flex justify-center items-center rounded-[16px] mx-8 mt-5 shadow-lg shadow-[${bgColor}]}]`,
-                ]}>
-                {({pressed}) => (
-                  <View style={tw`flex flex-row gap-3 items-start`}>
-                    <Text
-                      style={[
-                        tw`text-white text-[16px]`,
-                        {fontFamily: 'Poppins-SemiBold'},
-                      ]}>
-                      Chat
-                    </Text>
-                    <Icon
-                      type={Icons.Ionicons}
-                      name="chatbubbles-outline"
-                      color="#FFFFFF"
-                    />
-                  </View>
-                )}
-              </Pressable>
-            ) : (
-              <Pressable
-                onPress={handleAppliedJob}
-                style={({pressed}) => [
-                  {
-                    backgroundColor: pressed
-                      ? darkenColor(bgColor, 20)
-                      : bgColor,
-                  },
-                  tw`px-8 py-[16px] flex justify-center items-center rounded-[16px] mx-8 mt-5 shadow-lg shadow-[${bgColor}]`,
-                ]}>
-                {({pressed}) => (
-                  <Text
-                    style={[
-                      tw`text-white text-[16px]`,
-                      {fontFamily: 'Poppins-SemiBold'},
-                    ]}>
-                    Apply Now
-                  </Text>
-                )}
-              </Pressable>
-            )
+          {job?.jobAppliedDetails ? (
+            <ActionButton
+              label={'Chat'}
+              onPress={handleChatNavigation}
+              bgColor={bgColor}
+              iconType={Icons.Ionicons}
+              iconName={'chatbubbles-outline'}
+            />
           ) : (
-            <View
-              style={tw`px-8 py-[16px] bg-gray-200 h-16 rounded-[16px] mx-8 mt-5`}></View>
+            <ActionButton
+              label={'Apply Now'}
+              onPress={handleAppliedJob}
+              bgColor={bgColor}
+              iconType={Icons.FontAwesome5}
+              iconName={'user-tie'}
+            />
           )}
         </View>
       </View>
@@ -271,75 +163,36 @@ const ApplyNow = ({route, navigation}) => {
 
 export default ApplyNow;
 
-const renderTabContent = (activeTab, job) => {
-  switch (activeTab) {
-    case 'description':
-      return (
-        <View style={tw`p-4`}>
-          <Text style={[tw`text-lg`, {fontFamily: 'Poppins-SemiBold'}]}>
-            Job Description
-          </Text>
-          <Text style={[tw`text-[12px]`, {fontFamily: 'Poppins-Regular'}]}>
-            {job?.description}
-          </Text>
-        </View>
-      );
-    case 'requirement':
-      return (
-        <View style={tw`p-4`}>
-          <Text style={[tw`text-lg`, {fontFamily: 'Poppins-SemiBold'}]}>
-            Job Requirement
-          </Text>
-          <Text style={[tw`text-[12px]`, {fontFamily: 'Poppins-Regular'}]}>
-            {job?.requirements}
-          </Text>
-          {job?.requirements && <WebView source={{html: job?.requirements}} />}
-        </View>
-      );
-    case 'about':
-      return (
-        <View style={tw`p-4`}>
-          <Text style={[tw`text-lg`, {fontFamily: 'Poppins-SemiBold'}]}>
-            About the Company
-          </Text>
-          <Text style={[tw`text-[12px]`, {fontFamily: 'Poppins-Regular'}]}>
-            {job?.about}
-          </Text>
-        </View>
-      );
-    case 'review':
-      return (
-        <View style={tw`p-4`}>
-          <Text style={[tw`text-lg`, {fontFamily: 'Poppins-SemiBold'}]}>
-            Review
-          </Text>
-          <Text style={[tw`text-[12px]`, {fontFamily: 'Poppins-Regular'}]}>
-            {job?.review}
-          </Text>
-        </View>
-      );
-    default:
-      return null;
-  }
-};
+const PressableButton = ({iconname, onPress}) => (
+  <Pressable
+    onPress={onPress}
+    style={({pressed}) => [
+      tw`p-2 rounded-full ${pressed ? 'bg-black/20' : ''}`,
+    ]}>
+    <Icon type={Icons.Ionicons} name={iconname} size={24} color={'white'} />
+  </Pressable>
+);
 
-const Tabs = ({label, value}) => {
-  return (
-    <Pressable onPress={() => handleTabChange()}>
-      <Text
-        style={[
-          tw`${activeTab === value ? 'text-blue-500' : 'text-gray-500'}`,
-          {fontFamily: 'Poppins-SemiBold'},
-        ]}>
-        Description
-      </Text>
-    </Pressable>
-  );
-};
+const ActionButton = ({label, onPress, bgColor, iconType, iconName}) => (
+  <Pressable
+    onPress={onPress}
+    style={({pressed}) => [
+      {
+        backgroundColor: pressed ? darkenColor(bgColor, 20) : bgColor,
+      },
+      tw`px-8 py-[16px] flex flex-row gap-4 justify-center items-center rounded-[16px] mx-8 mt-5 shadow-lg shadow-[${bgColor}]`,
+    ]}>
+    <Icon type={iconType} name={iconName} color="#FFFFFF" />
+    <Text
+      style={[tw`text-white text-[16px]`, {fontFamily: 'Poppins-SemiBold'}]}>
+      {label}
+    </Text>
+  </Pressable>
+);
 
 const JobDetails = ({job, bgColor}) => {
   return (
-    <View style={tw`w-full gap-2 h-4/5 p-4`}>
+    <View style={tw`w-full gap-2 p-4`}>
       <View
         style={[
           tw`relative bg-white p-4 overflow-hidden w-full rounded-xl shadow`,

@@ -33,3 +33,7 @@ export const GET_OTP = `${COMMON_ENDPOINT}login`;
 export const JOBS = `${COMMON_ENDPOINT}jobs`;
 export const JOBS_APPLICATIONS = `${COMMON_ENDPOINT}jobapplications`;
 export const CHATS = `${COMMON_ENDPOINT}chats`;
+
+export const feathersServices = {
+  chats: 'chats',
+};

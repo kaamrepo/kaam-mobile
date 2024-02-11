@@ -137,10 +137,14 @@ const JobPostingForm = ({navigation}) => {
   };
 
   const handleAddTag = value => {
-    console.log('value', value);
-    console.log('tags', tags);
-
     if (value) {
+      if (value.length > 25) {
+        setError('tags', {
+          type: 'custom',
+          message: 'too many characters',
+        });
+        return;
+      }
       if (tags && tags.findIndex(d => d === value) !== -1) {
         console.log(tags?.findIndex(d => d === value) !== -1);
         setError('tags', {

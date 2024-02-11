@@ -10,7 +10,7 @@ const useJobStore = create((set, get) => ({
   featuredJobs: {},
   job: {},
   searchedJobs: {},
-  appliedJob: undefined,
+
   getNearByJobs: async (skip = 0, limit = 5, coordinates) => {
     try {
       const userid = useLoginStore.getState().loggedInUser?._id;
@@ -95,7 +95,7 @@ const useJobStore = create((set, get) => ({
   clearRecommendedJobs: () => set({recommendedJobs: {}}),
   clearFeaturedJobs: () => set({featuredJobs: {}}),
   clearsearchedJobs: () => set({searchedJobs: {}}),
-  clearJob: () => set({job: {}, appliedJob: undefined}),
+  clearJob: () => set({job: {}}),
   getSearchedJobs: async (
     skip = 0,
     limit = 10,
@@ -142,11 +142,7 @@ const useJobStore = create((set, get) => ({
         });
       }
     } catch (error) {
-      console.log('errororoo', error);
-      // Toast.show({
-      //     type: 'tomatoToast',
-      //     text1: 'Failed to get jobs!',
-      // });
+      console.log('error', error);
     }
   },
   getNearByJobById: async id => {
@@ -176,7 +172,6 @@ const useJobStore = create((set, get) => ({
           Authorization: await getToken(),
         },
       });
-
       if (res?.data) {
         Toast.show({
           type: 'success',
@@ -240,43 +235,6 @@ const useJobStore = create((set, get) => ({
         type: 'tomatoToast',
         text1: 'Failed to post a job!',
       });
-      return false;
-    }
-  },
-  getJobApplicationByParams: async (jobid, userid) => {
-    try {
-      let params = {
-        appliedby: userid,
-        jobid: jobid,
-      };
-      const res = await API.get(`${JOBS_APPLICATIONS}`, {
-        headers: {Authorization: await getToken()},
-        params,
-      });
-
-      if (res && res.data && res?.data?.total !== 0) {
-        set({appliedJob: res.data?.data?.at(0)});
-      }
-    } catch (error) {
-      console.log(JSON.stringify(error, null, 5));
-      // Toast.show({
-      //     type: 'tomatoToast',
-      //     text1: 'Failed to get a job details!',
-      // });
-    }
-  },
-  getAppliedJobDetailsById: async id => {
-    try {
-      const res = await API.get(`${JOBS_APPLICATIONS}/${id}`, {
-        headers: {Authorization: await getToken()},
-      });
-
-      if (res && res.data) {
-        set({appliedJob: res.data});
-        return res.data;
-      }
-    } catch (error) {
-      console.log(JSON.stringify(error, null, 5));
       return false;
     }
   },
