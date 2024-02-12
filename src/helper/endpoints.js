@@ -35,5 +35,5 @@ export const JOBS_APPLICATIONS = `${COMMON_ENDPOINT}jobapplications`;
 export const CHATS = `${COMMON_ENDPOINT}chats`;
 
 export const feathersServices = {
-  chats: 'chats',
+  chats: 'api/chats',
 };

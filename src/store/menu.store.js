@@ -66,6 +66,7 @@ const useMenuStore = create((set, get) => ({
       }
     } catch (error) {}
   },
+  clearApplicantList: () => set({applicantList: undefined}),
 }));
 
 export default useMenuStore;

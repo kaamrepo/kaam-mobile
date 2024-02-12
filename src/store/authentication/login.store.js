@@ -4,6 +4,7 @@ import {LOGIN_USER, GET_OTP} from '../../helper/endpoints';
 import Toast from 'react-native-toast-message';
 import useRegistrationStore from './registration.store.js';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import client from '../../../client';
 
 const useLoginStore = create((set, get) => ({
   loggedInUser: undefined,
@@ -96,10 +97,16 @@ export const getToken = async () => {
 export const storeUserSession = async data => {
   try {
     await EncryptedStorage.setItem('user_session', JSON.stringify(data));
+    await EncryptedStorage.setItem('accessToken', data.accessToken);
     await EncryptedStorage.setItem(
       'isLoggedIn',
       JSON.stringify({isLoggedIn: true}),
     );
+    try {
+      await client.reAuthenticate();
+    } catch (error) {
+      console.log('client error', error);
+    }
   } catch (error) {}
 };
 export const storeUserlanguage = async data => {
@@ -152,6 +159,7 @@ export const removeUserSession = async () => {
   try {
     await EncryptedStorage.removeItem('user_session');
     await EncryptedStorage.removeItem('isLoggedIn');
+    await EncryptedStorage.removeItem('accessToken');
   } catch (error) {}
 };
 

@@ -31,6 +31,7 @@ import DrawerNavigation from './src/screens/DrawerNavigation';
 import useLoaderStore from './src/store/loader.store';
 import SeeAll from './src/screens/see-all/SeeAll';
 import {ApplicantListScreen} from './src/screens/jobs/Applicants';
+import client from './client';
 
 // Navigators
 
@@ -51,6 +52,11 @@ const App = () => {
       if (isLoggedInState && isLoggedInState.isLoggedIn) {
         const userData = JSON.parse(userSession);
         setLoggedInUserDetails(userData.user, isLoggedInState.isLoggedIn);
+        try {
+          await client.reAuthenticate();
+        } catch (error) {
+          console.log('client error', error);
+        }
       }
     }
     getData();

@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect} from 'react';
+import React, {useState, useCallback, useEffect, useRef} from 'react';
 import {
   View,
   Text,
@@ -20,71 +20,13 @@ import client from '../../../client';
 
 const Chat = ({route, navigation}) => {
   const [messageText, setMessageText] = useState('');
-  const {getChatAndMessages, chat, clearChatAndMessages, sendChatMessage} =
+  const lastMessageRef = useRef(null);
+  const {chat, sendChatMessage, chatUpdatedEvent, getChatMessages, clearChat} =
     useChatStore();
-  const {loggedInUser} = useLoginStore();
   const handleBackPress = () => {
     navigation.goBack();
   };
   const bgColor = route?.params?.bgColor ?? '#000000';
-
-  const renderMessage = ({item}) => (
-    <View style={tw`flex-row my-1`}>
-      {item?.messageType === 'initial' ? (
-        <View
-          style={tw`flex flex-row gap-3 mx-auto items-center justify-center w-[80%] rounded-lg bg-white border border-[${bgColor}] text-black px-5 py-3 mb-2`}>
-          <Icon
-            type={Icons.Ionicons}
-            size={30}
-            name={'briefcase-outline'}
-            style={tw`text-[${bgColor}]`}
-          />
-          <Text
-            style={[
-              tw`text-[${bgColor}] text-center px-2`,
-              {fontFamily: 'Poppins-Italic'},
-            ]}>
-            {loggedInUser?._id !== item?.senderid
-              ? item.text
-              : `You have applied for this job on ${dayjs(
-                  item?.createdat,
-                ).format('DD-MMM-YYYY')}`}
-          </Text>
-        </View>
-      ) : (
-        <View
-          style={tw`flex py-2 px-3 pr-10 max-w-[80%] relative rounded-3xl shadow ${
-            loggedInUser?._id === item?.senderid
-              ? `ml-auto bg-[${bgColor}]`
-              : `bg-white`
-          }`}>
-          <Text
-            style={[
-              tw`${
-                loggedInUser?._id === item?.senderid
-                  ? `text-white`
-                  : `text-[${bgColor}]`
-              }`,
-              {fontFamily: 'Poppins-Regular'},
-            ]}>
-            {item?.text}
-          </Text>
-          <View style={tw`absolute bottom-0.9 right-2`}>
-            <Icon
-              size={16}
-              style={tw`${
-                loggedInUser?._id === item?.senderid
-                  ? `text-white`
-                  : `text-[${bgColor}]`
-              }`}
-              type={Icons.Ionicons}
-              name={item.isseen ? 'checkmark-done' : 'checkmark'}
-            />
-          </View>
-        </View>
-      )}
-    </View>
-  );
 
   const handleSendMessage = () => {
     let chat_message = {
@@ -93,22 +35,18 @@ const Chat = ({route, navigation}) => {
       createdat: new Date().toISOString(),
       isseen: false,
     };
-    sendChatMessage(chat?._id, chat_message);
+    sendChatMessage(route.params.chatid, chat_message);
     setMessageText('');
   };
 
   useEffect(() => {
-    if (route?.params?.chatid) {
-      getChatAndMessages(route?.params?.chatid);
-      client.service(feathersServices.chats).on('patched', getChatAndMessages);
-    }
+    if (route.params.chatid) getChatMessages(route.params.chatid);
+    chatUpdatedEvent();
 
     return () => {
-      client
-        .service(feathersServices.chats)
-        .removeListener('patched', getChatAndMessages);
+      clearChat();
     };
-  });
+  }, [route.params.chatid]);
 
   return (
     <SafeAreaView style={tw`flex-1`} edges={['top']}>
@@ -153,7 +91,7 @@ const Chat = ({route, navigation}) => {
               name={'google-maps'}
             />
           </TouchableOpacity>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => {
               if (route?.params?.chatid) {
                 getChatAndMessages(route?.params?.chatid);
@@ -165,7 +103,7 @@ const Chat = ({route, navigation}) => {
               style={tw`text-white`}
               name={'refresh'}
             />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </View>
 
@@ -173,10 +111,18 @@ const Chat = ({route, navigation}) => {
       <View style={tw`flex-1 px-4 py-1`}>
         {/* Chat messages */}
         <FlatList
+          ref={lastMessageRef}
           data={chat?.messages}
-          renderItem={renderMessage}
+          renderItem={({item, index}) => (
+            <RenderMessage item={item} index={index} bgColor={bgColor} />
+          )}
           showsVerticalScrollIndicator={false}
           keyExtractor={item => item._id.toString()}
+          onContentSizeChange={() => {
+            if (chat?.messages?.length) {
+              lastMessageRef.current.scrollToEnd({animated: true});
+            }
+          }}
         />
       </View>
 
@@ -192,7 +138,7 @@ const Chat = ({route, navigation}) => {
         />
         <View style={tw`w-[15%] flex-row justify-around items-center`}>
           <Pressable
-            disabled={messageText?.length ? false : true}
+            disabled={messageText.length ? false : true}
             style={({pressed}) => [
               {
                 backgroundColor: pressed ? '#d7dbd8' : 'transparent',
@@ -228,3 +174,63 @@ const Chat = ({route, navigation}) => {
 };
 
 export default Chat;
+
+const RenderMessage = ({item, index, bgColor}) => {
+  const {loggedInUser} = useLoginStore();
+  return (
+    <View style={tw`flex-row my-1`}>
+      {item?.messageType === 'initial' ? (
+        <View
+          style={tw`flex flex-row gap-3 mx-auto items-center justify-center w-[80%] rounded-lg bg-white border border-[${bgColor}] text-black px-5 py-3 mb-2`}>
+          <Icon
+            type={Icons.Ionicons}
+            size={30}
+            name={'briefcase-outline'}
+            style={tw`text-[${bgColor}]`}
+          />
+          <Text
+            style={[
+              tw`text-[${bgColor}] text-center px-2`,
+              {fontFamily: 'Poppins-Italic'},
+            ]}>
+            {loggedInUser?._id !== item?.senderid
+              ? item.text
+              : `You have applied for this job on ${dayjs(
+                  item?.createdat,
+                ).format('DD-MMM-YYYY')}`}
+          </Text>
+        </View>
+      ) : (
+        <View
+          style={tw`flex flex-row justify-between items-end gap-2 py-2 pl-5 pr-3 max-w-[80%] rounded-3xl shadow ${
+            loggedInUser?._id === item?.senderid
+              ? `ml-auto bg-[${bgColor}]`
+              : `bg-white`
+          }`}>
+          <Text
+            style={[
+              tw`${
+                loggedInUser?._id === item?.senderid
+                  ? `text-white`
+                  : `text-[${bgColor}]`
+              }`,
+              {fontFamily: 'Poppins-Regular'},
+            ]}>
+            {item?.text}
+          </Text>
+
+          <Icon
+            size={14}
+            style={tw`${
+              loggedInUser?._id === item?.senderid
+                ? `text-white`
+                : `text-[${bgColor}]`
+            }`}
+            type={Icons.Ionicons}
+            name={item.isseen ? 'checkmark-done' : 'checkmark'}
+          />
+        </View>
+      )}
+    </View>
+  );
+};

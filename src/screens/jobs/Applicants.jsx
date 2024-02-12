@@ -74,11 +74,16 @@ const JobCard = ({job}) => {
 const ApplicantList = ({job}) => {
   const [skip, setSkip] = useState(0);
   const [limit, setLimit] = useState(10);
-  const {applicantList, getApplicantsList} = useMenuStore();
+  const {applicantList, getApplicantsList, clearApplicantList} = useMenuStore();
   useEffect(() => {
     getApplicantsList(skip, limit, job._id);
   }, [skip, limit, setSkip, setLimit]);
 
+  useEffect(() => {
+    return () => {
+      clearApplicantList();
+    };
+  }, []);
   return (
     <View style={tw`flex-grow`}>
       {applicantList?.total ? (
