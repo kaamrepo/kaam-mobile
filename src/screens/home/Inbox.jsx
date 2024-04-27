@@ -15,7 +15,9 @@ const Inbox = ({navigation}) => {
   const {inboxList, setInboxList, clearInboxList} = useInboxStore();
   useFocusEffect(
     useCallback(() => {
-      if (loggedInUser?._id) setInboxList(loggedInUser?._id);
+      if (loggedInUser?._id) {
+        setInboxList(loggedInUser?._id);
+      }
       return () => {
         clearInboxList();
       };
@@ -88,37 +90,42 @@ const MessageListItem = ({item, loggedInUserId, isLastItem}) => {
       </View>
       <View style={[tw`flex-3`]}>
         <Text style={[tw`text-black`, {fontFamily: 'Poppins-SemiBold'}]}>
-          {item?.applicationDetails?.jobDetails?.employerDetails?.firstname +
-            ' ' +
-            item?.applicationDetails?.jobDetails?.employerDetails?.lastname}
+          {loggedInUserId === item.employerid
+            ? `${item?.applicantDetails?.firstname ?? ''} ${
+                item?.applicantDetails?.lastname ?? ''
+              }`
+            : `${item?.employerDetails?.firstname ?? ''} ${
+                item?.employerDetails?.lastname ?? ''
+              }`}
         </Text>
         <Text
           numberOfLines={1}
           ellipsizeMode="tail"
           style={[tw`text-black`, {fontFamily: 'Poppins-Regular'}]}>
-          {item?.messages?.at(-1)?.text}
+          {item?.chatDetails?.lastMessage?.text}
         </Text>
       </View>
       <View style={[tw`flex-1 items-center`]}>
-        <Text style={[tw`text-black`, {fontFamily: 'Poppins-Regular'}]}>
-          {item?.messages?.at(-1)?.createdat
-            ? dayjs(item?.messages?.at(-1)?.createdat).format('hh:mm a')
+        <Text
+          style={[tw`text-black text-[10px]`, {fontFamily: 'Poppins-Regular'}]}>
+          {item?.chatDetails?.lastMessage?.createdat
+            ? dayjs(item?.chatDetails?.lastMessage?.createdat).format(
+                'DD MMM YYYY hh:mm a',
+              )
             : ''}
         </Text>
-        <View
-          style={[
-            tw`flex justify-end items-center min-w-5 min-h-5 px-1 bg-blue-500 rounded-2xl`,
-          ]}>
+
+        {item?.chatDetails?.unseenMessageCount ? (
           <Text
             style={[
-              tw`text-white text-[12px]`,
+              tw`text-white bg-blue-500 text-[10px] text-center w-4 h-4 rounded-2xl`,
               {fontFamily: 'Poppins-SemiBold'},
             ]}>
-            {countNewMessages(item?.messages, loggedInUserId) > 99
+            {item?.chatDetails?.unseenMessageCount > 99
               ? `99+`
-              : countNewMessages(item?.messages, loggedInUserId)}
+              : item?.chatDetails?.unseenMessageCount}
           </Text>
-        </View>
+        ) : null}
       </View>
     </View>
   );
@@ -174,13 +181,3 @@ const SearchComponent = ({placeholder}) => {
     </View>
   );
 };
-
-function countNewMessages(array, loggedInUserId) {
-  return array?.reduce(
-    (total, current) =>
-      current?.senderid !== loggedInUserId && current?.isseen === false
-        ? (total = total + 1)
-        : total,
-    0,
-  );
-}

@@ -23,7 +23,7 @@ const useRegistrationStore = create(set => ({
       console.log(JSON.stringify(error, null, 4));
       Toast.show({
         type: 'tomatoToast',
-        text1: error?.response?.data?.message,
+        text1: error?.response?.data?.message ?? 'ERROR::registerUser',
         // text1: 'User already registered.',
       });
       return false;

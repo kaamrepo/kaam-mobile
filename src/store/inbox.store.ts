@@ -1,21 +1,25 @@
 import {create} from 'zustand';
 import API from '../helper/API';
-import {CHATS} from '../helper/endpoints';
+import {CHATS, JOBS_APPLICATIONS} from '../helper/endpoints';
 import {getToken} from './authentication/login.store';
 
 const useInboxStore = create<useInboxStoreType>((set, get) => ({
   inboxList: undefined,
   setInboxList: async userid => {
     try {
-      const res = await API.get(`${CHATS}`, {
+      console.log('ILAY');
+      const res = await API.get(`${JOBS_APPLICATIONS}`, {
         headers: {Authorization: await getToken()},
+        params: {
+          $or: [{employerid: userid}, {appliedby: userid}],
+        },
       });
-
       if (res && res.data) {
         set({inboxList: res.data});
         return true;
       }
     } catch (error) {
+      console.log('error', error);
       return false;
     }
   },

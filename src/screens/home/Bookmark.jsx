@@ -13,11 +13,11 @@ import Image1 from '../../assets/images/browse-jobs.png';
 import Image2 from '../../assets/images/IntroScreenJobsAndInvitations.png';
 import Image3 from '../../assets/images/search-dream-job.png';
 import Image4 from '../../assets/images/checklist.png';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import GeneralStatusBar from '../../components/GeneralStatusBar';
+import Icon, {Icons} from '../../components/Icons';
 
 const Bookmark = ({navigation}) => {
-  const handleBackPress = () => {
-    navigation.goBack();
-  };
   const featuredJobs = [
     {
       image: Image1,
@@ -141,11 +141,10 @@ const Bookmark = ({navigation}) => {
     },
   ];
   return (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      style={tw`flex bg-[#FAFAFD]`}>
-      <View style={tw`bg-white`}>
-        <View style={tw`flex-row justify-between items-center p-3`}>
+    <SafeAreaView style={tw`flex-1 px-5 py-6 bg-[#FAFAFD]`} edges={['top']}>
+      <GeneralStatusBar backgroundColor={'#F0F0F0'} />
+      <ScrollView showsVerticalScrollIndicator={false} style={tw`flex `}>
+        <View style={tw`flex-row justify-start items-center`}>
           <Pressable
             onPress={() => {
               navigation.openDrawer();
@@ -155,79 +154,76 @@ const Bookmark = ({navigation}) => {
                 pressed ? 'bg-slate-200' : ''
               }`,
             ]}>
-            <TouchableOpacity onPress={handleBackPress}>
-              <Ionicons name="chevron-back" size={24} style={tw`text-black`} />
-            </TouchableOpacity>
+            <Ionicons name="chevron-back" size={24} style={tw`text-black`} />
           </Pressable>
-          <View>
+          <View style={[tw`w-3/4`]}>
             <Text
-              style={[tw`text-xl text-black`, {fontFamily: 'Poppins-Bold'}]}>
-              Saved
+              style={[
+                tw`text-center text-xl text-black`,
+                {fontFamily: 'Poppins-Bold'},
+              ]}>
+              Saved Jobs
             </Text>
           </View>
-          <TouchableOpacity style={tw`w-10 h-10`}>
-            <View
-              style={tw`w-10 h-10 bg-yellow-400 rounded-lg shadow-2xl shadow-orange-800`}>
-              <Image source={Image2} style={tw`w-10 h-10 rounded-lg`} />
-            </View>
-          </TouchableOpacity>
         </View>
-      </View>
-      <View style={tw`flex-row justify-between items-center mt-3 mb-2 mx-6`}>
-        <Text style={[tw`text-xl text-black `, {fontFamily: 'Poppins-Bold'}]}>
-          You Saved 48 Jobs 👍
-        </Text>
-      </View>
-      <View>
-        {featuredJobs.map((item, index) => (
-          <Pressable key={index} onPress={() => {}}>
-            {({pressed}) => (
-              <View
-                style={tw`rounded-5 p-2 m-3 mx-5 ${
-                  pressed ? 'bg-gray-100' : 'bg-white'
-                }`}>
-                <View style={tw`flex-row mb-2 px-5 `}>
-                  <View style={tw`m-2 items-center justify-center`}>
-                    <Image
-                      source={item.image}
-                      style={tw`w-12 h-12 rounded-full`}
-                    />
-                  </View>
-                  <View style={tw`flex-1 items-start justify-center `}>
-                    <Text style={tw`text-lg font-bold text-black`}>
-                      {item.title}
-                    </Text>
-                    <Text style={tw`text-sm text-gray-400`}>
-                      {item.description}
-                    </Text>
-                  </View>
-                  <View style={tw`flex-1 items-end justify-center`}>
-                    <Text style={tw`text-lg font-semibold text-black`}>
-                      {item.value}/y
-                    </Text>
-                    <Text style={tw`text-sm text-gray-400`}>
-                      {item.location}
-                    </Text>
-                  </View>
-                </View>
-                <View style={tw`flex-row justify-between items-center px-6 `}>
-                  <TouchableOpacity style={tw` w-28 h-10`}>
-                    <View
-                      style={tw`w-28 h-10 bg-${item.color}-100 border border-${item.color}-700 rounded-full flex-1 items-center justify-center`}>
-                      <Text style={tw`text-sm text-black capitalize`}>
-                        {item.status}
+
+        <View style={tw`flex-row justify-between items-center mt-3 mb-2 mx-6`}>
+          <Text style={[tw`text-xl text-black `, {fontFamily: 'Poppins-Bold'}]}>
+            You Saved 48 Jobs 👍
+          </Text>
+        </View>
+        <View>
+          {featuredJobs.map((item, index) => (
+            <Pressable key={index} onPress={() => {}}>
+              {({pressed}) => (
+                <View
+                  style={tw`rounded-5 p-2 my-1 mx-2 gap-2 ${
+                    pressed ? 'bg-gray-100' : 'bg-white'
+                  }`}>
+                  <View style={tw`flex-row`}>
+                    <View style={tw`flex-row gap-4 items-center `}>
+                      <Image
+                        source={item.image}
+                        style={tw`w-12 h-12 rounded-xl`}
+                      />
+                      <View>
+                        <Text style={tw`text-lg font-bold text-black`}>
+                          {item.title}
+                        </Text>
+                        <Text style={tw`text-sm text-gray-400`}>
+                          {item.description}
+                        </Text>
+                      </View>
+                    </View>
+                    <View style={tw`flex-1 items-end justify-center`}>
+                      <Text style={tw`text-lg font-semibold text-black`}>
+                        {item.value}/y
+                      </Text>
+                      <Text style={tw`text-sm text-gray-400`}>
+                        {item.location}
                       </Text>
                     </View>
-                  </TouchableOpacity>
-                  <Text style={tw`text-sm text-black `}>{item.workshift}</Text>
+                  </View>
+                  <View style={tw`flex-row justify-between items-center`}>
+                    <StatusDisplayArrow text={item.status} />
+                    <StatusDisplayArrow text={item.workshift} />
+                  </View>
                 </View>
-              </View>
-            )}
-          </Pressable>
-        ))}
-      </View>
-    </ScrollView>
+              )}
+            </Pressable>
+          ))}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 export default Bookmark;
+
+export const StatusDisplayArrow = ({text}) => {
+  return (
+    <View style={tw`flex-row items-center bg-gray-100 p-2 rounded-xl`}>
+      <Text style={[tw`text-sm text-black capitalize`]}>{text}</Text>
+    </View>
+  );
+};

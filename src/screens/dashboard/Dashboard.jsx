@@ -129,18 +129,26 @@ const Dashboard = ({navigation}) => {
           <TouchableOpacity
             onPress={() => navigation.navigate('View Profile')}
             style={tw`w-12 h-12`}>
-            <View
-              style={tw`w-12 h-12  rounded-lg shadow-2xl shadow-orange-800`}>
+            <View style={tw`w-12 h-12 rounded-lg`}>
               {loggedInUser?.profilepic ? (
                 <Image
                   source={{uri: loggedInUser.profilepic}}
                   style={[tw`w-[48px] h-[48px] rounded-3`]}
                 />
               ) : (
-                <Image
-                  source={require('../../assets/images/default-profile.jpg')}
-                  style={[tw`w-[48px] h-[48px] rounded-3`]}
-                />
+                <View
+                  style={[
+                    tw`w-[48px] h-[48px] rounded-3 bg-violet-600/60 flex-row justify-center items-center overflow-hidden`,
+                  ]}>
+                  <Text
+                    style={[
+                      tw`text-[40px] text-white`,
+                      {fontFamily: 'Poppins-Bold', verticalAlign: 'middle'},
+                    ]}>
+                    {loggedInUser.firstname.charAt(0)}
+                    {loggedInUser.lastname.charAt(0)}
+                  </Text>
+                </View>
               )}
             </View>
           </TouchableOpacity>

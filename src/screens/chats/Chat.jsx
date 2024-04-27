@@ -130,7 +130,7 @@ const Chat = ({route, navigation}) => {
       <View
         style={tw`flex-row items-center justify-between border-t border-slate-300 px-4 py-2 bg-white`}>
         <TextInput
-          style={tw`border border-gray-300 w-[85%] rounded-xl max-h-15 bg-white px-4 py-2`}
+          style={tw`border border-gray-300 w-[85%] text-black rounded-xl max-h-15 bg-white px-4 py-2`}
           placeholder="Type a message..."
           multiline
           value={messageText}

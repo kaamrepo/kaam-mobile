@@ -45,7 +45,7 @@ const useLoginStore = create((set, get) => ({
     } catch (error) {
       Toast.show({
         type: 'tomatoToast',
-        text1: error.response.data.message,
+        text1: error.response.data.message ?? 'ERROR::login',
       });
       return false;
     }
@@ -63,7 +63,7 @@ const useLoginStore = create((set, get) => ({
     } catch (error) {
       Toast.show({
         type: 'tomatoToast',
-        text1: error.response.data.message,
+        text1: error.response.data.message ?? 'ERROR::getOTP',
       });
       return false;
     }
@@ -91,7 +91,7 @@ export const getToken = async () => {
     let token = await retrieveUserSession();
     token = JSON.parse(token);
     return token.accessToken;
-  } catch (error) {}
+  } catch (error) {  console.log("error::getToken", error)}
 };
 
 export const storeUserSession = async data => {
@@ -107,7 +107,9 @@ export const storeUserSession = async data => {
     } catch (error) {
       console.log('client error', error);
     }
-  } catch (error) {}
+  } catch (error) {
+    console.log("error::storeUserSession", error)
+  }
 };
 export const storeUserlanguage = async data => {
   try {
@@ -119,7 +121,7 @@ export const storeUserlanguage = async data => {
     } catch (error) {
       console.error('Error storing data:', error);
     }
-  } catch (error) {}
+  } catch (error) {  console.log("error::storeUserlanguage ", error)}
 };
 
 export const retrieveUserSession = async () => {
