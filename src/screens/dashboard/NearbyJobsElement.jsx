@@ -112,7 +112,6 @@ const renderItemsNearbyJobs = ({item, index, navigation, nearbyjobs}) => {
       resizeMode="cover">
       <Pressable
         onPress={() => {
-          console.log('pressed');
           navigation.navigate('ApplyNow', {
             jobDetails: item,
             id: item._id,

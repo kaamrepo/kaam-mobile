@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import {StyleSheet, Pressable, ActivityIndicator, View} from 'react-native';
+import {StyleSheet, Pressable} from 'react-native';
 import React, {useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -7,17 +7,11 @@ import useLoginStore, {
   retrieveLoggedInState,
   retrieveUserSession,
 } from './src/store/authentication/login.store';
-// Screens
 
 import RegisterScreen from './src/screens/login/RegisterScreen';
-import IntroSelectLanguage from './src/screens/intro/IntroSelectLanguage';
-import IntroScreenJobsAndInvitations from './src/screens/intro/IntroScreenJobsAndInvitations';
-import LastIntroScreen from './src/screens/intro/LastIntroScreen';
-import IntroJobSearch from './src/screens/intro/IntroJobSearch';
 import VerifyCode from './src/screens/login/VerifyCode';
 import ChooseProfession from './src/screens/login/ChooseProfession';
 import SplashScreen from 'react-native-splash-screen';
-import IntroScreenBrowseJobs from './src/screens/intro/IntroScreenBrowseJobs';
 import LoginScreen from './src/screens/login/Login';
 import JobPreference from './src/screens/login/JobPreference';
 import Icon, {Icons} from './src/components/Icons';
@@ -28,18 +22,17 @@ import ApplyNow from './src/screens/jobs/ApplyNow';
 import Chat from './src/screens/chats/Chat';
 import TrackApplication from './src/screens/chats/TrackApplication';
 import DrawerNavigation from './src/screens/DrawerNavigation';
-import useLoaderStore from './src/store/loader.store';
 import SeeAll from './src/screens/see-all/SeeAll';
 import {ApplicantListScreen} from './src/screens/jobs/Applicants';
 import client from './client';
+import {requestUserPermissionAndFcmToken} from './src/helper/utils/notification-helper';
 
 // Navigators
 
 const Stack = createNativeStackNavigator();
 const App = () => {
   const {isLoggedIn, setLoggedInUserDetails, getLanguage} = useLoginStore();
-  const {isLoading} = useLoaderStore();
-
+  
   useEffect(() => {
     setTimeout(() => {
       SplashScreen.hide();
@@ -64,16 +57,19 @@ const App = () => {
     getLanguage();
   }, [isLoggedIn]);
 
+  useEffect(() => {
+    (async () => await requestUserPermissionAndFcmToken())();
+  }, []);
+
   return (
     <>
       <NavigationContainer>
         <Stack.Navigator
           initialRouteName={'DrawerNavigation'}
           keyboardHandlingEnabled={true}>
-          {/* <Stack.Navigator initialRouteName={!isLoggedIn ? 'IntroSelectLanguage' : 'DrawerNavigation'}> */}
           {!isLoggedIn ? (
             <>
-              <Stack.Screen
+              {/* <Stack.Screen
                 name="IntroSelectLanguage"
                 component={IntroSelectLanguage}
                 options={{title: 'Kaam', headerShown: false}}
@@ -97,7 +93,7 @@ const App = () => {
                 name="lastIntroScreen"
                 component={LastIntroScreen}
                 options={{headerShown: false}}
-              />
+              /> */}
               <Stack.Screen
                 name="registerScreen"
                 component={RegisterScreen}
@@ -222,33 +218,11 @@ const App = () => {
         </Stack.Navigator>
       </NavigationContainer>
       <Toast config={toastConfig} position="bottom" />
-      {/* <View
-        style={[
-          tw`z-50 absolute top-0 left-0 right-0 bottom-0 justify-center items-center ${
-            isLoading ? 'flex' : 'hidden'
-          }`,
-        ]}>
-        <ActivityIndicator size={60} animating={isLoading} color="#00cc66" />
-      </View> */}
     </>
   );
 };
 
 export default App;
-
-const styles = StyleSheet.create({
-  blurView: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
 
 const toastConfig = {
   /*

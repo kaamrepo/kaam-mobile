@@ -1,7 +1,6 @@
-import { Platform } from 'react-native';
-import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
+import {Platform} from 'react-native';
+import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import Geolocation from 'react-native-geolocation-service';
-
 
 export const requestLocationPermission = async () => {
   try {
@@ -16,14 +15,13 @@ export const requestLocationPermission = async () => {
 
     // If the permission is already granted, log a message and return true
     if (permissionStatus === RESULTS.GRANTED) {
-      console.log('Permission already granted');
       return true;
     }
 
     // If the permission is not granted, request the permission
     const requestResult = await request(locationPermission, {
       title: 'Geolocation Permission',
-      message: 'Can we access your location for hacking',
+      message: 'To show nearby jobs',
       buttonNeutral: 'Ask Me Later',
       buttonNegative: 'Cancel',
       buttonPositive: 'OK',
@@ -31,11 +29,8 @@ export const requestLocationPermission = async () => {
 
     // Check the result of the permission request
     if (requestResult === RESULTS.GRANTED) {
-      console.log('Permission granted');
       return true;
     } else {
-      console.log('Permission denied');
-
       // Check the permission status again to reevaluate
       permissionStatus = await check(locationPermission);
 
@@ -49,17 +44,17 @@ export const requestLocationPermission = async () => {
 };
 
 export const getCoordinates = async () => {
-  console.log("In the coordinates function");
+  console.log('In the coordinates function');
   try {
     const permissionGranted = await requestLocationPermission();
 
     if (permissionGranted) {
       const position = await new Promise((resolve, reject) => {
-        Geolocation.getCurrentPosition(
-          resolve,
-          reject,
-          { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 },
-        );
+        Geolocation.getCurrentPosition(resolve, reject, {
+          enableHighAccuracy: true,
+          timeout: 20000,
+          maximumAge: 1000,
+        });
       });
 
       return position;
@@ -72,4 +67,3 @@ export const getCoordinates = async () => {
     return null;
   }
 };
-

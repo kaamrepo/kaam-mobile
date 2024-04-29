@@ -32,7 +32,7 @@ const useJobStore = create((set, get) => ({
         set({nearbyjobs: res.data});
       }
     } catch (error) {
-      console.log(JSON.stringify(error, null, 5));
+      console.log('getNearByJobs error', JSON.stringify(error, null, 5));
       // Toast.show({
       //     type: 'tomatoToast',
       //     text1: 'Failed to get jobs!',
@@ -58,7 +58,7 @@ const useJobStore = create((set, get) => ({
         set({recommendedJobs: res.data});
       }
     } catch (error) {
-      console.log(JSON.stringify(error, null, 5));
+      console.log('getRecommendedJobs error', JSON.stringify(error, null, 5));
       // Toast.show({
       //     type: 'tomatoToast',
       //     text1: 'Failed to get jobs!',
@@ -84,7 +84,7 @@ const useJobStore = create((set, get) => ({
         set({featuredJobs: res.data});
       }
     } catch (error) {
-      console.log(JSON.stringify(error, null, 5));
+      console.log('getFeaturedJobs error', JSON.stringify(error, null, 5));
       // Toast.show({
       //     type: 'tomatoToast',
       //     text1: 'Failed to get jobs!',
@@ -157,8 +157,7 @@ const useJobStore = create((set, get) => ({
         set({job: res.data});
       }
     } catch (error) {
-      console.log(error);
-      console.log(JSON.stringify(error, null, 5));
+      console.log('getNearByJobById::error', JSON.stringify(error, null, 5));
       Toast.show({
         type: 'tomatoToast',
         text1: 'Failed to get a job details!',
@@ -180,7 +179,7 @@ const useJobStore = create((set, get) => ({
         return res?.data?._id;
       }
     } catch (error) {
-      console.log(JSON.stringify(error, null, 4));
+      console.log('applyForJob::error', JSON.stringify(error, null, 4));
       Toast.show({
         type: 'tomatoToast',
         text1: 'Something went wrong!',

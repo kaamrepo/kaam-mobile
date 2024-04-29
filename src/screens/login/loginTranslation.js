@@ -12,7 +12,7 @@ export const RegistrationTranslation = {
     'GET OTP': 'OTP मिळवा',
     "Don't have an Account?": 'खाते नाही?',
     Register: 'नोंदणी करा',
-    'Welcome Back': 'परत स्वागत आहे',
+    'Welcome Back': 'स्वागत आहे',
   },
   ગુજરાતી: {
     Kaam: 'કામ',
@@ -37,7 +37,7 @@ export const RegistrationTranslation = {
   },
   English: {
     Kaam: 'Kaam',
-    Registration: 'Registration',
+    Registration: 'Register yourself',
     "Let's log in. Apply to jobs!": 'Let’s Register. Apply to jobs!',
     'Have an account?': 'Have an account?',
     'Log in': 'Log in',

@@ -15,8 +15,11 @@
     "@feathersjs/socketio-client": "^5.0.6",
     "@gorhom/bottom-sheet": "^4.4.7",
     "@hookform/resolvers": "^3.1.0",
+    "@react-native-async-storage/async-storage": "^1.23.1",
     "@react-native-community/blur": "^4.3.2",
     "@react-native-community/datetimepicker": "^7.2.0",
+    "@react-native-firebase/app": "^19.2.2",
+    "@react-native-firebase/messaging": "^19.2.2",
     "@react-native-masked-view/masked-view": "^0.2.9",
     "@react-native-picker/picker": "^2.4.10",
     "@react-navigation/bottom-tabs": "^6.5.7",
@@ -83,5 +86,8 @@
   },
   "jest": {
     "preset": "react-native"
+  },
+  "overrides": {
+    "react-native-reanimated": "^3.6.1"
   }
 }

@@ -53,7 +53,7 @@ const VerifyCode = ({route, navigation}) => {
     };
   }, []);
   return (
-    <ScrollView style={tw`bg-white`} showsVerticalScrollIndicator={false}>
+    <ScrollView style={tw`bg-white`} showsVerticalScrollIndicator={false}  keyboardShouldPersistTaps="handled">
       <SafeAreaView style={tw`flex-1 bg-white py-0`}>
         <View style={tw`flex-1 py-2 justify-start items-center`}>
           <View style={tw`flex`}>

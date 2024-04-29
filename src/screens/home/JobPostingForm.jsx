@@ -23,6 +23,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import Header from '../../components/Header';
 import wordsFilter from '../../helper/utils/profane';
 import useLoaderStore from '../../store/loader.store';
+import {Loader} from '../../components/Loader';
 
 let salaryBasisOptionsArray = [
   {label: 'Monthly', value: 'month'},
@@ -75,6 +76,7 @@ const JobPostingForm = ({navigation}) => {
   const {setLoading} = useLoaderStore();
   const {loggedInUser} = useLoginStore();
   const {postJobs} = useJobStore();
+
   const {
     control,
     handleSubmit,
@@ -455,13 +457,12 @@ const JobPostingForm = ({navigation}) => {
           </Pressable>
         </View>
       </ScrollView>
+      <Loader />
     </SafeAreaView>
   );
 };
 
 export default JobPostingForm;
-
-const styles = StyleSheet.create({});
 
 const Chip = ({label, selected, onPress}) => {
   return (

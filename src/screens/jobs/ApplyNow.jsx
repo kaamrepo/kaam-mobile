@@ -5,15 +5,11 @@ import Image1 from '../../assets/images/browse-jobs.png';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import useJobStore from '../../store/dashboard.store';
 import GeneralStatusBar from '../../components/GeneralStatusBar';
-import useLoginStore from '../../store/authentication/login.store';
-import useLoaderStore from '../../store/loader.store';
 import Icon, {Icons} from '../../components/Icons';
 import {darkenColor} from '../../helper/utils/getDarkColor';
-import {
-  getRandomBackgroundColor,
-  getRandomColor,
-} from '../../helper/utils/colors';
+import {getRandomColor} from '../../helper/utils/colors';
 import {useFocusEffect} from '@react-navigation/native';
+import {Loader} from '../../components/Loader';
 
 const jobDescription = {
   image: Image1,
@@ -157,6 +153,7 @@ const ApplyNow = ({route, navigation}) => {
           )}
         </View>
       </View>
+      <Loader />
     </SafeAreaView>
   );
 };

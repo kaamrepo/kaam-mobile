@@ -9,7 +9,6 @@ import {
   TextInput,
   Image,
   Pressable,
-  KeyboardAvoidingView,
   ScrollView,
 } from 'react-native';
 import {useForm, Controller} from 'react-hook-form';
@@ -92,7 +91,7 @@ const RegisterScreen = ({navigation}) => {
   }, []);
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{flex: 1}} KeyboardAvoidingView>
       <GeneralStatusBar backgroundColor={'#FFFFFF'} />
       <View style={styles.container}>
         <View style={styles.topPanel}>
@@ -107,14 +106,16 @@ const RegisterScreen = ({navigation}) => {
             style={tw`border-black border-[3px] w-[10%] bg-black ml-[2%]`}
           />
         </View>
-        <ScrollView contentContainerStyle={styles.contentContainer}>
+        <ScrollView
+          contentContainerStyle={styles.contentContainer}
+          keyboardShouldPersistTaps="handled">
           <View style={styles.formContainer}>
             <Text
               style={[
                 {fontFamily: 'Poppins-SemiBold'},
                 tw`text-black text-2xl mb-2`,
               ]}>
-              {RegistrationTranslation[language]['Registration']} 👍
+              {RegistrationTranslation[language]['Registration']}
             </Text>
             <Text
               style={[
