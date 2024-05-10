@@ -45,7 +45,7 @@ const App = () => {
       SplashScreen.hide();
     }, 1000);
 
-    async function getData() {
+    const getData = async () => {
       const isLoggedInState = await retrieveLoggedInState();
       const userSession = await retrieveUserSession();
 
@@ -58,7 +58,7 @@ const App = () => {
           console.log('client error', error);
         }
       }
-    }
+    };
     getData();
 
     getLanguage();
@@ -78,7 +78,7 @@ const App = () => {
                 component={IntroSelectLanguage}
                 options={{title: 'Kaam', headerShown: false}}
               />
-              <Stack.Screen
+              {/* <Stack.Screen
                 name="IntroJobSearch"
                 component={IntroJobSearch}
                 options={{title: 'search-dream-job', headerShown: false}}
@@ -97,7 +97,7 @@ const App = () => {
                 name="lastIntroScreen"
                 component={LastIntroScreen}
                 options={{headerShown: false}}
-              />
+              /> */}
               <Stack.Screen
                 name="registerScreen"
                 component={RegisterScreen}
