@@ -11,13 +11,9 @@ import useLoginStore, {
 
 import RegisterScreen from './src/screens/login/RegisterScreen';
 import IntroSelectLanguage from './src/screens/intro/IntroSelectLanguage';
-import IntroScreenJobsAndInvitations from './src/screens/intro/IntroScreenJobsAndInvitations';
-import LastIntroScreen from './src/screens/intro/LastIntroScreen';
-import IntroJobSearch from './src/screens/intro/IntroJobSearch';
 import VerifyCode from './src/screens/login/VerifyCode';
 import ChooseProfession from './src/screens/login/ChooseProfession';
 import SplashScreen from 'react-native-splash-screen';
-import IntroScreenBrowseJobs from './src/screens/intro/IntroScreenBrowseJobs';
 import LoginScreen from './src/screens/login/Login';
 import JobPreference from './src/screens/login/JobPreference';
 import Icon, {Icons} from './src/components/Icons';
@@ -28,17 +24,15 @@ import ApplyNow from './src/screens/jobs/ApplyNow';
 import Chat from './src/screens/chats/Chat';
 import TrackApplication from './src/screens/chats/TrackApplication';
 import DrawerNavigation from './src/screens/DrawerNavigation';
-import useLoaderStore from './src/store/loader.store';
 import SeeAll from './src/screens/see-all/SeeAll';
 import {ApplicantListScreen} from './src/screens/jobs/Applicants';
 import client from './client';
-
-// Navigators
+import messaging from '@react-native-firebase/messaging';
+import notifee from '@notifee/react-native';
 
 const Stack = createNativeStackNavigator();
 const App = () => {
   const {isLoggedIn, setLoggedInUserDetails, getLanguage} = useLoginStore();
-  const {isLoading} = useLoaderStore();
 
   useEffect(() => {
     setTimeout(() => {
@@ -64,13 +58,59 @@ const App = () => {
     getLanguage();
   }, [isLoggedIn]);
 
+  useEffect(() => {
+    /**
+     * handles Foreground state notifications
+     */
+
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      const channelId = await notifee.createChannel({
+        id: 'default',
+        name: 'Default Channel',
+      });
+      console.log('ForeGround Notification handler', remoteMessage);
+
+      const {notification, data} = remoteMessage;
+      await notifee.displayNotification({
+        title: notification.title,
+        body: notification.body,
+        android: {
+          channelId,
+          smallIcon:"ic_notification"
+        },
+      });
+    });
+    return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    /**
+     * handles Background state notifications
+     */
+    const unsubscribe = messaging().onNotificationOpenedApp(
+      async remoteMessage => {
+        console.log('Background Notification handler', remoteMessage);
+      },
+    );
+    return unsubscribe;
+    // setBackgroundMessageHandler
+  }, []);
+  useEffect(() => {
+    const unsubscribe = messaging().setBackgroundMessageHandler(
+      async remoteMessage => {
+        console.log('HEADLESS BACKGROUND: ' + JSON.stringify(remoteMessage));
+      },
+    );
+    return unsubscribe;
+    // setBackgroundMessageHandler
+  }, []);
+
   return (
     <>
       <NavigationContainer>
         <Stack.Navigator
           initialRouteName={'DrawerNavigation'}
           keyboardHandlingEnabled={true}>
-          {/* <Stack.Navigator initialRouteName={!isLoggedIn ? 'IntroSelectLanguage' : 'DrawerNavigation'}> */}
           {!isLoggedIn ? (
             <>
               <Stack.Screen
@@ -78,26 +118,6 @@ const App = () => {
                 component={IntroSelectLanguage}
                 options={{title: 'Kaam', headerShown: false}}
               />
-              {/* <Stack.Screen
-                name="IntroJobSearch"
-                component={IntroJobSearch}
-                options={{title: 'search-dream-job', headerShown: false}}
-              />
-              <Stack.Screen
-                name="IntroScreenBrowseJobs"
-                component={IntroScreenBrowseJobs}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="IntroScreenJobsAndInvitations"
-                component={IntroScreenJobsAndInvitations}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="lastIntroScreen"
-                component={LastIntroScreen}
-                options={{headerShown: false}}
-              /> */}
               <Stack.Screen
                 name="registerScreen"
                 component={RegisterScreen}

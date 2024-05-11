@@ -24,6 +24,7 @@ import RecommendedJobsElement from './RecommendedJobsElement';
 import NearbyJobsElement from './NearbyJobsElement';
 import {useFocusEffect} from '@react-navigation/native';
 
+
 const Dashboard = ({navigation}) => {
   const [refreshing, setRefreshing] = useState(false);
   const {loggedInUser, language} = useLoginStore();
@@ -89,6 +90,8 @@ const Dashboard = ({navigation}) => {
     getRecommendedJobs();
     getFeaturedJobs();
   }, []);
+
+  
 
   return (
     <ScrollView

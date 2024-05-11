@@ -3,13 +3,12 @@ import {feathers} from '@feathersjs/feathers';
 import socketio from '@feathersjs/socketio-client';
 import authentication from '@feathersjs/authentication-client';
 import EncryptedStorage from 'react-native-encrypted-storage';
-const socket = io(
-  'https://84a8-2409-40c2-102c-dc28-61e8-a54-a96c-a92e.ngrok-free.app',
-  {
-    transports: ['websocket'],
-    forceNew: true,
-  },
-);
+import {REACT_APP_LOCAL_MODE} from './env';
+
+const socket = io(REACT_APP_LOCAL_MODE, {
+  transports: ['websocket'],
+  forceNew: true,
+});
 
 const client = feathers();
 

@@ -13,13 +13,18 @@ import tw from 'twrnc';
 
 import useLoginStore from '../../store/authentication/login.store';
 import useRegistrationStore from '../../store/authentication/registration.store';
+import useUsersStore from '../../store/authentication/user.store';
+import { requestUserPermissionAndFcmToken } from '../../helper/notification-helper';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
-const VerifyCode = ({route, navigation}) => {
+
+const VerifyCode = () => {
   const codeInputs = useRef([]);
   const [code, setCode] = useState('');
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
   const {login} = useLoginStore();
   const {loginDetails} = useRegistrationStore();
+  const {updateFcmDeviceToken} = useUsersStore();
 
   const handleCodeInput = (index, text) => {
     const newCode = code.substr(0, index) + text + code.substr(index + 1);
@@ -32,7 +37,15 @@ const VerifyCode = ({route, navigation}) => {
   };
 
   const handleVerify = async () => {
-    await login(code);
+    const success = await login(code);
+    if (success) {
+      const fcmToken = await EncryptedStorage.getItem('fcmToken');
+      if (fcmToken) {
+        updateFcmDeviceToken({
+          firebasetokens: [fcmToken],
+        });
+      }
+    }
   };
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -52,8 +65,18 @@ const VerifyCode = ({route, navigation}) => {
       keyboardDidHideListener.remove();
     };
   }, []);
+
+  useEffect(() => {
+    (async () => {
+      await requestUserPermissionAndFcmToken();
+    })();
+  }, []);
+
   return (
-    <ScrollView style={tw`bg-white`} showsVerticalScrollIndicator={false}>
+    <ScrollView
+      style={tw`bg-white`}
+      showsVerticalScrollIndicator={false}
+      keyboardShouldPersistTaps="handled">
       <SafeAreaView style={tw`flex-1 bg-white py-0`}>
         <View style={tw`flex-1 py-2 justify-start items-center`}>
           <View style={tw`flex`}>

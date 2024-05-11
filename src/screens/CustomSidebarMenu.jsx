@@ -23,9 +23,12 @@ import PremiumIconSVG from '../assets/svgs/PremiumIcon.svg';
 // Store
 import useLoginStore from '../store/authentication/login.store';
 import capitalizeFirstLetter from '../helper/utils/capitalizeFirstLetter';
+import useUsersStore from '../store/authentication/user.store';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 const CustomSidebarMenu = props => {
   const {logout, loggedInUser} = useLoginStore();
+  const {updateFcmDeviceToken} = useUsersStore();
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={[tw`p-3 mt-4 h-[35%] items-center justify-center relative`]}>
@@ -69,18 +72,10 @@ const CustomSidebarMenu = props => {
               tw`text-zinc-600 text-[14px]`,
               {fontFamily: 'Poppins-Light'},
             ]}>
-            UI Designer
+            Comming soon...
           </Text>
           <BlueTickSVG width={20} height={20} />
         </View>
-        {/* <Text
-          style={[
-            tw`text-green-700 text-[15px]`,
-            {fontFamily: 'Poppins-Regular'},
-          ]}
-          onPress={() => props.navigation.navigate('View Profile')}>
-          View Profile
-        </Text> */}
       </View>
       <DrawerContentScrollView {...props}>
         <View style={tw`px-4`}>
@@ -113,7 +108,16 @@ const CustomSidebarMenu = props => {
             titleStyle={{color: '#E30000'}}
             index={props?.state?.index}
             icon={<LogoutSVG />}
-            onPress={() => logout()}
+            onPress={async () => {
+              const fcmToken = await EncryptedStorage.getItem('fcmToken');
+              if (fcmToken) {
+                updateFcmDeviceToken({
+                  firebasetokens: [fcmToken],
+                  isLogout: true,
+                });
+              }
+              logout();
+            }}
           />
           <View style={tw`items-center mt-12`}>
             <Pressable

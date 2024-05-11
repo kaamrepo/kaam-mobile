@@ -11,7 +11,6 @@ import PersonalInfo from './drawer-screens/PersonalInfo';
 import Settings from './drawer-screens/Settings';
 import Icon, {Icons} from '../components/Icons';
 import tw from 'twrnc';
-import ViewProfile from './drawer-screens/ViewProfile';
 
 function DrawerNavigation() {
   return (

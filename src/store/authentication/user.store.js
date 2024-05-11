@@ -2,10 +2,21 @@ import {create} from 'zustand';
 import API from '../../helper/API';
 import {USER} from '../../helper/endpoints';
 import Toast from 'react-native-toast-message';
-import useLoginStore, {getToken, retrieveUserSession} from './login.store';
+import useLoginStore, {getToken} from './login.store';
 // import { getTimeZone } from "react-native-localize";
 
 const useUsersStore = create((set, get) => ({
+  updateFcmDeviceToken: async data => {
+    try {
+      const userid = useLoginStore.getState().loggedInUser?._id;
+      await API.patch(`${USER}/${userid}`, data, {
+        headers: {Authorization: await getToken()},
+      });
+    } catch (error) {
+      console.log(`updateFcmDeviceToken ${JSON.stringify(error)}`);
+      return false;
+    }
+  },
   updateAboutMeStore: async (userid, data) => {
     try {
       const res = await API.patch(`${USER}/${userid}`, data, {

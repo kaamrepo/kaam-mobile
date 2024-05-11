@@ -7,7 +7,7 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import GeneralStatusBar from '../../components/GeneralStatusBar';
 import {CountryPicker} from 'react-native-country-codes-picker';

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "299741631759",
+    "project_id": "kaam-121fd",
+    "storage_bucket": "kaam-121fd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:299741631759:android:7b859232750dc78cd71a7a",
+        "android_client_info": {
+          "package_name": "com.kaam"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVWzXV3DYI9QO--z6_DdEdHW2tK6RdVxs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

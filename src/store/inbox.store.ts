@@ -7,7 +7,6 @@ const useInboxStore = create<useInboxStoreType>((set, get) => ({
   inboxList: undefined,
   setInboxList: async userid => {
     try {
-      console.log('ILAY');
       const res = await API.get(`${JOBS_APPLICATIONS}`, {
         headers: {Authorization: await getToken()},
         params: {

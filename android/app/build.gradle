@@ -158,9 +158,16 @@ android {
 
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
+    implementation(platform("com.google.firebase:firebase-bom:32.7.4"))
+
     implementation("com.facebook.react:react-android")
     implementation project(':react-native-splash-screen')
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.0.0")
+
+    // firebase added
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-messaging")
+
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}")
     debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
@@ -178,3 +185,4 @@ dependencies {
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
 
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+apply plugin: 'com.google.gms.google-services'

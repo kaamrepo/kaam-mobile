@@ -70,6 +70,7 @@ const useLoginStore = create((set, get) => ({
   },
   logout: async () => {
     try {
+      
       await removeUserSession();
       set({loggedInUser: undefined, isLoggedIn: false});
     } catch (error) {}
@@ -91,7 +92,9 @@ export const getToken = async () => {
     let token = await retrieveUserSession();
     token = JSON.parse(token);
     return token.accessToken;
-  } catch (error) {  console.log("error::getToken", error)}
+  } catch (error) {
+    console.log('error::getToken', error);
+  }
 };
 
 export const storeUserSession = async data => {
@@ -108,7 +111,7 @@ export const storeUserSession = async data => {
       console.log('client error', error);
     }
   } catch (error) {
-    console.log("error::storeUserSession", error)
+    console.log('error::storeUserSession', error);
   }
 };
 export const storeUserlanguage = async data => {
@@ -121,7 +124,9 @@ export const storeUserlanguage = async data => {
     } catch (error) {
       console.error('Error storing data:', error);
     }
-  } catch (error) {  console.log("error::storeUserlanguage ", error)}
+  } catch (error) {
+    console.log('error::storeUserlanguage ', error);
+  }
 };
 
 export const retrieveUserSession = async () => {
