@@ -58,51 +58,60 @@ const App = () => {
     getLanguage();
   }, [isLoggedIn]);
 
-  useEffect(() => {
-    /**
-     * handles Foreground state notifications
-     */
-
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-      const channelId = await notifee.createChannel({
-        id: 'default',
-        name: 'Default Channel',
-      });
-      console.log('ForeGround Notification handler', remoteMessage);
-
-      const {notification, data} = remoteMessage;
-      await notifee.displayNotification({
-        title: notification.title,
-        body: notification.body,
-        android: {
-          channelId,
-          smallIcon:"ic_notification"
-        },
-      });
-    });
-    return unsubscribe;
-  }, []);
+  function onMessageReceived(message) {
+    notifee.displayNotification(JSON.parse(message.data.notifee));
+  }
 
   useEffect(() => {
-    /**
-     * handles Background state notifications
-     */
-    const unsubscribe = messaging().onNotificationOpenedApp(
-      async remoteMessage => {
-        console.log('Background Notification handler', remoteMessage);
-      },
-    );
-    return unsubscribe;
-    // setBackgroundMessageHandler
+    const message1 = messaging().onMessage(onMessageReceived);
+
+    return message1;
   }, []);
   useEffect(() => {
-    const unsubscribe = messaging().setBackgroundMessageHandler(
+    const message2 = messaging().setBackgroundMessageHandler(onMessageReceived);
+
+    return message2;
+  }, []);
+
+  // useEffect(() => {
+  //   const foregroundUnsubscribe = messaging().onMessage(async remoteMessage => {
+  //     const channelId = await notifee.createChannel({
+  //       id: 'default',
+  //       name: 'Default Channel',
+  //     });
+  //     console.log('ForeGround Notification handler', remoteMessage);
+
+  //     const {notification, data} = remoteMessage;
+  //     await notifee.displayNotification({
+  //       title: notification.title,
+  //       body: notification.body,
+  //       android: {
+  //         channelId,
+  //         smallIcon:'ic_notification',
+  //         color: '#000000',
+  //       },
+  //     });
+  //   });
+  //   return foregroundUnsubscribe;
+  // }, []);
+
+  // useEffect(() => {
+  //   const backgroundUnsubscribe = messaging().setBackgroundMessageHandler(
+  //     async remoteMessage => {
+  //       console.log('HEADLESS BACKGROUND: ' + JSON.stringify(remoteMessage));
+  //     },
+  //   );
+  //   return backgroundUnsubscribe;
+
+  // }, []);
+  useEffect(() => {
+    const backgroundNotifeeUnsubscribe = notifee.onBackgroundEvent(
       async remoteMessage => {
-        console.log('HEADLESS BACKGROUND: ' + JSON.stringify(remoteMessage));
+        console.log('HEADLESS BACKGROUND: Notifee ' + JSON.stringify(remoteMessage));
       },
     );
-    return unsubscribe;
-    // setBackgroundMessageHandler
+    return backgroundNotifeeUnsubscribe;
+
   }, []);
 
   return (
