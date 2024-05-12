@@ -43,6 +43,7 @@ const useLoginStore = create((set, get) => ({
       }
       return true;
     } catch (error) {
+      console.log('login error', JSON.stringify(error, null, 4));
       Toast.show({
         type: 'tomatoToast',
         text1: error.response.data.message ?? 'ERROR::login',
@@ -61,6 +62,7 @@ const useLoginStore = create((set, get) => ({
         return true;
       }
     } catch (error) {
+      console.log('getOTP error', JSON.stringify(error, null, 4));
       Toast.show({
         type: 'tomatoToast',
         text1: error.response.data.message ?? 'ERROR::getOTP',
@@ -70,7 +72,6 @@ const useLoginStore = create((set, get) => ({
   },
   logout: async () => {
     try {
-      
       await removeUserSession();
       set({loggedInUser: undefined, isLoggedIn: false});
     } catch (error) {}
@@ -167,6 +168,7 @@ export const removeUserSession = async () => {
     await EncryptedStorage.removeItem('user_session');
     await EncryptedStorage.removeItem('isLoggedIn');
     await EncryptedStorage.removeItem('accessToken');
+    await EncryptedStorage.removeItem('fcmToken');
   } catch (error) {}
 };
 

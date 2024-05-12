@@ -24,7 +24,6 @@ import RecommendedJobsElement from './RecommendedJobsElement';
 import NearbyJobsElement from './NearbyJobsElement';
 import {useFocusEffect} from '@react-navigation/native';
 
-
 const Dashboard = ({navigation}) => {
   const [refreshing, setRefreshing] = useState(false);
   const {loggedInUser, language} = useLoginStore();
@@ -91,8 +90,6 @@ const Dashboard = ({navigation}) => {
     getFeaturedJobs();
   }, []);
 
-  
-
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -123,9 +120,11 @@ const Dashboard = ({navigation}) => {
               </Text>
               <Text
                 style={[tw`text-xl text-black`, {fontFamily: 'Poppins-Bold'}]}>
-                {`${capitalizeFirstLetter(
-                  loggedInUser?.firstname,
-                )} ${capitalizeFirstLetter(loggedInUser?.lastname)}`}{' '}
+                {loggedInUser
+                  ? `${capitalizeFirstLetter(
+                      loggedInUser?.firstname,
+                    )} ${capitalizeFirstLetter(loggedInUser?.lastname)}`
+                  : ''}
               </Text>
             </View>
           </View>
@@ -141,15 +140,15 @@ const Dashboard = ({navigation}) => {
               ) : (
                 <View
                   style={[
-                    tw`w-[48px] h-[48px] rounded-3 bg-violet-600/60 flex-row justify-center items-center overflow-hidden`,
+                    tw`w-[48px] h-[48px] rounded-3 bg-[#111545] flex-row justify-center items-center overflow-hidden`,
                   ]}>
                   <Text
                     style={[
-                      tw`text-[40px] text-white`,
+                      tw`text-[30px] text-white`,
                       {fontFamily: 'Poppins-Bold', verticalAlign: 'middle'},
                     ]}>
-                    {loggedInUser.firstname.charAt(0)}
-                    {loggedInUser.lastname.charAt(0)}
+                    {loggedInUser?.firstname?.charAt(0)}
+                    {loggedInUser?.lastname?.charAt(0)}
                   </Text>
                 </View>
               )}

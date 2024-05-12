@@ -76,6 +76,7 @@ const MessageList = ({isLoading, inboxList, loggedInUserId}) => {
 };
 
 const MessageListItem = ({item, loggedInUserId, isLastItem}) => {
+  console.log('item', JSON.stringify(item, null, 4));
   return (
     <View
       style={[
@@ -116,15 +117,12 @@ const MessageListItem = ({item, loggedInUserId, isLastItem}) => {
         </Text>
 
         {item?.chatDetails?.unseenMessageCount ? (
-          <Text
-            style={[
-              tw`text-white bg-blue-500 text-[10px] text-center w-4 h-4 rounded-2xl`,
-              {fontFamily: 'Poppins-SemiBold'},
-            ]}>
-            {item?.chatDetails?.unseenMessageCount > 99
-              ? `99+`
-              : item?.chatDetails?.unseenMessageCount}
-          </Text>
+          <View
+            style={tw`min-w-[18px] bg-blue-500 px-1 py-0.5 rounded-lg justify-center items-center`}>
+            <Text style={tw`text-white text-[12px]`}>
+              {item?.chatDetails?.unseenMessageCount}
+            </Text>
+          </View>
         ) : null}
       </View>
     </View>
@@ -136,24 +134,6 @@ const Headers = ({}) => {
       <Text style={[tw`text-lg text-black`, {fontFamily: 'Poppins-SemiBold'}]}>
         Messages
       </Text>
-      {/* <View style={[tw`w-[25%] flex flex-row justify-evenly items-center`]}>
-        <TouchableOpacity>
-          <Icon
-            style={tw`text-green-600`}
-            name={'search'}
-            size={26}
-            type={Icons.Feather}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Icon
-            style={tw`text-green-600`}
-            name={'edit'}
-            size={26}
-            type={Icons.Feather}
-          />
-        </TouchableOpacity>
-      </View> */}
     </View>
   );
 };

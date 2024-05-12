@@ -28,7 +28,7 @@ import SeeAll from './src/screens/see-all/SeeAll';
 import {ApplicantListScreen} from './src/screens/jobs/Applicants';
 import client from './client';
 import messaging from '@react-native-firebase/messaging';
-import notifee from '@notifee/react-native';
+import notifee, { AndroidImportance } from '@notifee/react-native';
 
 const Stack = createNativeStackNavigator();
 const App = () => {
@@ -58,8 +58,23 @@ const App = () => {
     getLanguage();
   }, [isLoggedIn]);
 
-  function onMessageReceived(message) {
-    notifee.displayNotification(JSON.parse(message.data.notifee));
+  async function onMessageReceived(message) {
+    await notifee.requestPermission();
+    console.log('Notifee', message);
+    try {
+      const notifyObj = JSON.parse(message.data.notifee)
+      const channelId = await notifee.createChannel({
+        id: 'default',
+        name: 'Important Notifications',
+        importance: AndroidImportance.HIGH,
+      });
+
+      notifyObj.android.channelId = channelId
+
+      await notifee.displayNotification(notifyObj);
+    } catch (error) {
+      console.log('notifee.displayNotification', error);
+    }
   }
 
   useEffect(() => {
@@ -73,45 +88,15 @@ const App = () => {
     return message2;
   }, []);
 
-  // useEffect(() => {
-  //   const foregroundUnsubscribe = messaging().onMessage(async remoteMessage => {
-  //     const channelId = await notifee.createChannel({
-  //       id: 'default',
-  //       name: 'Default Channel',
-  //     });
-  //     console.log('ForeGround Notification handler', remoteMessage);
-
-  //     const {notification, data} = remoteMessage;
-  //     await notifee.displayNotification({
-  //       title: notification.title,
-  //       body: notification.body,
-  //       android: {
-  //         channelId,
-  //         smallIcon:'ic_notification',
-  //         color: '#000000',
-  //       },
-  //     });
-  //   });
-  //   return foregroundUnsubscribe;
-  // }, []);
-
-  // useEffect(() => {
-  //   const backgroundUnsubscribe = messaging().setBackgroundMessageHandler(
-  //     async remoteMessage => {
-  //       console.log('HEADLESS BACKGROUND: ' + JSON.stringify(remoteMessage));
-  //     },
-  //   );
-  //   return backgroundUnsubscribe;
-
-  // }, []);
   useEffect(() => {
     const backgroundNotifeeUnsubscribe = notifee.onBackgroundEvent(
       async remoteMessage => {
-        console.log('HEADLESS BACKGROUND: Notifee ' + JSON.stringify(remoteMessage));
+        console.log(
+          'HEADLESS BACKGROUND: Notifee ' + JSON.stringify(remoteMessage),
+        );
       },
     );
     return backgroundNotifeeUnsubscribe;
-
   }, []);
 
   return (

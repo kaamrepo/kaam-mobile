@@ -24,7 +24,7 @@ const useJobStore = create((set, get) => ({
         sortDesc: ['createdat'],
         type: 'nearby',
       };
-      const res = await API.get(`${JOBS}/`, {
+      const res = await API.get(`${JOBS}`, {
         headers: {Authorization: await getToken()},
         params,
       });
@@ -50,7 +50,7 @@ const useJobStore = create((set, get) => ({
         },
         type: 'recommended',
       };
-      const res = await API.get(`${JOBS}/`, {
+      const res = await API.get(`${JOBS}`, {
         headers: {Authorization: await getToken()},
         params,
       });
@@ -76,7 +76,7 @@ const useJobStore = create((set, get) => ({
         },
         type: 'featured',
       };
-      const res = await API.get(`${JOBS}/`, {
+      const res = await API.get(`${JOBS}`, {
         headers: {Authorization: await getToken()},
         params,
       });
@@ -119,7 +119,7 @@ const useJobStore = create((set, get) => ({
       if (searchText?.length) {
         params.text = searchText;
       }
-      const res = await API.get(`${JOBS}/`, {
+      const res = await API.get(`${JOBS}`, {
         headers: {Authorization: await getToken()},
         params,
       });

@@ -1,18 +1,14 @@
 import React, {useCallback} from 'react';
-import {View, Text, Image, Pressable} from 'react-native';
+import {View, Text, Image, Pressable, ActivityIndicator} from 'react-native';
 import tw from 'twrnc';
 import Image1 from '../../assets/images/browse-jobs.png';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import useJobStore from '../../store/dashboard.store';
 import GeneralStatusBar from '../../components/GeneralStatusBar';
-import useLoginStore from '../../store/authentication/login.store';
 import useLoaderStore from '../../store/loader.store';
 import Icon, {Icons} from '../../components/Icons';
 import {darkenColor} from '../../helper/utils/getDarkColor';
-import {
-  getRandomBackgroundColor,
-  getRandomColor,
-} from '../../helper/utils/colors';
+import {getRandomColor} from '../../helper/utils/colors';
 import {useFocusEffect} from '@react-navigation/native';
 
 const jobDescription = {
@@ -20,6 +16,7 @@ const jobDescription = {
 };
 
 const ApplyNow = ({route, navigation}) => {
+  const {isLoading} = useLoaderStore();
   const bgColor = getRandomColor(route?.params?.index);
   const {getNearByJobById, job, clearJob, applyForJob} = useJobStore();
 
@@ -157,6 +154,19 @@ const ApplyNow = ({route, navigation}) => {
           )}
         </View>
       </View>
+
+      {isLoading && (
+        <View
+          style={[
+            tw`absolute top-0 right-0 bottom-0 left-0 bg-transparent justify-center items-center`,
+          ]}>
+          <ActivityIndicator
+            animating={isLoading}
+            size={35}
+            style={tw`text-green-500`}
+          />
+        </View>
+      )}
     </SafeAreaView>
   );
 };

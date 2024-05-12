@@ -6,6 +6,7 @@ import {
   TextInput,
   ScrollView,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -62,17 +63,17 @@ const createJobSchema = yup.object({
     .typeError('Job salary is required!')
     .required('Job salary is required!'),
   salarybasis: yup.string().trim().required('Please select a salary basis'),
-  tags: yup
-    .array('Tags are required!')
-    .typeError('Tags are required!')
-    .of(yup.string().trim().required('Tag is required'))
-    .required('Tags are required!')
-    .min(3)
-    .max(3),
+  // tags: yup
+  //   .array('Tags are required!')
+  //   .typeError('Tags are required!')
+  //   .of(yup.string().trim().required('Tag is required'))
+  //   .required('Tags are required!')
+  //   .min(3)
+  //   .max(3),
 });
 
 const JobPostingForm = ({navigation}) => {
-  const {setLoading} = useLoaderStore();
+  const {isLoading, setLoading} = useLoaderStore();
   const {loggedInUser} = useLoginStore();
   const {postJobs} = useJobStore();
   const {
@@ -91,18 +92,18 @@ const JobPostingForm = ({navigation}) => {
     mode: 'onChange',
   });
 
-  let tags = watch('tags');
+  // let tags = watch('tags');
 
   const createJob = async data => {
     const result = requestLocationPermission();
-    const {tags} = data;
-    if (tags?.length < 3) {
-      setError('tags', {
-        type: 'custom',
-        message: 'Atleas 3 tags are required',
-      });
-      return;
-    }
+    // const {tags} = data;
+    // if (tags?.length < 3) {
+    //   setError('tags', {
+    //     type: 'custom',
+    //     message: 'Atleas 3 tags are required',
+    //   });
+    //   return;
+    // }
     result.then(res => {
       if (res) {
         setLoading(true);
@@ -136,43 +137,43 @@ const JobPostingForm = ({navigation}) => {
     });
   };
 
-  const handleAddTag = value => {
-    if (value) {
-      if (value.length > 25) {
-        setError('tags', {
-          type: 'custom',
-          message: 'too many characters',
-        });
-        return;
-      }
-      if (tags && tags.findIndex(d => d === value) !== -1) {
-        console.log(tags?.findIndex(d => d === value) !== -1);
-        setError('tags', {
-          type: 'custom',
-          message: 'A unique tag is expected.',
-        });
-        return;
-      }
-      if (tags?.length < 3) {
-        setValue('tags', [...getValues('tags'), value]);
-      } else if (tags?.length === 0 || !tags) {
-        setValue('tags', [value]);
-      } else {
-        setError('tags', {type: 'custom', message: 'Maximum 3 tags allowed'});
-      }
-      resetField('tagtext');
-      clearErrors('tags');
-    } else {
-      setError('tags', {type: 'custom', message: 'Please add a tag'});
-    }
-  };
+  // const handleAddTag = value => {
+  //   if (value) {
+  //     if (value.length > 25) {
+  //       setError('tags', {
+  //         type: 'custom',
+  //         message: 'too many characters',
+  //       });
+  //       return;
+  //     }
+  //     if (tags && tags.findIndex(d => d === value) !== -1) {
+  //       console.log(tags?.findIndex(d => d === value) !== -1);
+  //       setError('tags', {
+  //         type: 'custom',
+  //         message: 'A unique tag is expected.',
+  //       });
+  //       return;
+  //     }
+  //     if (tags?.length < 3) {
+  //       setValue('tags', [...getValues('tags'), value]);
+  //     } else if (tags?.length === 0 || !tags) {
+  //       setValue('tags', [value]);
+  //     } else {
+  //       setError('tags', {type: 'custom', message: 'Maximum 3 tags allowed'});
+  //     }
+  //     resetField('tagtext');
+  //     clearErrors('tags');
+  //   } else {
+  //     setError('tags', {type: 'custom', message: 'Please add a tag'});
+  //   }
+  // };
 
-  const handleRemoveTag = index => {
-    setValue(
-      'tags',
-      tags.filter((tag, i) => i !== index),
-    );
-  };
+  // const handleRemoveTag = index => {
+  //   setValue(
+  //     'tags',
+  //     tags.filter((tag, i) => i !== index),
+  //   );
+  // };
 
   useFocusEffect(
     useCallback(() => {
@@ -369,7 +370,7 @@ const JobPostingForm = ({navigation}) => {
             {errors?.salarybasis?.message}
           </Text>
         </View>
-        <View style={[tw`w-full`]}>
+        {/* <View style={[tw`w-full`]}>
           <Text
             style={[
               tw`text-gray-600 w-full text-[12px] text-left px-2`,
@@ -426,8 +427,9 @@ const JobPostingForm = ({navigation}) => {
               />
             </Pressable>
           </View>
-          <TagsChips tags={tags} handleRemoveTag={handleRemoveTag} />
+           <TagsChips tags={tags} handleRemoveTag={handleRemoveTag} /> 
         </View>
+        */}
         <View style={tw`w-full mt-5 items-center`}>
           <Pressable
             disabled={isSubmitting}
@@ -455,6 +457,18 @@ const JobPostingForm = ({navigation}) => {
           </Pressable>
         </View>
       </ScrollView>
+      {isLoading && (
+        <View
+          style={[
+            tw`absolute top-0 right-0 bottom-0 left-0 bg-transparent justify-center items-center`,
+          ]}>
+          <ActivityIndicator
+            animating={isLoading}
+            size={35}
+            style={tw`text-red-400`}
+          />
+        </View>
+      )}
     </SafeAreaView>
   );
 };

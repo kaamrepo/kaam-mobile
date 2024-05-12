@@ -101,7 +101,7 @@ const IntroSelectLanguage = ({navigation}) => {
                   {
                     backgroundColor: pressed ? '#d7dbd8' : 'transparent',
                   },
-                  tw`w-1/2 items-center justify-center rounded-2xl`,
+                  tw`w-1/2 items-center justify-center rounded-full`,
                 ]}>
                 {({pressed}) => (
                   <Image

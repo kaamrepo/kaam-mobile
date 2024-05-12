@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useCallback, useRef, useMemo} from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   FlatList,
   TouchableOpacity,
   Pressable,
+  Image,
 } from 'react-native';
 import tw from 'twrnc';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -15,20 +16,25 @@ import useChatStore from '../../store/chat.store';
 import useLoginStore from '../../store/authentication/login.store';
 import Icon, {Icons} from '../../components/Icons';
 import dayjs from 'dayjs';
-import {feathersServices} from '../../helper/endpoints';
-import client from '../../../client';
 
 const Chat = ({route, navigation}) => {
   const [messageText, setMessageText] = useState('');
   const lastMessageRef = useRef(null);
-  const {chat, sendChatMessage, chatUpdatedEvent, getChatMessages, clearChat} =
-    useChatStore();
+  const {
+    chat: chat1,
+    sendChatMessage,
+    chatUpdatedEvent,
+    getChatMessages,
+    clearChat,
+  } = useChatStore();
   const handleBackPress = () => {
     navigation.goBack();
   };
+
+  const chat = useMemo(() => chat1, [chat1]);
   const bgColor = route?.params?.bgColor ?? '#000000';
 
-  const handleSendMessage = () => {
+  const handleSendMessage = useCallback(() => {
     let chat_message = {
       messageType: 'text',
       text: messageText,
@@ -37,12 +43,11 @@ const Chat = ({route, navigation}) => {
     };
     sendChatMessage(route.params.chatid, chat_message);
     setMessageText('');
-  };
+  }, [messageText, route.params.chatid, sendChatMessage]);
 
   useEffect(() => {
     if (route.params.chatid) getChatMessages(route.params.chatid);
     chatUpdatedEvent();
-
     return () => {
       clearChat();
     };
@@ -91,30 +96,15 @@ const Chat = ({route, navigation}) => {
               name={'google-maps'}
             />
           </TouchableOpacity>
-          {/* <TouchableOpacity
-            onPress={() => {
-              if (route?.params?.chatid) {
-                getChatAndMessages(route?.params?.chatid);
-              }
-            }}>
-            <Icon
-              type={Icons.MaterialCommunityIcons}
-              size={24}
-              style={tw`text-white`}
-              name={'refresh'}
-            />
-          </TouchableOpacity> */}
         </View>
       </View>
 
-      {/* Chat Area */}
       <View style={tw`flex-1 px-4 py-1`}>
-        {/* Chat messages */}
         <FlatList
           ref={lastMessageRef}
           data={chat?.messages}
           renderItem={({item, index}) => (
-            <RenderMessage item={item} index={index} bgColor={bgColor} />
+            <MemoizedChat item={item} index={index} bgColor={bgColor} />
           )}
           showsVerticalScrollIndicator={false}
           keyExtractor={item => item._id.toString()}
@@ -126,47 +116,40 @@ const Chat = ({route, navigation}) => {
         />
       </View>
 
-      {/* Bottom Bar */}
       <View
-        style={tw`flex-row items-center justify-between border-t border-slate-300 px-4 py-2 bg-white`}>
+        style={tw`flex-row items-center justify-between gap-x-3 border-t border-slate-300 px-2 py-2 bg-white`}>
+        <Pressable
+          style={({pressed}) => [
+            {
+              backgroundColor: pressed ? 'rgb(226 232 240)' : 'white',
+            },
+            tw`w-10 h-10 border border-slate-300 items-center justify-center rounded-full`,
+          ]}>
+          <Ionicons name="attach" size={24} style={tw`text-[#143449]`} />
+        </Pressable>
         <TextInput
-          style={tw`border border-gray-300 w-[85%] text-black rounded-xl max-h-15 bg-white px-4 py-2`}
+          style={tw`flex-grow border border-gray-300 text-black rounded-full max-h-15 bg-white px-4 py-1.5`}
           placeholder="Type a message..."
           multiline
           value={messageText}
           onChangeText={setMessageText}
         />
-        <View style={tw`w-[15%] flex-row justify-around items-center`}>
+        <View style={tw`flex-row justify-around items-center`}>
           <Pressable
             disabled={messageText.length ? false : true}
             style={({pressed}) => [
               {
-                backgroundColor: pressed ? '#d7dbd8' : 'transparent',
+                backgroundColor: pressed
+                  ? '#d7dbd8'
+                  : messageText.length
+                  ? 'green'
+                  : 'gray',
               },
-              tw`w-10 h-10 items-center justify-center rounded-full`,
+              tw`w-14 h-10 items-center justify-center rounded-full`,
             ]}
             onPress={handleSendMessage}>
-            <Ionicons
-              name="send"
-              size={20}
-              style={tw`ml-[3px] ${
-                messageText?.length ? `text-[${bgColor}]` : 'text-slate-400'
-              }`}
-            />
+            <Ionicons name="send" size={20} style={tw`ml-[3px] text-white`} />
           </Pressable>
-          {/* <Pressable
-            style={({pressed}) => [
-              {
-                backgroundColor: pressed ? '#d7dbd8' : 'transparent',
-              },
-              tw`w-10 h-10 items-center justify-center rounded-full`,
-            ]}>
-            <Ionicons
-              name="attach"
-              size={24}
-              style={tw`text-[${colors.primaryColor}]`}
-            />
-          </Pressable> */}
         </View>
       </View>
     </SafeAreaView>
@@ -175,11 +158,17 @@ const Chat = ({route, navigation}) => {
 
 export default Chat;
 
-const RenderMessage = ({item, index, bgColor}) => {
+export const MemoizedChat = React.memo(({item, index, bgColor}) => (
+  <View style={tw`flex-row my-1`}>
+    <RenderChatMessage item={item} index={index} bgColor={bgColor} />
+  </View>
+));
+
+const RenderChatMessage = ({item, index, bgColor}) => {
   const {loggedInUser} = useLoginStore();
-  return (
-    <View style={tw`flex-row my-1`}>
-      {item?.messageType === 'initial' ? (
+  switch (item?.messageType) {
+    case 'initial':
+      return (
         <View
           style={tw`flex flex-row gap-3 mx-auto items-center justify-center w-[80%] rounded-lg bg-white border border-[${bgColor}] text-black px-5 py-3 mb-2`}>
           <Icon
@@ -200,7 +189,10 @@ const RenderMessage = ({item, index, bgColor}) => {
                 ).format('DD-MMM-YYYY')}`}
           </Text>
         </View>
-      ) : (
+      );
+
+    case 'text':
+      return (
         <View
           style={tw`flex flex-row justify-between items-end gap-2 py-2 pl-5 pr-3 max-w-[80%] rounded-3xl shadow ${
             loggedInUser?._id === item?.senderid
@@ -230,7 +222,40 @@ const RenderMessage = ({item, index, bgColor}) => {
             name={item.isseen ? 'checkmark-done' : 'checkmark'}
           />
         </View>
-      )}
-    </View>
-  );
+      );
+
+    case 'image':
+      return (
+        <View
+          style={tw`px-2 py-2 items-end rounded-3xl shadow ${
+            loggedInUser?._id === item?.senderid
+              ? `ml-auto bg-[${bgColor}]`
+              : `bg-white`
+          }`}>
+          <Image
+            style={[tw`h-32 w-56 rounded-2xl`]}
+            source={{
+              uri: item?.url,
+            }}
+          />
+
+          <Icon
+            size={14}
+            style={tw`${
+              loggedInUser?._id === item?.senderid
+                ? `text-white`
+                : `text-[${bgColor}]`
+            }`}
+            type={Icons.Ionicons}
+            name={item.isseen ? 'checkmark-done' : 'checkmark'}
+          />
+        </View>
+      );
+    default:
+      return (
+        <>
+          <Text>Null</Text>
+        </>
+      );
+  }
 };
