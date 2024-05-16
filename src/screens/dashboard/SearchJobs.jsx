@@ -1,7 +1,10 @@
 import React from 'react'
-import { Text } from 'react-native'
+import { Text, View } from 'react-native'
+import NearbyStaff from './components/staff/NearbyStaff'
 export const SearchJobs = () => {
   return (
-    <Text>SearchJobs</Text>
+   <View>
+    <NearbyStaff></NearbyStaff>
+   </View>
   )
 }

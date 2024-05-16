@@ -16,7 +16,7 @@ import MenuIconSVG from '../../assets/svgs/Menu Icon.svg';
 import useLoginStore from '../../store/authentication/login.store';
 import capitalizeFirstLetter from '../../helper/utils/capitalizeFirstLetter';
 import GeneralStatusBar from '../../components/GeneralStatusBar';
-import useJobStore from '../../store/dashboard.store';
+import useJobStore from '../../store/jobs.store';
 import useLoaderStore from '../../store/loader.store';
 import {requestLocationPermission} from '../../helper/utils/getGeoLocation';
 import Geolocation from 'react-native-geolocation-service';
@@ -256,7 +256,7 @@ const Dashboard = ({navigation}) => {
         )}
         {selectedSearchType === 'staff' && (
           <View>
-            <SearchStaff></SearchStaff>
+            <SearchStaff {...{navigation,location}}></SearchStaff>
           </View>
         )}
       </ScrollView>

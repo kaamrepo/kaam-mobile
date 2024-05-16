@@ -14,7 +14,7 @@ import {dashboardTranslation} from './dashboardTranslation';
 import Carousel from 'react-native-snap-carousel';
 import Icon, {Icons} from '../../components/Icons';
 import {getRandomColor, primaryBGColor} from '../../helper/utils/colors';
-import useJobStore from '../../store/dashboard.store';
+import useJobStore from '../../store/jobs.store';
 import {getCoordinates} from '../../helper/utils/getGeoLocation';
 
 const NearbyJobsElement = ({

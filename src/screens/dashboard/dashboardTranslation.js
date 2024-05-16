@@ -5,6 +5,7 @@ export const dashboardTranslation = {
     'Recommended Jobs': 'शिफारस केलेल्या नोकऱ्या',
     'See all': 'सर्व पाहा',
     'Featured Jobs': 'वैशिष्ट्यीकृत नोकऱ्या',
+    'Nearby Staffs': 'आस-पास के कर्मचारी'
   },
   ગુજરાતી: {
     Welcome: 'સ્વાગત છે',
@@ -12,6 +13,7 @@ export const dashboardTranslation = {
     'Recommended Jobs': 'ભલામણ કરેલ નોકરીઓ',
     'See all': 'બધા જુઓ',
     'Featured Jobs': 'ફીચર્ડ નોકરીઓ',
+    'Nearby Staffs': 'નજીકના સ્ટાફ'
   },
   தமிழ்: {
     Welcome: 'வரவேற்பு',
@@ -19,6 +21,7 @@ export const dashboardTranslation = {
     'Recommended Jobs': 'பரிந்துரைக்கப்பட்ட வேலைகள்',
     'See all': 'See all',
     'Featured Jobs': 'சிறப்பு வேலைகள்',
+    'Nearby Staffs': 'आस-पास के कर्मचारी'
   },
   English: {
     Welcome: 'Welcome',
@@ -26,6 +29,7 @@ export const dashboardTranslation = {
     'Recommended Jobs': 'Recommended Jobs',
     'See all': 'See all',
     'Featured Jobs': 'Featured Jobs',
+    'Nearby Staffs': 'Nearby Staffs'
   },
   हिंदी: {
     Welcome: 'स्वागत',
@@ -33,6 +37,7 @@ export const dashboardTranslation = {
     'Recommended Jobs': 'अनुशंसित नौकरियाँ',
     'See all': 'सभी देखें',
     'Featured Jobs': 'चुनिंदा नौकरियां',
+    'Nearby Staffs': 'आस-पास के कर्मचारी'
   },
   اردو: {
     Welcome: 'خوش آمدید',
@@ -40,5 +45,6 @@ export const dashboardTranslation = {
     'Recommended Jobs': 'تجویز کردہ نوکریاں',
     'See all': 'تمام دیکھیں',
     'Featured Jobs': 'نمایاں نوکریاں',
+    'Nearby Staffs': 'आस-पास के कर्मचारी'
   },
 };

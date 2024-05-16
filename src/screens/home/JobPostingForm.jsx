@@ -19,7 +19,7 @@ import useLoginStore from '../../store/authentication/login.store';
 import {requestLocationPermission} from '../../helper/utils/getGeoLocation';
 import Geolocation from 'react-native-geolocation-service';
 import {primaryBGColor, primaryBGDarkColor} from '../../helper/utils/colors';
-import useJobStore from '../../store/dashboard.store';
+import useJobStore from '../../store/jobs.store';
 import {useFocusEffect} from '@react-navigation/native';
 import Header from '../../components/Header';
 import wordsFilter from '../../helper/utils/profane';

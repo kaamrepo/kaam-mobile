@@ -3,7 +3,7 @@ import {View, Text, Image, Pressable, ActivityIndicator} from 'react-native';
 import tw from 'twrnc';
 import Image1 from '../../assets/images/browse-jobs.png';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import useJobStore from '../../store/dashboard.store';
+import useJobStore from '../../store/jobs.store';
 import GeneralStatusBar from '../../components/GeneralStatusBar';
 import useLoaderStore from '../../store/loader.store';
 import Icon, {Icons} from '../../components/Icons';
