@@ -17,16 +17,16 @@
       import {getRandomColor, primaryBGColor} from '../../../../helper/utils/colors';
       import useJobStore from '../../../../store/jobs.store';
       import {getCoordinates} from '../../../../helper/utils/getGeoLocation';
-      
+      import { nearbyStaffConstant } from './constants';
       export const NearbyStaff = ({
         language,
         isLoading,
         location,
         navigation,
-        nearbystaffs
+        nearbystaffs = nearbyStaffConstant
       }) => {
-        const {getNearByStaff} = useJobStore();
-      
+        const {getNearByStaff,getSearchStaff,} = useJobStore();
+console.log("reloded reloded");
         if (!location) {
           return (
             <CommonMessageForNearByJobs
@@ -44,7 +44,6 @@
           );
         }
         if (nearbystaffs == undefined || nearbystaffs?.total === 0) {
-        if (false) {
           return (
             <CommonMessageForNearByJobs
               title="There are no nearby jobs"
@@ -77,23 +76,22 @@
                 </Text>
               </TouchableOpacity>
             </View>
-            {/* <View>
+            <View>
               <Carousel
                 layout={'default'}
                 autoplay={false}
                 // autoplayInterval={5000}
                 loop={false}
-                data={nearbystaffs.data}
+                data={nearbystaffs}
                 renderItem={props =>
                   renderItemsNearbyJobs({...props, navigation, nearbystaffs})
                 }
                 sliderWidth={Dimensions.get('window').width}
                 itemWidth={Dimensions.get('window').width - 80}
               />
-            </View> */}
+            </View>
           </>
         );
-      };
       
     }
       const styles = StyleSheet.create({});
@@ -125,9 +123,9 @@
               style={tw`w-full h-48 rounded-3`}>
               <View style={tw`flex flex-row justify-between p-4 h-35`}>
                 <View style={tw`h-15 w-15 flex-2`}>
-                  {item.employerDetails.profilepic ? (
+                  {item?.employerDetails?.profilepic ? (
                     <Image
-                      source={{uri: item.employerDetails.profilepic}}
+                      source={{uri: item?.employerDetails?.profilepic}}
                       style={tw`h-13 w-13 rounded-xl`}
                     />
                   ) : (
@@ -147,7 +145,7 @@
                     ]}
                     numberOfLines={1}
                     ellipsizeMode="tail">
-                    {item.jobtitle}
+                    {item.firstname}
                   </Text>
                   <Text
                     style={[
@@ -156,7 +154,7 @@
                     ]}
                     numberOfLines={1}
                     ellipsizeMode="tail">
-                    {item.description}
+                    {item.phone}
                   </Text>
                 </View>
       
@@ -189,8 +187,7 @@
                     tw`text-white text-[16px]`,
                     {fontFamily: 'Poppins-Regular'},
                   ]}>
-                  {item.location?.name ??
-                    item.location?.fulladdress?.substring(0, 15) + '...'}
+                place holder
                 </Text>
               </View>
             </Pressable>

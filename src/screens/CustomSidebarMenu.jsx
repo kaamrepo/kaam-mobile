@@ -103,7 +103,7 @@ const CustomSidebarMenu = props => {
     >
       <View
         style={[
-          tw`absolute left-0 w-6 h-6 bg-white rounded-full shadow-md transform translate-x-0.5`,
+          tw`absolute left-0 w-6 h-6 bg-white rounded-full shadow-md`,
           isEnabled ? tw`translate-x-full` : null,
         ]}
       />

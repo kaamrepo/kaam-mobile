@@ -6,6 +6,7 @@ import useLoginStore, {getToken} from './authentication/login.store';
 
 const useStaffStore = create((set, get) => ({
   nearbyusers: {},
+  stafflist:{},
   getNearByStaff: async (skip, limit, location) => {
     try {
       const userid = useLoginStore.getState().loggedInUser?._id;
