@@ -1,21 +1,21 @@
 import {create} from 'zustand';
 import API from '../helper/API';
-import {JOBS, JOBS_APPLICATIONS} from '../helper/endpoints';
+import {JOBS, USER} from '../helper/endpoints';
 import Toast from 'react-native-toast-message';
 import useLoginStore, {getToken} from './authentication/login.store';
 
 const useStaffStore = create((set, get) => ({
   nearbyusers: {},
-  getNearByStaff: async (skip = 0, limit = 5, coordinates) => {
+  getNearByStaff: async (skip, limit, location) => {
     try {
       const userid = useLoginStore.getState().loggedInUser?._id;
       let params = {
         skip,
         limit,
-        createdby: {
+        _id: {
           $nin: [userid],
         },
-        coordinates,
+        coordinates:location,
         sortDesc: ['createdat'],
         type: 'nearby',
       };
@@ -23,11 +23,12 @@ const useStaffStore = create((set, get) => ({
         headers: {Authorization: await getToken()},
         params,
       });
+      console.log("res of staff",res.data);
       if (res && res.data) {
         set({nearbyusers: res.data});
       }
     } catch (error) {
-      console.log(JSON.stringify(error, null, 5));
+        console.log("in the error",error);
     }
   },
 

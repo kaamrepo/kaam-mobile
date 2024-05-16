@@ -10,7 +10,7 @@ export const SearchStaff = ({navigation,location}) => {
 const {loggedInUser, language} = useLoginStore();
 const {getNearByStaff,nearbystaffs} = useStaffStore();
 useEffect(()=>{
-  getNearByStaff()
+  getNearByStaff(0,5,location)
 },[])
 
   return (<View>
