@@ -1,7 +1,8 @@
-import React from 'react'
-import { Text } from 'react-native'
+import React from 'react';
+import { NearbyStaff } from './components/staff/NearbyStaff';
+import {Text,View} from 'react-native';
 export const SearchStaff = () => {
-  return (
-    <Text>SearchStaff</Text>
-  )
-}
+  return (<View>
+  <Text>What up bro </Text> 
+  </View>);
+};

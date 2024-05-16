@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState} from 'react';
 import {
   SafeAreaView,
   View,
@@ -6,6 +6,7 @@ import {
   Image,
   Text,
   Pressable,
+  TouchableOpacity
 } from 'react-native';
 
 import {DrawerContentScrollView} from '@react-navigation/drawer';
@@ -27,6 +28,11 @@ import useUsersStore from '../store/authentication/user.store';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
 const CustomSidebarMenu = props => {
+  const [isEnabled, setIsEnabled] = useState(false);
+
+  const toggleSwitch = () => {
+    setIsEnabled((previousState) => !previousState);
+  };
   const {logout, loggedInUser} = useLoginStore();
   const {updateFcmDeviceToken} = useUsersStore();
   return (
@@ -76,7 +82,33 @@ const CustomSidebarMenu = props => {
           </Text>
           <BlueTickSVG width={20} height={20} />
         </View>
+       
       </View>
+      <View style={[tw`flex flex-row border-2 justify-center items-center`]}>
+      <Text
+        style={[
+          tw`text-zinc-600 text-[14px]`,
+          { fontFamily: 'Poppins-Light' },
+        ]}
+      >
+        Active for jobs
+      </Text>
+        <TouchableOpacity
+      activeOpacity={0.8}
+      onPress={toggleSwitch}
+      style={[
+        tw`relative w-10 h-6 bg-gray-300 rounded-full`,
+        isEnabled ? tw`bg-white` : null,
+      ]}
+    >
+      <View
+        style={[
+          tw`absolute left-0 w-6 h-6 bg-white rounded-full shadow-md transform translate-x-0.5`,
+          isEnabled ? tw`translate-x-full` : null,
+        ]}
+      />
+    </TouchableOpacity>
+    </View>
       <DrawerContentScrollView {...props}>
         <View style={tw`px-4`}>
           <CustomDrawerItem

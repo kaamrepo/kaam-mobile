@@ -25,6 +25,7 @@ import FeaturedJobsElement from './FeaturedJobs';
 import RecommendedJobsElement from './RecommendedJobs';
 import NearbyJobsElement from './NearbyJobs';
 import {useFocusEffect} from '@react-navigation/native';
+import { SearchStaff } from './SearchStaff';
 
 const Dashboard = ({navigation}) => {
   const [refreshing, setRefreshing] = useState(false);
@@ -190,11 +191,37 @@ const Dashboard = ({navigation}) => {
                 width: '50%',
                 height: 50,
                 backgroundColor:
+                  selectedSearchType === 'jobs' ? '#ffff' : '#E0FBE2',
+                borderWidth: selectedSearchType === 'jobs' ? 1 : 0, // Corrected border width
+                borderColor:
+                  selectedSearchType === 'jobs' ? 'grey' : 'transparent', // Corrected border color
+                borderTopLeftRadius: 10,
+                borderBottomLeftRadius: 10,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+              onPress={() => handlePress('jobs')}>
+              <Animated.Text
+                style={{
+                  color: 'black',
+                  fontSize: 18,
+                  fontWeight: '700',
+                  opacity: selectedSearchType === 'jobs' ? 1 : 0.3,
+                }}>
+                Search Jobs
+              </Animated.Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                width: '50%',
+                height: 50,
+                backgroundColor:
                   selectedSearchType === 'staff' ? '#ffff' : '#E0FBE2',
                 borderWidth: selectedSearchType === 'staff' ? 1 : 0, // Corrected border width
                 borderColor:
                   selectedSearchType === 'staff' ? 'grey' : 'transparent', // Corrected border color
-                borderRadius:10,
+                borderTopRightRadius: 10,
+                borderBottomRightRadius: 10,
                 justifyContent: 'center',
                 alignItems: 'center',
               }}
@@ -205,49 +232,8 @@ const Dashboard = ({navigation}) => {
                   fontSize: 18,
                   fontWeight: '700',
                   opacity: selectedSearchType === 'staff' ? 1 : 0.3,
-                  transform: [
-                    {
-                      translateY: buttonPressAnimation.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: [0, -10], // Adjust this value for desired animation effect
-                      }),
-                    },
-                  ],
                 }}>
-                Staff
-              </Animated.Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                width: '50%',
-                height: 50,
-                backgroundColor:
-                  selectedSearchType === 'jobs' ? '#ffff' : '#E0FBE2',
-                  borderWidth: selectedSearchType === 'jobs' ? 1 : 0, // Corrected border width
-                borderColor:
-                  selectedSearchType === 'jobs' ? 'grey' : 'transparent', // Corrected border color
-                borderRadius:10,
-                justifyContent: 'center',
-                alignItems: 'center',
-
-              }}
-              onPress={() => handlePress('jobs')}>
-              <Animated.Text
-                style={{
-                  color: 'black',
-                  fontSize: 18,
-                  fontWeight: '700',
-                  opacity: selectedSearchType === 'jobs' ? 1 : 0.3,
-                  transform: [
-                    {
-                      translateY: buttonPressAnimation.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: [0, -10], // Adjust this value for desired animation effect
-                      }),
-                    },
-                  ],
-                }}>
-                Jobs
+                Search Staff
               </Animated.Text>
             </TouchableOpacity>
           </Animated.View>
@@ -270,7 +256,7 @@ const Dashboard = ({navigation}) => {
         )}
         {selectedSearchType === 'staff' && (
           <View>
-            <Text>staff</Text>
+            <SearchStaff></SearchStaff>
           </View>
         )}
       </ScrollView>
