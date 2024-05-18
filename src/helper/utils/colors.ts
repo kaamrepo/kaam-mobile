@@ -3,6 +3,7 @@ export const secondaryBGColor = '#ffffff';
 export const primaryTextColor = '#4A9D58';
 export const primaryBGDarkColor = '#2f753b';
 export const secondaryTextColor = '#ffffff';
+export const primaryDangerColor = '#e74c3c'
 export const colors = [
   '#ffffff',
   '#000000',

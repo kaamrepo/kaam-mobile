@@ -5,6 +5,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  StyleSheet
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import GeneralStatusBar from '../../components/GeneralStatusBar';
@@ -14,6 +15,8 @@ import {useState, useEffect} from 'react';
 import dayjs from 'dayjs';
 import {useNavigation} from '@react-navigation/native';
 import useLoaderStore from '../../store/loader.store';
+import { primaryBGColor, primaryDangerColor } from '../../helper/utils/colors';
+
 export const ApplicantListScreen = ({
   route: {
     params: {job},
@@ -154,12 +157,21 @@ const RenderItem = ({item, index}) => {
         </Text>
       </View>
       <View style={tw`items-end`}>
-        <Text style={[tw`text-black`, {fontFamily: 'Poppins-Regular'}]}>
+        {/* <Text style={[tw`text-black`, {fontFamily: 'Poppins-Regular'}]}>
           {item.status}
-        </Text>
+        </Text> */}
         <Text style={[tw`text-black`, {fontFamily: 'Poppins-Regular'}]}>
-          Applied on: {dayjs(item.createdat).format('DD MMM YYYY')}
+          Applied on test: {dayjs(item.createdat).format('DD MMM YYYY')}
         </Text>
+        <View style={tw`flex-row`}>
+        <TouchableOpacity style={[styles.button,{backgroundColor:primaryBGColor}]}>
+        <Text style={styles.buttonText}>Approve</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={[styles.button,{backgroundColor:primaryDangerColor}]}>
+        <Text style={[styles.buttonText]}>Reject</Text>
+      </TouchableOpacity>
+        </View>
+       
       </View>
     </TouchableOpacity>
   );
@@ -189,3 +201,25 @@ const NoDataMenuComponent = ({message}) => {
     </View>
   );
 };
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  button: {
+    backgroundColor: 'blue',
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 10,
+    paddingBottom: 10,
+    marginVertical: 10,
+    borderRadius: 5,
+    margin:3
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+});
