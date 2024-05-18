@@ -24,6 +24,7 @@ import BookmarkInactiveSVG from '../assets/svgs/bookmark_inactive.svg';
 import MenuSVG from '../assets/svgs/menu.svg';
 import MenuInactiveSVG from '../assets/svgs/menu_inactive.svg';
 import Inbox from './home/Inbox';
+import { Engagments } from './engagements/Engagments';
 import {
   primaryBGColor,
   primaryTextColor,
@@ -42,7 +43,7 @@ const TabArr = [
   {
     route: 'Inbox',
     label: 'Inbox',
-    component: Inbox,
+    component: Engagments,
     activeIcon: <MailSVG width={18} height={18} />,
     inactiveIcon: <MailInactiveSVG width={18} height={18} />,
   },

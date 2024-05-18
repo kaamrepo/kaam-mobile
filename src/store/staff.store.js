@@ -20,6 +20,7 @@ const useStaffStore = create((set, get) => ({
         sortDesc: ['createdat'],
         type: 'nearby',
       };
+
       const res = await API.get(`${USER}`, {
         headers: {Authorization: await getToken()},
         params,

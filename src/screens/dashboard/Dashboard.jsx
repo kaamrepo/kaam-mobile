@@ -26,10 +26,12 @@ import RecommendedJobsElement from './RecommendedJobs';
 import NearbyJobsElement from './NearbyJobs';
 import {useFocusEffect} from '@react-navigation/native';
 import { SearchStaff } from './SearchStaff';
-
+import {getCoordinates} from '../../helper/utils/getGeoLocation';
+import useUsersStore from '../../store/authentication/user.store';
 const Dashboard = ({navigation}) => {
   const [refreshing, setRefreshing] = useState(false);
   const {loggedInUser, language} = useLoginStore();
+  const {updateUserCoordinates} = useUsersStore()
   const {
     getNearByJobs,
     nearbyjobs,
@@ -42,7 +44,41 @@ const Dashboard = ({navigation}) => {
   } = useJobStore();
   const {isLoading} = useLoaderStore();
   const [location, setLocation] = useState(undefined);
+  // Function to calculate the distance between two coordinates using the Haversine formula
+const calculateDistance = (lat1, lon1, lat2, lon2) => {
+  const toRad = (value) => value * Math.PI / 180;
 
+  const R = 6371; // Radius of the Earth in kilometers
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a = 
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * 
+    Math.sin(dLon / 2) * Math.sin(dLon / 2); 
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); 
+  const distance = R * c; // Distance in kilometers
+
+  return distance;
+};
+useEffect(() => {
+  const fetchCoordinates = async () => {
+    const position = await getCoordinates();
+    console.log("position", position);
+
+    const { latitude: currentLat, longitude: currentLon } = position.coords;
+    const userCoordinates = loggedInUser.coordinates;
+
+    if (
+      !userCoordinates.length ||
+      calculateDistance(userCoordinates[0], userCoordinates[1], currentLat, currentLon) > 10
+    ) {
+      console.log("Patching location");
+      updateUserCoordinates({source:"patchlocation",currentLat,currentLon})
+    }
+  };
+
+  fetchCoordinates();
+}, [loggedInUser]);
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
 
@@ -103,9 +139,6 @@ const Dashboard = ({navigation}) => {
       useNativeDriver: true,
     }).start();
   };
-  useEffect(() => {
-    console.log('selectedSearchType', selectedSearchType);
-  }, [selectedSearchType]);
   return (
     <SafeAreaView>
       <ScrollView

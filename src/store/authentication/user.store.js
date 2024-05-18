@@ -6,6 +6,17 @@ import useLoginStore, {getToken} from './login.store';
 // import { getTimeZone } from "react-native-localize";
 
 const useUsersStore = create((set, get) => ({
+  updateUserCoordinates: async data => {
+    try {
+      const userid = useLoginStore.getState().loggedInUser?._id;
+      await API.patch(`${USER}/${userid}`, data, {
+        headers: {Authorization: await getToken()},
+      });
+    } catch (error) {
+      console.log(`Error updating user location ${JSON.stringify(error)}`);
+      return false;
+    }
+  },
   updateFcmDeviceToken: async data => {
     try {
       const userid = useLoginStore.getState().loggedInUser?._id;
