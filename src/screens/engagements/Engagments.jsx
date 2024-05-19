@@ -30,7 +30,7 @@ export const Engagments = () => {
                 
                 {fontFamily: 'Poppins-SemiBold'},
               ]}>
-             My Employers
+             My Jobs
             </Text>
           </TouchableOpacity>
       <TouchableOpacity
@@ -49,7 +49,7 @@ export const Engagments = () => {
                 
                 {fontFamily: 'Poppins-SemiBold'},
               ]}>
-               My Employees
+               My Staffs
             </Text>
           </TouchableOpacity>
       </View>

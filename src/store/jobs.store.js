@@ -238,6 +238,38 @@ const useJobStore = create((set, get) => ({
       return false;
     }
   },
+  updateJobStatus: async payload => {
+    try {
+      console.log("payload",payload)
+      const res = await API.patch(`${JOBS}/${payload.applicationId}`,{ status: payload.status }, {
+        headers: {
+          Authorization: await getToken(),
+        },
+      });
+
+      if (res?.data && payload.status === "Rejected") {
+        Toast.show({
+          type: 'success',
+          text1: 'Application Rejected!',
+        });
+        return true;
+      }
+      if (res?.data && payload.status === "Approved") {
+        Toast.show({
+          type: 'success',
+          text1: 'Application Approved!',
+        });
+        return true;
+      }
+    } catch (error) {
+      console.log(JSON.stringify(error, null, 4));
+      Toast.show({
+        type: 'tomatoToast',
+        text1: 'Application Failed!',
+      });
+      return false;
+    }
+  },
 }));
 
 export default useJobStore;

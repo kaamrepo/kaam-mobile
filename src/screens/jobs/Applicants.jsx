@@ -144,6 +144,7 @@ const RenderItem = ({item, index}) => {
         navigation.navigate('Chat', {
           chatid: item.chatid,
           name: `${item.applicantDetails.firstname} ${item.applicantDetails.lastname}`,
+          item
         });
       }}
       style={tw`w-full p-2 flex-row gap-3 items-center justify-between bg-white border-b border-gray-200`}>
@@ -157,21 +158,12 @@ const RenderItem = ({item, index}) => {
         </Text>
       </View>
       <View style={tw`items-end`}>
-        {/* <Text style={[tw`text-black`, {fontFamily: 'Poppins-Regular'}]}>
-          {item.status}
-        </Text> */}
         <Text style={[tw`text-black`, {fontFamily: 'Poppins-Regular'}]}>
-          Applied on test: {dayjs(item.createdat).format('DD MMM YYYY')}
+          {item.status}
         </Text>
-        <View style={tw`flex-row`}>
-        <TouchableOpacity style={[styles.button,{backgroundColor:primaryBGColor}]}>
-        <Text style={styles.buttonText}>Approve</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={[styles.button,{backgroundColor:primaryDangerColor}]}>
-        <Text style={[styles.buttonText]}>Reject</Text>
-      </TouchableOpacity>
-        </View>
-       
+        <Text style={[tw`text-black`, {fontFamily: 'Poppins-Regular'}]}>
+          Applied on: {dayjs(item.createdat).format('DD MMM YYYY')}
+        </Text>
       </View>
     </TouchableOpacity>
   );

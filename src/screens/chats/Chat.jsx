@@ -6,18 +6,23 @@ import {
   FlatList,
   TouchableOpacity,
   Pressable,
+  StyleSheet,
   Image,
 } from 'react-native';
 import tw from 'twrnc';
+import { primaryBGColor } from '../../helper/utils/colors';
+import { primaryDangerColor } from '../../helper/utils/colors';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import GeneralStatusBar from '../../components/GeneralStatusBar';
 import useChatStore from '../../store/chat.store';
 import useLoginStore from '../../store/authentication/login.store';
 import Icon, {Icons} from '../../components/Icons';
+import useJobStore from '../../store/jobs.store';
 import dayjs from 'dayjs';
 
 const Chat = ({route, navigation}) => {
+  const applicationId = route?.params?.item?._id;
   const [messageText, setMessageText] = useState('');
   const lastMessageRef = useRef(null);
   const {
@@ -52,7 +57,14 @@ const Chat = ({route, navigation}) => {
       clearChat();
     };
   }, [route.params.chatid]);
-
+  const {updateJobStatus} = useJobStore();
+  const handlePress = (status) =>{
+    const payload = {
+      status,
+      applicationId
+    }
+    updateJobStatus(payload)
+  }
   return (
     <SafeAreaView style={tw`flex-1`} edges={['top']}>
       <GeneralStatusBar backgroundColor={bgColor} />
@@ -98,7 +110,20 @@ const Chat = ({route, navigation}) => {
           </TouchableOpacity>
         </View>
       </View>
-
+      <View style={tw`flex-row justify-center items-center`}>
+      <TouchableOpacity
+        style={[tw`bg-blue-500 px-8 py-2 my-2 rounded mx-3`, { backgroundColor: primaryBGColor }]}
+        onPress={() => { handlePress('Approved'); }}
+      >
+        <Text style={tw`text-white text-lg font-bold`}>Approve</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[tw`bg-blue-500 px-8 py-2 my-2 rounded mx-3`, { backgroundColor: primaryDangerColor }]}
+        onPress={() => { handlePress('Rejected'); }}
+      >
+        <Text style={tw`text-white text-lg font-bold`}>Reject</Text>
+      </TouchableOpacity>
+    </View>
       <View style={tw`flex-1 px-4 py-1`}>
         <FlatList
           ref={lastMessageRef}
@@ -259,3 +284,4 @@ const RenderChatMessage = ({item, index, bgColor}) => {
       );
   }
 };
+
