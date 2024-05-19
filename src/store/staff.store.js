@@ -5,60 +5,52 @@ import Toast from 'react-native-toast-message';
 import useLoginStore, {getToken} from './authentication/login.store';
 
 const useStaffStore = create((set, get) => ({
-  nearbyusers: {},
-  stafflist: {},
+  nearbyusers: [],
+  stafflist: [],
   getNearByStaff: async (skip, limit, location) => {
     try {
       const userid = useLoginStore.getState().loggedInUser?._id;
       // console.log("useLoginStore.getState().loggedInUser",useLoginStore.getState().loggedInUser);
       const coord = {
-        lat: location?.coords?.latitude || undefined,
-        long: location?.coords?.longitude || undefined,
+        lat: location?.location?.coords?.latitude || undefined,
+        long: location?.location?.coords?.longitude || undefined,
       };
       let params = {
         skip,
         limit,
-        _id: {
-          $nin: [userid],
-        },
-        coordinates: coord,
+        excludeIds: [userid],
+        nearBy: [coord.lat,coord.long],
         sortDesc: ['createdat'],
-        type: 'nearby',
       };
-      console.log(' params in store', params);
+      console.log("PArams to send in nearby -----" ,params);
       // const res = await API.get(`${USER}`, {
       //   headers: {Authorization: await getToken()},
       //   params,
       // });
-      // console.log("res of staff",res.data);
-      // if (res && res.data) {
-      //   set({nearbyusers: res.data});
+      // if (res && res.data?.data) {
+      //   set({nearbyusers: res?.data?.data});
       // }
     } catch (error) {
       console.log('in the error', error);
     }
   },
 
-  clearnearbyusers: () => set({nearbyusers: {}}),
-  getStaff: async (skip, limit, payload) => {
-    const userid = useLoginStore.getState().loggedInUser?._id;
-    const params = {};
-    params.skip = skip;
-    params.limit = limit;
-    params.createdby= {
-           $nin: [userid],
-       }
-       if (payload?.text) {
-        params.name = payload.text
-       }
+  clearUsers: () => set({nearbyusers: [],stafflist:[]}),
+  getStaff: async (skip=0, limit=10, payload) => {
     try {
-      // let params = {
-      //   skip,
-      //   limit,
-      
-      //   type,
-      // };
-      console.log('params in getSEarch staf', params);
+
+      const userid = useLoginStore.getState().loggedInUser?._id;
+      const params = {};
+      params.skip = skip;
+      params.limit = limit;
+      params.excludeIds =[userid];
+      params.sortDesc=['createdat'];
+      if (payload?.text) {
+        params.wildString = payload.text;
+      }
+     
+
+      console.log('params in getSEarch getstaff', params);
       // if (salary === -1) params.sortDesc = ['salary'];
       // if (salary === 1) params.sortAsc = ['salary'];
       // if (searchText?.length) {
@@ -68,12 +60,9 @@ const useStaffStore = create((set, get) => ({
       //   headers: {Authorization: await getToken()},
       //   params,
       // });
-      // let currentSearchedJobs = get().searchedJobs;
-      // if (res && res.data) {
+      // if (res && res.data?.data) {
       //   set({
-      //     searchedJobs: currentSearchedJobs?.length
-      //       ? [...currentSearchedJobs, ...res?.data?.data]
-      //       : [...res?.data?.data],
+      //     stafflist: res?.data?.data,
       //   });
       // }
     } catch (error) {

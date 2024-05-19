@@ -63,8 +63,6 @@ const calculateDistance = (lat1, lon1, lat2, lon2) => {
 useEffect(() => {
   const fetchCoordinates = async () => {
     const position = await getCoordinates();
-    console.log("position", position);
-
     const { latitude: currentLat, longitude: currentLon } = position.coords;
     const userCoordinates = loggedInUser.coordinates;
 
@@ -72,8 +70,7 @@ useEffect(() => {
       !userCoordinates.length ||
       calculateDistance(userCoordinates[0], userCoordinates[1], currentLat, currentLon) > 10
     ) {
-      console.log("Patching location");
-      updateUserCoordinates({source:"updatelocation",lat:currentLat,long:currentLon})
+      // updateUserCoordinates({source:"updatelocation",lat:currentLat,long:currentLon})
     }
   };
 

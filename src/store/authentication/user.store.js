@@ -7,9 +7,10 @@ import useLoginStore, {getToken} from './login.store';
 
 const useUsersStore = create((set, get) => ({
   updateUserCoordinates: async data => {
-    console.log("data",data);
+    console.log("data to update coordinate",data);
     try {
       const userid = useLoginStore.getState().loggedInUser?._id;
+      console.log();
       await API.patch(`${USER}/${userid}`, data, {
         headers: {Authorization: await getToken()},
       });

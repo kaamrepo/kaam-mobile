@@ -15,18 +15,15 @@
       import Carousel from 'react-native-snap-carousel';
       import Icon, {Icons} from '../../../../components/Icons';
       import {getRandomColor, primaryBGColor} from '../../../../helper/utils/colors';
-      import useJobStore from '../../../../store/jobs.store';
       import useStaffStore from '../../../../store/staff.store';
       import {getCoordinates} from '../../../../helper/utils/getGeoLocation';
-      import { nearbyStaffConstant } from './constants';
       export const NearbyStaff = ({
         language,
         isLoading,
         location,
         navigation,
-        nearbystaffs = nearbyStaffConstant
+        nearbyusers 
       }) => {
-        const {getNearByStaff,getSearchStaff,} = useStaffStore();
         if (!location) {
           return (
             <CommonMessageForNearByJobs
@@ -43,22 +40,21 @@
             />
           );
         }
-        if (nearbystaffs == undefined || nearbystaffs?.total === 0) {
+        if (nearbyusers == undefined || nearbyusers?.total === 0) {
           return (
             <CommonMessageForNearByJobs
-              title="There are no nearby jobs"
+              title="There are no nearby Staffs"
               language={language}
             />
           );
         }
-        console.log("in the nearby staffs");
-        const handleSeeAllPress = async () => {
-          const position = await getCoordinates();
-          navigation.navigate('SeeAll', {
-            isLoading,
-            type: 'nearby',
-            coordinates: [position.coords.longitude, position.coords.latitude],
-          });
+        const handleSeeAllPress = async (item) => {
+          // const position = await getCoordinates();
+          // navigation.navigate('SeeAll', {
+          //   isLoading,
+          //   type: 'nearby',
+          //   coordinates: [position.coords.longitude, position.coords.latitude],
+          // });
         };
       
         return (
@@ -67,7 +63,7 @@
               <Text style={[tw`text-black text-xl`, {fontFamily: 'Poppins-Bold'}]}>
                 {dashboardTranslation[language]['Nearby Staffs']}
               </Text>
-              <TouchableOpacity onPress={handleSeeAllPress}>
+              {/* <TouchableOpacity onPress={handleSeeAllPress}>
                 <Text
                   style={[
                     tw`text-center text-sm leading-relaxed text-gray-600`,
@@ -75,7 +71,7 @@
                   ]}>
                   See all
                 </Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
             <View>
               <Carousel
@@ -83,9 +79,9 @@
                 autoplay={false}
                 // autoplayInterval={5000}
                 loop={false}
-                data={nearbystaffs}
+                data={nearbyusers}
                 renderItem={props =>
-                  renderItemsNearbyStaffs({...props, navigation, nearbystaffs})
+                  renderItemsNearbyStaffs({...props, navigation, nearbyusers})
                 }
                 sliderWidth={Dimensions.get('window').width}
                 itemWidth={Dimensions.get('window').width - 80}
@@ -101,7 +97,7 @@
         // Handle bookmark button press logic here
         console.log('Bookmark button pressed!');
       };
-      const renderItemsNearbyStaffs = ({item, index, navigation, nearbystaffs}) => {
+      const renderItemsNearbyStaffs = ({item, index, navigation}) => {
         return (
           <ImageBackground
             // source={require('../../assets/images/nearby-jobs-skin-1.png')}
@@ -112,14 +108,7 @@
             ]}
             resizeMode="cover">
             <Pressable
-              onPress={() => {
-                console.log('pressed');
-                navigation.navigate('ApplyNow', {
-                  jobDetails: item,
-                  id: item._id,
-                  index,
-                });
-              }}
+              onPress={()=>{handleSeeAllPress(item)}}
               key={item._id}
               style={tw`w-full h-48 rounded-3`}>
               <View style={tw`flex flex-row justify-between p-4 h-35`}>
@@ -155,7 +144,7 @@
                     ]}
                     numberOfLines={1}
                     ellipsizeMode="tail">
-                    {item.phone}
+                    {item.lastname}
                   </Text>
                 </View>
       
@@ -181,14 +170,14 @@
                     tw`text-white text-[16px]`,
                     {fontFamily: 'Poppins-Regular'},
                   ]}>
-                  ₹. {item.salary}
+                  {item?.address?.city?item?.address?.city:"City - NA"}
                 </Text>
                 <Text
                   style={[
                     tw`text-white text-[16px]`,
                     {fontFamily: 'Poppins-Regular'},
                   ]}>
-                place holder
+                {item?.address?.state?item?.address?.state:"state - NA"}
                 </Text>
               </View>
             </Pressable>
@@ -203,13 +192,13 @@
               <Text style={[tw`text-black text-xl`, {fontFamily: 'Poppins-Bold'}]}>
                 {dashboardTranslation[language]['Nearby Staff']}
               </Text>
-              <Text
+              {/* <Text
                 style={[
                   tw`text-center text-sm leading-relaxed text-gray-600`,
                   {fontFamily: 'Poppins-Regular'},
                 ]}>
                 {dashboardTranslation[language]['See all']}
-              </Text>
+              </Text> */}
             </View>
             <View style={tw`w-full px-5`}>
               <View

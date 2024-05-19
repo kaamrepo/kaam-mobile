@@ -11,6 +11,7 @@ import useLoginStore, {
 
 import RegisterScreen from './src/screens/login/RegisterScreen';
 import IntroSelectLanguage from './src/screens/intro/IntroSelectLanguage';
+import { SeeAllStaffs } from './src/screens/dashboard/components/staff/SeeAllStaffs';
 import VerifyCode from './src/screens/login/VerifyCode';
 import ChooseProfession from './src/screens/login/ChooseProfession';
 import SplashScreen from 'react-native-splash-screen';
@@ -224,6 +225,11 @@ const App = () => {
               <Stack.Screen
                 name="SeeAll"
                 component={SeeAll}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="SeeAllStaffs"
+                component={SeeAllStaffs}
                 options={{headerShown: false}}
               />
               <Stack.Screen
