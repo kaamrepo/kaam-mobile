@@ -73,7 +73,7 @@ useEffect(() => {
       calculateDistance(userCoordinates[0], userCoordinates[1], currentLat, currentLon) > 10
     ) {
       console.log("Patching location");
-      updateUserCoordinates({source:"patchlocation",currentLat,currentLon})
+      updateUserCoordinates({source:"updatelocation",lat:currentLat,long:currentLon})
     }
   };
 
