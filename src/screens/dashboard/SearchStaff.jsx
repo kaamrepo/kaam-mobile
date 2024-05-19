@@ -10,10 +10,10 @@ import StaffFlatList from './components/staff/StaffFlatList';
 export const SearchStaff = ({navigation,location}) => {
   const {isLoading} = useLoaderStore();
 const {language} = useLoginStore();
-const {getNearByStaff,nearbystaffs,stafflist,getSearchStaff} = useStaffStore();
+const {getNearByStaff,nearbystaffs,stafflist,getStaff} = useStaffStore();
 useEffect(()=>{
-  // getNearByStaff(0,5,location)
-  // getSearchStaff()
+  getNearByStaff(0,5,{location});
+  getStaff(5,10);
 },[])
   return (<View>
   <NearbyStaff {...{language,isLoading,navigation,location,nearbystaffs}}></NearbyStaff>

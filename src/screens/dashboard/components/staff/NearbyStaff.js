@@ -9,13 +9,14 @@
         ImageBackground,
         Pressable,
       } from 'react-native';
-      import React from 'react';
+      import React, { useEffect } from 'react';
       import tw from 'twrnc';
       import {dashboardTranslation} from '../../dashboardTranslation';
       import Carousel from 'react-native-snap-carousel';
       import Icon, {Icons} from '../../../../components/Icons';
       import {getRandomColor, primaryBGColor} from '../../../../helper/utils/colors';
       import useJobStore from '../../../../store/jobs.store';
+      import useStaffStore from '../../../../store/staff.store';
       import {getCoordinates} from '../../../../helper/utils/getGeoLocation';
       import { nearbyStaffConstant } from './constants';
       export const NearbyStaff = ({
@@ -25,8 +26,7 @@
         navigation,
         nearbystaffs = nearbyStaffConstant
       }) => {
-        const {getNearByStaff,getSearchStaff,} = useJobStore();
-console.log("reloded reloded");
+        const {getNearByStaff,getSearchStaff,} = useStaffStore();
         if (!location) {
           return (
             <CommonMessageForNearByJobs
@@ -51,6 +51,7 @@ console.log("reloded reloded");
             />
           );
         }
+        console.log("in the nearby staffs");
         const handleSeeAllPress = async () => {
           const position = await getCoordinates();
           navigation.navigate('SeeAll', {
@@ -84,7 +85,7 @@ console.log("reloded reloded");
                 loop={false}
                 data={nearbystaffs}
                 renderItem={props =>
-                  renderItemsNearbyJobs({...props, navigation, nearbystaffs})
+                  renderItemsNearbyStaffs({...props, navigation, nearbystaffs})
                 }
                 sliderWidth={Dimensions.get('window').width}
                 itemWidth={Dimensions.get('window').width - 80}
@@ -100,7 +101,7 @@ console.log("reloded reloded");
         // Handle bookmark button press logic here
         console.log('Bookmark button pressed!');
       };
-      const renderItemsNearbyJobs = ({item, index, navigation, nearbystaffs}) => {
+      const renderItemsNearbyStaffs = ({item, index, navigation, nearbystaffs}) => {
         return (
           <ImageBackground
             // source={require('../../assets/images/nearby-jobs-skin-1.png')}
