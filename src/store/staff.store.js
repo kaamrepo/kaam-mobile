@@ -22,14 +22,13 @@ const useStaffStore = create((set, get) => ({
         nearBy: [coord.lat,coord.long],
         sortDesc: ['createdat'],
       };
-      console.log("PArams to send in nearby -----" ,params);
-      // const res = await API.get(`${USER}`, {
-      //   headers: {Authorization: await getToken()},
-      //   params,
-      // });
-      // if (res && res.data?.data) {
-      //   set({nearbyusers: res?.data?.data});
-      // }
+      const res = await API.get(`${USER}`, {
+        headers: {Authorization: await getToken()},
+        params,
+      });
+      if (res && res.data?.data) {
+        set({nearbyusers: res?.data?.data});
+      }
     } catch (error) {
       console.log('in the error', error);
     }
@@ -50,21 +49,20 @@ const useStaffStore = create((set, get) => ({
       }
      
 
-      console.log('params in getSEarch getstaff', params);
       // if (salary === -1) params.sortDesc = ['salary'];
       // if (salary === 1) params.sortAsc = ['salary'];
       // if (searchText?.length) {
       //   params.text = searchText;
       // }
-      // const res = await API.get(`${USER}`, {
-      //   headers: {Authorization: await getToken()},
-      //   params,
-      // });
-      // if (res && res.data?.data) {
-      //   set({
-      //     stafflist: res?.data?.data,
-      //   });
-      // }
+      const res = await API.get(`${USER}`, {
+        headers: {Authorization: await getToken()},
+        params,
+      });
+      if (res && res.data?.data) {
+        set({
+          stafflist: res?.data?.data,
+        });
+      }
     } catch (error) {
       console.log('error ----', error);
     }

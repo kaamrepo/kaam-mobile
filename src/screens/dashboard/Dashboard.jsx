@@ -64,13 +64,13 @@ useEffect(() => {
   const fetchCoordinates = async () => {
     const position = await getCoordinates();
     const { latitude: currentLat, longitude: currentLon } = position.coords;
-    const userCoordinates = loggedInUser.coordinates;
+    const userCoordinates = loggedInUser?.coordinates;
 
     if (
-      !userCoordinates.length ||
+      !userCoordinates?.length ||
       calculateDistance(userCoordinates[0], userCoordinates[1], currentLat, currentLon) > 10
     ) {
-      // updateUserCoordinates({source:"updatelocation",lat:currentLat,long:currentLon})
+      updateUserCoordinates({source:"updatelocation",lat:currentLat,long:currentLon})
     }
   };
 

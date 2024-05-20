@@ -20,7 +20,7 @@ const useJobStore = create((set, get) => ({
         createdby: {
           $nin: [userid],
         },
-        coordinates,
+        // coordinates,
         sortDesc: ['createdat'],
         type: 'nearby',
       };
@@ -28,6 +28,8 @@ const useJobStore = create((set, get) => ({
         headers: {Authorization: await getToken()},
         params,
       });
+      console.log("params in nearby jobs",params);
+      console.log("res in the nearboy jobs",res?.data);
       if (res && res.data) {
         set({nearbyjobs: res.data});
       }

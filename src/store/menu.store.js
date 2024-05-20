@@ -42,6 +42,7 @@ const useMenuStore = create((set, get) => ({
         headers: {Authorization: await getToken()},
         params: {createdby: userid, skip, limit},
       });
+      console.log("posted Jobs________",res?.data);
       if (res?.data) {
         if (skip === 0) {
           set({postedJobs: res?.data});
