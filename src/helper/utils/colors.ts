@@ -5,8 +5,6 @@ export const primaryBGDarkColor = '#2f753b';
 export const secondaryTextColor = '#ffffff';
 export const primaryDangerColor = '#e74c3c'
 export const colors = [
-  '#ffffff',
-  '#000000',
   '#264653',
   '#bc6c25',
   '#f4acb7',
@@ -28,7 +26,15 @@ export const colors = [
   '#ffd60a',
   '#38b000',
 ];
-export const jobsColorSchemes = ['#2B2A4C', '#CE5A67', '#392467', '#739072'];
+export const jobsColorSchemes = ['#264653',
+'#bc6c25',
+'#f4acb7',
+'#2a9d8f',
+'#e76f51',
+'#fca311',
+'#023e8a',
+'#588157',
+'#48cae4',];
 
 export const getRandomColor = (index: number) => {
   return index <= jobsColorSchemes.length

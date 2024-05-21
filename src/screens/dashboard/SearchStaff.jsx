@@ -12,8 +12,8 @@ export const SearchStaff = ({navigation,location}) => {
 const {language} = useLoginStore();
 const {getNearByStaff,stafflist,getStaff,nearbyusers} = useStaffStore();
 useEffect(()=>{
-  getNearByStaff(0,5,{location});
-  getStaff(0,10);
+  getNearByStaff(0,6,{location});
+  getStaff(0,5);
 },[])
   return (<View>
   <NearbyStaff {...{language,isLoading,navigation,location,nearbyusers}}></NearbyStaff>

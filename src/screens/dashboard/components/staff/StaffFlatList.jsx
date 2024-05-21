@@ -10,11 +10,10 @@ const StaffFlatList = ({
   language,
   isLoading,
   navigation,
-  location,
   stafflist,
 }) => {
   const handleSeeAllPress = () => {
-    navigation.navigate('SeeAllStaffs', {navigation,isLoading});
+    navigation.navigate('SeeAllStaffs', {navigation});
   };
 
   if (isLoading) {
@@ -51,7 +50,7 @@ const StaffFlatList = ({
       </>
     );
   }
-  if (stafflist && stafflist?.total == 0) {
+  if (stafflist && stafflist?.length === 0) {
     return (
       <>
         <View style={tw`flex-row justify-between items-center mt-5 mb-4 mx-5`}>

@@ -28,8 +28,6 @@ const useJobStore = create((set, get) => ({
         headers: {Authorization: await getToken()},
         params,
       });
-      console.log("params in nearby jobs",params);
-      console.log("res in the nearboy jobs",res?.data);
       if (res && res.data) {
         set({nearbyjobs: res.data});
       }
@@ -126,16 +124,6 @@ const useJobStore = create((set, get) => ({
         params,
       });
       let currentSearchedJobs = get().searchedJobs;
-      console.log(
-        'this ++++++++++++++',
-        get().searchedJobs?.length,
-        '+++++++++++++++++++++',
-      );
-      console.log(
-        'res.data---------------------',
-        res?.data?.data?.length,
-        '-------------------',
-      );
       if (res && res.data) {
         set({
           searchedJobs: currentSearchedJobs?.length

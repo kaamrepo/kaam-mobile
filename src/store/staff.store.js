@@ -35,7 +35,7 @@ const useStaffStore = create((set, get) => ({
   },
 
   clearUsers: () => set({nearbyusers: [],stafflist:[]}),
-  getStaff: async (skip=0, limit=10, payload) => {
+  getStaff: async (skip, limit, payload) => {
     try {
 
       const userid = useLoginStore.getState().loggedInUser?._id;
@@ -54,10 +54,12 @@ const useStaffStore = create((set, get) => ({
       // if (searchText?.length) {
       //   params.text = searchText;
       // }
+      console.log("params after search in store",params);
       const res = await API.get(`${USER}`, {
         headers: {Authorization: await getToken()},
         params,
       });
+      console.log("response on use search",res?.data?.data?.length);
       if (res && res.data?.data) {
         set({
           stafflist: res?.data?.data,
