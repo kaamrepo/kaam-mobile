@@ -21,12 +21,12 @@ import Icon, {Icons} from './src/components/Icons';
 import tw from 'twrnc';
 import Toast, {BaseToast, ErrorToast} from 'react-native-toast-message';
 import JobSelection from './src/screens/login/JobSelection';
-import ApplyNow from './src/screens/jobs/ApplyNow';
+import ApplyNow from './src/screens/job-application/ApplyNow';
 import Chat from './src/screens/chats/Chat';
 import TrackApplication from './src/screens/chats/TrackApplication';
 import DrawerNavigation from './src/screens/DrawerNavigation';
-import SeeAll from './src/screens/see-all/SeeAll';
-import {ApplicantListScreen} from './src/screens/jobs/Applicants';
+import AllJobsFlatlist from './src/screens/dashboard/components/jobs/AllJobsFlatlist';
+import {ApplicantListScreen} from './src/screens/job-application/Applicants';
 import client from './client';
 import messaging from '@react-native-firebase/messaging';
 import notifee, { AndroidImportance } from '@notifee/react-native';
@@ -223,8 +223,8 @@ const App = () => {
                 options={{headerShown: false}}
               />
               <Stack.Screen
-                name="SeeAll"
-                component={SeeAll}
+                name="AllJobsFlatlist"
+                component={AllJobsFlatlist}
                 options={{headerShown: false}}
               />
               <Stack.Screen

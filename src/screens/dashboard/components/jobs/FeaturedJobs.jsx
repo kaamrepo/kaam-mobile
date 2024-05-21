@@ -1,11 +1,10 @@
 import {View, Text, Pressable, Image} from 'react-native';
 import tw from 'twrnc';
 import React from 'react';
-import {dashboardTranslation} from './dashboardTranslation';
+import { dashboardTranslation } from '../../dashboardTranslation';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
-import Icon, {Icons} from '../../components/Icons';
-import {primaryBGColor} from '../../helper/utils/colors';
-
+import Icon,{Icons} from '../../../../components/Icons';
+import { primaryBGColor } from '../../../../helper/utils/colors';
 const FeaturedJobsElement = ({
   featuredJobs,
   isLoading,

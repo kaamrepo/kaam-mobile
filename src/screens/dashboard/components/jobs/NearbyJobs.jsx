@@ -10,13 +10,12 @@ import {
 } from 'react-native';
 import React from 'react';
 import tw from 'twrnc';
-import {dashboardTranslation} from './dashboardTranslation';
+import {dashboardTranslation} from '../../dashboardTranslation';
 import Carousel from 'react-native-snap-carousel';
-import Icon, {Icons} from '../../components/Icons';
-import {getRandomColor, primaryBGColor} from '../../helper/utils/colors';
-import useJobStore from '../../store/jobs.store';
-import {getCoordinates} from '../../helper/utils/getGeoLocation';
-
+import Icon, {Icons} from '../../../../components/Icons';
+import { getRandomColor,primaryBGColor } from '../../../../helper/utils/colors';
+import useJobStore from '../../../../store/jobs.store';
+import { getCoordinates } from '../../../../helper/utils/getGeoLocation';
 const NearbyJobsElement = ({
   language,
   nearbyjobs,
@@ -104,7 +103,7 @@ const handleBookmarkPress = () => {
 const renderItemsNearbyJobs = ({item, index, navigation, nearbyjobs}) => {
   return (
     <ImageBackground
-      source={require('../../assets/images/nearby-jobs-skin-1.png')}
+      source={require('../../../../assets/images/nearby-jobs-skin-1.png')}
       style={[
         tw`w-full h-48 rounded-6`,
         {backgroundColor: getRandomColor(index)},

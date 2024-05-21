@@ -1,8 +1,8 @@
 
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import FeaturedJobsElement from './FeaturedJobs';
-import RecommendedJobsElement from './RecommendedJobs';
-import NearbyJobsElement from './NearbyJobs';
+import FeaturedJobsElement from './components/jobs/FeaturedJobs';
+import RecommendedJobsElement from './components/jobs/RecommendedJobs';
+import NearbyJobsElement from './components/jobs/NearbyJobs';
 import {Text,View} from 'react-native';
 import useLoginStore from '../../store/authentication/login.store';
 import useLoaderStore from '../../store/loader.store';

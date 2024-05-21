@@ -12,10 +12,10 @@ import {
 import tw from 'twrnc';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {RadioButton} from 'react-native-paper';
-import FilterIconSVG from '../../assets/svgs/FilterIcon.svg';
-import Icon, {Icons} from '../../components/Icons';
-import useJobStore from '../../store/jobs.store';
-const SeeAll = ({navigation, isLoading, ...props}) => {
+import FilterIconSVG from '../../../../assets/svgs/FilterIcon.svg';
+import Icon,{Icons} from '../../../../components/Icons';
+import useJobStore from '../../../../store/jobs.store';
+const AllJobsFlatlist = ({navigation, isLoading, ...props}) => {
   const {getSearchedJobs, clearsearchedJobs, searchedJobs} = useJobStore();
   const [searchDefaultQuery, setDefaultSearchQuery] = useState('');
   const [isModalVisible, setModalVisible] = useState(false);
@@ -298,4 +298,4 @@ const SeeAll = ({navigation, isLoading, ...props}) => {
     </SafeAreaView>
   );
 };
-export default SeeAll;
+export default AllJobsFlatlist;

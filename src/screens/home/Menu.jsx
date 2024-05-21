@@ -10,8 +10,8 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import tw from 'twrnc';
 
 import {primaryBGColor} from '../../helper/utils/colors';
-import MyAppliedJobs from '../jobs/MyAppliedJobs';
-import MyPostedJobs from '../jobs/MyPostedJobs';
+import MyAppliedJobs from '../job-application/MyAppliedJobs';
+import MyPostedJobs from '../job-application/MyPostedJobs';
 
 const TopTabItems = [<MyAppliedJobs />, <MyPostedJobs />];
 const Menu = ({navigation}) => {

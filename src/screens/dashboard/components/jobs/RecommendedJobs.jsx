@@ -8,11 +8,11 @@ import {
   Pressable,
 } from 'react-native';
 import React from 'react';
-import {dashboardTranslation} from './dashboardTranslation';
+import { dashboardTranslation } from '../../dashboardTranslation';
+import Icon,{Icons} from '../../../../components/Icons';
+import { primaryBGColor } from '../../../../helper/utils/colors';
 import tw from 'twrnc';
 import Carousel from 'react-native-snap-carousel';
-import Icon, {Icons} from '../../components/Icons';
-import {primaryBGColor} from '../../helper/utils/colors';
 
 const RecommendedJobsElement = ({
   language,
