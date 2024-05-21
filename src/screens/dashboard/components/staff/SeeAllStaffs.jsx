@@ -31,7 +31,7 @@ export const SeeAllStaffs = ({navigation, language}) => {
     loadStaffs(0);
   }, []);
 
-  const loadStaffs = async (page) => {
+  const loadStaffs = async page => {
     setLoading(true);
     await getStaff(page, 10);
     setLoading(false);
@@ -76,11 +76,18 @@ export const SeeAllStaffs = ({navigation, language}) => {
       staff.firstname.toLowerCase().includes(searchQuery.toLowerCase()),
     );
   }, [searchQuery, stafflist]);
+  const handleInitiationPress = data => {
+    navigation.navigate('EngagmentInitiation', { item: data });
+  };
 
   const renderItem = ({item}) => {
     return (
       <Pressable
-        key={item._id}
+        onPress={() => {
+          handleInitiationPress(item);
+        }}
+        k
+        ey={item._id}
         style={({pressed}) =>
           tw`my-1 flex-row justify-between border border-gray-200 rounded-3 py-3 px-5 ${
             pressed ? 'bg-green-100/10' : 'bg-white'
@@ -209,13 +216,13 @@ export const SeeAllStaffs = ({navigation, language}) => {
         </Modal>
       </View>
       {!stafflist || stafflist.length === 0 ? (
-          <CommonMessageForStaffs
-            title="There are no Staffs"
-            language={language}
-          />
-        ) : (
-          ''
-        )}
+        <CommonMessageForStaffs
+          title="There are no Staffs"
+          language={language}
+        />
+      ) : (
+        ''
+      )}
       <View style={tw`mb-14 flex-1`}>
         {isLoading ? (
           renderLoader()
@@ -228,7 +235,6 @@ export const SeeAllStaffs = ({navigation, language}) => {
             onEndReachedThreshold={0.2}
           />
         )}
-       
       </View>
     </SafeAreaView>
   );

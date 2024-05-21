@@ -5,11 +5,13 @@ import Toast from 'react-native-toast-message';
 import useLoginStore, {getToken} from './authentication/login.store';
 
 const useJobStore = create((set, get) => ({
-  nearbyjobs: {},
-  recommendedJobs: {},
-  featuredJobs: {},
-  job: {},
-  searchedJobs: {},
+  nearbyjobs:[],
+  recommendedJobs:[],
+  featuredJobs: [],
+  myPostedJobs:[],
+  job:[],
+  searchedJobs:[],
+  myPostedJobs:[],
 
   getJobs: async (skip, limit, payload) => {
    console.log("get Jobs Called",payload);
@@ -124,11 +126,36 @@ const useJobStore = create((set, get) => ({
       // });
     }
   },
+  getMyPostedJobs: async (payload) => {
+    console.log("payload",payload);
+    try {
+      payload.skip?params.skip = skip : '';
+      payload.limit?params.limit = limit:'';
+      payload?.coordinates?.length ? params.coordinates = payload.coordinates:'';
+      params.createdby = payload.createdby;
+      console.log("params before sending for getNearByJobs ---- ",params);
+      const res = await API.get(`${JOBS}`, {
+        // headers: {Authorization: await getToken()},
+        params,
+      });
+      console.log("res,",res.data);
+      if (res && res.data) {
+        set({myPostedJobs: res.data});
+      }
+    } catch (error) {
+      console.log(JSON.stringify(error, null, 5));
+      // Toast.show({
+      //     type: 'tomatoToast',
+      //     text1: 'Failed to get jobs!',
+      // });
+    }
+  },
   clearNearByJobs: () => set({nearbyjobs: {}}),
-  clearRecommendedJobs: () => set({recommendedJobs: {}}),
-  clearFeaturedJobs: () => set({featuredJobs: {}}),
-  clearsearchedJobs: () => set({searchedJobs: {}}),
-  clearJob: () => set({job: {}}),
+  clearRecommendedJobs: () => set({recommendedJobs: []}),
+  clearFeaturedJobs: () => set({featuredJobs: []}),
+  clearsearchedJobs: () => set({searchedJobs:[]}),
+  clearMypostedJobs: () => set({myPostedJobs:[]}),
+  clearJob: () => set({job:[]}),
   getSearchedJobs: async (
     skip = 0,
     limit = 10,

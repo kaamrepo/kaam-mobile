@@ -6,7 +6,7 @@ import useLoginStore from '../../store/authentication/login.store';
 import useLoaderStore from '../../store/loader.store';
 import useStaffStore from '../../store/staff.store';
 import { allStaffConstant } from './components/staff/constants';
-import StaffFlatList from './components/staff/StaffFlatList';
+import StaffFlatList from './components/staff/AvailalbeStaffs';
 export const SearchStaff = ({navigation,location}) => {
   const {isLoading} = useLoaderStore();
 const {language} = useLoginStore();

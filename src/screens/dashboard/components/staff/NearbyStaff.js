@@ -8,7 +8,9 @@ import { getRandomColor } from '../../../../helper/utils/colors';
 
 export const NearbyStaff = ({ language, isLoading, location, navigation, nearbyusers }) => {
   const handleSeeAllPress = useCallback((item) => {
+    console.log("item",item);
     // Your existing logic here
+    navigation.navigate('EngagmentInitiation', {navigation});
   }, []);
 
   const handleBookmarkPress = useCallback(() => {
