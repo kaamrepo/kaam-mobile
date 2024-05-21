@@ -7,7 +7,6 @@ import useLoginStore, {getToken} from './login.store';
 
 const useUsersStore = create((set, get) => ({
   updateUserCoordinates: async data => {
-    console.log("data to update coordinate",data);
     try {
       const userid = useLoginStore.getState().loggedInUser?._id;
       console.log();

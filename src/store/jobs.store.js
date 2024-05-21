@@ -11,6 +11,39 @@ const useJobStore = create((set, get) => ({
   job: {},
   searchedJobs: {},
 
+  getJobs: async (skip, limit, payload) => {
+   console.log("get Jobs Called",payload);
+    try {
+      const params = {};
+      params.skip = skip || 0;
+      params.limit = limit || 10;
+      payload.type ? params.type = payload.type:'';
+      payload?.coordinates?.length ? params.coordinates = payload.coordinates:'';
+      payload?.wildString ? params.wildString = payload.wildString : '';
+      payload?.excludeIds?.length ? params.excludeIds = payload.excludeIds : '';
+      console.log("params before sending for getNearByJobs ---- ", params);
+      const res = await API.get(`${JOBS}`, {
+        headers: {Authorization: await getToken()},
+        params,
+      });
+      console.log("response from above payload",res.data);
+      if (res && res.data && payload.type === 'nearby') {
+        set({nearbyjobs: res.data});
+      }
+      if (res && res.data && payload.type === 'recommended') {
+        set({recommendedJobs: res.data});
+      }
+      if (res && res.data && payload.type === 'featured') {
+        set({featuredJobs: res.data});
+      }
+    } catch (error) {
+      console.log(JSON.stringify(error, null,4));
+      // Toast.show({
+      //     type: 'tomatoToast',
+      //     text1: 'Failed to get jobs!',
+      // });
+    }
+  },
   getNearByJobs: async (skip = 0, limit = 5, coordinates) => {
     try {
       const userid = useLoginStore.getState().loggedInUser?._id;
@@ -20,7 +53,7 @@ const useJobStore = create((set, get) => ({
         createdby: {
           $nin: [userid],
         },
-        // coordinates,
+        coordinates,
         sortDesc: ['createdat'],
         type: 'nearby',
       };

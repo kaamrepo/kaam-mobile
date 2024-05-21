@@ -54,12 +54,10 @@ const useStaffStore = create((set, get) => ({
       // if (searchText?.length) {
       //   params.text = searchText;
       // }
-      console.log("params after search in store",params);
       const res = await API.get(`${USER}`, {
         headers: {Authorization: await getToken()},
         params,
       });
-      console.log("response on use search",res?.data?.data?.length);
       if (res && res.data?.data) {
         set({
           stafflist: res?.data?.data,

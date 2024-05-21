@@ -8,12 +8,13 @@ import useLoginStore from '../../store/authentication/login.store';
 import useLoaderStore from '../../store/loader.store';
 import useJobStore from '../../store/jobs.store';
 export const SearchJobs = ({navigation,location}) => {
+  const userid = useLoginStore.getState().loggedInUser?._id;
   const {isLoading} = useLoaderStore();
 const {language} = useLoginStore();
 const onRefresh = useCallback(() => {
   setRefreshing(true);
   if (location) {
-    getNearByJobs(0, 5, [location?.coords?.longitude, location?.coords?.latitude]);
+    getJobs(0, 5,{type:"nearby",coordinates:[location?.coords?.longitude, location?.coords?.latitude],reject:userid});
   }
   getRecommendedJobs();
   getFeaturedJobs();
@@ -29,16 +30,18 @@ const {
   clearFeaturedJobs,
   getFeaturedJobs,
   featuredJobs,
+  getJobs,
 } = useJobStore();
 useEffect(() => {
   clearRecommendedJobs();
   clearFeaturedJobs();
-  getRecommendedJobs();
-  getFeaturedJobs();
-}, [clearRecommendedJobs, clearFeaturedJobs, getRecommendedJobs, getFeaturedJobs]);
+  getJobs(0, 5,{type:"nearby",coordinates:[location?.coords?.longitude, location?.coords?.latitude],excludeIds:[userid]});
+  getJobs(0, 5,{type:"recommended",coordinates:[location?.coords?.longitude, location?.coords?.latitude],excludeIds:[userid]});
+  getJobs(0, 5,{type:"featured",coordinates:[location?.coords?.longitude, location?.coords?.latitude],excludeIds:[userid]});
+
+}, []);
 
   return (<View>
-  <Text> From searchJobs</Text>
 <NearbyJobsElement {...{ language, nearbyjobs, isLoading, navigation, location }} />
 <RecommendedJobsElement {...{ language, recommendedJobs, isLoading, navigation }} />
 <FeaturedJobsElement featuredJobs={featuredJobs} isLoading={isLoading} language={language} navigation={navigation} />

@@ -49,7 +49,6 @@ export const requestLocationPermission = async () => {
 };
 
 export const getCoordinates = async () => {
-  console.log("In the coordinates function");
   try {
     const permissionGranted = await requestLocationPermission();
 

@@ -55,7 +55,6 @@ const Dashboard = ({ navigation }) => {
   useEffect(() => {
     const fetchCoordinates = async () => {
       const position = await getCoordinates();
-      console.log("position - ",position.coords);
       const { latitude: currentLat, longitude: currentLon } = position.coords;
       const userCoordinates = loggedInUser?.coordinates;
       if (!userCoordinates?.length || calculateDistance(userCoordinates[0], userCoordinates[1], currentLat, currentLon) > 10) {
