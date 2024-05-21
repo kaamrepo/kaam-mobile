@@ -20,22 +20,17 @@ import useLoaderStore from '../../store/loader.store';
 import { requestLocationPermission, getCoordinates } from '../../helper/utils/getGeoLocation';
 import Geolocation from 'react-native-geolocation-service';
 import { dashboardTranslation } from './dashboardTranslation';
-import FeaturedJobsElement from './FeaturedJobs';
-import RecommendedJobsElement from './RecommendedJobs';
-import NearbyJobsElement from './NearbyJobs';
 import { useFocusEffect } from '@react-navigation/native';
 import { SearchStaff } from './SearchStaff';
 import useUsersStore from '../../store/authentication/user.store';
-
+import { SearchJobs } from './SearchJobs';
 const Dashboard = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const { loggedInUser, language } = useLoginStore();
   const { updateUserCoordinates } = useUsersStore();
   const {
     getNearByJobs,
-    nearbyjobs,
     getRecommendedJobs,
-    recommendedJobs,
     clearRecommendedJobs,
     clearFeaturedJobs,
     getFeaturedJobs,
@@ -69,17 +64,6 @@ const Dashboard = ({ navigation }) => {
     };
     fetchCoordinates();
   }, [loggedInUser, calculateDistance, updateUserCoordinates]);
-
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    if (location) {
-      getNearByJobs(0, 5, [location?.coords?.longitude, location?.coords?.latitude]);
-    }
-    getRecommendedJobs();
-    getFeaturedJobs();
-    setRefreshing(false);
-  }, [location, getNearByJobs, getRecommendedJobs, getFeaturedJobs]);
-
   useFocusEffect(
     useCallback(() => {
       const result = requestLocationPermission();
@@ -219,16 +203,13 @@ const Dashboard = ({ navigation }) => {
         showsVerticalScrollIndicator={false}
         nestedScrollEnabled
         style={[tw`py-10 bg-[#FAFAFD]`]}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
         <GeneralStatusBar backgroundColor={'#d6d6d6'} />
         {headerComponent}
         {searchToggleComponent}
         {selectedSearchType === 'jobs' && (
           <View>
-            <NearbyJobsElement {...{ language, nearbyjobs, isLoading, navigation, location }} />
-            <RecommendedJobsElement {...{ language, recommendedJobs, isLoading, navigation }} />
-            <FeaturedJobsElement featuredJobs={featuredJobs} isLoading={isLoading} language={language} navigation={navigation} />
+          <SearchJobs {...{navigation,location}}></SearchJobs>
           </View>
         )}
         {selectedSearchType === 'staff' && (
@@ -242,15 +223,3 @@ const Dashboard = ({ navigation }) => {
 };
 
 export default Dashboard;
-
-const RecommendedJobsFillerComponent = ({ isLoading }) => {
-  return (
-    <View style={tw`w-full items-center px-5 h-48`}>
-      <View style={tw`w-full h-full justify-center bg-neutral-100 border border-neutral-300 rounded-3`}>
-        <Text style={[tw`text-center text-sm leading-relaxed text-gray-600`, { fontFamily: 'Poppins-Regular' }]}>
-          {isLoading ? '' : 'There are no nearby jobs'}
-        </Text>
-      </View>
-    </View>
-  );
-};
