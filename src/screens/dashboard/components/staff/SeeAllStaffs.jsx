@@ -17,18 +17,23 @@ import useStaffStore from '../../../../store/staff.store';
 import FilterIconSVG from '../../../../assets/svgs/FilterIcon.svg';
 import Icon, {Icons} from '../../../../components/Icons';
 import useLoaderStore from '../../../../store/loader.store';
+import useJobStore from '../../../../store/jobs.store';
+import useLoginStore from '../../../../store/authentication/login.store';
 
 export const SeeAllStaffs = ({navigation, language}) => {
   const {isLoading, setLoading} = useLoaderStore();
-  const {stafflist, getStaff, clearUsers, appendStaff} = useStaffStore(); // Assuming appendStaff adds new staff to the existing list
+  const {stafflist, getStaff, clearUsers} = useStaffStore(); // Assuming appendStaff adds new staff to the existing list
   const [searchQuery, setSearchQuery] = useState('');
+  const {getJobs} = useJobStore();
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
   const [page, setPage] = useState(0);
+  const userId = useLoginStore((state) => state.loggedInUser?._id);
 
   useEffect(() => {
     clearUsers();
     loadStaffs(0);
+     getJobs(0, 100, { createdby: userId, type: 'myPostedJobs' });
   }, []);
 
   const loadStaffs = async page => {
@@ -77,6 +82,7 @@ export const SeeAllStaffs = ({navigation, language}) => {
     );
   }, [searchQuery, stafflist]);
   const handleInitiationPress = data => {
+    console.log("handleIntiaatePress called +++++");
     navigation.navigate('EngagmentInitiation', { item: data });
   };
 

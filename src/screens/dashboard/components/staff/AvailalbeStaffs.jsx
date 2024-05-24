@@ -13,7 +13,7 @@ const StaffFlatList = ({
   stafflist,
 }) => {
   const handleSeeAllPress = () => {
-    navigation.navigate('SeeAllStaffs', {navigation});
+    navigation.navigate('SeeAllStaffs');
   };
 
   if (isLoading) {

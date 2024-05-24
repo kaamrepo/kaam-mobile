@@ -1,22 +1,25 @@
 import React, { useEffect } from 'react';
-import { NearbyStaff } from './components/staff/NearbyStaff';
-import {Text,View} from 'react-native';
-// import useLoginStore from '../../store/authentication/login.store';
+import { View } from 'react-native';
+import NearbyStaff from './components/staff/NearbyStaff';
+import StaffFlatList from './components/staff/AvailalbeStaffs';
 import useLoginStore from '../../store/authentication/login.store';
 import useLoaderStore from '../../store/loader.store';
 import useStaffStore from '../../store/staff.store';
-import { allStaffConstant } from './components/staff/constants';
-import StaffFlatList from './components/staff/AvailalbeStaffs';
-export const SearchStaff = ({navigation,location}) => {
-  const {isLoading} = useLoaderStore();
-const {language} = useLoginStore();
-const {getNearByStaff,stafflist,getStaff,nearbyusers} = useStaffStore();
-useEffect(()=>{
-  getNearByStaff(0,6,{location});
-  getStaff(0,5);
-},[])
-  return (<View>
-  <NearbyStaff {...{language,isLoading,navigation,location,nearbyusers}}></NearbyStaff>
-  <StaffFlatList {...{language,isLoading,navigation,location,stafflist}}></StaffFlatList>
-  </View>);
+
+export const SearchStaff = ({ navigation, location }) => {
+  const { isLoading } = useLoaderStore();
+  const { language } = useLoginStore();
+  const { getNearByStaff, stafflist, getStaff, nearbyusers } = useStaffStore();
+
+  useEffect(() => {
+    getNearByStaff(0, 6, { location });
+    getStaff(0, 5);
+  }, [getNearByStaff, getStaff, location]);
+
+  return (
+    <View>
+      <NearbyStaff {...{ language, isLoading, navigation, location, nearbyusers }} />
+      <StaffFlatList {...{ language, isLoading, navigation, location, stafflist }} />
+    </View>
+  );
 };

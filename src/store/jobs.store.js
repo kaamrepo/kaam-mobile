@@ -14,29 +14,38 @@ const useJobStore = create((set, get) => ({
   myPostedJobs:[],
 
   getJobs: async (skip, limit, payload) => {
-   console.log("get Jobs Called",payload);
+   console.log("get Jobs Called",skip,limit,payload);
     try {
       const params = {};
-      params.skip = skip || 0;
-      params.limit = limit || 10;
+     payload.skip? params.skip = skip : '';
+     payload.limit? params.limit = limit : '';
       payload.type ? params.type = payload.type:'';
       payload?.coordinates?.length ? params.coordinates = payload.coordinates:'';
       payload?.wildString ? params.wildString = payload.wildString : '';
       payload?.excludeIds?.length ? params.excludeIds = payload.excludeIds : '';
-      console.log("params before sending for getNearByJobs ---- ", params);
+      payload?.createdby ? params.createdby = payload.createdby : '';
+      console.log("params before sending for getjobs ---- ", params);
       const res = await API.get(`${JOBS}`, {
         headers: {Authorization: await getToken()},
-        params,
+        params: params
       });
-      console.log("response from above payload",res.data);
       if (res && res.data && payload.type === 'nearby') {
+        console.log("in the nearby if");
         set({nearbyjobs: res.data});
       }
       if (res && res.data && payload.type === 'recommended') {
+        console.log("in the recommended if");
+
         set({recommendedJobs: res.data});
       }
       if (res && res.data && payload.type === 'featured') {
+        console.log("in the featured if");
+
         set({featuredJobs: res.data});
+      }
+      if (res && res.data && payload.type === 'myPostedJobs') {
+        console.log("in the myPOstedJobs if");
+        set({myPostedJobs: res?.data?.data || []});
       }
     } catch (error) {
       console.log(JSON.stringify(error, null,4));
@@ -216,6 +225,7 @@ const useJobStore = create((set, get) => ({
     }
   },
   applyForJob: async payload => {
+    console.log("payload in apply for Job", payload);
     try {
       const res = await API.post(`${JOBS_APPLICATIONS}`, payload, {
         headers: {
