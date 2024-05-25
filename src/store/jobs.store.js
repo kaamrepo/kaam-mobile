@@ -186,7 +186,7 @@ const useJobStore = create((set, get) => ({
         params.coordinates = coordinates;
       }
       if (searchText?.length) {
-        params.text = searchText;
+        params.wildString = searchText;
       }
       const res = await API.get(`${JOBS}`, {
         headers: {Authorization: await getToken()},
