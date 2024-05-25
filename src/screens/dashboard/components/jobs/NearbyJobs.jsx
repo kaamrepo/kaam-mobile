@@ -23,8 +23,6 @@ const NearbyJobsElement = ({
   isLoading,
   location,
 }) => {
-  const {getSearchedJobs} = useJobStore();
-
   if (!location) {
     return (
       <CommonMessageForNearByJobs

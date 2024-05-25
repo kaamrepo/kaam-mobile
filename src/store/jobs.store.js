@@ -11,7 +11,6 @@ const useJobStore = create((set, get) => ({
   myPostedJobs:[],
   job:[],
   searchedJobs:[],
-  myPostedJobs:[],
 
   getJobs: async (skip, limit, payload) => {
    console.log("get Jobs Called",skip,limit,payload);
@@ -24,6 +23,7 @@ const useJobStore = create((set, get) => ({
       payload?.wildString ? params.wildString = payload.wildString : '';
       payload?.excludeIds?.length ? params.excludeIds = payload.excludeIds : '';
       payload?.createdby ? params.createdby = payload.createdby : '';
+      payload?.excludeIdsInJobSearch?.length ? params.excludeIdsInJobSearch = payload.excludeIdsInJobSearch : '';
       console.log("params before sending for getjobs ---- ", params);
       const res = await API.get(`${JOBS}`, {
         headers: {Authorization: await getToken()},
@@ -44,7 +44,7 @@ const useJobStore = create((set, get) => ({
         set({featuredJobs: res.data});
       }
       if (res && res.data && payload.type === 'myPostedJobs') {
-        console.log("in the myPOstedJobs if");
+        console.log("in the myPOstedJobs if *********************");
         set({myPostedJobs: res?.data?.data || []});
       }
     } catch (error) {

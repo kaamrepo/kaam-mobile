@@ -20,7 +20,6 @@ export const EngagmentInitiation = ({ route }) => {
   const handleBackPress = () => {
     navigation.goBack();
   };
-  
   const renderItem = useCallback((item) => {
     return (
       <TouchableOpacity

@@ -13,9 +13,10 @@ export const SearchJobs = ({navigation,location}) => {
 const {language} = useLoginStore();
 const onRefresh = useCallback(() => {
   setRefreshing(true);
-  if (location) {
-    getJobs(0, 5,{type:"nearby",coordinates:[location?.coords?.longitude, location?.coords?.latitude],reject:userid});
-  }
+  // if (location) {
+  //   // getJobs(0, 5,{type:"nearby",coordinates:[location?.coords?.longitude, location?.coords?.latitude],reject:userid});
+  //   getJobs(0, 5,{type:"nearby",reject:userid});
+  // }
   getRecommendedJobs();
   getFeaturedJobs();
   setRefreshing(false);
@@ -35,9 +36,12 @@ const {
 useEffect(() => {
   clearRecommendedJobs();
   clearFeaturedJobs();
-  getJobs(0, 5,{type:"nearby",coordinates:[location?.coords?.longitude, location?.coords?.latitude],excludeIds:[userid]});
-  getJobs(0, 5,{type:"recommended",coordinates:[location?.coords?.longitude, location?.coords?.latitude],excludeIds:[userid]});
-  getJobs(0, 5,{type:"featured",coordinates:[location?.coords?.longitude, location?.coords?.latitude],excludeIds:[userid]});
+  getJobs(0, 5,{type:"nearby",excludeIdsInJobSearch:userid});
+  getJobs(0, 5,{type:"recommended",excludeIdsInJobSearch:[userid]});
+  getJobs(0, 5,{type:"featured",excludeIdsInJobSearch:[userid]});
+  // getJobs(0, 5,{type:"nearby",coordinates:[location?.coords?.longitude, location?.coords?.latitude],excludeIds:[userid]});
+  // getJobs(0, 5,{type:"recommended",coordinates:[location?.coords?.longitude, location?.coords?.latitude],excludeIds:[userid]});
+  // getJobs(0, 5,{type:"featured",coordinates:[location?.coords?.longitude, location?.coords?.latitude],excludeIds:[userid]});
 
 }, []);
 
