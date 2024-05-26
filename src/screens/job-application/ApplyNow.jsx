@@ -10,6 +10,7 @@ import Icon, {Icons} from '../../components/Icons';
 import {darkenColor} from '../../helper/utils/getDarkColor';
 import {getRandomColor} from '../../helper/utils/colors';
 import {useFocusEffect} from '@react-navigation/native';
+import useLoginStore from '../../store/authentication/login.store';
 
 const jobDescription = {
   image: Image1,
@@ -46,6 +47,7 @@ const ApplyNow = ({route, navigation}) => {
     const res = await applyForJob({
       jobid: job?._id,
       employerid: job?.createdby,
+      initiator: useLoginStore.getState().loggedInUser?._id
     });
     res && getNearByJobById(job?._id);
   };

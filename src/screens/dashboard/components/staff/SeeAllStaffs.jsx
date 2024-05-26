@@ -83,7 +83,7 @@ export const SeeAllStaffs = ({navigation, language}) => {
   }, [searchQuery, stafflist]);
   const handleInitiationPress = data => {
     console.log("handleIntiaatePress called +++++");
-    navigation.navigate('EngagmentInitiation', { item: data });
+    navigation.navigate('EngagmentInitiation', { user: data });
   };
 
   const renderItem = ({item}) => {
