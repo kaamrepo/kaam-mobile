@@ -14,10 +14,14 @@ export const EngagmentInitiation = ({ route }) => {
   const [visible, setVisible] = useState(false);
   const [selectedJob, setSelectedJob] = useState(null);
 
-  const { myPostedJobs,applyForJob } = useJobStore();
+  const { myPostedJobs, applyForJob } = useJobStore();
+  const { loggedInUser } = useLoginStore();
+
   const handleBackPress = () => {
     navigation.goBack();
   };
+  
+
   const renderJobs = useCallback((job) => {
     return (
       <TouchableOpacity
@@ -25,6 +29,7 @@ export const EngagmentInitiation = ({ route }) => {
         onPress={() => {
           setSelectedJob(job);
           setVisible(true);
+          handleConfirm();
         }}
         key={job?._id}
       >
@@ -35,24 +40,25 @@ export const EngagmentInitiation = ({ route }) => {
         <View style={tw`flex-row justify-between`}>
           <Text style={tw`text-gray-500 w-1/2`}>Created: {new Date(job?.createdat).toLocaleDateString()}</Text>
           <Text style={tw`text-gray-500 w-1/2`}>Location: {job?.location?.Content?.fulladdress}</Text>
-
         </View>
         <Text style={tw`text-lg w-full mt-2`}>{job?.description}</Text>
       </TouchableOpacity>
     );
-  }, []); 
+  }, []);
+
   const hideDialog = () => setVisible(false);
 
-  const handleConfirm = async () => {
-    setVisible(false);
-    const res = await applyForJob({
-      jobid: selectedJob?._id,
-      employerid: selectedJob?.createdby,
-      initiator: useLoginStore.getState().loggedInUser?._id
-    });
-   console.log("res ----",res);
+  const handleConfirm = useCallback(async () => {
+    // setVisible(false);
+    // const res = await applyForJob({
+    //   jobid: selectedJob?._id,
+    //   employerid: selectedJob?.createdby,
+    //   initiator: loggedInUser?._id,
+    // });
+    // console.log("res ----", res);
     // navigation.navigate('Chat', { job: selectedJob });
-  };
+    console.log("pressed job", selectedJob);
+  }, [selectedJob, loggedInUser, applyForJob]);
 
   return (
     <Provider>
@@ -76,18 +82,20 @@ export const EngagmentInitiation = ({ route }) => {
         <ScrollView contentContainerStyle={tw`p-4`}>
           {myPostedJobs.map((job) => renderJobs(job))}
         </ScrollView>
-        <Portal>
+        {/* <Portal>
           <Dialog visible={visible} onDismiss={hideDialog}>
             <Dialog.Title>Confirmation!</Dialog.Title>
             <Dialog.Content>
-              <Text>Please confirm to initate chat with the {user?.firstname} {user?.lastname}?</Text>
+              <Text>
+                Please confirm to initiate chat with {user?.firstname} {user?.lastname}?
+              </Text>
             </Dialog.Content>
             <Dialog.Actions>
               <Button onPress={hideDialog}>No</Button>
               <Button onPress={handleConfirm}>Yes</Button>
             </Dialog.Actions>
           </Dialog>
-        </Portal>
+        </Portal> */}
       </SafeAreaView>
     </Provider>
   );

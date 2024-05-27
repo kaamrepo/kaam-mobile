@@ -232,6 +232,7 @@ const useJobStore = create((set, get) => ({
           Authorization: await getToken(),
         },
       });
+      console.log("res",res.data);
       if (res?.data) {
         Toast.show({
           type: 'success',
