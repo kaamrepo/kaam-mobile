@@ -70,7 +70,7 @@ const useStaffStore = create((set, get) => ({
       console.log('error ----', error);
     }
   },
-  getStaffFlatlist: async (skip, limit, searchQuery) => {
+  getStaffFlatlist: async (skip, limit, payload) => {
     try {
       const userid = useLoginStore.getState().loggedInUser?._id;
       const params = {};
@@ -87,13 +87,15 @@ const useStaffStore = create((set, get) => ({
       // if (searchText?.length) {
       //   params.text = searchText;
       // }
+      console.log("payload",payload);
       console.log("params before call in getStaffFlatlist",params);
       const res = await API.get(`${USER}`, {
         headers: {Authorization: await getToken()},
         params,
       });
-      if (res && res.data?.data) {
-        return res.data?.data;
+      console.log("res",res.data.data);
+      if (res && res?.data?.data) {
+        return res?.data?.data;
       }else{
         return false;
       }
