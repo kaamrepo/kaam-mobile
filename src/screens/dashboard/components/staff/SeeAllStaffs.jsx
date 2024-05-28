@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState, useRef} from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import {
   Text,
   SafeAreaView,
@@ -11,16 +11,16 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import tw from 'twrnc';
-import {RadioButton, Modal, Portal, Provider} from 'react-native-paper';
+import { RadioButton, Modal, Portal, Provider } from 'react-native-paper';
 import FilterIconSVG from '../../../../assets/svgs/FilterIcon.svg';
-import Icon, {Icons} from '../../../../components/Icons';
+import Icon, { Icons } from '../../../../components/Icons';
 import useStaffStore from '../../../../store/staff.store';
 import useLoaderStore from '../../../../store/loader.store';
 
-export const SeeAllStaffs = ({navigation}) => {
-  const {getStaffFlatlist} = useStaffStore();
-  const {isLoading} = useLoaderStore();
-  let limit = 10;
+export const SeeAllStaffs = ({ navigation }) => {
+  const { getStaffFlatlist } = useStaffStore();
+  const { isLoading } = useLoaderStore();
+  const limit = 10;
   const loadMoreRef = useRef(true);
   const [skip, setSkip] = useState(0);
   const [data, setData] = useState([]);
@@ -32,117 +32,119 @@ export const SeeAllStaffs = ({navigation}) => {
     fetchData();
   }, []);
 
-  const handleBackPress = () => {
+  const handleBackPress = useCallback(() => {
     navigation.goBack();
-  };
+  }, [navigation]);
 
-  const hideModal = () => {
+  const hideModal = useCallback(() => {
     setModalVisible(false);
-  };
+  }, []);
 
-  const showModal = () => {
+  const showModal = useCallback(() => {
     setModalVisible(true);
-  };
-  const handleSearch = async text => {
+  }, []);
+
+  const handleSearch = useCallback(async (text) => {
     await setSearchInput(text);
     if (text?.length <= 0) {
       setSkip(0);
       fetchData();
     }
-    if (text?.length !== 0) {
+    if (text?.length!== 0) {
       setSkip(0);
       fetchData(text);
     }
-  };
-  const keyExtractor = useCallback(item => `${item._id}`, []);
+  }, []);
+
+  const keyExtractor = useCallback((item) => `${item._id}`, []);
 
   const listFooterComponent = useCallback(() => {
-    return <ActivityIndicator size={'large'} style={{marginVertical: 16}} />;
+    return <ActivityIndicator size={'large'} style={{ marginVertical: 16 }} />;
   }, []);
 
   const ItemSeparatorComponent = useCallback(() => {
-    return <View style={tw`justify-center`}></View>;
+    return <View style={tw`justify-center`} />;
   }, []);
 
-  const onEndReached = async () => {
+  const onEndReached = useCallback(async () => {
     if (loadMoreRef.current) {
       await fetchData();
     }
-  };
-  const fetchData = async (text) => {
+  }, []);
+
+  const fetchData = useCallback(async (text) => {
     try {
       if (text) {
-        setData([])
+        setData([]);
       }
-      const result = await getStaffFlatlist(skip, limit, {text: text});
+      const result = await getStaffFlatlist(skip, limit, { text });
       if (result?.length === 0) {
         loadMoreRef.current = false;
-      }else{
-      setData([...data, ...result]);
-      setSkip(skip + 10);}
+      } else {
+        setData(prevData => [...prevData,...result]);
+        setSkip(skip + 10);
+      }
     } catch (error) {
       console.log('error', error);
     }
-  };
+  }, [skip, limit, getStaffFlatlist]);
 
-  const renderItem = useCallback(
-    ({item, index}) => (
-      <Pressable
-        onPress={() => {
-         navigation.navigate('EmployeeDetails',{id:item._id})
-        }}
-        key={index}
-        style={({pressed}) => [
-          tw`my-1 flex-row justify-between border border-gray-200 rounded-3 py-3 px-5 ${
-            pressed ? 'bg-green-100/10 border-0' : 'bg-white'
-          }`,
-        ]}>
-        <View style={tw`h-auto w-auto flex`}>
-          {item?.profilepic ? (
-            <Image source={item?.profilepic} style={tw`h-12 w-12 rounded-xl`} />
-          ) : (
-            <Icon
-              type={Icons.Ionicons}
-              name={'person-circle-outline'}
-              size={55}
-              color={'green'}
-            />
-          )}
-        </View>
-        <View style={tw`flex w-35`}>
-          <Text
-            style={[
-              tw`text-black text-[14px]`,
-              {fontFamily: 'Poppins-SemiBold'},
-            ]}
-            numberOfLines={1}
-            ellipsizeMode="tail">
-            {item?.firstname} 
-          </Text>
-          <Text
-            style={[
-              tw`text-neutral-600 text-[14px]`,
-              {fontFamily: 'Poppins-Regular'},
-            ]}
-            numberOfLines={1}
-            ellipsizeMode="tail">
-            {item?.lastname}
-          </Text>
-        </View>
-        <View style={tw`flex`}>
-          <Text
-            style={[
-              tw`text-black text-[14px]`,
-              {fontFamily: 'Poppins-SemiBold'},
-            ]}>
-            {item?.address?.city || 'City - NA'}/
-            {item?.address?.state || 'State - NA'}
-          </Text>
-        </View>
-      </Pressable>
-    ),
-    [data],
-  );
+  const renderItem = useCallback(({ item, index }) => (
+  
+<Pressable
+onPress={() => {
+ navigation.navigate('EmployeeDetails',{id:item._id})
+}}
+key={index}
+style={({pressed}) => [
+  tw`my-1 flex-row justify-between border border-gray-200 rounded-3 py-3 px-5 ${
+    pressed ? 'bg-green-100/10 border-0' : 'bg-white'
+  }`,
+]}>
+<View style={tw`h-auto w-auto flex`}>
+  {item?.profilepic ? (
+    <Image source={item?.profilepic} style={tw`h-12 w-12 rounded-xl`} />
+  ) : (
+    <Icon
+      type={Icons.Ionicons}
+      name={'person-circle-outline'}
+      size={55}
+      color={'green'}
+    />
+  )}
+</View>
+<View style={tw`flex w-35`}>
+  <Text
+    style={[
+      tw`text-black text-[14px]`,
+      {fontFamily: 'Poppins-SemiBold'},
+    ]}
+    numberOfLines={1}
+    ellipsizeMode="tail">
+    {item?.firstname} 
+  </Text>
+  <Text
+    style={[
+      tw`text-neutral-600 text-[14px]`,
+      {fontFamily: 'Poppins-Regular'},
+    ]}
+    numberOfLines={1}
+    ellipsizeMode="tail">
+    {item?.lastname}
+  </Text>
+</View>
+<View style={tw`flex`}>
+  <Text
+    style={[
+      tw`text-black text-[14px]`,
+      {fontFamily: 'Poppins-SemiBold'},
+    ]}>
+    {item?.address?.city || 'City - NA'}/
+    {item?.address?.state || 'State - NA'}
+  </Text>
+</View>
+</Pressable>
+  ), [navigation]);
 
   return (
     <Provider>
@@ -150,8 +152,8 @@ export const SeeAllStaffs = ({navigation}) => {
         <View style={tw`flex-row items-center mb-4 mt-2`}>
           <Pressable
             onPress={handleBackPress}
-            style={({pressed}) => [
-              tw`p-2 rounded-full ${pressed ? 'bg-black/20' : ''}`,
+            style={({ pressed }) => [
+              tw`p-2 rounded-full ${pressed? 'bg-black/20' : ''}`,
             ]}>
             <Icon
               type={Icons.Ionicons}
@@ -183,7 +185,7 @@ export const SeeAllStaffs = ({navigation}) => {
           // keyExtractor={keyExtractor}
           ItemSeparatorComponent={ItemSeparatorComponent}
           onEndReached={onEndReached}
-          ListFooterComponent={isLoading ? listFooterComponent : null}
+          ListFooterComponent={isLoading? listFooterComponent : null}
         />
 
         <Portal>
@@ -196,7 +198,7 @@ export const SeeAllStaffs = ({navigation}) => {
               <View style={tw`flex-row items-center mb-2`}>
                 <RadioButton
                   value="male"
-                  status={selectedOption === 'male' ? 'checked' : 'unchecked'}
+                  status={selectedOption === 'male'? 'checked' : 'unchecked'}
                   onPress={() => setSelectedOption('male')}
                 />
                 <Text style={tw`ml-2`}>Male</Text>
@@ -204,7 +206,7 @@ export const SeeAllStaffs = ({navigation}) => {
               <View style={tw`flex-row items-center mb-2`}>
                 <RadioButton
                   value="female"
-                  status={selectedOption === 'female' ? 'checked' : 'unchecked'}
+                  status={selectedOption === 'female'? 'checked' : 'unchecked'}
                   onPress={() => setSelectedOption('female')}
                 />
                 <Text style={tw`ml-2`}>Female</Text>
@@ -221,19 +223,6 @@ export const SeeAllStaffs = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  flatStyle: {
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 4.65,
-    elevation: 8,
-  },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -241,3 +230,4 @@ const styles = StyleSheet.create({
     padding: 20,
   },
 });
+

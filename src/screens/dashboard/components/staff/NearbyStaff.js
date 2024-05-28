@@ -6,20 +6,16 @@ import Carousel from 'react-native-snap-carousel';
 import Icon, { Icons } from '../../../../components/Icons';
 import { getRandomColor } from '../../../../helper/utils/colors';
 
-export const NearbyStaff = ({ language, isLoading, location, navigation, nearbyusers }) => {
+const NearbyStaff = ({ language, isLoading, location, navigation, nearbyusers }) => {
   const handleSeeAllPress = useCallback((item) => {
-    console.log("item",item);
-    // Your existing logic here
-   
-      navigation.navigate('EmployeeDetails',{id:item._id})
-  
-  }, []);
+    navigation.navigate('EmployeeDetails', { id: item._id });
+  }, [navigation]);
 
   const handleBookmarkPress = useCallback(() => {
-    // Your existing logic here
+    // Handle bookmark press logic here
   }, []);
 
-  if (!location) {
+  if (location) {
     return <CommonMessageForNearByJobs title="Please turn on your location" language={language} />;
   }
 
@@ -37,7 +33,6 @@ export const NearbyStaff = ({ language, isLoading, location, navigation, nearbyu
       style={[
         tw`w-full h-48 rounded-6`,
         { backgroundColor: getRandomColor(index) },
-        // { backgroundColor:'red' },
       ]}
       resizeMode="cover">
       <Pressable

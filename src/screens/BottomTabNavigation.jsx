@@ -36,16 +36,16 @@ const TabArr = [
     route: 'Dashboard',
     label: 'Dashboard',
     component: Dashboard,
-    activeIcon: <HomeSVG width={18} height={18} />,
+    activeIcon: <HomeSVG width={24} height={24} />,
     inactiveIcon: <HomeInactiveSVG width={18} height={18} />,
   },
-  {
-    route: 'Inbox',
-    label: 'Inbox',
-    component: Engagments,
-    activeIcon: <MailSVG width={18} height={18} />,
-    inactiveIcon: <MailInactiveSVG width={18} height={18} />,
-  },
+  // {
+  //   route: 'Inbox',
+  //   label: 'Inbox',
+  //   component: Engagments,
+  //   activeIcon: <MailSVG width={18} height={18} />,
+  //   inactiveIcon: <MailInactiveSVG width={18} height={18} />,
+  // },
   {
     route: 'Plus',
     label: '+',
@@ -67,20 +67,20 @@ const TabArr = [
       />
     ),
   },
-  {
-    route: 'Bookmark',
-    label: 'Bookmark',
-    component: Bookmark,
-    activeIcon: <BookmarkSVG width={18} height={18} />,
-    inactiveIcon: <BookmarkInactiveSVG width={18} height={18} />,
-  },
+  // {
+  //   route: 'Bookmark',
+  //   label: 'Bookmark',
+  //   component: Bookmark,
+  //   activeIcon: <BookmarkSVG width={18} height={18} />,
+  //   inactiveIcon: <BookmarkInactiveSVG width={18} height={18} />,
+  // },
   {
     route: 'Menu',
     label: 'Menu',
     component: Menu,
 
-    activeIcon: <MenuSVG width={18} height={18} />,
-    inactiveIcon: <MenuInactiveSVG width={18} height={18} />,
+    activeIcon: <MenuSVG width={24} height={24} />,
+    inactiveIcon: <MenuInactiveSVG width={19} height={19} />,
   },
 ];
 
