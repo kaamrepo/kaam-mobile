@@ -10,8 +10,8 @@ import {
   Image,
 } from 'react-native';
 import tw from 'twrnc';
-import { primaryBGColor } from '../../helper/utils/colors';
-import { primaryDangerColor } from '../../helper/utils/colors';
+import {primaryBGColor} from '../../helper/utils/colors';
+import {primaryDangerColor} from '../../helper/utils/colors';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import GeneralStatusBar from '../../components/GeneralStatusBar';
@@ -22,9 +22,10 @@ import useJobStore from '../../store/jobs.store';
 import dayjs from 'dayjs';
 
 const Chat = ({route, navigation}) => {
-  console.log("route in chat-----",route);
-  const applicationId = route?.params?.item?._id;
+  const applicationId = route?.params?.appliedJobId;
   const [messageText, setMessageText] = useState('');
+  const [jobApplication, setJobApplication] = useState({});
+  const [approvalStatus, setApprovalStatus] = useState(null);
   const lastMessageRef = useRef(null);
   const {
     chat: chat1,
@@ -58,14 +59,39 @@ const Chat = ({route, navigation}) => {
       clearChat();
     };
   }, [route.params.chatid]);
-  const {updateJobStatus} = useJobStore();
-  const handlePress = (status) =>{
-    const payload = {
-      status,
-      applicationId
+  const {updateJobStatus, getJobApplication} = useJobStore();
+  const handlePress = async status => {
+    try {
+      const payload = {
+        status,
+        applicationId,
+      };
+      const updateResult = await updateJobStatus(payload); // Update job status
+      // After updating status, fetch application details and update approval status
+      if (updateResult) {
+        console.log(' in the if');
+        const application = await getJobApplication({_id: applicationId});
+        setJobApplication(...application);
+        setApprovalStatus(application?.status); // Update approval status
+      }
+    } catch (error) {
+      console.error('Error updating job status:', error);
     }
-    updateJobStatus(payload)
-  }
+  };
+
+  useEffect(() => {
+    // Fetch application details and update approval status
+    if (applicationId) {
+      const getApplication = async () => {
+        const application = await getJobApplication({_id: applicationId});
+        setJobApplication(...application);
+        setApprovalStatus(jobApplication?.status); // Update approval status
+      };
+      getApplication();
+    }
+  }, [applicationId, approvalStatus]);
+  console.log('Applciaiton . status', approvalStatus);
+
   return (
     <SafeAreaView style={tw`flex-1`} edges={['top']}>
       <GeneralStatusBar backgroundColor={bgColor} />
@@ -112,19 +138,35 @@ const Chat = ({route, navigation}) => {
         </View>
       </View>
       <View style={tw`flex-row justify-center items-center`}>
-      <TouchableOpacity
-        style={[tw`bg-blue-500 px-8 py-2 my-2 rounded mx-3`, { backgroundColor: primaryBGColor }]}
-        onPress={() => { handlePress('Approved'); }}
-      >
-        <Text style={tw`text-white text-lg font-bold`}>Approve</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[tw`bg-blue-500 px-8 py-2 my-2 rounded mx-3`, { backgroundColor: primaryDangerColor }]}
-        onPress={() => { handlePress('Rejected'); }}
-      >
-        <Text style={tw`text-white text-lg font-bold`}>Reject</Text>
-      </TouchableOpacity>
-    </View>
+        <TouchableOpacity
+          style={[
+            tw`bg-blue-500 px-8 py-2 my-2 rounded mx-3`,
+            {
+              backgroundColor: primaryBGColor,
+              opacity: approvalStatus === 'Approved' ? 0.5 : 1,
+            },
+          ]}
+          onPress={() => {
+            handlePress('Approved');
+          }}
+          disabled={approvalStatus === 'Approved'}>
+          <Text style={tw`text-white text-lg font-bold`}>Approve</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            tw`bg-blue-500 px-8 py-2 my-2 rounded mx-3`,
+            {
+              backgroundColor: primaryDangerColor,
+              opacity: approvalStatus === 'Rejected' ? 0.5 : 1,
+            },
+          ]}
+          onPress={() => {
+            handlePress('Rejected');
+          }}
+          disabled={approvalStatus === 'Rejected'}>
+          <Text style={tw`text-white text-lg font-bold`}>Reject</Text>
+        </TouchableOpacity>
+      </View>
       <View style={tw`flex-1 px-4 py-1`}>
         <FlatList
           ref={lastMessageRef}
@@ -143,7 +185,11 @@ const Chat = ({route, navigation}) => {
       </View>
 
       <View
-        style={tw`flex-row items-center justify-between gap-x-3 border-t border-slate-300 px-2 py-2 bg-white`}>
+  style={[
+    tw`flex-row items-center justify-between gap-x-3 border-t border-slate-300 px-2 py-2 bg-white`,
+    { opacity: approvalStatus === 'Rejected' ? 0.5 : 1, pointerEvents: approvalStatus === 'Rejected' ? 'none' : 'auto' }
+  ]}
+>
         <Pressable
           style={({pressed}) => [
             {
@@ -285,4 +331,3 @@ const RenderChatMessage = ({item, index, bgColor}) => {
       );
   }
 };
-

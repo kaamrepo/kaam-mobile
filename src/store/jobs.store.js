@@ -140,7 +140,6 @@ const useJobStore = create((set, get) => ({
       payload.limit?params.limit = limit:'';
       payload?.coordinates?.length ? params.coordinates = payload.coordinates:'';
       params.createdby = payload.createdby;
-      console.log("params before sending for getNearByJobs ---- ",params);
       const res = await API.get(`${JOBS}`, {
         // headers: {Authorization: await getToken()},
         params,
@@ -324,8 +323,11 @@ const useJobStore = create((set, get) => ({
   },
   updateJobStatus: async payload => {
     try {
-      console.log("payload",payload)
-      const res = await API.patch(`${JOBS}/${payload.applicationId}`,{ status: payload.status }, {
+      let params={};
+      payload.status ? params.status = payload.status:'';
+      payload.applicationId ? params._id = payload.applicationId:'';
+      console.log("params before sending",params);
+      const res = await API.patch(`${JOBS_APPLICATIONS}/${params._id}`,{ status: params.status }, {
         headers: {
           Authorization: await getToken(),
         },

@@ -185,7 +185,7 @@ export const EngagmentInitiation = ({route, navigation}) => {
                   if (res) {
                     const application = await getJobApplication({_id:res});
                     navigation.navigate('Chat', {
-                      appliedJobId: application[0]?.jobid, // Use selectedApplication here
+                      appliedJobId: application[0]?._id, // Use selectedApplication here
                       chatid: application[0]?.chatid, // Use selectedApplication here
                       name: `${application[0]?.employerDetails?.firstname} ${application[0]?.employerDetails?.lastname}`,
                     });
