@@ -22,7 +22,7 @@ import useJobStore from '../../store/jobs.store';
 import dayjs from 'dayjs';
 
 const Chat = ({route, navigation}) => {
-  console.log("rote",route);
+  console.log("route in chat-----",route);
   const applicationId = route?.params?.item?._id;
   const [messageText, setMessageText] = useState('');
   const lastMessageRef = useRef(null);

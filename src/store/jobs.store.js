@@ -224,9 +224,11 @@ const useJobStore = create((set, get) => ({
   },
   getJobApplication: async payload => {
     let params={};
+    payload._id ? params._id = payload._id :'';
     payload.employerid ? params.employerid = payload.employerid :'';
     payload.appliedby ? params.appliedby = payload.appliedby : '';
     try {
+      console.log("params before sending",params);
       const res = await API.get(`${JOBS_APPLICATIONS}`, {
         headers: {Authorization: await getToken()},
         params: params

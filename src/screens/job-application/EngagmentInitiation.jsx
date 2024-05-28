@@ -20,13 +20,11 @@ export const EngagmentInitiation = ({route, navigation}) => {
 
   useEffect(() => {
     const fetchJobsAndApplications = async () => {
-      console.log('useEffect initiated');
       await getJobs(0, 100, {createdby: userid, type: 'myPostedJobs'});
       const applications = await getJobApplication({
         employerid: userid,
         appliedby: staffid,
       });
-      console.log("applications----------",applications);
       setJobApplication(applications || []);
     };
 
@@ -43,11 +41,7 @@ export const EngagmentInitiation = ({route, navigation}) => {
 
   const isJobApplied = useCallback(
     jobId => {
-      console.log(`Checking if job ${jobId} is applied...`);
-      console.log('Job Applications:', jobApplication);
-
       const isApplied = jobApplication?.some(application => {
-        console.log(`Checking application for job: ${application?.jobDetails?._id}`);
         return application?.jobDetails?._id === jobId;
       });
 
@@ -204,8 +198,6 @@ export const EngagmentInitiation = ({route, navigation}) => {
 
                   if (res) {
                     const application = await getJobApplication({_id:res});
-                    console.log("application----",application)
-
                     navigation.navigate('Chat', {
                       appliedJobId: application[0]?.jobid, // Use selectedApplication here
                       chatid: application[0]?.chatid, // Use selectedApplication here

@@ -54,7 +54,8 @@
       const res = await applyForJob({
         jobid: job?._id,
         employerid: job?.createdby,
-        initiator: useLoginStore.getState().loggedInUser?._id
+        initiator: useLoginStore.getState().loggedInUser?._id,
+        appliedby: useLoginStore.getState().loggedInUser?._id
       });
       res && getNearByJobById(job?._id);
     };
