@@ -82,7 +82,11 @@ const RecommendedJobsElement = ({
   );
 
   const handleSeeAllPress = useCallback(() => {
-    navigation.navigate('SeeAll', { isLoading });
+    navigation.navigate('AllJobsFlatlist', {
+      isLoading,
+      type: 'nearby',
+      // coordinates: [position?.coords?.longitude, position?.coords?.latitude],
+    });
   }, [navigation, isLoading]);
 
   const renderRecommendedJobs = useMemo(() => {

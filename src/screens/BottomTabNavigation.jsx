@@ -6,9 +6,9 @@ import Icon, {Icons} from '../components/Icons';
 import * as Animatable from 'react-native-animatable';
 import tw from 'twrnc';
 import Dashboard from './dashboard/Dashboard';
-import JobPostingForm from './home/JobPostingForm';
-import Bookmark from './home/Bookmark';
-import Menu from './home/Menu';
+import JobPostingForm from './bottom-bar/JobPostingForm';
+import Bookmark from './bottom-bar/Bookmark';
+import Menu from './bottom-bar/Menu';
 import LinearGradient from 'react-native-linear-gradient';
 
 // svg icons

@@ -48,11 +48,11 @@ const NearbyJobsElement = ({
     );
   }
   const handleSeeAllPress = async () => {
-    const position = await getCoordinates();
+    // const position = await getCoordinates();
     navigation.navigate('AllJobsFlatlist', {
       isLoading,
       type: 'nearby',
-      coordinates: [position?.coords?.longitude, position?.coords?.latitude],
+      // coordinates: [position?.coords?.longitude, position?.coords?.latitude],
     });
   };
 
