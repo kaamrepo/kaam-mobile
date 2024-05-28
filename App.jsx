@@ -33,6 +33,7 @@ import {ApplicantListScreen} from './src/screens/job-application/Applicants';
 import client from './client';
 import messaging from '@react-native-firebase/messaging';
 import notifee, { AndroidImportance } from '@notifee/react-native';
+import { Header } from './src/components/Header';
 
 const Stack = createNativeStackNavigator();
 const App = () => {
@@ -152,6 +153,11 @@ const App = () => {
               <Stack.Screen
                 name="EmployeeDetails"
                 component={EmployeeDetails}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="Header"
+                component={Header}
                 options={{headerShown: false}}
               />
               <Stack.Screen

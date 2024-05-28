@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { StyleSheet, Text, View, Dimensions, Image, TouchableOpacity, ImageBackground, Pressable } from 'react-native';
 import tw from 'twrnc';
-import { dashboardTranslation } from '../../dashboardTranslation';
+import { Translation } from '../../Translation';
 import Carousel from 'react-native-snap-carousel';
 import Icon, { Icons } from '../../../../components/Icons';
 import { getRandomColor } from '../../../../helper/utils/colors';
@@ -115,7 +115,7 @@ const NearbyStaff = ({ language, isLoading, location, navigation, nearbyusers })
   return (
     <>
       <View style={styles.headerContainer}>
-        <Text style={styles.title}>{dashboardTranslation[language]['Nearby Staffs']}</Text>
+        <Text style={styles.title}>{Translation[language]['Nearby Staffs']}</Text>
       </View>
       <View>
         <Carousel
@@ -158,7 +158,7 @@ const CommonMessageForNearByJobs = ({ title, language }) => (
   <>
     <View style={tw`flex-row justify-between items-center mb-4 mx-5`}>
       <Text style={[tw`text-black text-xl`, { fontFamily: 'Poppins-Bold' }]}>
-        {dashboardTranslation[language]['Nearby Staff']}
+        {Translation[language]['Nearby Staff']}
       </Text>
     </View>
     <View style={tw`w-full px-5`}>

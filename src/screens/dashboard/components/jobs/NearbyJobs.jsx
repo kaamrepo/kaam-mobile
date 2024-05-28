@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import React from 'react';
 import tw from 'twrnc';
-import {dashboardTranslation} from '../../dashboardTranslation';
+import {Translation} from '../../Translation';
 import Carousel from 'react-native-snap-carousel';
 import Icon, {Icons} from '../../../../components/Icons';
 import { getRandomColor,primaryBGColor } from '../../../../helper/utils/colors';
@@ -23,7 +23,7 @@ const NearbyJobsElement = ({
   isLoading,
   location,
 }) => {
-  if (!location) {
+  if (location) {
     return (
       <CommonMessageForNearByJobs
         title="Please turn on your location"
@@ -60,7 +60,7 @@ const NearbyJobsElement = ({
     <>
       <View style={tw`flex-row justify-between items-center mb-4 mx-5`}>
         <Text style={[tw`text-black text-xl`, {fontFamily: 'Poppins-Bold'}]}>
-          {dashboardTranslation[language]['Nearby Jobs']}
+          {Translation[language]['Nearby Jobs']}
         </Text>
         <TouchableOpacity onPress={handleSeeAllPress}>
           <Text
@@ -196,18 +196,6 @@ const renderItemsNearbyJobs = ({item, index, navigation, nearbyjobs}) => {
 function CommonMessageForNearByJobs({title, language}) {
   return (
     <>
-      {/* <View style={tw`flex-row justify-between items-center mb-4 mx-5`}>
-        <Text style={[tw`text-black text-xl`, {fontFamily: 'Poppins-Bold'}]}>
-          {dashboardTranslation[language]['Nearby Jobs']}
-        </Text>
-        <Text
-          style={[
-            tw`text-center text-sm leading-relaxed text-gray-600`,
-            {fontFamily: 'Poppins-Regular'},
-          ]}>
-          {dashboardTranslation[language]['See all']}
-        </Text>
-      </View> */}
       <View style={tw`w-full px-5`}>
         <View
           style={tw`bg-gray-200 w-full h-48 flex flex-row gap-3 rounded-3 items-center justify-center`}>

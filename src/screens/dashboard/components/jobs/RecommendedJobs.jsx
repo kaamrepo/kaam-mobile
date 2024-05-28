@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import tw from 'twrnc';
 import Carousel from 'react-native-snap-carousel';
-import { dashboardTranslation } from '../../dashboardTranslation';
+import { Translation } from '../../Translation';
 import Icon, { Icons } from '../../../../components/Icons';
 import { primaryBGColor } from '../../../../helper/utils/colors';
 
@@ -132,7 +132,7 @@ const RecommendedJobsElement = ({
     <>
       <View style={tw`flex-row justify-between items-center mt-5 mb-4 mx-5`}>
         <Text style={[tw`text-black text-xl`, { fontFamily: 'Poppins-Bold' }]}>
-          {dashboardTranslation[language]['Recommended Jobs']}
+          {Translation[language]['Recommended Jobs']}
         </Text>
         <TouchableOpacity onPress={handleSeeAllPress}>
           <Text

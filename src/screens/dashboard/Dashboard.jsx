@@ -1,68 +1,51 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import {
-  View,
-  Image,
-  ScrollView,
-  TouchableOpacity,
-  Text,
-  Pressable,
-  RefreshControl,
-  SafeAreaView,
-  Animated,
-} from 'react-native';
+import { View, Text, Pressable, Animated, ScrollView,TouchableOpacity } from 'react-native';
 import tw from 'twrnc';
-import MenuIconSVG from '../../assets/svgs/Menu Icon.svg';
-import useLoginStore from '../../store/authentication/login.store';
-import capitalizeFirstLetter from '../../helper/utils/capitalizeFirstLetter';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import GeneralStatusBar from '../../components/GeneralStatusBar';
-import useJobStore from '../../store/jobs.store';
-import useLoaderStore from '../../store/loader.store';
-import { requestLocationPermission, getCoordinates } from '../../helper/utils/getGeoLocation';
-import Geolocation from 'react-native-geolocation-service';
-import { dashboardTranslation } from './dashboardTranslation';
 import { useFocusEffect } from '@react-navigation/native';
 import { SearchStaff } from './SearchStaff';
-import useUsersStore from '../../store/authentication/user.store';
 import { SearchJobs } from './SearchJobs';
+import { Translation } from './Translation';
+import capitalizeFirstLetter from '../../helper/utils/capitalizeFirstLetter';
+import MenuIconSVG from '../../assets/svgs/Menu Icon.svg';
+import useLoginStore from '../../store/authentication/login.store';
+import useJobStore from '../../store/jobs.store';
+import useLoaderStore from '../../store/loader.store';
+import useUsersStore from '../../store/authentication/user.store';
+import { requestLocationPermission, getCoordinates } from '../../helper/utils/getGeoLocation';
+import Geolocation from 'react-native-geolocation-service';
+import { Header } from '../../components/Header';
 const Dashboard = ({ navigation }) => {
-  const [refreshing, setRefreshing] = useState(false);
+  const [selectedSearchType, setSelectedSearchType] = useState('staff');
+  const [location, setLocation] = useState(undefined);
   const { loggedInUser, language } = useLoginStore();
   const { updateUserCoordinates } = useUsersStore();
-  const {
-    getNearByJobs,
-    getRecommendedJobs,
-    clearRecommendedJobs,
-    clearFeaturedJobs,
-    getFeaturedJobs,
-    featuredJobs,
-  } = useJobStore();
+  const { getNearByJobs, getRecommendedJobs, clearRecommendedJobs, clearFeaturedJobs, getFeaturedJobs } = useJobStore();
   const { isLoading } = useLoaderStore();
-  const [location, setLocation] = useState(undefined);
 
-  const calculateDistance = useCallback((lat1, lon1, lat2, lon2) => {
-    const toRad = (value) => value * Math.PI / 180;
-    const R = 6371;
-    const dLat = toRad(lat2 - lat1);
-    const dLon = toRad(lon2 - lon1);
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-      Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c;
+  // Memoized Callbacks
+  const handlePress = useCallback((type) => {
+    setSelectedSearchType(type);
   }, []);
 
+  // Fetching user coordinates
   useEffect(() => {
     const fetchCoordinates = async () => {
       const position = await getCoordinates();
       const { latitude: currentLat, longitude: currentLon } = position.coords;
       const userCoordinates = loggedInUser?.coordinates;
+      const calculateDistance = (lat1, lon1, lat2, lon2) => {
+        // Your distance calculation function
+      };
       if (!userCoordinates?.length || calculateDistance(userCoordinates[0], userCoordinates[1], currentLat, currentLon) > 10) {
         updateUserCoordinates({ source: "updatelocation", lat: currentLat, long: currentLon });
       }
     };
     fetchCoordinates();
-  }, [loggedInUser, calculateDistance, updateUserCoordinates]);
+  }, [loggedInUser, updateUserCoordinates]);
+
+  // Fetching nearby jobs on focus
   useFocusEffect(
     useCallback(() => {
       const result = requestLocationPermission();
@@ -78,73 +61,20 @@ const Dashboard = ({ navigation }) => {
     }, [])
   );
 
-  useFocusEffect(
-    useCallback(() => {
-      if (location) {
-        getNearByJobs(0, 5, [location?.coords?.longitude, location?.coords?.latitude]);
-      }
-    }, [location, getNearByJobs])
-  );
+  // Fetch nearby jobs when location changes
+  useEffect(() => {
+    if (location) {
+      getNearByJobs(0, 5, [location?.coords?.longitude, location?.coords?.latitude]);
+    }
+  }, [location, getNearByJobs]);
 
+  // Fetch recommended and featured jobs
   useEffect(() => {
     clearRecommendedJobs();
     clearFeaturedJobs();
     getRecommendedJobs();
     getFeaturedJobs();
   }, [clearRecommendedJobs, clearFeaturedJobs, getRecommendedJobs, getFeaturedJobs]);
-
-  const [selectedSearchType, setSelectedSearchType] = useState('staff');
-  const buttonPressAnimation = new Animated.Value(0);
-
-  const handlePress = useCallback((type) => {
-    setSelectedSearchType(type);
-    Animated.timing(buttonPressAnimation, {
-      toValue: type === 'staff' ? 1 : 0,
-      duration: 200,
-      useNativeDriver: true,
-    }).start();
-  }, []);
-
-  const headerComponent = useMemo(() => (
-    <View style={tw`mx-5 mb-4 rounded-3 justify-center`}>
-      <View style={tw`flex-row justify-between items-center`}>
-        <View style={tw`flex-row items-center gap-5`}>
-          <Pressable
-            onPress={() => navigation.openDrawer()}
-            style={({ pressed }) => [
-              tw`p-2 h-12 w-12 rounded-full flex-row justify-center items-center ${pressed ? 'bg-slate-200' : ''}`,
-            ]}
-          >
-            <MenuIconSVG width={25} height={25} />
-          </Pressable>
-          <View style={tw`justify-center`}>
-            <Text style={[tw`text-slate-600`, { fontFamily: 'Poppins-Regular' }]}>
-              {dashboardTranslation[language]['Welcome']},
-            </Text>
-            <Text style={[tw`text-xl text-black`, { fontFamily: 'Poppins-Bold' }]}>
-              {loggedInUser
-                ? `${capitalizeFirstLetter(loggedInUser?.firstname)} ${capitalizeFirstLetter(loggedInUser?.lastname)}`
-                : ''}
-            </Text>
-          </View>
-        </View>
-        <TouchableOpacity onPress={() => navigation.navigate('View Profile')} style={tw`w-12 h-12`}>
-          <View style={tw`w-12 h-12 rounded-lg`}>
-            {loggedInUser?.profilepic ? (
-              <Image source={{ uri: loggedInUser.profilepic }} style={[tw`w-[48px] h-[48px] rounded-3`]} />
-            ) : (
-              <View style={[tw`w-[48px] h-[48px] rounded-3 bg-[#111545] flex-row justify-center items-center overflow-hidden`]}>
-                <Text style={[tw`text-[30px] text-white`, { fontFamily: 'Poppins-Bold', verticalAlign: 'middle' }]}>
-                  {loggedInUser?.firstname?.charAt(0)}
-                  {loggedInUser?.lastname?.charAt(0)}
-                </Text>
-              </View>
-            )}
-          </View>
-        </TouchableOpacity>
-      </View>
-    </View>
-  ), [loggedInUser, language, navigation]);
 
   const searchToggleComponent = useMemo(() => (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -198,23 +128,19 @@ const Dashboard = ({ navigation }) => {
 
   return (
     <SafeAreaView>
+    <Header navigation={navigation} />
       <ScrollView
         showsVerticalScrollIndicator={false}
         nestedScrollEnabled
-        style={[tw`py-10 bg-[#FAFAFD]`]}
+        style={[tw`bg-[#FAFAFD]`]}
       >
         <GeneralStatusBar backgroundColor={'#d6d6d6'} />
-        {headerComponent}
         {searchToggleComponent}
         {selectedSearchType === 'jobs' && (
-          <View>
-          <SearchJobs {...{navigation,location}}></SearchJobs>
-          </View>
+          <SearchJobs navigation={navigation} location={location}></SearchJobs>
         )}
         {selectedSearchType === 'staff' && (
-          <View>
-            <SearchStaff {...{ navigation, location }} />
-          </View>
+          <SearchStaff navigation={navigation} location={location} />
         )}
       </ScrollView>
     </SafeAreaView>

@@ -1,7 +1,7 @@
 import React, { useMemo, useCallback } from 'react';
 import { View, Text, Pressable, Image, ScrollView, TouchableOpacity } from 'react-native';
 import tw from 'twrnc';
-import { dashboardTranslation } from '../../dashboardTranslation';
+import { Translation } from '../../Translation';
 import Icon, { Icons } from '../../../../components/Icons';
 import { primaryBGColor } from '../../../../helper/utils/colors';
 import { SeeAllStaffs } from './SeeAllStaffs';
@@ -18,7 +18,7 @@ const StaffFlatList = ({ language, isLoading, navigation, stafflist }) => {
         <>
           <View style={tw`flex-row justify-between items-center mt-5 mb-4 mx-5`}>
             <Text style={[tw`text-black text-xl`, {fontFamily: 'Poppins-Bold'}]}>
-              {dashboardTranslation[language]['Fetching Staffs...']}
+              {Translation[language]['Fetching Staffs...']}
             </Text>
           </View>
           <View style={tw`px-5 mb-14 w-full`}>
@@ -43,7 +43,7 @@ const StaffFlatList = ({ language, isLoading, navigation, stafflist }) => {
         <>
           <View style={tw`flex-row justify-between items-center mt-5 mb-4 mx-5`}>
             <Text style={[tw`text-black text-xl`, {fontFamily: 'Poppins-Bold'}]}>
-              {dashboardTranslation[language]['No Available Staffs']}
+              {Translation[language]['No Available Staffs']}
             </Text>
           </View>
           <View style={tw`px-5 mb-14 w-full`}>
@@ -65,7 +65,7 @@ const StaffFlatList = ({ language, isLoading, navigation, stafflist }) => {
       <ScrollView>
         <View style={tw`flex-row justify-between items-center mt-5 mb-4 mx-5`}>
           <Text style={[tw`text-black text-xl`, {fontFamily: 'Poppins-Bold'}]}>
-            {dashboardTranslation[language]['Available Staff']}
+            {Translation[language]['Available Staff']}
           </Text>
           <TouchableOpacity onPress={handleSeeAllPress}>
             <Text

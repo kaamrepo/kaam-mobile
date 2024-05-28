@@ -1,7 +1,7 @@
 import React, { useMemo, useCallback } from 'react';
 import { View, Text, Pressable, Image, ScrollView, TouchableOpacity } from 'react-native';
 import tw from 'twrnc';
-import { dashboardTranslation } from '../../dashboardTranslation';
+import { Translation } from '../../Translation';
 import Icon, { Icons } from '../../../../components/Icons';
 import { primaryBGColor } from '../../../../helper/utils/colors';
 
@@ -101,7 +101,7 @@ const FeaturedJobsElement = ({ featuredJobs, isLoading, language, navigation }) 
     <>
       <View style={tw`flex-row justify-between items-center mt-5 mb-4 mx-5`}>
         <Text style={[tw`text-black text-xl`, { fontFamily: 'Poppins-Bold' }]}>
-          {dashboardTranslation[language]['Featured Jobs']}
+          {Translation[language]['Featured Jobs']}
         </Text>
         <TouchableOpacity onPress={handleSeeAllPress}>
           <Text

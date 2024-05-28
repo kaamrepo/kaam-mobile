@@ -1,4 +1,4 @@
-export const dashboardTranslation = {
+export const Translation = {
   मराठी: {
     Welcome: 'स्वागत आहे',
     'Nearby Jobs': 'जवळपासच्या नोकऱ्या',
