@@ -3,7 +3,7 @@ import {View, ScrollView, Pressable} from 'react-native';
 import {Text, Button, Dialog, Portal, Provider} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import tw from 'twrnc';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useIsFocused} from '@react-navigation/native'; // Import useIsFocused
 import Icon, {Icons} from '../../components/Icons';
 import useJobStore from '../../store/jobs.store';
 import useLoginStore from '../../store/authentication/login.store';
@@ -14,9 +14,10 @@ export const EngagmentInitiation = ({route, navigation}) => {
   const userid = useLoginStore.getState().loggedInUser?._id;
   const [visible, setVisible] = useState(false);
   const [selectedJob, setSelectedJob] = useState(null);
-  const [selectedApplication, setSelectedApplication] = useState(null); // New state for application details
+  const [selectedApplication, setSelectedApplication] = useState(null);
   const [jobApplication, setJobApplication] = useState([]);
-  const {myPostedJobs,getNearByJobById, getJobs, getJobApplication, applyForJob} = useJobStore();
+  const {myPostedJobs, getJobs, getJobApplication, applyForJob} = useJobStore();
+  const isFocused = useIsFocused(); // Get the focus status of the screen
 
   useEffect(() => {
     const fetchJobsAndApplications = async () => {
@@ -29,15 +30,15 @@ export const EngagmentInitiation = ({route, navigation}) => {
     };
 
     fetchJobsAndApplications();
-  }, [userid, staffid, getJobs, getJobApplication]);
+  }, [userid, staffid, getJobs, getJobApplication, isFocused]); // Include isFocused in dependencies
 
   const handleBackPress = useCallback(() => {
     navigation.goBack();
   }, [navigation]);
 
   const handleConfirm = useCallback(() => {
-
-  }, [selectedJob]);
+    // Handle confirmation logic here
+  }, []);
 
   const isJobApplied = useCallback(
     jobId => {
@@ -45,10 +46,9 @@ export const EngagmentInitiation = ({route, navigation}) => {
         return application?.jobDetails?._id === jobId;
       });
 
-      console.log(`Is job ${jobId} applied?`, isApplied);
       return isApplied;
     },
-    [jobApplication],
+    [jobApplication]
   );
 
   const getApplicationDetails = useCallback(
@@ -59,38 +59,24 @@ export const EngagmentInitiation = ({route, navigation}) => {
     },
     [jobApplication],
   );
-
-
   const renderJobs = useCallback(
     job => {
       const applied = isJobApplied(job?._id);
-      console.log("applice",applied);
       const applicationDetails = getApplicationDetails(job?._id);
-
+  
       return (
         <View style={tw`bg-white p-4 m-2 rounded-lg shadow`} key={job?._id}>
-          <View style={tw`flex-row justify-between`}>
-            <Text style={tw`text-lg font-bold w-1/2`}>{job?.jobtitle}</Text>
-            <Text style={tw`text-gray-500 w-1/2`}>
-              Openings: {job?.numberofopenings}
-            </Text>
-          </View>
-          <View style={tw`flex-row justify-between`}>
-            <Text style={tw`text-gray-500 w-1/2`}>
-              Created: {new Date(job?.createdat).toLocaleDateString()}
-            </Text>
-            <Text style={tw`text-gray-500 w-1/2`}>
-              Location: {job?.location?.fulladdress}
-            </Text>
-          </View>
-          <Text style={tw`text-lg w-full mt-2`}>{job?.description}</Text>
-          {applied ? (
-            <Text style={tw`text-sm w-full mt-2`}>
-              Already active, press chat for conversation
-            </Text>
-          ) : (
-            ''
-          )}
+          <Text style={tw`text-lg font-bold`}>{job?.jobtitle}</Text>
+          <Text style={tw`text-gray-500`}>
+            Openings: {job?.numberofopenings}
+          </Text>
+          <Text style={tw`text-gray-500`}>
+            Created: {new Date(job?.createdat).toLocaleDateString()}
+          </Text>
+          <Text style={tw`text-gray-500`}>
+            Location: {job?.location?.fulladdress}
+          </Text>
+          <Text style={tw`text-lg mt-2`}>{job?.description}</Text>
           <View style={tw`mt-4`}>
             {applied ? (
               <Button
@@ -120,9 +106,9 @@ export const EngagmentInitiation = ({route, navigation}) => {
         </View>
       );
     },
-    [isJobApplied, handleConfirm, navigation, getApplicationDetails],
+    [isJobApplied, handleConfirm, navigation, getApplicationDetails]
   );
-
+  
   const PostJob = useCallback(() => {
     return (
       <View>
