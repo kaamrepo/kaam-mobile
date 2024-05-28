@@ -10,7 +10,9 @@ export const NearbyStaff = ({ language, isLoading, location, navigation, nearbyu
   const handleSeeAllPress = useCallback((item) => {
     console.log("item",item);
     // Your existing logic here
-    navigation.navigate('EngagmentInitiation', {navigation});
+   
+      navigation.navigate('EmployeeDetails',{id:item._id})
+  
   }, []);
 
   const handleBookmarkPress = useCallback(() => {

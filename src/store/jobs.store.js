@@ -13,7 +13,6 @@ const useJobStore = create((set, get) => ({
   searchedJobs:[],
 
   getJobs: async (skip, limit, payload) => {
-   console.log("get Jobs Called",skip,limit,payload);
     try {
       const params = {};
      payload.skip? params.skip = skip : '';
@@ -24,7 +23,6 @@ const useJobStore = create((set, get) => ({
       payload?.excludeIds?.length ? params.excludeIds = payload.excludeIds : '';
       payload?.createdby ? params.createdby = payload.createdby : '';
       payload?.excludeIdsInJobSearch?.length ? params.excludeIdsInJobSearch = payload.excludeIdsInJobSearch : '';
-      console.log("params before sending for getjobs ---- ", params);
       const res = await API.get(`${JOBS}`, {
         headers: {Authorization: await getToken()},
         params: params
@@ -224,15 +222,38 @@ const useJobStore = create((set, get) => ({
       });
     }
   },
+  getJobApplication: async payload => {
+    let params={};
+    payload.employerid ? params.employerid = payload.employerid :'';
+    payload.appliedby ? params.appliedby = payload.appliedby : '';
+    try {
+      const res = await API.get(`${JOBS_APPLICATIONS}`, {
+        headers: {Authorization: await getToken()},
+        params: params
+      });
+      if (res?.data?.data?.length !==0) {
+        return res?.data?.data;
+      }
+
+      else{
+        return false;
+      }
+    } catch (error) {
+      console.log(JSON.stringify(error, null, 4));
+      Toast.show({
+        type: 'tomatoToast',
+        text1: 'Something went wrong!',
+      });
+      return false;
+    }
+  },
   applyForJob: async payload => {
-    console.log("payload in apply for Job", payload);
     try {
       const res = await API.post(`${JOBS_APPLICATIONS}`, payload, {
         headers: {
           Authorization: await getToken(),
         },
       });
-      console.log("res",res.data);
       if (res?.data) {
         Toast.show({
           type: 'success',

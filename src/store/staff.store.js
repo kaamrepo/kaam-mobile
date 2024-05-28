@@ -87,13 +87,10 @@ const useStaffStore = create((set, get) => ({
       // if (searchText?.length) {
       //   params.text = searchText;
       // }
-      console.log("payload",payload);
-      console.log("params before call in getStaffFlatlist",params);
       const res = await API.get(`${USER}`, {
         headers: {Authorization: await getToken()},
         params,
       });
-      console.log("res",res.data.data);
       if (res && res?.data?.data) {
         return res?.data?.data;
       }else{
@@ -108,7 +105,6 @@ const useStaffStore = create((set, get) => ({
       const res = await API.get(`${USER}/${id}`, {
         headers: {Authorization: await getToken()},
       });
-      console.log("response in store",res.data);
       if (res && res.data) {
         return res.data
       }else{

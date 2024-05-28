@@ -71,14 +71,10 @@ export const SeeAllStaffs = ({navigation}) => {
   };
   const fetchData = async (text) => {
     try {
-      console.log('searchInput', searchInput);
       if (text) {
         setData([])
       }
       const result = await getStaffFlatlist(skip, limit, {text: text});
-      console.log('result', result);
-      console.log('skip', skip);
-      console.log('loadMoreRef', loadMoreRef);
       if (result?.length === 0) {
         loadMoreRef.current = false;
       }else{
@@ -93,7 +89,7 @@ export const SeeAllStaffs = ({navigation}) => {
     ({item, index}) => (
       <Pressable
         onPress={() => {
-          // handleInitiationPress(item);
+         navigation.navigate('EmployeeDetails',{id:item._id})
         }}
         key={index}
         style={({pressed}) => [
@@ -121,7 +117,7 @@ export const SeeAllStaffs = ({navigation}) => {
             ]}
             numberOfLines={1}
             ellipsizeMode="tail">
-            {item?.firstname}
+            {item?.firstname} 
           </Text>
           <Text
             style={[

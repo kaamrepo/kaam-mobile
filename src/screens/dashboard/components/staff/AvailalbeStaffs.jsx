@@ -102,8 +102,8 @@ const StaffFlatList = ({
           <Pressable
             key={Math.random()}
             onPress={() => {
-              navigation.navigate('ApplyNow', {jobDetails: item, id: item._id});
-            }}
+         navigation.navigate('EmployeeDetails',{id:item._id})
+        }}
             style={({pressed}) =>
               tw`my-1 w-full flex-row items-center gap-1 border border-gray-200 rounded-3 px-2.5 pb-2.5 pt-4 relative overflow-hidden ${
                 pressed ? 'bg-green-100/10' : 'bg-white'

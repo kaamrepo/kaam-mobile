@@ -4,6 +4,8 @@ export const primaryTextColor = '#4A9D58';
 export const primaryBGDarkColor = '#2f753b';
 export const secondaryTextColor = '#ffffff';
 export const primaryDangerColor = '#e74c3c'
+export const primaryChatButton = '#ACD793'
+export const primaryApplyNowButton = '#577B8D'
 export const colors = [
   '#264653',
   '#bc6c25',

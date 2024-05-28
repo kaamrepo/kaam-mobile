@@ -28,6 +28,7 @@ import DrawerNavigation from './src/screens/DrawerNavigation';
 import AllJobsFlatlist from './src/screens/dashboard/components/jobs/AllJobsFlatlist';
 import { EngagmentInitiation } from './src/screens/job-application/EngagmentInitiation';
 import EmployeeDetails from './src/screens/job-application/EmployeeDetails';
+import JobPostingForm from './src/screens/home/JobPostingForm';
 import {ApplicantListScreen} from './src/screens/job-application/Applicants';
 import client from './client';
 import messaging from '@react-native-firebase/messaging';
@@ -151,6 +152,11 @@ const App = () => {
               <Stack.Screen
                 name="EmployeeDetails"
                 component={EmployeeDetails}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="JobPostingForm"
+                component={JobPostingForm}
                 options={{headerShown: false}}
               />
               <Stack.Screen
