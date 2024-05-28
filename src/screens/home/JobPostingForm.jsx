@@ -21,7 +21,6 @@ import Geolocation from 'react-native-geolocation-service';
 import {primaryBGColor, primaryBGDarkColor} from '../../helper/utils/colors';
 import useJobStore from '../../store/jobs.store';
 import {useFocusEffect} from '@react-navigation/native';
-import Header from '../../components/Header';
 import wordsFilter from '../../helper/utils/profane';
 import useLoaderStore from '../../store/loader.store';
 
@@ -115,8 +114,8 @@ const createJobSchema = yup.object({
               location: {
                 fulladdress: data?.fulladdress,
                 coordinates: [
-                  position?.coords?.longitude,
-                  position?.coords?.latitude,
+                  position?.coords?.longitude || null,
+                  position?.coords?.latitude || null,
                 ],
               },
             };
@@ -188,7 +187,7 @@ const createJobSchema = yup.object({
         contentContainerStyle={{alignItems: 'flex-start'}}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled">
-        <Header title={'Be a Job Provider'} />
+        {/* <Header title={'Be a Job Provider'} /> */}
         <Text
           style={[
             tw`w-full text-black text-sm my-2 mt-10`,

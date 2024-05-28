@@ -52,7 +52,7 @@ const NearbyJobsElement = ({
     navigation.navigate('AllJobsFlatlist', {
       isLoading,
       type: 'nearby',
-      coordinates: [position.coords.longitude, position.coords.latitude],
+      coordinates: [position?.coords?.longitude, position?.coords?.latitude],
     });
   };
 

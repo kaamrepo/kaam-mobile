@@ -33,7 +33,7 @@ const Dashboard = ({ navigation }) => {
   useEffect(() => {
     const fetchCoordinates = async () => {
       const position = await getCoordinates();
-      const { latitude: currentLat, longitude: currentLon } = position.coords;
+      const { latitude: currentLat, longitude: currentLon } = position?.coords;
       const userCoordinates = loggedInUser?.coordinates;
       const calculateDistance = (lat1, lon1, lat2, lon2) => {
         // Your distance calculation function
