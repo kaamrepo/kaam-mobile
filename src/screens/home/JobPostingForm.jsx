@@ -72,7 +72,7 @@ const createJobSchema = yup.object({
   //   .max(3),
 });
 
-const JobPostingForm = ({navigation}) => {
+ const JobPostingForm = ({navigation}) => {
   const {isLoading, setLoading} = useLoaderStore();
   const {loggedInUser} = useLoginStore();
   const {postJobs} = useJobStore();

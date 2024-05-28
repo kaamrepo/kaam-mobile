@@ -8,7 +8,6 @@ import { Translation } from '../screens/dashboard/Translation';
 import capitalizeFirstLetter from '../helper/utils/capitalizeFirstLetter';
 
 export const Header = ({ navigation }) => {
-  console.log("navigation", navigation);
   const { loggedInUser, language } = useLoginStore();
   
   const headerComponent = useMemo(() => (

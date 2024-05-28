@@ -13,7 +13,7 @@ export const SearchStaff = ({ navigation, location }) => {
 
   useEffect(() => {
     getNearByStaff(0, 6, { location });
-    getStaff(0, 5);
+    getStaff(0, 10);
   }, [getNearByStaff, getStaff, location]);
 
   return (
