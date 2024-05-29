@@ -16,13 +16,13 @@ import useRegistrationStore from '../../store/authentication/registration.store'
 import useUsersStore from '../../store/authentication/user.store';
 import { requestUserPermissionAndFcmToken } from '../../helper/notification-helper';
 import EncryptedStorage from 'react-native-encrypted-storage';
-
+import { getCoordinates } from '../../helper/utils/getGeoLocation';
 
 const VerifyCode = () => {
   const codeInputs = useRef([]);
   const [code, setCode] = useState('');
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
-  const {login} = useLoginStore();
+  const {login,storeUserCoordinate} = useLoginStore();
   const {loginDetails} = useRegistrationStore();
   const {updateFcmDeviceToken} = useUsersStore();
 
@@ -40,6 +40,12 @@ const VerifyCode = () => {
     const success = await login(code);
     if (success) {
       const fcmToken = await EncryptedStorage.getItem('fcmToken');
+      // Store coordinates Here
+      const position = await getCoordinates();
+      console.log("poisition to get after verify",position);
+      if (position?.length !== 0) {
+        storeUserCoordinate(position)
+      }
       if (fcmToken) {
         updateFcmDeviceToken({
           firebasetokens: [fcmToken],
