@@ -65,7 +65,7 @@ export async function getFCMToken() {
     } catch (error) {
       console.log(
         'error in storing fcm token in async storage',
-        JSON.stringify(error),
+      error,
       );
 
       return {fcmToken: '', new: false};

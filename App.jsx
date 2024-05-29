@@ -112,27 +112,27 @@ const App = () => {
           keyboardHandlingEnabled={true}>
           {!isLoggedIn ? (
             <>
-              <Stack.Screen
-                name="IntroSelectLanguage"
-                component={IntroSelectLanguage}
-                options={{title: 'Kaam', headerShown: false}}
-              />
-              <Stack.Screen
-                name="registerScreen"
-                component={RegisterScreen}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="Login"
-                component={LoginScreen}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="VerifyCode"
-                component={VerifyCode}
-                options={{headerShown: true}}
-              />
-            </>
+    <Stack.Screen
+      name="IntroSelectLanguage"
+      component={IntroSelectLanguage}
+      options={{ title: 'Kaam', headerShown: false }}
+    />
+    <Stack.Screen
+      name="Login"
+      component={LoginScreen}
+      options={{ title: 'Login', headerShown: true }}
+    />
+    <Stack.Screen
+      name="registerScreen"
+      component={RegisterScreen}
+      options={{ title: 'Register', headerShown: true }}
+    />
+    <Stack.Screen
+      name="VerifyCode"
+      component={VerifyCode}
+      options={{ title: 'Verify Code', headerShown: true }}
+    />
+  </>
           ) : (
             <>
               <Stack.Screen

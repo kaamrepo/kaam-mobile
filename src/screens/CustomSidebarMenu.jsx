@@ -151,24 +151,6 @@ const CustomSidebarMenu = props => {
               logout();
             }}
           />
-          <View style={tw`items-center mt-12`}>
-            <Pressable
-              onPress={props.onPress}
-              style={({pressed}) =>
-                tw`my-3 px-5 py-3 flex-row gap-2 items-center justify-center rounded-xl shadow-lg shadow-green-800 ${
-                  pressed ? 'bg-green-800' : 'bg-green-700'
-                }`
-              }>
-              <PremiumIconSVG height={18} />
-              <Text
-                style={[
-                  tw`text-center text-white`,
-                  {fontFamily: 'Poppins-Regular'},
-                ]}>
-                Go Premium
-              </Text>
-            </Pressable>
-          </View>
         </View>
       </DrawerContentScrollView>
 

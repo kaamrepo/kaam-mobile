@@ -94,7 +94,7 @@ const IntroSelectLanguage = ({navigation}) => {
               <Pressable
                 onPress={() => {
                   // navigation.replace('IntroJobSearch');
-                  navigation.replace('registerScreen');
+                  navigation.replace('Login');
                   selectLanguage(selectedOption);
                 }}
                 style={({pressed}) => [
