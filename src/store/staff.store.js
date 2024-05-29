@@ -36,12 +36,12 @@ const useStaffStore = create((set, get) => ({
   },
 
   clearUsers: () => set({nearbyusers: [],stafflist:[]}),
-  getStaff: async (skip, limit, payload) => {
+  getStaff: async (payload) => {
     try {
       const userid = useLoginStore.getState().loggedInUser?._id;
       const params = {};
-      params.skip = skip || 0;
-      params.limit = limit || 10;
+     payload.skip? params.skip = payload.skip : '';
+     payload.limit? params.limit = payload.limit : '';
       params.excludeIds =[userid];
       params.sortDesc=['createdat'];
       if (payload?.text) {

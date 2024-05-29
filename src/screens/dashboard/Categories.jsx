@@ -1,0 +1,95 @@
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import { View, Dimensions, Pressable, ImageBackground, Text, StyleSheet } from 'react-native';
+import tw from 'twrnc';
+import Carousel from 'react-native-snap-carousel';
+import Icon, { Icons } from '../../components/Icons';
+import useCategoriesStore from '../../store/categories.store';
+import staticEmployeeImage from '../../assets/images/profession-employee.png';
+import staticWorkImage from '../../assets/images/internship.png';
+
+const Categories = ({ navigation, selectedSearchType }) => {
+  const { categories, getCategories } = useCategoriesStore();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const payload = {
+      isActive: true,
+    };
+    getCategories(payload)
+      .then(() => setIsLoading(false))
+      .catch(error => console.error('Error while fetching categories:', error));
+  }, [getCategories]);
+
+  const renderCategories = useCallback(({ item }) => {
+    return (
+      <Pressable
+        onPress={() => {
+          console.log("item Pressed", item.name);
+        }}
+        key={item._id}
+        style={tw`items-center justify-center w-[150px] h-[180px] mx-2`}
+      >
+        <View style={tw`rounded-full overflow-hidden w-[148px] h-[148px]`}>
+          {item.bgurl ? (
+            <ImageBackground
+              source={{ uri: item.bgurl }}
+              style={tw`w-full h-full`}
+              resizeMode="cover"
+            />
+          ) : (
+            <>
+              {selectedSearchType === "jobs" ? (
+                <ImageBackground
+                  source={staticWorkImage}
+                  style={tw`w-full h-full`}
+                  resizeMode="cover"
+                />
+              ) : selectedSearchType === "staff" ? (
+                <ImageBackground
+                  source={staticEmployeeImage}
+                  style={tw`w-full h-full`}
+                  resizeMode="cover"
+                />
+              ) : null}
+            </>
+          )}
+        </View>
+        <View style={tw`bg-opacity-50 w-full py-1 mt-2`}>
+          <Text
+            style={[
+              tw`text-black text-center text-[14px]`,
+              { fontFamily: 'Poppins-Regular' },
+            ]}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
+            {item?.name}
+          </Text>
+        </View>
+      </Pressable>
+    );
+  }, [selectedSearchType]);
+
+  const memoizedCategories = useMemo(() => categories, [categories]);
+
+  return (
+    <>
+      <View style={tw`flex-row justify-between items-center mt-2 mx-5`} />
+      <View>
+        <Carousel
+          layout={'default'}
+          autoplay={false}
+          loop={false}
+          data={memoizedCategories}
+          renderItem={renderCategories}
+          sliderWidth={Dimensions.get('window').width}
+          itemWidth={150}
+        />
+      </View>
+    </>
+  );
+};
+
+export default Categories;
+
+const styles = StyleSheet.create({});

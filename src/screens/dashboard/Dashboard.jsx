@@ -15,7 +15,9 @@ import useLoaderStore from '../../store/loader.store';
 import useUsersStore from '../../store/authentication/user.store';
 import { requestLocationPermission, getCoordinates } from '../../helper/utils/getGeoLocation';
 import Geolocation from 'react-native-geolocation-service';
+import Categories from './Categories';
 import { Header } from '../../components/Header';
+import AvailableStaff from './components/staff/AvailableStaff';
 const Dashboard = ({ navigation }) => {
   const [selectedSearchType, setSelectedSearchType] = useState('staff');
   const [location, setLocation] = useState(undefined);
@@ -127,7 +129,7 @@ const Dashboard = ({ navigation }) => {
   ), [selectedSearchType, handlePress]);
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={[tw`h-full`]}>
     <Header navigation={navigation} />
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -136,11 +138,12 @@ const Dashboard = ({ navigation }) => {
       >
         <GeneralStatusBar backgroundColor={'#d6d6d6'} />
         {searchToggleComponent}
+        <Categories {...{language,navigation,isLoading,selectedSearchType}}></Categories>
         {selectedSearchType === 'jobs' && (
-          <SearchJobs navigation={navigation} location={location}></SearchJobs>
+          <SearchJobs {...{navigation,location,language,selectedSearchType}}></SearchJobs>
         )}
         {selectedSearchType === 'staff' && (
-          <SearchStaff navigation={navigation} location={location} />
+          <AvailableStaff  {...{navigation,location,language,selectedSearchType}}/>
         )}
       </ScrollView>
     </SafeAreaView>

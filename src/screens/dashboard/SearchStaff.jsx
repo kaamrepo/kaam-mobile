@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { View } from 'react-native';
 import NearbyStaff from './components/staff/NearbyStaff';
-import StaffFlatList from './components/staff/AvailalbeStaffs';
+import AvailableStaff from './components/staff/AvailableStaff';
 import useLoginStore from '../../store/authentication/login.store';
 import useLoaderStore from '../../store/loader.store';
 import useStaffStore from '../../store/staff.store';
@@ -19,7 +19,7 @@ export const SearchStaff = ({ navigation, location }) => {
   return (
     <View>
       <NearbyStaff {...{ language, isLoading, navigation, location, nearbyusers }} />
-      <StaffFlatList {...{ language, isLoading, navigation, location, stafflist }} />
+      <AvailableStaff {...{ language, isLoading, navigation, location, stafflist }} />
     </View>
   );
 };

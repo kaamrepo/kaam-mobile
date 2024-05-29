@@ -6,6 +6,7 @@ import {Text, View} from 'react-native';
 import useLoginStore from '../../store/authentication/login.store';
 import useLoaderStore from '../../store/loader.store';
 import useJobStore from '../../store/jobs.store';
+import Categories from './Categories';
 export const SearchJobs = ({navigation, location}) => {
   const userid = useLoginStore.getState().loggedInUser?._id;
   const {isLoading} = useLoaderStore();

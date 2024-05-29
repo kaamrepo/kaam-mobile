@@ -1,12 +1,19 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useEffect } from 'react';
 import { View, Text, Pressable, Image, ScrollView, TouchableOpacity } from 'react-native';
 import tw from 'twrnc';
 import { Translation } from '../../Translation';
 import Icon, { Icons } from '../../../../components/Icons';
 import { primaryBGColor } from '../../../../helper/utils/colors';
-
-const StaffFlatList = ({ language, isLoading, navigation, stafflist }) => {
-
+import useStaffStore from '../../../../store/staff.store';
+const AvailableStaff = ({ language, isLoading, navigation}) => {
+  const {getStaff,stafflist} = useStaffStore();
+  useEffect(()=>{
+    const payload = {
+      skip:0,
+      limit:10
+    }
+    getStaff(payload);
+  },[])
   const handleSeeAllPress = useCallback(() => {
     navigation.navigate('SeeAllStaffs');
   }, [navigation]);
@@ -42,7 +49,8 @@ const StaffFlatList = ({ language, isLoading, navigation, stafflist }) => {
         <>
           <View style={tw`flex-row justify-between items-center mt-5 mb-4 mx-5`}>
             <Text style={[tw`text-black text-xl`, {fontFamily: 'Poppins-Bold'}]}>
-              {Translation[language]['No Available Staffs']}
+              {/* {Translation[language]['No Available Staffs']} */}
+            Available Staffs
             </Text>
           </View>
           <View style={tw`px-5 mb-14 w-full`}>
@@ -140,4 +148,4 @@ const StaffFlatList = ({ language, isLoading, navigation, stafflist }) => {
   return renderContent;
 };
 
-export default StaffFlatList;
+export default AvailableStaff;
