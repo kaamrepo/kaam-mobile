@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState, useRef } from 'react';
+import React, {useCallback, useEffect, useState, useRef, useMemo} from 'react';
 import {
   Text,
   SafeAreaView,
@@ -11,26 +11,29 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import tw from 'twrnc';
-import { RadioButton, Modal, Portal, Provider } from 'react-native-paper';
+import {RadioButton, Modal, Portal, Provider} from 'react-native-paper';
 import FilterIconSVG from '../../../../assets/svgs/FilterIcon.svg';
-import Icon, { Icons } from '../../../../components/Icons';
+import Icon, {Icons} from '../../../../components/Icons';
 import useStaffStore from '../../../../store/staff.store';
 import useLoaderStore from '../../../../store/loader.store';
+import useCategoriesStore from '../../../../store/categories.store';
 
-export const SeeAllStaffs = ({ navigation }) => {
-  const { getStaffFlatlist } = useStaffStore();
-  const { isLoading } = useLoaderStore();
+export const SeeAllStaffs = ({navigation}) => {
+  const {getStaffFlatlist} = useStaffStore();
+  const {categories} = useCategoriesStore();
+  const {isLoading} = useLoaderStore();
   const limit = 10;
   const loadMoreRef = useRef(true);
   const [skip, setSkip] = useState(0);
   const [data, setData] = useState([]);
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedPills, setSelectedPills] = useState([]);
   const [searchInput, setSearchInput] = useState('');
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [selectedPills, searchInput]);
 
   const handleBackPress = useCallback(() => {
     navigation.goBack();
@@ -44,22 +47,45 @@ export const SeeAllStaffs = ({ navigation }) => {
     setModalVisible(true);
   }, []);
 
-  const handleSearch = useCallback(async (text) => {
-    await setSearchInput(text);
-    if (text?.length <= 0) {
-      setSkip(0);
-      fetchData();
-    }
-    if (text?.length!== 0) {
-      setSkip(0);
-      fetchData(text);
-    }
+  const handleSearch = useCallback(async text => {
+    setSearchInput(text);
+    setSkip(0);
+    fetchData(text);
   }, []);
 
-  const keyExtractor = useCallback((item) => `${item._id}`, []);
+  const handlePillPress = useCallback(pill => {
+    setSelectedPills(prevSelectedPills => {
+      if (prevSelectedPills.includes(pill)) {
+        return prevSelectedPills.filter(item => item !== pill);
+      } else {
+        return [...prevSelectedPills, pill];
+      }
+    });
+  }, []);
+  const renderCategories = useMemo(() => {
+    return (
+      <View style={tw`flex flex-wrap flex-row px-4 mb-2`}>
+        {categories?.map(item => (
+          <Pressable
+            key={item.id}
+            onPress={() => handlePillPress(item.name)}
+            style={tw`px-4 py-2 m-1 rounded-full ${
+              selectedPills.includes(item.name) ? 'bg-blue-500' : 'bg-gray-200'
+            }`}>
+            <Text
+              style={tw`text-sm ${
+                selectedPills.includes(item.name) ? 'text-white' : 'text-black'
+              }`}>
+              {item?.name}
+            </Text>
+          </Pressable>
+        ))}
+      </View>
+    );
+  }, [categories, selectedPills, handlePillPress]);
 
   const listFooterComponent = useCallback(() => {
-    return <ActivityIndicator size={'large'} style={{ marginVertical: 16 }} />;
+    return <ActivityIndicator size={'large'} style={{marginVertical: 16}} />;
   }, []);
 
   const ItemSeparatorComponent = useCallback(() => {
@@ -70,81 +96,89 @@ export const SeeAllStaffs = ({ navigation }) => {
     if (loadMoreRef.current) {
       await fetchData();
     }
-  }, []);
+  }, [fetchData]);
 
-  const fetchData = useCallback(async (text) => {
-    try {
-      if (text) {
-        setData([]);
+  const fetchData = useCallback(
+    async text => {
+      try {
+        if (text) {
+          setData([]);
+        }
+        const result = await getStaffFlatlist(skip, limit, {
+          text,
+          categories: selectedPills,
+        });
+        if (result?.length === 0) {
+          loadMoreRef.current = false;
+        } else {
+          setData(prevData => [...prevData, ...result]);
+          setSkip(prevSkip => prevSkip + 10);
+        }
+      } catch (error) {
+        console.log('error', error);
       }
-      const result = await getStaffFlatlist(skip, limit, { text });
-      if (result?.length === 0) {
-        loadMoreRef.current = false;
-      } else {
-        setData(prevData => [...prevData,...result]);
-        setSkip(skip + 10);
-      }
-    } catch (error) {
-      console.log('error', error);
-    }
-  }, [skip, limit, getStaffFlatlist]);
+    },
+    [skip, limit, getStaffFlatlist, selectedPills],
+  );
 
-  const renderItem = useCallback(({ item, index }) => (
-  
-<Pressable
-onPress={() => {
- navigation.navigate('EmployeeDetails',{id:item._id})
-}}
-key={index}
-style={({pressed}) => [
-  tw`my-1 flex-row justify-between border border-gray-200 rounded-3 py-3 px-5 ${
-    pressed ? 'bg-green-100/10 border-0' : 'bg-white'
-  }`,
-]}>
-<View style={tw`h-auto w-auto flex`}>
-  {item?.profilepic ? (
-    <Image source={item?.profilepic} style={tw`h-12 w-12 rounded-xl`} />
-  ) : (
-    <Icon
-      type={Icons.Ionicons}
-      name={'person-circle-outline'}
-      size={55}
-      color={'green'}
-    />
-  )}
-</View>
-<View style={tw`flex w-35`}>
-  <Text
-    style={[
-      tw`text-black text-[14px]`,
-      {fontFamily: 'Poppins-SemiBold'},
-    ]}
-    numberOfLines={1}
-    ellipsizeMode="tail">
-    {item?.firstname} 
-  </Text>
-  <Text
-    style={[
-      tw`text-neutral-600 text-[14px]`,
-      {fontFamily: 'Poppins-Regular'},
-    ]}
-    numberOfLines={1}
-    ellipsizeMode="tail">
-    {item?.lastname}
-  </Text>
-</View>
-<View style={tw`flex`}>
-  <Text
-    style={[
-      tw`text-black text-[14px]`,
-      {fontFamily: 'Poppins-SemiBold'},
-    ]}>
-    {item?.address?.city || 'City - NA'}/
-    {item?.address?.state || 'State - NA'}
-  </Text>
-</View>
-</Pressable>
-  ), [navigation]);
+  const renderItem = useCallback(
+    ({item, index}) => (
+      <Pressable
+        onPress={() => {
+          navigation.navigate('EmployeeDetails', {id: item._id});
+        }}
+        key={index}
+        style={({pressed}) => [
+          tw`my-1 flex-row justify-between border border-gray-200 rounded-3 py-3 px-5 ${
+            pressed ? 'bg-green-100/10 border-0' : 'bg-white'
+          }`,
+        ]}>
+        <View style={tw`h-auto w-auto flex`}>
+          {item?.profilepic ? (
+            <Image source={item?.profilepic} style={tw`h-12 w-12 rounded-xl`} />
+          ) : (
+            <Icon
+              type={Icons.Ionicons}
+              name={'person-circle-outline'}
+              size={55}
+              color={'green'}
+            />
+          )}
+        </View>
+        <View style={tw`flex w-35`}>
+          <Text
+            style={[
+              tw`text-black text-[14px]`,
+              {fontFamily: 'Poppins-SemiBold'},
+            ]}
+            numberOfLines={1}
+            ellipsizeMode="tail">
+            {item?.firstname}
+          </Text>
+          <Text
+            style={[
+              tw`text-neutral-600 text-[14px]`,
+              {fontFamily: 'Poppins-Regular'},
+            ]}
+            numberOfLines={1}
+            ellipsizeMode="tail">
+            {item?.lastname}
+          </Text>
+        </View>
+        <View style={tw`flex`}>
+          <Text
+            style={[
+              tw`text-black text-[14px]`,
+              {fontFamily: 'Poppins-SemiBold'},
+            ]}>
+            {item?.address?.city || 'City - NA'}/
+            {item?.address?.state || 'State - NA'}
+          </Text>
+        </View>
+      </Pressable>
+    ),
+    [navigation],
+  );
 
   return (
     <Provider>
@@ -152,8 +186,8 @@ style={({pressed}) => [
         <View style={tw`flex-row items-center mb-4 mt-2`}>
           <Pressable
             onPress={handleBackPress}
-            style={({ pressed }) => [
-              tw`p-2 rounded-full ${pressed? 'bg-black/20' : ''}`,
+            style={({pressed}) => [
+              tw`p-2 rounded-full ${pressed ? 'bg-black/20' : ''}`,
             ]}>
             <Icon
               type={Icons.Ionicons}
@@ -178,14 +212,25 @@ style={({pressed}) => [
             <FilterIconSVG />
           </TouchableOpacity>
         </View>
+        {categories?.length != 0 ? (
+          {renderCategories}
+        ) : (
+          <View style={tw`justify-center items-center p-5`}>
+            <Text style={[tw`text-black`, {fontFamily: 'Poppins-Regular'}]}>
+              No Categories available
+            </Text>
+            <Text style={[tw`text-black`, {fontFamily: 'Poppins-Regular'}]}>
+              Contact Admin to add categories
+            </Text>
+          </View>
+        )}
 
         <FlatList
           data={data}
           renderItem={renderItem}
-          // keyExtractor={keyExtractor}
           ItemSeparatorComponent={ItemSeparatorComponent}
           onEndReached={onEndReached}
-          ListFooterComponent={isLoading? listFooterComponent : null}
+          ListFooterComponent={isLoading ? listFooterComponent : null}
         />
 
         <Portal>
@@ -198,7 +243,7 @@ style={({pressed}) => [
               <View style={tw`flex-row items-center mb-2`}>
                 <RadioButton
                   value="male"
-                  status={selectedOption === 'male'? 'checked' : 'unchecked'}
+                  status={selectedOption === 'male' ? 'checked' : 'unchecked'}
                   onPress={() => setSelectedOption('male')}
                 />
                 <Text style={tw`ml-2`}>Male</Text>
@@ -206,7 +251,7 @@ style={({pressed}) => [
               <View style={tw`flex-row items-center mb-2`}>
                 <RadioButton
                   value="female"
-                  status={selectedOption === 'female'? 'checked' : 'unchecked'}
+                  status={selectedOption === 'female' ? 'checked' : 'unchecked'}
                   onPress={() => setSelectedOption('female')}
                 />
                 <Text style={tw`ml-2`}>Female</Text>
@@ -222,12 +267,4 @@ style={({pressed}) => [
   );
 };
 
-const styles = StyleSheet.create({
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-});
-
+const styles = StyleSheet;
