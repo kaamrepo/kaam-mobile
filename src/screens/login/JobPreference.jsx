@@ -1,138 +1,208 @@
 import {
-  StyleSheet,
   Text,
   View,
-  Image,
   ScrollView,
-  Pressable,
   TextInput,
+  useColorScheme,
+  TouchableOpacity,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import tw from 'twrnc';
-import SelectChips from '../../components/SelectChips';
-import Icon, {Icons} from '../../components/Icons';
+import tw, {useAppColorScheme} from 'twrnc';
 
-const jobRoles = [
-  {name: 'Product Designer', isSelected: false},
-  {name: 'Motion Designer', isSelected: false},
-  {name: 'UX Designer', isSelected: false},
-  {name: 'Graphics Designer', isSelected: false},
-  {name: 'Full-Stack Developer', isSelected: false},
-  {name: 'Data Analyst', isSelected: false},
-  {name: 'Business Analyst', isSelected: false},
-  {name: 'Project Manager', isSelected: false},
-  {name: 'Sales Executive', isSelected: false},
-  {name: 'Marketing Manager', isSelected: false},
-  {name: 'HR Manager', isSelected: false},
-  {name: 'Accountant', isSelected: false},
-  {name: 'Financial Analyst', isSelected: false},
-  {name: 'Content Writer', isSelected: false},
-  {name: 'Graphic Designer', isSelected: false},
-  {name: 'UI/UX Designer', isSelected: false},
-  {name: 'Web Developer', isSelected: false},
-  {name: 'Android Developer', isSelected: false},
-  {name: 'System Administrator', isSelected: false},
-  {name: 'Network Engineer', isSelected: false},
-  {name: 'Operations Manager', isSelected: false},
-  {name: 'Quality Assurance Analyst', isSelected: false},
-  {name: 'Electrician', isSelected: false},
-  {name: 'Plumber', isSelected: false},
-  {name: 'Carpenter', isSelected: false},
-  {name: 'Welder', isSelected: false},
-  {name: 'Mason', isSelected: false},
-  {name: 'Painter', isSelected: false},
-  {name: 'Mechanic', isSelected: false},
-  {name: 'Driver', isSelected: false},
-  {name: 'Security Guard', isSelected: false},
-  {name: 'Construction Laborer', isSelected: false},
-  {name: 'Factory Worker', isSelected: false},
-  {name: 'Machine Operator', isSelected: false},
-  {
-    name: 'Technician(e.g., HVAC technician, automotive technician)',
-    isSelected: false,
-  },
-  {name: 'Housekeeping Staff', isSelected: false},
-  {name: 'Delivery Driver', isSelected: false},
-  {name: 'Gardener', isSelected: false},
-  {name: 'Cleaner', isSelected: false},
-  {name: 'Loading / Unloading Staff', isSelected: false},
-  {name: 'Packaging Staff', isSelected: false},
-  {name: 'Farm Worker', isSelected: false},
-];
+import Animated, {
+  useSharedValue,
+  withTiming,
+  useAnimatedStyle,
+  withRepeat,
+  withSequence,
+} from 'react-native-reanimated';
+import {useInitialDataStore} from '../../store/authentication/initial-data.store';
 
-const JobPreference = ({navigation}) => {
-  const [selectedJobRoles, setSelectedJobRoles] = useState(jobRoles);
-  const [searchValue, setSearchValue] = useState('');
+const JobPreferences = ({navigation}) => {
+  const {categories, getCategories, setCategories} = useInitialDataStore();
+  const [colorScheme] = useAppColorScheme(tw);
 
-  const handleSearchChange = text => {
-    setSearchValue(text);
-    const filteredJobRoles = jobRoles.filter(jobRole =>
-      jobRole.name.toLowerCase().includes(text.toLowerCase()),
+  const [allJobRoles, setAllJobRoles] = useState(categories);
+  const [selectedJobs, setSelectedJobs] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const maxSelection = categories?.length;
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const shateTranslationX = useSharedValue(0);
+  const errorOpacity = useSharedValue(0);
+
+  const shake = useCallback(() => {
+    const translationAmount = 10;
+    const timingConf = {
+      duration: 80,
+    };
+
+    errorOpacity.value = withTiming(1);
+
+    shateTranslationX.value = withSequence(
+      withTiming(translationAmount, timingConf),
+      withRepeat(withTiming(-translationAmount, timingConf), 4, true),
+      withTiming(0, timingConf),
     );
-    setSelectedJobRoles(filteredJobRoles);
+
+    setTimeout(() => {
+      errorOpacity.value = withTiming(0, {duration: 300});
+      if (errorOpacity.value === 0) {
+        setErrorMessage('');
+      }
+    }, 5000);
+  }, [shateTranslationX, errorOpacity]);
+
+  useEffect(() => {
+    getCategories();
+  }, []);
+
+  const handleToggleJob = job => {
+    if (selectedJobs.some(selectedJob => selectedJob.name === job.name)) {
+      setSelectedJobs(
+        selectedJobs.filter(selectedJob => selectedJob.name !== job.name),
+      );
+    } else {
+      if (selectedJobs.length < maxSelection) {
+        setSelectedJobs([...selectedJobs, job]);
+      } else {
+        setErrorMessage(`You can only select ${maxSelection} job preferences!`);
+        shake();
+      }
+    }
+  };
+  const textShakeStyle = useAnimatedStyle(() => {
+    return {
+      opacity: errorOpacity.value,
+      transform: [{translateX: shateTranslationX.value}], // Optional: Slide up animation
+    };
+  });
+
+  const handleSearch = query => {
+    setSearchQuery(query);
   };
 
+  useMemo(() => {
+    if (categories && Array.isArray(categories)) {
+      const filteredJobRoles =
+        categories?.filter(job =>
+          job?.name?.toLowerCase().includes(searchQuery.toLowerCase()),
+        ) ?? [];
+      setAllJobRoles(filteredJobRoles);
+    }
+  }, [categories, searchQuery]);
+
+  const handleSubmitJobPreference = async () => {
+    const tags = selectedJobs.map(job => job._id);
+    console.log('payload', tags);
+    await setCategories({tags});
+  };
+
+  const isSaveButtonDisabled = selectedJobs.length < 1;
+
   return (
-    <SafeAreaView style={[tw`bg-white flex-1 px-5 pt-5`]}>
-      <View
-        style={[
-          tw`flex-row justify-between items-center border border-slate-400 rounded-md px-5 mb-2`,
-        ]}>
-        <Icon type={Icons.Ionicons} name={'search'} size={20} color={'black'} />
-        <TextInput
-          style={tw`w-[90%] py-[5px] text-slate-600`}
-          placeholder="Search for a job"
-          placeholderTextColor={'gray'}
-          value={searchValue}
-          onChangeText={handleSearchChange}
-        />
+    <SafeAreaView style={tw`w-full h-full px-5  dark:bg-gray-900`}>
+      <View style={tw`w-full mt-10`}>
+        <Text
+          style={[
+            tw`text-2xl text-black dark:text-white`,
+            {fontFamily: 'Poppins-Bold'},
+          ]}>
+          Categories
+        </Text>
+        <View style={tw`w-[25%] h-1 rounded-full bg-black dark:bg-white`} />
       </View>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={[tw`mt-5 gap-3`]}>
-          <SelectChips
-            items={selectedJobRoles}
-            title={'Select Job Roles'}
-            setSelectedChips={setSelectedJobRoles}
-            allowedCount={5}
-            showAllOptions={true}
-            role={'job roles'}
-          />
+
+      {/* <View style={tw`rounded-full bg-white dark:bg-gray-800`}>
+        <TextInput
+          placeholder="Search"
+          onChangeText={handleSearch}
+          value={searchQuery}
+          style={tw`mx-1 px-6 py-2 text-gray-800 dark:text-white`}
+          placeholderTextColor={colorScheme === 'dark' ? '#cbd5e1' : '#334155'}
+        />
+      </View> */}
+
+      <ScrollView
+        style={tw`my-2 pt-2`}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}>
+        <Animated.View style={[textShakeStyle, tw`mx-5`]}>
+          <Text style={[tw`text-red-500`, {fontFamily: 'Poppins-Regular'}]}>
+            {errorMessage}
+          </Text>
+        </Animated.View>
+        <View style={tw`pb-4 flex-row flex-wrap`}>
+          {allJobRoles?.length ? (
+            allJobRoles.map(jobRole => (
+              <JobChip
+                key={jobRole._id}
+                item={jobRole}
+                isSelected={selectedJobs.some(
+                  selectedJob => selectedJob.name === jobRole.name,
+                )}
+                onPress={handleToggleJob}
+              />
+            ))
+          ) : (
+            <></>
+          )}
         </View>
       </ScrollView>
-
-      <View style={tw`flex-row items-center justify-around gap-1 h-14 mb-1`}>
-        <Pressable
-          onPress={() => {}}
-          style={({pressed}) => [
-            tw`w-1/4 items-center justify-center rounded-2xl`,
-          ]}>
-          {({pressed}) => (
-            <Text style={tw`text-gray-600 text-[15px] font-medium`}>Skip</Text>
-          )}
-        </Pressable>
-        <Pressable
-          onPress={() => {
-            navigation.navigate('JobSelection');
-          }}
-          style={({pressed}) => [
-            {
-              backgroundColor: pressed ? '#d7dbd8' : 'transparent',
-            },
-            tw`w-13 h-13 items-center justify-center rounded-full`,
-          ]}>
-          {({pressed}) => (
-            <Image
-              source={require('../../assets/images/gotonextScreen.png')}
-              style={tw`w-12 h-12`}
-            />
-          )}
-        </Pressable>
+      <View style={tw`py-5 flex-row justify-around`}>
+        {/* <TouchableOpacity
+          style={tw`bg-slate-50 dark:bg-gray-800 w-32 p-3 rounded-md flex-row items-center justify-center`}
+          onPress={() => skipPreferenceScreens()}>
+          <Text style={[tw`text-black dark:text-white`,{fontFamily: 'Poppins-Regular'}]}>Skip</Text>
+        </TouchableOpacity> */}
+        <TouchableOpacity
+          disabled={isSaveButtonDisabled}
+          style={tw`${
+            isSaveButtonDisabled
+              ? 'bg-slate-50 dark:bg-gray-800'
+              : 'bg-green-700'
+          }  w-32 p-3 rounded-md flex-row items-center justify-center`}
+          onPress={handleSubmitJobPreference}>
+          <Text
+            style={[
+              tw`mr-3 text-2xl ${
+                isSaveButtonDisabled ? 'text-slate-300' : 'text-white'
+              }`,
+              {fontFamily: 'Poppins-SemiBold'},
+            ]}>
+            Save
+          </Text>
+          {/* <Icon
+            IconComponent={CircleArrowRight}
+            darkColor={isSaveButtonDisabled ? 'text-slate-300' : 'text-white'}
+            lightColor={isSaveButtonDisabled ? 'text-slate-300' : 'text-white'}
+            style="rounded-full items-center justify-center"
+          /> */}
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
 };
 
-export default JobPreference;
+export default JobPreferences;
 
-const styles = StyleSheet.create({});
+const JobChip = ({item, isSelected, onPress}) => {
+  return (
+    <TouchableOpacity
+      style={tw`px-4 py-1.5 mx-1 flex self-start my-1 rounded-full ${
+        isSelected ? 'bg-green-600' : 'bg-white dark:bg-transparent'
+      } border border-white`}
+      onPress={() => onPress(item)}>
+      <Text
+        numberOfLines={1}
+        style={[
+          tw`${isSelected ? 'text-white' : 'text-black dark:text-white'}`,
+          ,
+          {fontFamily: 'Poppins-Regular'},
+        ]}>
+        {item.name}
+      </Text>
+    </TouchableOpacity>
+  );
+};

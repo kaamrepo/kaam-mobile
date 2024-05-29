@@ -23,7 +23,7 @@ import BookmarkInactiveSVG from '../assets/svgs/bookmark_inactive.svg';
 
 import MenuSVG from '../assets/svgs/menu.svg';
 import MenuInactiveSVG from '../assets/svgs/menu_inactive.svg';
-import { Engagments } from './engagements/Engagments';
+import {Engagments} from './engagements/Engagments';
 import {
   primaryBGColor,
   primaryTextColor,
@@ -153,15 +153,7 @@ const TabButton = props => {
 
   return (
     <>
-      {/* <PopupMenu visible={popupVisible} /> */}
       <TouchableOpacity
-        // onPress={() => {
-
-        // if (!isMiddleElement) onPress();
-        // else {
-        //   // setPopupVisible(prev => !prev);
-        // }
-        // }}
         onPress={onPress}
         activeOpacity={1}
         style={[tw`relative`, styles.container]}>

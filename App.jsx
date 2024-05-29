@@ -1,5 +1,11 @@
 import 'react-native-gesture-handler';
-import {StyleSheet, Pressable, ActivityIndicator, View} from 'react-native';
+import {
+  StyleSheet,
+  Pressable,
+  ActivityIndicator,
+  View,
+  useColorScheme,
+} from 'react-native';
 import React, {useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -11,7 +17,7 @@ import useLoginStore, {
 
 import RegisterScreen from './src/screens/login/RegisterScreen';
 import IntroSelectLanguage from './src/screens/intro/IntroSelectLanguage';
-import { SeeAllStaffs } from './src/screens/dashboard/components/staff/SeeAllStaffs';
+import {SeeAllStaffs} from './src/screens/dashboard/components/staff/SeeAllStaffs';
 import VerifyCode from './src/screens/login/VerifyCode';
 import ChooseProfession from './src/screens/login/ChooseProfession';
 import SplashScreen from 'react-native-splash-screen';
@@ -26,18 +32,33 @@ import Chat from './src/screens/chats/Chat';
 import TrackApplication from './src/screens/chats/TrackApplication';
 import DrawerNavigation from './src/screens/DrawerNavigation';
 import AllJobsFlatlist from './src/screens/dashboard/components/jobs/SeeAllJobs';
-import { EngagmentInitiation } from './src/screens/job-application/EngagmentInitiation';
+import {EngagmentInitiation} from './src/screens/job-application/EngagmentInitiation';
 import EmployeeDetails from './src/screens/job-application/EmployeeDetails';
 import JobPostingForm from './src/screens/bottom-bar/JobPostingForm';
 import {ApplicantListScreen} from './src/screens/job-application/Applicants';
 import client from './client';
 import messaging from '@react-native-firebase/messaging';
-import notifee, { AndroidImportance } from '@notifee/react-native';
-import { Header } from './src/components/Header';
+import notifee, {AndroidImportance} from '@notifee/react-native';
+import {Header} from './src/components/Header';
+import {useDeviceContext, useAppColorScheme} from 'twrnc';
 
 const Stack = createNativeStackNavigator();
 const App = () => {
-  const {isLoggedIn, setLoggedInUserDetails, getLanguage} = useLoginStore();
+  useDeviceContext(tw, {
+    observeDeviceColorSchemeChanges: true,
+    initialColorScheme: 'light', // 'light' | 'dark' | 'device'
+  });
+
+  const colorScheme = useColorScheme();
+  const [twColorScheme, toggleColorScheme, setColorScheme] =
+    useAppColorScheme(tw);
+
+  useEffect(() => {
+    setColorScheme(colorScheme);
+  }, [colorScheme]);
+
+  const {isLoggedIn, loggedInUser, setLoggedInUserDetails, getLanguage} =
+    useLoginStore();
 
   useEffect(() => {
     setTimeout(() => {
@@ -67,14 +88,14 @@ const App = () => {
     await notifee.requestPermission();
     console.log('Notifee', message);
     try {
-      const notifyObj = JSON.parse(message.data.notifee)
+      const notifyObj = JSON.parse(message.data.notifee);
       const channelId = await notifee.createChannel({
         id: 'default',
         name: 'Important Notifications',
         importance: AndroidImportance.HIGH,
       });
 
-      notifyObj.android.channelId = channelId
+      notifyObj.android.channelId = channelId;
 
       await notifee.displayNotification(notifyObj);
     } catch (error) {
@@ -104,178 +125,161 @@ const App = () => {
     return backgroundNotifeeUnsubscribe;
   }, []);
 
-  return (
-    <>
-      <NavigationContainer>
-        <Stack.Navigator
-          initialRouteName={'DrawerNavigation'}
-          keyboardHandlingEnabled={true}>
-          {!isLoggedIn ? (
-            <>
-    <Stack.Screen
-      name="IntroSelectLanguage"
-      component={IntroSelectLanguage}
-      options={{ title: 'Kaam', headerShown: false }}
-    />
-    <Stack.Screen
-      name="Login"
-      component={LoginScreen}
-      options={{ title: 'Login', headerShown: true }}
-    />
-    <Stack.Screen
-      name="registerScreen"
-      component={RegisterScreen}
-      options={{ title: 'Register', headerShown: true }}
-    />
-    <Stack.Screen
-      name="VerifyCode"
-      component={VerifyCode}
-      options={{ title: 'Verify Code', headerShown: true }}
-    />
-  </>
-          ) : (
-            <>
-              <Stack.Screen
-                name="ChooseProfession"
-                component={ChooseProfession}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="Chat"
-                component={Chat}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="EngagmentInitiation"
-                component={EngagmentInitiation}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="EmployeeDetails"
-                component={EmployeeDetails}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="Header"
-                component={Header}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="JobPostingForm"
-                component={JobPostingForm}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="TrackApplication"
-                component={TrackApplication}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="JobPreference"
-                component={JobPreference}
-                options={({navigation}) => ({
-                  headerLeft: () => (
-                    <Pressable
-                      onPress={() => {
-                        navigation.goBack();
-                      }}
-                      style={({pressed}) => [
-                        tw`rounded-full w-8 h-8 flex items-center justify-center ${
-                          pressed ? 'bg-gray-500/30' : ''
-                        }`,
-                      ]}>
-                      {({pressed}) => (
-                        <Icon
-                          type={Icons.Ionicons}
-                          name="chevron-back"
-                          color="#000000"
-                        />
-                      )}
-                    </Pressable>
-                  ),
-                  headerTransparent: false,
-                  headerTitleAlign: 'center',
-                  headerShadowVisible: false,
-                  headerTitleStyle: {
-                    color: '#202121',
-                    fontSize: 18,
-                    fontFamily: 'Poppins-SemiBold',
-                  },
-                  headerTitle: 'Job Preferences', // Remove the title
-                  headerShown: true,
-                })}
-              />
-              <Stack.Screen
-                name="JobSelection"
-                component={JobSelection}
-                options={({navigation}) => ({
-                  headerLeft: () => (
-                    <Pressable
-                      onPress={() => {
-                        navigation.goBack();
-                      }}
-                      style={({pressed}) => [
-                        tw`rounded-full w-8 h-8 flex items-center justify-center ${
-                          pressed ? 'bg-gray-500/30' : ''
-                        }`,
-                      ]}>
-                      {({pressed}) => (
-                        <Icon
-                          type={Icons.Ionicons}
-                          name="close"
-                          color="#000000"
-                          size={30}
-                        />
-                      )}
-                    </Pressable>
-                  ),
-                  headerTransparent: true,
-                  headerShadowVisible: false,
-                  headerTitle: '', // Remove the title
-                  headerShown: true,
-                })}
-              />
-              <Stack.Screen
-                name="ApplyNow"
-                component={ApplyNow}
-                options={{headerShown: false}}
-              />
-
-              <Stack.Screen
-                name="DrawerNavigation"
-                component={DrawerNavigation}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="AllJobsFlatlist"
-                component={AllJobsFlatlist}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="SeeAllStaffs"
-                component={SeeAllStaffs}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="ApplicantListScreen"
-                component={ApplicantListScreen}
-                options={{headerShown: false}}
-              />
-            </>
-          )}
-        </Stack.Navigator>
-      </NavigationContainer>
-      <Toast config={toastConfig} position="bottom" />
-      {/* <View
-        style={[
-          tw`z-50 absolute top-0 left-0 right-0 bottom-0 justify-center items-center ${
-            isLoading ? 'flex' : 'hidden'
-          }`,
-        ]}>
-        <ActivityIndicator size={60} animating={isLoading} color="#00cc66" />
-      </View> */}
-    </>
-  );
+  if (!isLoggedIn) {
+    return (
+      <>
+        <NavigationContainer>
+          <Stack.Navigator
+            keyboardHandlingEnabled={true}
+            initialRouteName="IntroSelectLanguage">
+            <Stack.Screen
+              name="IntroSelectLanguage"
+              component={IntroSelectLanguage}
+              options={{title: 'Kaam', headerShown: false}}
+            />
+            <Stack.Screen
+              name="Login"
+              component={LoginScreen}
+              options={{title: 'Login', headerShown: true}}
+            />
+            <Stack.Screen
+              name="registerScreen"
+              component={RegisterScreen}
+              options={{title: 'Register', headerShown: true}}
+            />
+            <Stack.Screen
+              name="VerifyCode"
+              component={VerifyCode}
+              options={{title: 'Verify Code', headerShown: true}}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+        <Toast config={toastConfig} position="bottom" />
+      </>
+    );
+  }
+  if (isLoggedIn && !Array.isArray(loggedInUser?.tags)) {
+    return (
+      <>
+        <NavigationContainer>
+          <Stack.Navigator
+            keyboardHandlingEnabled={true}
+            initialRouteName="JobPreference">
+            <Stack.Screen
+              name="JobPreference"
+              component={JobPreference}
+              options={{title: 'Kaam', headerShown: false}}
+            />
+            {/* <Stack.Screen
+              name="ChooseProfession"
+              component={ChooseProfession}
+              options={{headerShown: false}}
+            /> */}
+          </Stack.Navigator>
+        </NavigationContainer>
+        <Toast config={toastConfig} position="bottom" />
+      </>
+    );
+  }
+  if (isLoggedIn && Array.isArray(loggedInUser?.tags)) {
+    return (
+      <>
+        <NavigationContainer>
+          <Stack.Navigator
+            keyboardHandlingEnabled={true}
+            initialRouteName="DrawerNavigation">
+            <Stack.Screen
+              name="DrawerNavigation"
+              component={DrawerNavigation}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Chat"
+              component={Chat}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="EngagmentInitiation"
+              component={EngagmentInitiation}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="EmployeeDetails"
+              component={EmployeeDetails}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Header"
+              component={Header}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="JobPostingForm"
+              component={JobPostingForm}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="TrackApplication"
+              component={TrackApplication}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="JobSelection"
+              component={JobSelection}
+              options={({navigation}) => ({
+                headerLeft: () => (
+                  <Pressable
+                    onPress={() => {
+                      navigation.goBack();
+                    }}
+                    style={({pressed}) => [
+                      tw`rounded-full w-8 h-8 flex items-center justify-center ${
+                        pressed ? 'bg-gray-500/30' : ''
+                      }`,
+                    ]}>
+                    {({pressed}) => (
+                      <Icon
+                        type={Icons.Ionicons}
+                        name="close"
+                        color="#000000"
+                        size={30}
+                      />
+                    )}
+                  </Pressable>
+                ),
+                headerTransparent: true,
+                headerShadowVisible: false,
+                headerTitle: '', // Remove the title
+                headerShown: true,
+              })}
+            />
+            <Stack.Screen
+              name="ApplyNow"
+              component={ApplyNow}
+              options={{headerShown: false}}
+            />
+            
+            <Stack.Screen
+              name="AllJobsFlatlist"
+              component={AllJobsFlatlist}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="SeeAllStaffs"
+              component={SeeAllStaffs}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="ApplicantListScreen"
+              component={ApplicantListScreen}
+              options={{headerShown: false}}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+        <Toast config={toastConfig} position="bottom" />
+      </>
+    );
+  }
 };
 
 export default App;

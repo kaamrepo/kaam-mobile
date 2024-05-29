@@ -1,10 +1,5 @@
 import React, {useEffect, useState, useCallback, useMemo} from 'react';
-import {
-  View,
-  Animated,
-  ScrollView,
-  TouchableOpacity,
-} from 'react-native';
+import {View, Animated, ScrollView, TouchableOpacity} from 'react-native';
 import tw from 'twrnc';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import GeneralStatusBar from '../../components/GeneralStatusBar';
@@ -192,7 +187,8 @@ const Dashboard = ({navigation}) => {
             navigation,
             isLoading,
             selectedSearchType,
-          }}></Categories>
+          }}
+        />
         {selectedSearchType === 'jobs' && (
           <AvailableJob
             {...{
@@ -200,7 +196,8 @@ const Dashboard = ({navigation}) => {
               location,
               language,
               selectedSearchType,
-            }}></AvailableJob>
+            }}
+          />
         )}
         {selectedSearchType === 'staff' && (
           <AvailableStaff
