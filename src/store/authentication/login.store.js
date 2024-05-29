@@ -10,6 +10,7 @@ const useLoginStore = create((set, get) => ({
   loggedInUser: undefined,
   isLoggedIn: false,
   language: 'English',
+  coordinates:[],
   getLanguage: async () => {
     (async () => {
       let response = await retrieveLanguage();
@@ -113,6 +114,16 @@ export const storeUserSession = async data => {
     }
   } catch (error) {
     console.log('error::storeUserSession', error);
+  }
+};
+
+export const storeUserCoordinate = async data => {
+  try {
+    await EncryptedStorage.setItem('coordinates',data);
+    } catch (error) {
+      console.log('client error', error);
+      return false;
+    
   }
 };
 export const storeUserlanguage = async data => {

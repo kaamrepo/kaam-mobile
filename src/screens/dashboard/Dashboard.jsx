@@ -14,7 +14,7 @@ import {
 } from '../../helper/utils/getGeoLocation';
 import Geolocation from 'react-native-geolocation-service';
 import Categories from './Categories';
-import {Header} from '../../components/Header';
+import {HeaderBanner} from '../../components/HeaderBanner';
 import AvailableStaff from './components/staff/AvailableStaff';
 import AvailableJob from './components/jobs/AvailableJob';
 const Dashboard = ({navigation}) => {
@@ -173,7 +173,7 @@ const Dashboard = ({navigation}) => {
 
   return (
     <SafeAreaView style={[tw`h-full`]}>
-      <Header navigation={navigation} />
+      <HeaderBanner navigation={navigation} />
       <ScrollView
         showsVerticalScrollIndicator={false}
         nestedScrollEnabled
