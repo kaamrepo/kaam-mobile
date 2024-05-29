@@ -3,25 +3,24 @@ import {View, ScrollView, Pressable} from 'react-native';
 import {Text, Button, Dialog, Portal, Provider} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import tw from 'twrnc';
-import {useNavigation, useIsFocused} from '@react-navigation/native'; // Import useIsFocused
+import {useIsFocused} from '@react-navigation/native'; // Import useIsFocused
 import Icon, {Icons} from '../../components/Icons';
 import useJobStore from '../../store/jobs.store';
 import useLoginStore from '../../store/authentication/login.store';
-import {primaryApplyNowButton} from '../../helper/utils/colors';
+import {primaryBGColor} from '../../helper/utils/colors';
 
 export const EngagmentInitiation = ({route, navigation}) => {
   const staffid = route.params.staffid;
   const userid = useLoginStore.getState().loggedInUser?._id;
   const [visible, setVisible] = useState(false);
   const [selectedJob, setSelectedJob] = useState(null);
-  const [selectedApplication, setSelectedApplication] = useState(null);
   const [jobApplication, setJobApplication] = useState([]);
   const {myPostedJobs, getJobs, getJobApplication, applyForJob} = useJobStore();
   const isFocused = useIsFocused(); // Get the focus status of the screen
 
   useEffect(() => {
     const fetchJobsAndApplications = async () => {
-      await getJobs(0, 100, {createdby: userid, type: 'myPostedJobs'});
+      await getJobs({createdby: userid, type: 'myPostedJobs'});
       const applications = await getJobApplication({
         employerid: userid,
         appliedby: staffid,
@@ -81,7 +80,7 @@ export const EngagmentInitiation = ({route, navigation}) => {
             {applied ? (
               <Button
                 mode="contained"
-                style={{backgroundColor: primaryApplyNowButton}}
+                style={{backgroundColor: primaryBGColor}}
                 onPress={() => {
                   navigation.navigate('Chat', {
                     appliedJobId: applicationDetails._id,
@@ -120,9 +119,9 @@ export const EngagmentInitiation = ({route, navigation}) => {
           }}
           style={({pressed}) => [
             {
-              backgroundColor: primaryApplyNowButton,
+              backgroundColor: primaryBGColor,
             },
-            tw`px-8 py-[16px] flex flex-row gap-4 justify-center items-center rounded-[16px] mx-8 mt-5 shadow-lg shadow-[${primaryApplyNowButton}]`,
+            tw`px-8 py-[16px] flex flex-row gap-4 justify-center items-center rounded-[16px] mx-8 mt-5 shadow-lg shadow-[${primaryBGColor}]`,
           ]}>
           <Text
             style={[

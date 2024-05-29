@@ -11,6 +11,7 @@ const useJobStore = create((set, get) => ({
   myPostedJobs:[],
   job:[],
   searchedJobs:[],
+  jobApplicationForm:[],
 
   getJobs: async (payload) => {
     try {
@@ -214,7 +215,7 @@ const useJobStore = create((set, get) => ({
       });
 
       if (res && res.data) {
-        set({job: res.data});
+        set({jobApplicationForm: res.data});
       }
     } catch (error) {
       console.log(error);

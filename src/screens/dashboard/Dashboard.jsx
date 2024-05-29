@@ -1,8 +1,6 @@
 import React, {useEffect, useState, useCallback, useMemo} from 'react';
 import {
   View,
-  Text,
-  Pressable,
   Animated,
   ScrollView,
   TouchableOpacity,

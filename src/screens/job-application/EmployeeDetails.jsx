@@ -3,15 +3,11 @@ import {View, Text, Image, Pressable} from 'react-native';
 import tw from 'twrnc';
 import Icon, {Icons} from '../../components/Icons';
 import useStaffStore from '../../store/staff.store';
-import {getRandomColor} from '../../helper/utils/colors';
-import {
-  primaryChatButton,
-  primaryApplyNowButton,
-} from '../../helper/utils/colors';
+import { primaryBGColor,primaryBGDarkColor } from '../../helper/utils/colors';
+const staticStaffImage = require('../../assets/images/profession-employee.png')
 const EmployeeDetails = ({route, navigation}) => {
   const {getNearByStaffById} = useStaffStore();
   const [staff, setStaff] = useState({});
-  const bgColor = getRandomColor(route?.params?.index);
   useEffect(() => {
     getStaff();
   }, []);
@@ -62,12 +58,8 @@ const EmployeeDetails = ({route, navigation}) => {
         {staff?.profilepic ? (
           <Image source={staff?.profilepic} style={tw`h-12 w-12 rounded-xl`} />
         ) : (
-          <Icon
-            type={Icons.Ionicons}
-            name={'person-circle-outline'}
-            size={55}
-            color={'green'}
-          />
+          <Image source={staticStaffImage} style={tw`h-12 w-12 rounded-xl`} />
+          
         )}
         <Text
           style={tw`text-2xl mt-2 font-bold mb-2`}>{`${staff.firstname} ${staff.lastname}`}</Text>
@@ -100,7 +92,7 @@ const EmployeeDetails = ({route, navigation}) => {
         <ActionButton
           label={'Chat'}
           onPress={handleChatNavigation}
-          bgColor={primaryChatButton}
+          bgColor={primaryBGDarkColor}
           iconType={Icons.Ionicons}
           iconName={'chatbubbles-outline'}
         />
@@ -108,7 +100,7 @@ const EmployeeDetails = ({route, navigation}) => {
         <ActionButton
           label={'Select Job to hire'}
           onPress={handleJobSelection}
-          bgColor={primaryApplyNowButton}
+          bgColor={primaryBGColor}
           iconType={Icons.FontAwesome5}
           iconName={'user-tie'}
         />

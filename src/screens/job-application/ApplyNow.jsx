@@ -11,15 +11,16 @@
   import {getRandomColor} from '../../helper/utils/colors';
   import {useFocusEffect} from '@react-navigation/native';
   import useLoginStore from '../../store/authentication/login.store';
-
+import { primaryBGColor } from '../../helper/utils/colors';
+  import { primaryBGDarkColor } from '../../helper/utils/colors';
   const jobDescription = {
     image: Image1,
   };
 
   const ApplyNow = ({route, navigation}) => {
     const {isLoading} = useLoaderStore();
-    const bgColor = getRandomColor(route?.params?.index);
-    const {getNearByJobById, job, clearJob, applyForJob} = useJobStore();
+    const bgColor = primaryBGColor;
+    const {getNearByJobById, jobApplicationForm, clearJob, applyForJob} = useJobStore();
 
     useFocusEffect(
       useCallback(() => {
@@ -33,33 +34,31 @@
     const handleBookmarkPress = () => {
       console.log('Bookmark button pressed!');
     };
-
     const handleChatNavigation = () => {
       console.log(" Chat", {
-        appliedJobId: job.jobAppliedDetails._id,
-        chatid: job.jobAppliedDetails.chatid,
+        appliedJobId: jobApplicationForm.jobAppliedDetails._id,
+        chatid: jobApplicationForm.jobAppliedDetails.chatid,
         bgColor,
-        name: `${job.employerDetails.firstname} ${job.employerDetails.lastname}`,
+        name: `${jobApplicationForm.employerDetails.firstname} ${jobApplicationForm.employerDetails.lastname}`,
       });
       navigation.navigate('Chat', {
-        appliedJobId: job.jobAppliedDetails._id,
-        chatid: job.jobAppliedDetails.chatid,
+        appliedJobId: jobApplicationForm.jobAppliedDetails._id,
+        chatid: jobApplicationForm.jobAppliedDetails.chatid,
         bgColor,
-        name: `${job.employerDetails.firstname} ${job.employerDetails.lastname}`,
+        name: `${jobApplicationForm.employerDetails.firstname} ${jobApplicationForm.employerDetails.lastname}`,
       });
     };
 
     const handleAppliedJob = async () => {
-      console.log("job in apply before",job);
+      console.log("jobApplicationForm in apply before",jobApplicationForm);
       const res = await applyForJob({
-        jobid: job?._id,
-        employerid: job?.createdby,
+        jobid: jobApplicationForm?._id,
+        employerid: jobApplicationForm?.createdby,
         initiator: useLoginStore.getState().loggedInUser?._id,
         appliedby: useLoginStore.getState().loggedInUser?._id
       });
-      res && getNearByJobById(job?._id);
+      res && getNearByJobById(jobApplicationForm?._id);
     };
-
     return (
       <SafeAreaView style={tw`flex-1`} edges={['top']}>
         <GeneralStatusBar backgroundColor={bgColor} />
@@ -74,35 +73,37 @@
                 iconname={'chevron-back'}
                 onPress={() => navigation.goBack()}
               />
-              <PressableButton
-                iconname={'bookmark'}
-                onPress={handleBookmarkPress}
-              />
+              
             </View>
             {/* completed:chevron and bookmark button */}
 
             {/* image and employer name */}
             <View style={tw`flex gap-4 justify-center items-center`}>
+            {jobApplicationForm?.profilepic ? 
               <Image
+                source={jobDescription.profilepic}
+                style={tw`w-28 h-28 rounded-full`}
+              />:<Image
                 source={jobDescription.image}
                 style={tw`w-28 h-28 rounded-full`}
               />
+            }
               <Text
                 style={[
                   tw`text-xl mt-2 text-white`,
                   {fontFamily: 'Poppins-Bold'},
                 ]}>
-                {job?.employerDetails
-                  ? `Employer - ${job?.employerDetails?.firstname} ${job?.employerDetails?.lastname}`
+                {jobApplicationForm?.employerDetails
+                  ? `Employer - ${jobApplicationForm?.employerDetails?.firstname} ${jobApplicationForm?.employerDetails?.lastname}`
                   : ''}
               </Text>
             </View>
             {/* completed:image and employer name */}
 
-            {/* job tags */}
+            {/* jobApplicationForm tags */}
             <View
               style={tw`w-full flex-row flex-wrap gap-2 justify-around items-center`}>
-              {job?.tags?.map(tag => (
+              {jobApplicationForm?.tags?.map(tag => (
                 <Text
                   key={tag}
                   style={[
@@ -113,7 +114,7 @@
                 </Text>
               ))}
             </View>
-            {/* completed:job tags */}
+            {/* completed:jobApplicationForm tags */}
 
             {/* salary and location */}
             <View style={tw`flex-row justify-around items-center`}>
@@ -123,10 +124,10 @@
                     tw`text-[14px] text-white`,
                     {fontFamily: 'Poppins-Bold'},
                   ]}>
-                  {job?.salary
+                  {jobApplicationForm?.salary
                     ? `₹ ${new Intl.NumberFormat('en-IN', {
                         maximumSignificantDigits: 3,
-                      }).format(job?.salary)}/${job?.salarybasis}`
+                      }).format(jobApplicationForm?.salary)}/${jobApplicationForm?.salarybasis}`
                     : ''}
                 </Text>
               </View>
@@ -136,20 +137,20 @@
                     tw`text-[14px] text-white`,
                     {fontFamily: 'Poppins-Bold'},
                   ]}>
-                  {job?.location?.name ??
-                    job?.location?.fulladdress?.substring(0, 15)}
+                  {jobApplicationForm?.location?.name ??
+                    jobApplicationForm?.location?.fulladdress?.substring(0, 15)}
                 </Text>
               </View>
             </View>
             {/* completed:salary and location */}
           </View>
           <View style={tw`p-2 w-full h-1/2 bg-white justify-around`}>
-            <JobDetails job={job} bgColor={bgColor} />
-            {job?.jobAppliedDetails ? (
+            <JobDetails jobApplicationForm={jobApplicationForm} bgColor={bgColor} />
+            {jobApplicationForm?.jobAppliedDetails ? (
               <ActionButton
                 label={'Chat'}
                 onPress={handleChatNavigation}
-                bgColor={bgColor}
+                bgColor={primaryBGDarkColor}
                 iconType={Icons.Ionicons}
                 iconName={'chatbubbles-outline'}
               />
@@ -210,7 +211,7 @@
     </Pressable>
   );
 
-  const JobDetails = ({job, bgColor}) => {
+  const JobDetails = ({jobApplicationForm, bgColor}) => {
     return (
       <View style={tw`w-full gap-2 p-4`}>
         <View
@@ -225,7 +226,7 @@
             Job Title
           </Text>
           <Text style={[tw`text-black text-xl`, {fontFamily: 'Poppins-Bold'}]}>
-            {job?.jobtitle}
+            {jobApplicationForm?.jobtitle}
           </Text>
         </View>
         <View
@@ -240,7 +241,7 @@
             Job Description
           </Text>
           <Text style={[tw`text-black text-sm`, {fontFamily: 'Poppins-Regular'}]}>
-            {job?.description}
+            {jobApplicationForm?.description}
           </Text>
         </View>
       </View>

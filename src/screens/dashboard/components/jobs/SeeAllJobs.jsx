@@ -104,10 +104,7 @@ const AllJobsFlatlist = ({navigation, isLoading, ...props}) => {
   const handleBackPress = () => {
     navigation.goBack();
   };
-  const handleBookmarkPress = () => {
-    // Handle bookmark button press logic here
-    console.log('Bookmark button pressed!');
-  };
+
   if (isLoading) {
     return (
       <>
@@ -190,18 +187,6 @@ const AllJobsFlatlist = ({navigation, isLoading, ...props}) => {
           {item?.location?.name}
         </Text>
       </View>
-      <Pressable
-        onPress={handleBookmarkPress}
-        style={({pressed}) => [tw`p-0  rounded-full`]}>
-        {({pressed}) => (
-          <Icon
-            type={Icons.Ionicons}
-            name="bookmarks-outline"
-            size={22}
-            color={pressed ? 'orange' : 'green'} // Adjust the colors accordingly
-          />
-        )}
-      </Pressable>
     </Pressable>
   );
         }

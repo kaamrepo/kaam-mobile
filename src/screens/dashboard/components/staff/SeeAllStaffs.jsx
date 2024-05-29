@@ -17,12 +17,13 @@ import Icon, {Icons} from '../../../../components/Icons';
 import useStaffStore from '../../../../store/staff.store';
 import useLoaderStore from '../../../../store/loader.store';
 import useCategoriesStore from '../../../../store/categories.store';
-
+import useLoginStore from '../../../../store/authentication/login.store';
 export const SeeAllStaffs = ({navigation}) => {
-  const {getStaffFlatlist} = useStaffStore();
+  const {getStaff} = useStaffStore();
   const {categories} = useCategoriesStore();
   const {isLoading} = useLoaderStore();
-  const limit = 10;
+  const {loggedInUser} = useLoginStore();
+  let limit = 10;
   const loadMoreRef = useRef(true);
   const [skip, setSkip] = useState(0);
   const [data, setData] = useState([]);
@@ -61,7 +62,11 @@ export const SeeAllStaffs = ({navigation}) => {
         return [...prevSelectedPills, pill];
       }
     });
+   
   }, []);
+  console.log(
+    'selectedPills',selectedPills
+  );
   const renderCategories = useMemo(() => {
     return (
       <View style={tw`flex flex-wrap flex-row px-4 mb-2`}>
@@ -104,10 +109,14 @@ export const SeeAllStaffs = ({navigation}) => {
         if (text) {
           setData([]);
         }
-        const result = await getStaffFlatlist(skip, limit, {
+        const payload = {
+          skip,
+          limit,
           text,
           categories: selectedPills,
-        });
+          excludeIds:[loggedInUser?._id]
+        }
+        const result = await getStaff(payload);
         if (result?.length === 0) {
           loadMoreRef.current = false;
         } else {
@@ -118,7 +127,7 @@ export const SeeAllStaffs = ({navigation}) => {
         console.log('error', error);
       }
     },
-    [skip, limit, getStaffFlatlist, selectedPills],
+    [skip, limit, getStaff, selectedPills],
   );
 
   const renderItem = useCallback(
@@ -213,7 +222,7 @@ export const SeeAllStaffs = ({navigation}) => {
           </TouchableOpacity>
         </View>
         {categories?.length != 0 ? (
-          {renderCategories}
+          renderCategories
         ) : (
           <View style={tw`justify-center items-center p-5`}>
             <Text style={[tw`text-black`, {fontFamily: 'Poppins-Regular'}]}>

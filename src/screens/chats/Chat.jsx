@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import tw from 'twrnc';
 import {primaryBGColor} from '../../helper/utils/colors';
-import {primaryDangerColor} from '../../helper/utils/colors';
+import {primaryBGDangerColor} from '../../helper/utils/colors';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import GeneralStatusBar from '../../components/GeneralStatusBar';
@@ -66,8 +66,8 @@ const Chat = ({route, navigation}) => {
         status,
         applicationId,
       };
-      const updateResult = await updateJobStatus(payload); // Update job status
-      // After updating status, fetch application details and update approval status
+      console.log("payload");
+      const updateResult = await updateJobStatus(payload);
       if (updateResult) {
         console.log(' in the if');
         const application = await getJobApplication({_id: applicationId});
@@ -156,7 +156,7 @@ const Chat = ({route, navigation}) => {
           style={[
             tw`bg-blue-500 px-8 py-2 my-2 rounded mx-3`,
             {
-              backgroundColor: primaryDangerColor,
+              backgroundColor: primaryBGDangerColor,
               opacity: approvalStatus === 'Rejected' ? 0.5 : 1,
             },
           ]}
