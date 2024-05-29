@@ -25,7 +25,7 @@ import ApplyNow from './src/screens/job-application/ApplyNow';
 import Chat from './src/screens/chats/Chat';
 import TrackApplication from './src/screens/chats/TrackApplication';
 import DrawerNavigation from './src/screens/DrawerNavigation';
-import AllJobsFlatlist from './src/screens/dashboard/components/jobs/AllJobsFlatlist';
+import AllJobsFlatlist from './src/screens/dashboard/components/jobs/SeeAllJobs';
 import { EngagmentInitiation } from './src/screens/job-application/EngagmentInitiation';
 import EmployeeDetails from './src/screens/job-application/EmployeeDetails';
 import JobPostingForm from './src/screens/bottom-bar/JobPostingForm';

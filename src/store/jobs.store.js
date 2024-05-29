@@ -12,41 +12,45 @@ const useJobStore = create((set, get) => ({
   job:[],
   searchedJobs:[],
 
-  getJobs: async (skip, limit, payload) => {
+  getJobs: async (payload) => {
     try {
+      console.log("payload in getjobs",payload);
       const params = {};
      payload.skip? params.skip = skip : '';
-     payload.limit? params.limit = limit : '';
+     payload.limit? params.limit = payload.limit : '';
       payload.type ? params.type = payload.type:'';
       payload?.coordinates?.length ? params.coordinates = payload.coordinates:'';
       payload?.wildString ? params.wildString = payload.wildString : '';
       payload?.excludeIds?.length ? params.excludeIds = payload.excludeIds : '';
       payload?.createdby ? params.createdby = payload.createdby : '';
       payload?.excludeIdsInJobSearch?.length ? params.excludeIdsInJobSearch = payload.excludeIdsInJobSearch : '';
+      console.log("params in get job",params);
       const res = await API.get(`${JOBS}`, {
         headers: {Authorization: await getToken()},
         params: params
       });
       if (res && res.data && payload.type === 'nearby') {
         console.log("in the nearby if");
-        set({nearbyjobs: res.data});
+        set({nearbyjobs: res.data?.data});
       }
-      if (res && res.data && payload.type === 'recommended') {
+      else if (res && res.data && payload.type === 'recommended') {
         console.log("in the recommended if");
 
-        set({recommendedJobs: res.data});
+        set({recommendedJobs: res.data?.data});
       }
-      if (res && res.data && payload.type === 'featured') {
+      else if (res && res.data?.data && payload.type === 'featured') {
         console.log("in the featured if");
 
-        set({featuredJobs: res.data});
+        set({featuredJobs: res.data?.data});
       }
-      if (res && res.data && payload.type === 'myPostedJobs') {
+      else if (res && res.data?.data && payload.type === 'myPostedJobs') {
         console.log("in the myPOstedJobs if *********************");
         set({myPostedJobs: res?.data?.data || []});
+      } else{
+        set({job: res.data?.data});
       }
     } catch (error) {
-      console.log(JSON.stringify(error, null,4));
+      console.log(error);
       // Toast.show({
       //     type: 'tomatoToast',
       //     text1: 'Failed to get jobs!',

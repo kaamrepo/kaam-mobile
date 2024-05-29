@@ -4,11 +4,6 @@ import tw from 'twrnc';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import GeneralStatusBar from '../../components/GeneralStatusBar';
 import { useFocusEffect } from '@react-navigation/native';
-import { SearchStaff } from './SearchStaff';
-import { SearchJobs } from './SearchJobs';
-import { Translation } from './Translation';
-import capitalizeFirstLetter from '../../helper/utils/capitalizeFirstLetter';
-import MenuIconSVG from '../../assets/svgs/Menu Icon.svg';
 import useLoginStore from '../../store/authentication/login.store';
 import useJobStore from '../../store/jobs.store';
 import useLoaderStore from '../../store/loader.store';
@@ -18,6 +13,7 @@ import Geolocation from 'react-native-geolocation-service';
 import Categories from './Categories';
 import { Header } from '../../components/Header';
 import AvailableStaff from './components/staff/AvailableStaff';
+import AvailableJob from './components/jobs/AvailableJob';
 const Dashboard = ({ navigation }) => {
   const [selectedSearchType, setSelectedSearchType] = useState('staff');
   const [location, setLocation] = useState(undefined);
@@ -140,7 +136,7 @@ const Dashboard = ({ navigation }) => {
         {searchToggleComponent}
         <Categories {...{language,navigation,isLoading,selectedSearchType}}></Categories>
         {selectedSearchType === 'jobs' && (
-          <SearchJobs {...{navigation,location,language,selectedSearchType}}></SearchJobs>
+          <AvailableJob {...{navigation,location,language,selectedSearchType}}></AvailableJob>
         )}
         {selectedSearchType === 'staff' && (
           <AvailableStaff  {...{navigation,location,language,selectedSearchType}}/>
