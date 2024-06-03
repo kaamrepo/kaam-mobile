@@ -3,26 +3,29 @@ import {View, Text, Image, Pressable} from 'react-native';
 import tw from 'twrnc';
 import Icon, {Icons} from '../../components/Icons';
 import useStaffStore from '../../store/staff.store';
-import { primaryBGColor,primaryBGDarkColor } from '../../helper/utils/colors';
-const staticStaffImage = require('../../assets/images/profession-employee.png')
+import {primaryBGColor, primaryBGDarkColor} from '../../helper/utils/colors';
+const staticStaffImage = require('../../assets/images/profession-employee.png');
 const EmployeeDetails = ({route, navigation}) => {
-  const {getNearByStaffById} = useStaffStore();
-  const [staff, setStaff] = useState({});
-  useEffect(() => {
-    getStaff();
-  }, []);
+  // const {getNearByStaffById} = useStaffStore();
+  // const [staff, setStaff] = useState({});
+  // let staff={};
+  // useEffect(() => {
+  //   // getStaff();
+  //   staff = route?.params?.user
+  // }, []);
 
-  const getStaff = async () => {
-    const staffDetails = await getNearByStaffById(route.params.id);
-    setStaff(staffDetails);
-  };
+  // const getStaff = async () => {
+  //   const staffDetails = await getNearByStaffById(route.params.id);
+  //   setStaff(staffDetails);
+  // };
   const handleBackPress = () => {
     navigation.goBack();
   };
   const handleJobSelection = async () => {
-   navigation.navigate("EngagmentInitiation",{staffid:staff._id})
+    navigation.navigate('EngagmentInitiation', {staffid: staff._id});
   };
 
+  const staff = route?.params?.user;
   const ActionButton = ({label, onPress, bgColor, iconType, iconName}) => (
     <Pressable
       onPress={onPress}
@@ -59,7 +62,6 @@ const EmployeeDetails = ({route, navigation}) => {
           <Image source={staff?.profilepic} style={tw`h-12 w-12 rounded-xl`} />
         ) : (
           <Image source={staticStaffImage} style={tw`h-12 w-12 rounded-xl`} />
-          
         )}
         <Text
           style={tw`text-2xl mt-2 font-bold mb-2`}>{`${staff.firstname} ${staff.lastname}`}</Text>
@@ -78,13 +80,25 @@ const EmployeeDetails = ({route, navigation}) => {
         {staff?.aboutme ? staff.aboutme : 'No Data'}
       </Text>
       <Text style={tw`text-lg font-bold mb-2`}>Skills and Tags</Text>
-      <Text style={tw`text-lg text-gray-600 mb-4`}>
-        {staff?.tags ? staff.tags : 'No Data'}
-      </Text>
-
+      <View style={tw`flex-row flex-wrap mt-2`}>
+        {staff?.tagsDetails?.length > 0 ? (
+          staff.tagsDetails.map(tag => (
+            <Text
+              key={tag._id}
+              style={tw`bg-gray-200 text-black text-[12px] px-2 py-1 rounded-full mr-2 mb-2`}>
+              {tag.name}
+            </Text>
+          ))
+        ) : (
+          <Text style={tw`text-lg text-gray-600 mb-4`}>
+            No Category selected by user
+          </Text>
+        )}
+      </View>
       <Text style={tw`text-lg font-bold mb-2`}>Work Experience</Text>
       <Text style={tw`text-lg text-gray-600 mb-4`}>
-        {staff?.tags ? staff.tags : 'No Data'}
+        {/* {staff?.tags ? staff.tags : 'No Data'} */}
+        section in developmen
       </Text>
 
       {/* Hire Button */}
