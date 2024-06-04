@@ -9,6 +9,7 @@ import {
   Pressable,
   TouchableOpacity,
   ActivityIndicator,
+  Image,
 } from 'react-native';
 import tw from 'twrnc';
 import {RadioButton, Modal, Portal, Provider} from 'react-native-paper';
@@ -18,12 +19,14 @@ import useStaffStore from '../../../../store/staff.store';
 import useLoaderStore from '../../../../store/loader.store';
 import useCategoriesStore from '../../../../store/categories.store';
 import useLoginStore from '../../../../store/authentication/login.store';
+import { debounce } from 'lodash';
+
 export const SeeAllStaffs = ({navigation}) => {
   const {getStaff} = useStaffStore();
   const {categories} = useCategoriesStore();
   const {isLoading} = useLoaderStore();
   const {loggedInUser} = useLoginStore();
-  let limit = 10;
+  const limit = 10;
   const loadMoreRef = useRef(true);
   const [skip, setSkip] = useState(0);
   const [data, setData] = useState([]);
@@ -33,8 +36,8 @@ export const SeeAllStaffs = ({navigation}) => {
   const [searchInput, setSearchInput] = useState('');
 
   useEffect(() => {
-    fetchData();
-  }, [selectedPills, searchInput]);
+    fetchData(0);
+  }, []);
 
   const handleBackPress = useCallback(() => {
     navigation.goBack();
@@ -48,43 +51,52 @@ export const SeeAllStaffs = ({navigation}) => {
     setModalVisible(true);
   }, []);
 
-  const handleSearch = useCallback(async text => {
-    setSearchInput(text);
-    setSkip(0);
-    fetchData(text);
-  }, []);
+  const handleSearch = useCallback(
+    debounce((text) => {
+      setSearchInput(text);
+      setSkip(0);
+      setData([]);
+      loadMoreRef.current = true; // Reset the load more flag
+      fetchData(0, text);
+    }, 500),
+    []
+  );
 
   const handlePillPress = useCallback(pill => {
     setSelectedPills(prevSelectedPills => {
-      if (prevSelectedPills.includes(pill)) {
-        return prevSelectedPills.filter(item => item !== pill);
-      } else {
-        return [...prevSelectedPills, pill];
-      }
+      const newSelectedPills = prevSelectedPills.includes(pill)
+        ? prevSelectedPills.filter(item => item !== pill)
+        : [...prevSelectedPills, pill];
+      setSkip(0);
+      setData([]);
+      loadMoreRef.current = true; // Reset the load more flag
+      fetchData(0);
+      return newSelectedPills;
     });
-   
   }, []);
-  console.log(
-    'selectedPills',selectedPills
-  );
+
   const renderCategories = useMemo(() => {
     return (
       <View style={tw`flex flex-wrap flex-row px-4 mb-2`}>
-        {categories?.map(item => (
-          <Pressable
-            key={item.id}
-            onPress={() => handlePillPress(item.name)}
-            style={tw`px-4 py-2 m-1 rounded-full ${
-              selectedPills.includes(item.name) ? 'bg-blue-500' : 'bg-gray-200'
-            }`}>
-            <Text
-              style={tw`text-sm ${
-                selectedPills.includes(item.name) ? 'text-white' : 'text-black'
-              }`}>
-              {item?.name}
-            </Text>
-          </Pressable>
-        ))}
+       {categories?.map(item => {
+  return (
+    <Pressable
+      key={item._id}
+      onPress={() => handlePillPress(item._id)}
+      style={tw`px-4 py-2 m-1 rounded-full ${
+        selectedPills.includes(item._id) ? `bg-blue-500` : 'bg-gray-200'
+      }`}>
+      <Text
+        style={tw`text-sm ${
+          selectedPills.includes(item._id) ? 'text-white' : 'text-black'
+        }`}>
+        {item?.name}
+      </Text>
+    </Pressable>
+
+  );
+})}
+
       </View>
     );
   }, [categories, selectedPills, handlePillPress]);
@@ -97,44 +109,54 @@ export const SeeAllStaffs = ({navigation}) => {
     return <View style={tw`justify-center`} />;
   }, []);
 
-  const onEndReached = useCallback(async () => {
-    if (loadMoreRef.current) {
-      await fetchData();
-    }
-  }, [fetchData]);
+  const onEndReached = useCallback(
+    debounce(async () => {
+      if (loadMoreRef.current && !isLoading) {
+        await fetchData(skip);
+      }
+    }, 500),
+    [fetchData, skip, isLoading]
+  );
 
   const fetchData = useCallback(
-    async text => {
+    async (skipValue, searchText = searchInput, selectedCategories = selectedPills) => {
+      if (!loadMoreRef.current) return; // Prevent API call if no more data
       try {
-        if (text) {
-          setData([]);
-        }
         const payload = {
-          skip,
+          skip: skipValue,
           limit,
-          text,
-          categories: selectedPills,
-          excludeIds:[loggedInUser?._id]
-        }
+          text: searchText,
+          categories: selectedCategories,
+          excludeIds: [loggedInUser?._id],
+          exclude: '_id'
+        };
         const result = await getStaff(payload);
         if (result?.length === 0) {
-          loadMoreRef.current = false;
+          loadMoreRef.current = false; // No more data to load
         } else {
-          setData(prevData => [...prevData, ...result]);
-          setSkip(prevSkip => prevSkip + 10);
+          setData(prevData => {
+            // Use a Set to store unique _id values of existing data
+            const idSet = new Set(prevData.map(item => item._id));
+            // Filter out items with IDs already present in the Set
+            const newData = result.filter(item => !idSet.has(item._id));
+            // Concatenate unique data with previous data
+            return [...prevData, ...newData];
+          });
+          setSkip(skipValue + limit);
         }
       } catch (error) {
         console.log('error', error);
       }
     },
-    [skip, limit, getStaff, selectedPills],
+    [limit, getStaff, searchInput, selectedPills, loggedInUser]
   );
+  
 
   const renderItem = useCallback(
     ({item, index}) => (
       <Pressable
         onPress={() => {
-          navigation.navigate('EmployeeDetails', {id: item._id});
+          navigation.navigate('EmployeeDetails', {user: item});
         }}
         key={index}
         style={({pressed}) => [
@@ -239,6 +261,7 @@ export const SeeAllStaffs = ({navigation}) => {
           renderItem={renderItem}
           ItemSeparatorComponent={ItemSeparatorComponent}
           onEndReached={onEndReached}
+          onEndReachedThreshold={0.5}
           ListFooterComponent={isLoading ? listFooterComponent : null}
         />
 
@@ -276,4 +299,9 @@ export const SeeAllStaffs = ({navigation}) => {
   );
 };
 
-const styles = StyleSheet;
+const styles = StyleSheet.create({
+  modalContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});

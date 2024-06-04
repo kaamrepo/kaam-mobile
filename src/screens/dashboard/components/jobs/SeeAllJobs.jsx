@@ -128,7 +128,6 @@ const AllJobsFlatlist = ({navigation, isLoading, ...props}) => {
 
   // Render function for each item in the FlatList
   const renderItem = ({item, index}) => {
-    console.log("item in render", item?._id)
     return(
     <Pressable
       key={item?._id}

@@ -5,7 +5,8 @@ export const REACT_APP_ENV = 'local';
 
 // export const REACT_APP_LOCAL_MODE =   'http://172.31.99.187:3030';
 // export const REACT_APP_LOCAL_MODE =   'http://192.168.0.103:3030';//TW
-export const REACT_APP_LOCAL_MODE =   'http://10.0.29.96:3030';//NS
+// export const REACT_APP_LOCAL_MODE =   'http://10.0.29.96:3030';//NS
+export const REACT_APP_LOCAL_MODE =   'http://10.0.29.96:3030'//NSLAN
 // export const REACT_APP_LOCAL_MODE =   'http://172.31.99.187:3030'; // XB
 // export const REACT_APP_LOCAL_MODE =   'http://192.168.1.109:3030'; // HB
 // export const REACT_APP_LOCAL_MODE =   'https://e1ed-103-150-139-198.ngrok-free.app';

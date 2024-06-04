@@ -8,48 +8,23 @@ const useStaffStore = create((set, get) => ({
   nearbyusers: [],
   stafflist: [],
   selectedstaff:[],
-  getNearByStaff: async (skip, limit, location) => {
-    try {
-      const userid = useLoginStore.getState().loggedInUser?._id;
-      // console.log("useLoginStore.getState().loggedInUser",useLoginStore.getState().loggedInUser);
-      const coord = {
-        lat: location?.location?.coords?.latitude || undefined,
-        long: location?.location?.coords?.longitude || undefined,
-      };
-      let params = {
-        skip,
-        limit,
-        excludeIds: [userid],
-        nearBy: [coord.lat,coord.long],
-        sortDesc: ['createdat'],
-      };
-      const res = await API.get(`${USER}`, {
-        headers: {Authorization: await getToken()},
-        params,
-      });
-      if (res && res.data?.data) {
-        set({nearbyusers: res?.data?.data});
-      }
-    } catch (error) {
-      console.log('in the error', error);
-    }
-  },
-
   clearUsers: () => set({nearbyusers: [],stafflist:[]}),
   getStaff: async (payload) => {
     try {
-      console.log("payload in getStaff",payload);
+      console.log("payload in getStaff *************",payload);
       const params = {};
      payload.skip? params.skip = payload.skip : '';
      payload.limit? params.limit = payload.limit : '';
      payload.limit? params.limit = payload.limit : '';
      payload?.excludeIds?.length !== 0 ? params.excludeIds = payload?.excludeIds:'';
+     payload?.categories?.length !== 0 ? params.categories = payload?.categories:'';
      payload?.exclude ? params.exclude = payload?.exclude:'';
+     payload?.text ? params.text = payload?.text:'';
      params.sortDesc=['createdat'];
       if (payload?.text) {
         params.wildString = payload.text;
       }
-      console.log("params before sending",params);
+      console.log("params before sending===================",params);
       const res = await API.get(`${USER}`, {
         headers: {Authorization: await getToken()},
         params,

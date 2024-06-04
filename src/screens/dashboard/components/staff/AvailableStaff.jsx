@@ -9,7 +9,6 @@ import useLoginStore from '../../../../store/authentication/login.store';
 const AvailableStaff = ({ language, isLoading, navigation}) => {
   const {getStaff,stafflist} = useStaffStore();
   const {loggedInUser} = useLoginStore();
-  console.log("loggedInUser",loggedInUser);
   useEffect(()=>{
     const payload = {
       skip:0,
@@ -20,7 +19,8 @@ const AvailableStaff = ({ language, isLoading, navigation}) => {
     getStaff(payload);
   },[])
   const handleSeeAllPress = useCallback(() => {
-    navigation.navigate('SeeAllStaffs');
+    navigation.navigate('SeeAllStaffs',{param:'all'});
+
   }, [navigation]);
 
   const renderContent = useMemo(() => {

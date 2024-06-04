@@ -7,7 +7,6 @@ import useLoginStore from '../store/authentication/login.store';
 import {Translation} from '../screens/dashboard/Translation';
 import capitalizeFirstLetter from '../helper/utils/capitalizeFirstLetter';
 import Icon, {Icons} from './Icons';
-import {primaryBGColor} from '../helper/utils/colors';
 
 export const HeaderBanner = ({navigation}) => {
   const {loggedInUser, language} = useLoginStore();
