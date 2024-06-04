@@ -6,18 +6,6 @@ import useStaffStore from '../../store/staff.store';
 import {primaryBGColor, primaryBGDarkColor} from '../../helper/utils/colors';
 const staticStaffImage = require('../../assets/images/profession-employee.png');
 const EmployeeDetails = ({route, navigation}) => {
-  // const {getNearByStaffById} = useStaffStore();
-  // const [staff, setStaff] = useState({});
-  // let staff={};
-  // useEffect(() => {
-  //   // getStaff();
-  //   staff = route?.params?.user
-  // }, []);
-
-  // const getStaff = async () => {
-  //   const staffDetails = await getNearByStaffById(route.params.id);
-  //   setStaff(staffDetails);
-  // };
   const handleBackPress = () => {
     navigation.goBack();
   };

@@ -15,7 +15,6 @@ const useJobStore = create((set, get) => ({
 
   getJobs: async (payload) => {
     try {
-      console.log("payload in getjobs",payload);
       const params = {};
      payload.skip? params.skip = skip : '';
      payload.limit? params.limit = payload.limit : '';
@@ -25,6 +24,7 @@ const useJobStore = create((set, get) => ({
       payload?.excludeIds?.length ? params.excludeIds = payload.excludeIds : '';
       payload?.createdby ? params.createdby = payload.createdby : '';
       payload?.excludeIdsInJobSearch?.length ? params.excludeIdsInJobSearch = payload.excludeIdsInJobSearch : '';
+      payload?.exclude? params.exclude = payload.exclude : '';
       console.log("params in get job",params);
       const res = await API.get(`${JOBS}`, {
         headers: {Authorization: await getToken()},

@@ -44,6 +44,7 @@ const useStaffStore = create((set, get) => ({
      payload.limit? params.limit = payload.limit : '';
      payload.limit? params.limit = payload.limit : '';
      payload?.excludeIds?.length !== 0 ? params.excludeIds = payload?.excludeIds:'';
+     payload?.exclude ? params.exclude = payload?.exclude:'';
      params.sortDesc=['createdat'];
       if (payload?.text) {
         params.wildString = payload.text;

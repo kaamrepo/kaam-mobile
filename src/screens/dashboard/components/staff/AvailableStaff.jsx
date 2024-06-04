@@ -5,12 +5,17 @@ import { Translation } from '../../Translation';
 import Icon, { Icons } from '../../../../components/Icons';
 import { primaryBGColor } from '../../../../helper/utils/colors';
 import useStaffStore from '../../../../store/staff.store';
+import useLoginStore from '../../../../store/authentication/login.store';
 const AvailableStaff = ({ language, isLoading, navigation}) => {
   const {getStaff,stafflist} = useStaffStore();
+  const {loggedInUser} = useLoginStore();
+  console.log("loggedInUser",loggedInUser);
   useEffect(()=>{
     const payload = {
       skip:0,
-      limit:10
+      limit:10,
+      excludeIds:[loggedInUser?._id],
+      exclude:'_id'
     }
     getStaff(payload);
   },[])

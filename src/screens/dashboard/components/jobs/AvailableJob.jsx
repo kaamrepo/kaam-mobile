@@ -21,6 +21,7 @@ const AvailableJob = ({language, isLoading, navigation}) => {
       skip: 0,
       limit: 10,
       excludeIds: [loggedInUser._id],
+      exclude:'createdby'
     };
     getJobs(payload);
   }, []);
