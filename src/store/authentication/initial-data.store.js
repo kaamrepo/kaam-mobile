@@ -11,12 +11,13 @@ export const useInitialDataStore = create((set, get) => ({
         headers: {Authorization: await getToken()},
         params: {
           isActive: true,
+          paginate:false
         },
       });
 
       if (res && res.data) {
         console.log(res.data);
-        set({categories: res.data.data});
+        set({categories: res.data});
         return true;
       }
     } catch (error) {

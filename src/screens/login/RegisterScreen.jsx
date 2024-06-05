@@ -121,11 +121,11 @@ const RegisterScreen = ({navigation}) => {
             <Text
               style={[
                 {fontFamily: 'Poppins-Regular'},
-                tw`text-black text-sm font-normal text-gray-400 ml-[2px] mb-6`,
+                tw`text-black text-sm font-normal ml-[2px] mb-6`,
               ]}>
               {
                 RegistrationTranslation[language][
-                  'Let’s Register. Apply to jobs!'
+                  'Let\'s Register. Apply to jobs!'
                 ]
               }
             </Text>
