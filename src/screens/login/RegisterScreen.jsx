@@ -92,9 +92,9 @@ const RegisterScreen = ({navigation}) => {
   }, []);
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={tw`flex-1 bg-white`}>
       <GeneralStatusBar backgroundColor={'#FFFFFF'} />
-      <View style={styles.container}>
+      <View style={[tw`w-full h-full`]}>
         <View style={styles.topPanel}>
           <Text
             style={[
@@ -107,14 +107,16 @@ const RegisterScreen = ({navigation}) => {
             style={tw`border-black border-[3px] w-[10%] bg-black ml-[2%]`}
           />
         </View>
-        <ScrollView contentContainerStyle={styles.contentContainer}>
+        <ScrollView
+          contentContainerStyle={styles.contentContainer}
+          keyboardShouldPersistTaps="handled">
           <View style={styles.formContainer}>
             <Text
               style={[
                 {fontFamily: 'Poppins-SemiBold'},
                 tw`text-black text-2xl mb-2`,
               ]}>
-              {RegistrationTranslation[language]['Registration']} 👍
+              {RegistrationTranslation[language]['Registration']}
             </Text>
             <Text
               style={[
@@ -349,10 +351,7 @@ const RegisterScreen = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
+ 
   topPanel: {
     flex: 3,
     height: 100,

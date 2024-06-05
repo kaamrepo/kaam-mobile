@@ -66,7 +66,6 @@ const Chat = ({route, navigation}) => {
         status,
         applicationId,
       };
-      console.log("payload");
       const updateResult = await updateJobStatus(payload);
       if (updateResult) {
         console.log(' in the if');

@@ -3,60 +3,31 @@ import {
   View,
   ScrollView,
   TextInput,
-  useColorScheme,
   TouchableOpacity,
+  useColorScheme,
 } from 'react-native';
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import tw, {useAppColorScheme} from 'twrnc';
+import tw from 'twrnc';
 
-import Animated, {
-  useSharedValue,
-  withTiming,
-  useAnimatedStyle,
-  withRepeat,
-  withSequence,
-} from 'react-native-reanimated';
 import {useInitialDataStore} from '../../store/authentication/initial-data.store';
+import GeneralStatusBar from '../../components/GeneralStatusBar';
 
 const JobPreferences = ({navigation}) => {
   const {categories, getCategories, setCategories} = useInitialDataStore();
-  const [colorScheme] = useAppColorScheme(tw);
+  const colorScheme = useColorScheme();
 
   const [allJobRoles, setAllJobRoles] = useState(categories);
   const [selectedJobs, setSelectedJobs] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [aboutMe, setAboutMe] = useState('');
   const maxSelection = categories?.length;
-  const [errorMessage, setErrorMessage] = useState('');
-
-  const shateTranslationX = useSharedValue(0);
-  const errorOpacity = useSharedValue(0);
-
-  const shake = useCallback(() => {
-    const translationAmount = 10;
-    const timingConf = {
-      duration: 80,
-    };
-
-    errorOpacity.value = withTiming(1);
-
-    shateTranslationX.value = withSequence(
-      withTiming(translationAmount, timingConf),
-      withRepeat(withTiming(-translationAmount, timingConf), 4, true),
-      withTiming(0, timingConf),
-    );
-
-    setTimeout(() => {
-      errorOpacity.value = withTiming(0, {duration: 300});
-      if (errorOpacity.value === 0) {
-        setErrorMessage('');
-      }
-    }, 5000);
-  }, [shateTranslationX, errorOpacity]);
 
   useEffect(() => {
     getCategories();
   }, []);
+
+  console.log("colorScheme",colorScheme)
 
   const handleToggleJob = job => {
     if (selectedJobs.some(selectedJob => selectedJob.name === job.name)) {
@@ -67,17 +38,9 @@ const JobPreferences = ({navigation}) => {
       if (selectedJobs.length < maxSelection) {
         setSelectedJobs([...selectedJobs, job]);
       } else {
-        setErrorMessage(`You can only select ${maxSelection} job preferences!`);
-        shake();
       }
     }
   };
-  const textShakeStyle = useAnimatedStyle(() => {
-    return {
-      opacity: errorOpacity.value,
-      transform: [{translateX: shateTranslationX.value}], // Optional: Slide up animation
-    };
-  });
 
   const handleSearch = query => {
     setSearchQuery(query);
@@ -95,25 +58,16 @@ const JobPreferences = ({navigation}) => {
 
   const handleSubmitJobPreference = async () => {
     const tags = selectedJobs.map(job => job._id);
-    console.log('payload', tags);
     await setCategories({tags});
   };
 
   const isSaveButtonDisabled = selectedJobs.length < 1;
 
   return (
-    <SafeAreaView style={tw`w-full h-full px-5  dark:bg-gray-900`}>
-      <View style={tw`w-full mt-10`}>
-        <Text
-          style={[
-            tw`text-2xl text-black dark:text-white`,
-            {fontFamily: 'Poppins-Bold'},
-          ]}>
-          Categories
-        </Text>
-        <View style={tw`w-[25%] h-1 rounded-full bg-black dark:bg-white`} />
-      </View>
-
+    <SafeAreaView style={tw`w-full h-full px-5 dark:bg-gray-900`}>
+      <GeneralStatusBar
+        backgroundColor={colorScheme === 'dark' ? '#000' : '#1F1F1F'}
+      />
       {/* <View style={tw`rounded-full bg-white dark:bg-gray-800`}>
         <TextInput
           placeholder="Search"
@@ -125,14 +79,20 @@ const JobPreferences = ({navigation}) => {
       </View> */}
 
       <ScrollView
-        style={tw`my-2 pt-2`}
+        style={tw`my-2`}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}>
-        <Animated.View style={[textShakeStyle, tw`mx-5`]}>
-          <Text style={[tw`text-red-500`, {fontFamily: 'Poppins-Regular'}]}>
-            {errorMessage}
+        <View style={tw`w-full my-5`}>
+          <Text
+            style={[
+              tw`text-2xl text-black dark:text-white`,
+              {fontFamily: 'Poppins-Bold'},
+            ]}>
+            Categories
           </Text>
-        </Animated.View>
+          <View style={tw`w-[25%] h-1 rounded-full bg-black dark:bg-white`} />
+        </View>
+
         <View style={tw`pb-4 flex-row flex-wrap`}>
           {allJobRoles?.length ? (
             allJobRoles.map(jobRole => (
@@ -149,20 +109,58 @@ const JobPreferences = ({navigation}) => {
             <></>
           )}
         </View>
+
+        <View style={tw`w-full my-5`}>
+          <Text
+            style={[
+              tw`text-2xl text-black dark:text-white`,
+              {fontFamily: 'Poppins-Bold'},
+            ]}>
+            About you
+          </Text>
+          <View style={tw`w-[25%] h-1 rounded-full bg-black dark:bg-white`} />
+        </View>
+
+        <View style={[tw``]}>
+          <TextInput
+            multiline={true}
+            numberOfLines={4}
+            onChangeText={text => {
+              if (text.length <= 100) setAboutMe(text);
+            }}
+            value={aboutMe}
+            placeholder="Brief information about you."
+            style={[
+              tw`px-4 py-4 h-24 text-gray-800 dark:text-white bg-white dark:bg-gray-700 rounded-3xl`,
+              {textAlignVertical: 'top'},
+            ]}
+            placeholderTextColor={
+              colorScheme === 'dark' ? '#efefef' : '#334155'
+            }
+          />
+          <Text style={tw`text-right mr-5`}>{100 - aboutMe.length}/100</Text>
+        </View>
+
+        <View style={tw`w-full my-5`}>
+          <Text
+            style={[
+              tw`text-2xl text-black dark:text-white`,
+              {fontFamily: 'Poppins-Bold'},
+            ]}>
+            Experience
+          </Text>
+          <View style={tw`w-[25%] h-1 rounded-full bg-black dark:bg-white`} />
+        </View>
+
       </ScrollView>
       <View style={tw`py-5 flex-row justify-around`}>
-        {/* <TouchableOpacity
-          style={tw`bg-slate-50 dark:bg-gray-800 w-32 p-3 rounded-md flex-row items-center justify-center`}
-          onPress={() => skipPreferenceScreens()}>
-          <Text style={[tw`text-black dark:text-white`,{fontFamily: 'Poppins-Regular'}]}>Skip</Text>
-        </TouchableOpacity> */}
         <TouchableOpacity
           disabled={isSaveButtonDisabled}
           style={tw`${
             isSaveButtonDisabled
               ? 'bg-slate-50 dark:bg-gray-800'
               : 'bg-green-700'
-          }  w-32 p-3 rounded-md flex-row items-center justify-center`}
+          }  w-40 p-4 rounded-full flex-row items-center justify-center`}
           onPress={handleSubmitJobPreference}>
           <Text
             style={[
@@ -173,12 +171,6 @@ const JobPreferences = ({navigation}) => {
             ]}>
             Save
           </Text>
-          {/* <Icon
-            IconComponent={CircleArrowRight}
-            darkColor={isSaveButtonDisabled ? 'text-slate-300' : 'text-white'}
-            lightColor={isSaveButtonDisabled ? 'text-slate-300' : 'text-white'}
-            style="rounded-full items-center justify-center"
-          /> */}
         </TouchableOpacity>
       </View>
     </SafeAreaView>

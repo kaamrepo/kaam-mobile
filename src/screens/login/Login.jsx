@@ -51,7 +51,7 @@ const Login = ({navigation}) => {
   };
 
   return (
-    <SafeAreaView style={[{flex: 1}, tw`px-5 bg-white`]}>
+    <SafeAreaView style={[tw`flex-1 px-5 bg-white`]}>
       <GeneralStatusBar backgroundColor={'rgb(226 232 240)'} />
       <View style={styles.container}>
         <View style={styles.logo}>

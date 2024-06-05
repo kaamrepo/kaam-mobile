@@ -35,7 +35,7 @@ export const useInitialDataStore = create((set, get) => ({
         headers: {Authorization: await getToken()},
       });
       if (res?.data) {
-        console.log('DATA', res.data);
+       
         useLoginStore.getState().setloggedInUser(res.data)
         return true;
       } else return false;

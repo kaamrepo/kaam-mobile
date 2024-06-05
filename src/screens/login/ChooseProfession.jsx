@@ -1,91 +1,118 @@
 import React, {useState} from 'react';
-import {View, Text, Image, TouchableOpacity, Pressable} from 'react-native';
+import {View, Text, TouchableOpacity, SafeAreaView} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import tw from 'twrnc';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
+
+const initialScale = 0.5;
+const lastScale = 0.8;
+const duration = 400;
+
+const Roles = {
+  EMPLOYEE: 'EMPLOYEE',
+  EMPLOYER: 'EMPLOYER',
+};
+
+const AnimatedTouchableOpacity =
+  Animated.createAnimatedComponent(TouchableOpacity);
 
 const ChooseProfession = () => {
   const navigation = useNavigation();
+
+  const employeeScale = useSharedValue(initialScale);
+  const employerScale = useSharedValue(initialScale);
+
   const [selectedProfession, setSelectedProfession] = useState(null);
 
   const handleProfessionSelection = profession => {
     setSelectedProfession(profession);
+    if (profession === Roles.EMPLOYEE) {
+      employeeScale.value = withTiming(lastScale, {
+        duration,
+      });
+      employerScale.value = withTiming(initialScale, {
+        duration,
+      });
+    } else if (profession === Roles.EMPLOYER) {
+      employerScale.value = withTiming(lastScale, {
+        duration,
+      });
+      employeeScale.value = withTiming(initialScale, {
+        duration,
+      });
+    }
   };
 
-  const isProfessionSelected = profession => {
-    return selectedProfession === profession;
-  };
+  const animatedEmployeeStyles = useAnimatedStyle(() => ({
+    transform: [{scaleX: employeeScale.value}, {scaleY: employeeScale.value}],
+  }));
+  const animatedEmployerStyles = useAnimatedStyle(() => ({
+    transform: [{scaleX: employerScale.value}, {scaleY: employerScale.value}],
+  }));
 
   return (
-    <View style={tw`flex-1 justify-center items-center bg-white`}>
-      <View style={tw`flex items-center`}>
-        <Image
-          source={require('../../assets/images/kaam-logo-verify-code.png')}
-          style={[tw`w-14 h-14`, {height: 80, width: 80}]}
-          resizeMode="contain"
-        />
-      </View>
-      <Text style={tw`mt-5 font-bold text-black text-2xl`}>
-        Choose Yourself
-      </Text>
-      <View style={tw`flex flex-row justify-between mt-5`}>
-        <TouchableOpacity
-          onPress={() => handleProfessionSelection('employee')}
+    <SafeAreaView style={tw`w-full h-full px-5 dark:bg-gray-900`}>
+      <View style={[tw`mt-8 mb-5`]}>
+        <Text
           style={[
-            tw`flex flex-col items-center justify-center bg-white rounded-full py-15 px-5 mx-2 border-green-500 border-2`,
-            isProfessionSelected('employee') && tw`border-green-500 border-8`,
+            tw`text-3xl text-black dark:text-white`,
+            {fontFamily: 'Poppins-Bold'},
           ]}>
-          <Image
-            source={require('../../assets/images/profession-employee.png')}
-            style={tw`w-30 h-50`}
-          />
-          <Text style={tw`mt-5 font-bold text-black text-xl`}>Employee</Text>
-          <View style={tw`text-sm leading-relaxed text-gray-600`}>
-            <Text style={tw`text-center`}>
-              <Text>I am searching</Text>
-            </Text>
-            <Text style={tw`text-center`}>for a job</Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => handleProfessionSelection('employer')}
+          Choose your Profession
+        </Text>
+        <Text
           style={[
-            tw`flex flex-col items-center justify-center bg-white rounded-full py-15 px-5 mx-2 border-green-500 border-2`,
-            isProfessionSelected('employer') && tw`border-green-500 border-8`,
+            tw`text-sm text-gray-600 dark:text-gray-300`,
+            {fontFamily: 'Poppins-SemiBold'},
           ]}>
-          <Image
-            source={require('../../assets/images/profession-employee.png')}
-            style={tw`w-30 h-50`}
-          />
-          <Text style={tw`mt-5 font-bold text-black text-xl`}>Employer</Text>
-          <View style={tw`text-sm leading-relaxed text-gray-600`}>
-            <Text style={tw`text-center`}>
-              <Text>I am searching</Text>
-            </Text>
-            <Text style={tw`text-center`}>for a worker</Text>
-          </View>
-        </TouchableOpacity>
+          you can always switch from settings.
+        </Text>
       </View>
-      <View style={tw`my-14`}>
-        <Pressable
-          onPress={() => {
-            navigation.navigate('JobPreference');
-            // navigation.navigate('BottomTabNavigation');
-          }}
-          style={({pressed}) => [
-            {
-              backgroundColor: pressed ? '#d7dbd8' : 'transparent',
-            },
-            tw`w-1/2 items-center justify-center rounded-2xl`,
+
+      <View
+        style={[tw`w-full flex-1 items-center justify-center flex flex-row`]}>
+        <AnimatedTouchableOpacity
+          onPress={() => handleProfessionSelection(Roles.EMPLOYEE)}
+          style={[
+            tw`w-[200px] h-[200px] rounded-full items-center justify-center border border-[3] ${
+              selectedProfession === Roles.EMPLOYEE
+                ? 'border-green-600'
+                : 'border-gray-300'
+            }`,
+            animatedEmployeeStyles,
           ]}>
-          {({pressed}) => (
-            <Image
-              source={require('../../assets/images/gotonextScreen.png')}
-              style={tw`w-12 h-12`}
-            />
-          )}
-        </Pressable>
+          <Text
+            style={[
+              tw`text-2xl text-gray-600 dark:text-gray-300`,
+              {fontFamily: 'Poppins-SemiBold'},
+            ]}>
+            Employee
+          </Text>
+        </AnimatedTouchableOpacity>
+        <AnimatedTouchableOpacity
+          onPress={() => handleProfessionSelection(Roles.EMPLOYER)}
+          style={[
+            tw`w-[200px] h-[200px] rounded-full items-center justify-center border border-[3] ${
+              selectedProfession === Roles.EMPLOYER
+                ? 'border-green-600'
+                : 'border-gray-300'
+            }`,
+            animatedEmployerStyles,
+          ]}>
+          <Text
+            style={[
+              tw`text-2xl text-gray-600 dark:text-gray-300`,
+              {fontFamily: 'Poppins-SemiBold'},
+            ]}>
+            Employer
+          </Text>
+        </AnimatedTouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

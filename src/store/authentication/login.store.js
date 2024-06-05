@@ -132,7 +132,7 @@ export const storeUserlanguage = async data => {
     try {
       const dataAsString = JSON.stringify(input);
       await EncryptedStorage.setItem('setLanguage', dataAsString);
-      console.log('Data stored successfully.');
+      
     } catch (error) {
       console.error('Error storing data:', error);
     }

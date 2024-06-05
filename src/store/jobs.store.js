@@ -5,49 +5,52 @@ import Toast from 'react-native-toast-message';
 import useLoginStore, {getToken} from './authentication/login.store';
 
 const useJobStore = create((set, get) => ({
-  nearbyjobs:[],
-  recommendedJobs:[],
+  nearbyjobs: [],
+  recommendedJobs: [],
   featuredJobs: [],
-  myPostedJobs:[],
-  job:[],
-  searchedJobs:[],
-  jobApplicationForm:[],
+  myPostedJobs: [],
+  job: [],
+  searchedJobs: [],
+  jobApplicationForm: [],
 
-  getJobs: async (payload) => {
+  getJobs: async payload => {
     try {
-      console.log("payload in getjobs",payload);
+      console.log('payload in getjobs', payload);
       const params = {};
-     payload.skip? params.skip = skip : '';
-     payload.limit? params.limit = payload.limit : '';
-      payload.type ? params.type = payload.type:'';
-      payload?.coordinates?.length ? params.coordinates = payload.coordinates:'';
-      payload?.wildString ? params.wildString = payload.wildString : '';
-      payload?.excludeIds?.length ? params.excludeIds = payload.excludeIds : '';
-      payload?.createdby ? params.createdby = payload.createdby : '';
-      payload?.excludeIdsInJobSearch?.length ? params.excludeIdsInJobSearch = payload.excludeIdsInJobSearch : '';
-      console.log("params in get job",params);
+      payload.skip ? (params.skip = skip) : '';
+      payload.limit ? (params.limit = payload.limit) : '';
+      payload.type ? (params.type = payload.type) : '';
+      payload?.coordinates?.length
+        ? (params.coordinates = payload.coordinates)
+        : '';
+      payload?.wildString ? (params.wildString = payload.wildString) : '';
+      payload?.excludeIds?.length
+        ? (params.excludeIds = payload.excludeIds)
+        : '';
+      payload?.createdby ? (params.createdby = payload.createdby) : '';
+      payload?.excludeIdsInJobSearch?.length
+        ? (params.excludeIdsInJobSearch = payload.excludeIdsInJobSearch)
+        : '';
+      console.log('params in get job', params);
       const res = await API.get(`${JOBS}`, {
         headers: {Authorization: await getToken()},
-        params: params
+        params: params,
       });
       if (res && res.data && payload.type === 'nearby') {
-        console.log("in the nearby if");
+        console.log('in the nearby if');
         set({nearbyjobs: res.data?.data});
-      }
-      else if (res && res.data && payload.type === 'recommended') {
-        console.log("in the recommended if");
+      } else if (res && res.data && payload.type === 'recommended') {
+        console.log('in the recommended if');
 
         set({recommendedJobs: res.data?.data});
-      }
-      else if (res && res.data?.data && payload.type === 'featured') {
-        console.log("in the featured if");
+      } else if (res && res.data?.data && payload.type === 'featured') {
+        console.log('in the featured if');
 
         set({featuredJobs: res.data?.data});
-      }
-      else if (res && res.data?.data && payload.type === 'myPostedJobs') {
-        console.log("in the myPOstedJobs if *********************");
+      } else if (res && res.data?.data && payload.type === 'myPostedJobs') {
+        console.log('in the myPOstedJobs if *********************');
         set({myPostedJobs: res?.data?.data || []});
-      } else{
+      } else {
         set({job: res.data?.data});
       }
     } catch (error) {
@@ -138,18 +141,20 @@ const useJobStore = create((set, get) => ({
       // });
     }
   },
-  getMyPostedJobs: async (payload) => {
-    console.log("payload",payload);
+  getMyPostedJobs: async payload => {
+    console.log('payload', payload);
     try {
-      payload.skip?params.skip = skip : '';
-      payload.limit?params.limit = limit:'';
-      payload?.coordinates?.length ? params.coordinates = payload.coordinates:'';
+      payload.skip ? (params.skip = skip) : '';
+      payload.limit ? (params.limit = limit) : '';
+      payload?.coordinates?.length
+        ? (params.coordinates = payload.coordinates)
+        : '';
       params.createdby = payload.createdby;
       const res = await API.get(`${JOBS}`, {
         // headers: {Authorization: await getToken()},
         params,
       });
-      console.log("res,",res.data);
+      console.log('res,', res.data);
       if (res && res.data) {
         set({myPostedJobs: res.data});
       }
@@ -164,9 +169,9 @@ const useJobStore = create((set, get) => ({
   clearNearByJobs: () => set({nearbyjobs: {}}),
   clearRecommendedJobs: () => set({recommendedJobs: []}),
   clearFeaturedJobs: () => set({featuredJobs: []}),
-  clearsearchedJobs: () => set({searchedJobs:[]}),
-  clearMypostedJobs: () => set({myPostedJobs:[]}),
-  clearJob: () => set({job:[]}),
+  clearsearchedJobs: () => set({searchedJobs: []}),
+  clearMypostedJobs: () => set({myPostedJobs: []}),
+  clearJob: () => set({job: []}),
   getSearchedJobs: async (
     skip = 0,
     limit = 10,
@@ -227,21 +232,19 @@ const useJobStore = create((set, get) => ({
     }
   },
   getJobApplication: async payload => {
-    let params={};
-    payload._id ? params._id = payload._id :'';
-    payload.employerid ? params.employerid = payload.employerid :'';
-    payload.appliedby ? params.appliedby = payload.appliedby : '';
+    let params = {};
+    payload._id ? (params._id = payload._id) : '';
+    payload.employerid ? (params.employerid = payload.employerid) : '';
+    payload.appliedby ? (params.appliedby = payload.appliedby) : '';
     try {
-      console.log("params before sending",params);
+      console.log('params before sending', params);
       const res = await API.get(`${JOBS_APPLICATIONS}`, {
         headers: {Authorization: await getToken()},
-        params: params
+        params: params,
       });
-      if (res?.data?.data?.length !==0) {
+      if (res?.data?.data?.length !== 0) {
         return res?.data?.data;
-      }
-
-      else{
+      } else {
         return false;
       }
     } catch (error) {
@@ -328,24 +331,28 @@ const useJobStore = create((set, get) => ({
   },
   updateJobStatus: async payload => {
     try {
-      let params={};
-      payload.status ? params.status = payload.status:'';
-      payload.applicationId ? params._id = payload.applicationId:'';
-      console.log("params before sending",params);
-      const res = await API.patch(`${JOBS_APPLICATIONS}/${params._id}`,{ status: params.status }, {
-        headers: {
-          Authorization: await getToken(),
+      let params = {};
+      payload.status ? (params.status = payload.status) : '';
+      payload.applicationId ? (params._id = payload.applicationId) : '';
+      console.log('params before sending', params);
+      const res = await API.patch(
+        `${JOBS_APPLICATIONS}/${params._id}`,
+        {status: params.status},
+        {
+          headers: {
+            Authorization: await getToken(),
+          },
         },
-      });
+      );
 
-      if (res?.data && payload.status === "Rejected") {
+      if (res?.data && payload.status === 'Rejected') {
         Toast.show({
           type: 'success',
           text1: 'Application Rejected!',
         });
         return true;
       }
-      if (res?.data && payload.status === "Approved") {
+      if (res?.data && payload.status === 'Approved') {
         Toast.show({
           type: 'success',
           text1: 'Application Approved!',
