@@ -21,7 +21,7 @@ import useCategoriesStore from '../../../../store/categories.store';
 import useLoginStore from '../../../../store/authentication/login.store';
 import { debounce } from 'lodash';
 
-export const SeeAllStaffs = ({navigation}) => {
+export const SeeAllStaffs = ({route,navigation}) => {
   const {getStaff} = useStaffStore();
   const {categories} = useCategoriesStore();
   const {isLoading} = useLoaderStore();
@@ -130,16 +130,14 @@ export const SeeAllStaffs = ({navigation}) => {
           excludeIds: [loggedInUser?._id],
           exclude: '_id'
         };
+        console.log("selectedCategories",selectedCategories);
         const result = await getStaff(payload);
         if (result?.length === 0) {
           loadMoreRef.current = false; // No more data to load
         } else {
           setData(prevData => {
-            // Use a Set to store unique _id values of existing data
-            const idSet = new Set(prevData.map(item => item._id));
-            // Filter out items with IDs already present in the Set
-            const newData = result.filter(item => !idSet.has(item._id));
-            // Concatenate unique data with previous data
+            const idSet = new Set(prevData?.map(item => item?._id));
+            const newData = result?.filter(item => !idSet?.has(item._id));
             return [...prevData, ...newData];
           });
           setSkip(skipValue + limit);
