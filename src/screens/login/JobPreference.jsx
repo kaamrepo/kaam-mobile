@@ -5,9 +5,8 @@ import {
   TextInput,
   TouchableOpacity,
   useColorScheme,
-  Button,
 } from 'react-native';
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {isValidElement, useEffect, useMemo, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import tw from 'twrnc';
 
@@ -17,19 +16,25 @@ import KToggle from '../../components/KToggle';
 import {Controller, useFieldArray, useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import Animated, {ZoomInLeft, ZoomOutRight} from 'react-native-reanimated';
 
 const validationSchema = yup.object().shape({
-  about: yup.string().required('Job information is required').trim(),
-  employer: yup.string().trim(),
-  year: yup
-    .string()
-    .required('Year range is required')
-    .matches(/^\d{4}\s*-\s*\d{4}$/, 'Invalid year range format') // Matches the format "YYYY - YYYY"
-    .test('validRange', 'Invalid year range', value => {
-      if (!value) return true;
-      const [startYear, endYear] = value.split(' - ').map(Number);
-      return startYear <= endYear;
+  experience: yup.array().of(
+    yup.object().shape({
+      about: yup.string().required('Job information is required').trim(),
+      employer: yup.string().trim(),
+      year: yup
+        .string()
+        .required('Year range is required')
+        .trim()
+        .matches(/^\d{4}-\d{4}$/, 'Invalid year range format') // Matches the format "YYYY - YYYY"
+        .test('validRange', 'Invalid year range', value => {
+          if (!value) return true;
+          const [startYear, endYear] = value.split('-').map(Number);
+          return startYear <= endYear;
+        }),
     }),
+  ),
 });
 
 const JobPreferences = ({navigation}) => {
@@ -45,24 +50,21 @@ const JobPreferences = ({navigation}) => {
 
   const {
     control,
-    register,
     handleSubmit,
-    formState: {errors},
+    formState: {errors, isSubmitting, isValid},
   } = useForm({
     resolver: yupResolver(validationSchema),
     mode: 'onChange',
   });
 
   const {fields, append, remove} = useFieldArray({
-    control, // control props comes from useForm (optional: if you are using FormProvider)
-    name: 'experience', // unique name for your Field Array
+    control,
+    name: 'experience',
   });
 
   useEffect(() => {
     getCategories();
   }, []);
-
-  console.log('colorScheme', colorScheme);
 
   const handleToggleJob = job => {
     if (selectedJobs.some(selectedJob => selectedJob.name === job.name)) {
@@ -77,10 +79,6 @@ const JobPreferences = ({navigation}) => {
     }
   };
 
-  const handleSearch = query => {
-    setSearchQuery(query);
-  };
-
   useMemo(() => {
     if (categories && Array.isArray(categories)) {
       const filteredJobRoles =
@@ -91,27 +89,20 @@ const JobPreferences = ({navigation}) => {
     }
   }, [categories, searchQuery]);
 
-  const handleSubmitJobPreference = async () => {
-    const tags = selectedJobs.map(job => job._id);
-    await setCategories({tags});
+  const onSubmit = data => {
+    console.log('DATA========================onSubmit ==>', data);
+    // const tags = selectedJobs.map(job => job._id);
+    // await setCategories({tags});
   };
 
-  const isSaveButtonDisabled = selectedJobs.length < 1;
+  const shouldSubmitFormDisabled =
+    selectedJobs.length < 1 || !isValid || isSubmitting;
 
   return (
     <SafeAreaView style={tw`w-full h-full px-5 dark:bg-gray-900`}>
       <GeneralStatusBar
         backgroundColor={colorScheme === 'dark' ? '#000' : '#1F1F1F'}
       />
-      {/* <View style={tw`rounded-full bg-white dark:bg-gray-800`}>
-        <TextInput
-          placeholder="Search"
-          onChangeText={handleSearch}
-          value={searchQuery}
-          style={tw`mx-1 px-6 py-2 text-gray-800 dark:text-white`}
-          placeholderTextColor={colorScheme === 'dark' ? '#cbd5e1' : '#334155'}
-        />
-      </View> */}
 
       <ScrollView
         style={tw`my-2`}
@@ -201,7 +192,7 @@ const JobPreferences = ({navigation}) => {
             <View style={tw`w-[65%] h-1 rounded-full bg-black dark:bg-white`} />
           </View>
           <TouchableOpacity
-            onPress={() => append({about: '', employer: '', year: ''})}
+            onPress={() => append({about: '', employer: '', year: ' - '})}
             style={[
               tw`w-10 h-10 px-2 rounded-2xl bg-green-600 items-center justify-center`,
             ]}>
@@ -211,7 +202,9 @@ const JobPreferences = ({navigation}) => {
 
         <View>
           {fields.map((item, index) => (
-            <View
+            <Animated.View
+              entering={ZoomInLeft}
+              exiting={ZoomOutRight}
               key={item.id}
               style={[
                 tw`my-3 p-2 rounded-3xl bg-gray-200 dark:bg-gray-800 relative`,
@@ -223,7 +216,8 @@ const JobPreferences = ({navigation}) => {
                 ]}>
                 <Text style={tw`text-white`}>—</Text>
               </TouchableOpacity>
-              <View style={tw``}>
+
+              <View>
                 <Text
                   style={[
                     tw`text-black dark:text-white my-1 mx-2`,
@@ -233,7 +227,7 @@ const JobPreferences = ({navigation}) => {
                 </Text>
                 <Controller
                   control={control}
-                  name={`experience[${index}].about`}
+                  name={`experience.${index}.about`}
                   render={({field: {onChange, onBlur, value}}) => (
                     <TextInput
                       multiline={true}
@@ -241,9 +235,13 @@ const JobPreferences = ({navigation}) => {
                       value={value}
                       onChangeText={onChange}
                       onBlur={onBlur}
-                      placeholder="Brief information about your work experience"
+                      placeholder="Information about your work experience"
                       style={[
-                        tw`px-4 py-3 h-15 text-gray-800 dark:text-white bg-white dark:bg-gray-700 rounded-2xl`,
+                        tw`px-4 py-3 h-15 text-gray-800 dark:text-white bg-white dark:bg-gray-700 rounded-2xl border-2 ${
+                          errors?.experience?.[index]?.about
+                            ? 'border-red-500'
+                            : 'border-gray-300'
+                        }`,
                         {textAlignVertical: 'top'},
                       ]}
                       placeholderTextColor={
@@ -252,14 +250,13 @@ const JobPreferences = ({navigation}) => {
                     />
                   )}
                 />
-
                 {errors?.experience?.[index]?.about && (
                   <Text
                     style={[
                       tw`text-[10px] text-red-500 text-right mr-2`,
                       {fontFamily: 'Poppins-Regular'},
                     ]}>
-                    {errors?.experience?.[index]?.about?.message}.
+                    {errors.experience[index]?.about?.message}
                   </Text>
                 )}
               </View>
@@ -275,7 +272,7 @@ const JobPreferences = ({navigation}) => {
                   </Text>
                   <Controller
                     control={control}
-                    name={`experience[${index}].employer`}
+                    name={`experience.${index}.employer`}
                     render={({field: {onChange, onBlur, value}}) => (
                       <TextInput
                         multiline={true}
@@ -285,7 +282,11 @@ const JobPreferences = ({navigation}) => {
                         onBlur={onBlur}
                         placeholder="eg. KaamPay"
                         style={[
-                          tw`px-4 py-3 h-10 text-gray-800 dark:text-white bg-white dark:bg-gray-700 rounded-2xl`,
+                          tw`px-4 py-3 h-10 text-gray-800 dark:text-white bg-white dark:bg-gray-700 rounded-2xl border-2 ${
+                            errors?.experience?.[index]?.employer
+                              ? 'border-red-500'
+                              : 'border-gray-300'
+                          }`,
                           {textAlignVertical: 'top'},
                         ]}
                         placeholderTextColor={
@@ -301,7 +302,7 @@ const JobPreferences = ({navigation}) => {
                         tw`text-[10px] text-red-500 text-right mr-2`,
                         {fontFamily: 'Poppins-Regular'},
                       ]}>
-                      {errors?.experience?.[index]?.employer?.message}.
+                      {errors.experience[index]?.employer?.message}
                     </Text>
                   )}
                 </View>
@@ -315,7 +316,7 @@ const JobPreferences = ({navigation}) => {
                   </Text>
                   <Controller
                     control={control}
-                    name={`experience[${index}].year`}
+                    name={`experience.${index}.year`}
                     render={({field: {onChange, onBlur, value}}) => (
                       <TextInput
                         multiline={true}
@@ -325,7 +326,11 @@ const JobPreferences = ({navigation}) => {
                         onBlur={onBlur}
                         placeholder="eg. 2020 - 2023"
                         style={[
-                          tw`px-4 py-3 h-10 text-gray-800 dark:text-white bg-white dark:bg-gray-700 rounded-2xl`,
+                          tw`px-4 py-3 h-10 text-gray-800 dark:text-white bg-white dark:bg-gray-700 rounded-2xl border-2 ${
+                            errors?.experience?.[index]?.year
+                              ? 'border-red-500'
+                              : 'border-gray-300'
+                          }`,
                           {textAlignVertical: 'top'},
                         ]}
                         placeholderTextColor={
@@ -341,28 +346,28 @@ const JobPreferences = ({navigation}) => {
                         tw`text-[10px] text-red-500 text-right mr-2`,
                         {fontFamily: 'Poppins-Regular'},
                       ]}>
-                      {errors?.experience?.[index]?.year?.message}.
+                      {errors.experience[index].year.message}
                     </Text>
                   )}
                 </View>
               </View>
-            </View>
+            </Animated.View>
           ))}
         </View>
       </ScrollView>
       <View style={tw`py-5 flex-row justify-around`}>
         <TouchableOpacity
-          disabled={isSaveButtonDisabled}
+          disabled={shouldSubmitFormDisabled}
           style={tw`${
-            isSaveButtonDisabled
+            shouldSubmitFormDisabled
               ? 'bg-slate-50 dark:bg-gray-800'
               : 'bg-green-700'
           }  w-40 p-4 rounded-full flex-row items-center justify-center`}
-          onPress={handleSubmitJobPreference}>
+          onPress={handleSubmit(onSubmit)}>
           <Text
             style={[
               tw`mr-3 text-2xl ${
-                isSaveButtonDisabled ? 'text-slate-300' : 'text-white'
+                shouldSubmitFormDisabled ? 'text-slate-300' : 'text-white'
               }`,
               {fontFamily: 'Poppins-SemiBold'},
             ]}>
@@ -395,3 +400,15 @@ const JobChip = ({item, isSelected, onPress}) => {
     </TouchableOpacity>
   );
 };
+
+{
+  /* <View style={tw`rounded-full bg-white dark:bg-gray-800`}>
+        <TextInput
+          placeholder="Search"
+          onChangeText={handleSearch}
+          value={searchQuery}
+          style={tw`mx-1 px-6 py-2 text-gray-800 dark:text-white`}
+          placeholderTextColor={colorScheme === 'dark' ? '#cbd5e1' : '#334155'}
+        />
+      </View> */
+}
