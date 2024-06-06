@@ -3,7 +3,7 @@ export const REACT_APP_ENV = 'local';
 // export const REACT_APP_ENV = 'test'
 // export const REACT_APP_ENV = 'production'
 
-// export const REACT_APP_LOCAL_MODE =   'http://172.31.99.187:3030';
+// export const REACT_APP_LOCAL_MODE =   'http://192.168.1.7:3030';//home
 // export const REACT_APP_LOCAL_MODE =   'http://192.168.0.103:3030';//TW
 // export const REACT_APP_LOCAL_MODE =   'http://10.0.29.96:3030';//NS
 // export const REACT_APP_LOCAL_MODE =   'http://10.0.29.96:3030'//NSLAN
