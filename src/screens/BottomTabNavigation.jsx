@@ -15,15 +15,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import HomeSVG from '../assets/svgs/home.svg';
 import HomeInactiveSVG from '../assets/svgs/home_inactive.svg';
 
-import MailSVG from '../assets/svgs/mail.svg';
-import MailInactiveSVG from '../assets/svgs/mail_inactive.svg';
-
-import BookmarkSVG from '../assets/svgs/bookmark.svg';
-import BookmarkInactiveSVG from '../assets/svgs/bookmark_inactive.svg';
-
 import MenuSVG from '../assets/svgs/menu.svg';
 import MenuInactiveSVG from '../assets/svgs/menu_inactive.svg';
-import {Engagments} from './engagements/Engagments';
 import {
   primaryBGColor,
   primaryTextColor,

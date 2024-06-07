@@ -126,6 +126,8 @@ const App = () => {
   }, []);
 
   if (!isLoggedIn) {
+    console.log("inside !isLoggedIn")
+
     return (
       <>
         <NavigationContainer>
@@ -159,6 +161,7 @@ const App = () => {
     );
   }
   if (isLoggedIn && !Array.isArray(loggedInUser?.tags)) {
+    console.log("inside isLoggedIn && Array.isArray(loggedInUser?.tags)")
     return (
       <>
         <NavigationContainer>
@@ -170,11 +173,11 @@ const App = () => {
               component={JobPreference}
               options={{title: 'Kaam', headerShown: false}}
             />
-            {/* <Stack.Screen
+            <Stack.Screen
               name="ChooseProfession"
               component={ChooseProfession}
               options={{headerShown: false}}
-            /> */}
+            />
           </Stack.Navigator>
         </NavigationContainer>
         <Toast config={toastConfig} position="bottom" />
@@ -182,6 +185,8 @@ const App = () => {
     );
   }
   if (isLoggedIn && Array.isArray(loggedInUser?.tags)) {
+    console.log("inside isLoggedIn && Array.isArray(loggedInUser?.tags)")
+
     return (
       <>
         <NavigationContainer>

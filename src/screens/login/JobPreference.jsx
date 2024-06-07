@@ -3,56 +3,76 @@ import {
   View,
   ScrollView,
   TextInput,
-  useColorScheme,
   TouchableOpacity,
+  useColorScheme,
 } from 'react-native';
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {isValidElement, useEffect, useMemo, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import tw, {useAppColorScheme} from 'twrnc';
+import tw from 'twrnc';
 
-import Animated, {
-  useSharedValue,
-  withTiming,
-  useAnimatedStyle,
-  withRepeat,
-  withSequence,
-} from 'react-native-reanimated';
 import {useInitialDataStore} from '../../store/authentication/initial-data.store';
+import GeneralStatusBar from '../../components/GeneralStatusBar';
+import KToggle from '../../components/KToggle';
+import {Controller, useFieldArray, useForm} from 'react-hook-form';
+import {yupResolver} from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import Animated, {ZoomInLeft, ZoomOutRight} from 'react-native-reanimated';
+
+const validationSchema = yup.object().shape({
+  experience: yup.array().of(
+    yup.object().shape({
+      about: yup.string().required('Job information is required').trim(),
+      employer: yup.string().trim(),
+      year: yup
+        .string()
+        .required('Year range is required')
+        .trim()
+        .matches(/^\d{4}-\d{4}$/, 'Invalid year range format') // Matches the format "YYYY - YYYY"
+        .test('validRange', 'Invalid year range', value => {
+          if (!value) return true;
+          const [startYear, endYear] = value.split('-').map(Number);
+          return startYear <= endYear;
+        })
+        .test('validFirstYear', 'Invalid start year', value => {
+          if (!value) return true;
+          const [startYear] = value.split('-').map(Number);
+          const year = new Date().getFullYear();
+          return startYear <= year;
+        })
+        .test('validLastYear', 'Invalid end year', value => {
+          if (!value) return true;
+          const [startYear, lastYear] = value.split('-').map(Number);
+          const year = new Date().getFullYear();
+          return lastYear <= year;
+        }),
+    }),
+  ),
+});
 
 const JobPreferences = ({navigation}) => {
+  const [isEnabled, setIsEnabled] = useState(true);
   const {categories, getCategories, setCategories} = useInitialDataStore();
-  const [colorScheme] = useAppColorScheme(tw);
+  const colorScheme = useColorScheme();
 
   const [allJobRoles, setAllJobRoles] = useState(categories);
   const [selectedJobs, setSelectedJobs] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [aboutMe, setAboutMe] = useState('');
   const maxSelection = categories?.length;
-  const [errorMessage, setErrorMessage] = useState('');
 
-  const shateTranslationX = useSharedValue(0);
-  const errorOpacity = useSharedValue(0);
+  const {
+    control,
+    handleSubmit,
+    formState: {errors, isSubmitting, isValid},
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+    mode: 'onChange',
+  });
 
-  const shake = useCallback(() => {
-    const translationAmount = 10;
-    const timingConf = {
-      duration: 80,
-    };
-
-    errorOpacity.value = withTiming(1);
-
-    shateTranslationX.value = withSequence(
-      withTiming(translationAmount, timingConf),
-      withRepeat(withTiming(-translationAmount, timingConf), 4, true),
-      withTiming(0, timingConf),
-    );
-
-    setTimeout(() => {
-      errorOpacity.value = withTiming(0, {duration: 300});
-      if (errorOpacity.value === 0) {
-        setErrorMessage('');
-      }
-    }, 5000);
-  }, [shateTranslationX, errorOpacity]);
+  const {fields, append, remove} = useFieldArray({
+    control,
+    name: 'experience',
+  });
 
   useEffect(() => {
     getCategories();
@@ -67,20 +87,8 @@ const JobPreferences = ({navigation}) => {
       if (selectedJobs.length < maxSelection) {
         setSelectedJobs([...selectedJobs, job]);
       } else {
-        setErrorMessage(`You can only select ${maxSelection} job preferences!`);
-        shake();
       }
     }
-  };
-  const textShakeStyle = useAnimatedStyle(() => {
-    return {
-      opacity: errorOpacity.value,
-      transform: [{translateX: shateTranslationX.value}], // Optional: Slide up animation
-    };
-  });
-
-  const handleSearch = query => {
-    setSearchQuery(query);
   };
 
   useMemo(() => {
@@ -93,46 +101,54 @@ const JobPreferences = ({navigation}) => {
     }
   }, [categories, searchQuery]);
 
-  const handleSubmitJobPreference = async () => {
+  const onSubmit = async data => {
     const tags = selectedJobs.map(job => job._id);
-    console.log('payload', tags);
-    await setCategories({tags});
+     const payload = {
+      aboutme: aboutMe,
+      tags,
+      ...data,
+      activeforjobs: isEnabled,
+    };
+    await setCategories(payload);
   };
 
-  const isSaveButtonDisabled = selectedJobs.length < 1;
+  const shouldSubmitFormDisabled =
+    selectedJobs.length < 1 || !isValid || isSubmitting;
 
   return (
-    <SafeAreaView style={tw`w-full h-full px-5  dark:bg-gray-900`}>
-      <View style={tw`w-full mt-10`}>
-        <Text
-          style={[
-            tw`text-2xl text-black dark:text-white`,
-            {fontFamily: 'Poppins-Bold'},
-          ]}>
-          Categories
-        </Text>
-        <View style={tw`w-[25%] h-1 rounded-full bg-black dark:bg-white`} />
-      </View>
-
-      {/* <View style={tw`rounded-full bg-white dark:bg-gray-800`}>
-        <TextInput
-          placeholder="Search"
-          onChangeText={handleSearch}
-          value={searchQuery}
-          style={tw`mx-1 px-6 py-2 text-gray-800 dark:text-white`}
-          placeholderTextColor={colorScheme === 'dark' ? '#cbd5e1' : '#334155'}
-        />
-      </View> */}
+    <SafeAreaView style={tw`w-full h-full px-5 dark:bg-gray-900`}>
+      <GeneralStatusBar
+        backgroundColor={colorScheme === 'dark' ? '#000' : '#1F1F1F'}
+      />
 
       <ScrollView
-        style={tw`my-2 pt-2`}
+        style={tw`my-2`}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}>
-        <Animated.View style={[textShakeStyle, tw`mx-5`]}>
-          <Text style={[tw`text-red-500`, {fontFamily: 'Poppins-Regular'}]}>
-            {errorMessage}
+        <View style={tw`w-full my-5`}>
+          <Text
+            style={[
+              tw`text-2xl text-black dark:text-white`,
+              {fontFamily: 'Poppins-Bold'},
+            ]}>
+            Active for jobs?
           </Text>
-        </Animated.View>
+          <View style={tw`w-[30%] h-1 rounded-full bg-black dark:bg-white`} />
+        </View>
+
+        <KToggle isEnabled={isEnabled} setIsEnabled={setIsEnabled} />
+
+        <View style={tw`w-full my-5`}>
+          <Text
+            style={[
+              tw`text-2xl text-black dark:text-white`,
+              {fontFamily: 'Poppins-Bold'},
+            ]}>
+            {isEnabled ? 'Categories' : 'Post jobs of'}
+          </Text>
+          <View style={tw`w-[25%] h-1 rounded-full bg-black dark:bg-white`} />
+        </View>
+
         <View style={tw`pb-4 flex-row flex-wrap`}>
           {allJobRoles?.length ? (
             allJobRoles.map(jobRole => (
@@ -149,36 +165,231 @@ const JobPreferences = ({navigation}) => {
             <></>
           )}
         </View>
+
+        <View style={tw`w-full my-5`}>
+          <Text
+            style={[
+              tw`text-2xl text-black dark:text-white`,
+              {fontFamily: 'Poppins-Bold'},
+            ]}>
+            About you
+          </Text>
+          <View style={tw`w-[25%] h-1 rounded-full bg-black dark:bg-white`} />
+        </View>
+
+        <View style={[tw``]}>
+          <TextInput
+            multiline={true}
+            numberOfLines={4}
+            onChangeText={text => {
+              if (text.length <= 100) setAboutMe(text);
+            }}
+            value={aboutMe}
+            placeholder="Brief information about you."
+            style={[
+              tw`px-4 py-4 h-24 text-gray-800 dark:text-white bg-white dark:bg-gray-700 rounded-3xl`,
+              {textAlignVertical: 'top'},
+            ]}
+            placeholderTextColor={
+              colorScheme === 'dark' ? '#efefef' : '#334155'
+            }
+          />
+          <Text style={tw`text-right mr-5`}>{100 - aboutMe.length}/100</Text>
+        </View>
+
+        <View style={tw`w-full my-5 flex flex-row justify-between`}>
+          <View style={tw``}>
+            <Text
+              style={[
+                tw`text-2xl text-black dark:text-white`,
+                {fontFamily: 'Poppins-Bold'},
+              ]}>
+              Experience
+            </Text>
+            <View style={tw`w-[65%] h-1 rounded-full bg-black dark:bg-white`} />
+          </View>
+          <TouchableOpacity
+            onPress={() => append({about: '', employer: '', year: '-'})}
+            style={[
+              tw`w-10 h-10 px-2 rounded-2xl bg-green-600 items-center justify-center`,
+            ]}>
+            <Text style={tw`text-white text-3xl`}>+</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View>
+          {fields.map((item, index) => (
+            <Animated.View
+              entering={ZoomInLeft}
+              exiting={ZoomOutRight}
+              key={item.id}
+              style={[
+                tw`my-3 p-2 rounded-3xl bg-gray-200 dark:bg-gray-800 relative`,
+              ]}>
+              <TouchableOpacity
+                onPress={() => remove(index)}
+                style={[
+                  tw`absolute z-10 right-1 -top-4 w-6 h-6  rounded-2xl bg-red-600 items-center justify-center`,
+                ]}>
+                <Text style={tw`text-white`}>—</Text>
+              </TouchableOpacity>
+
+              <View>
+                <Text
+                  style={[
+                    tw`text-black dark:text-white my-1 mx-2`,
+                    {fontFamily: 'Regular-Poppins'},
+                  ]}>
+                  Your experience:
+                </Text>
+                <Controller
+                  control={control}
+                  name={`experience.${index}.about`}
+                  render={({field: {onChange, onBlur, value}}) => (
+                    <TextInput
+                      multiline={true}
+                      numberOfLines={2}
+                      value={value}
+                      onChangeText={onChange}
+                      onBlur={onBlur}
+                      placeholder="Information about your work experience"
+                      style={[
+                        tw`px-4 py-3 h-15 text-gray-800 dark:text-white bg-white dark:bg-gray-700 rounded-2xl border-2 ${
+                          errors?.experience?.[index]?.about
+                            ? 'border-red-500'
+                            : 'border-gray-300'
+                        }`,
+                        {textAlignVertical: 'top'},
+                      ]}
+                      placeholderTextColor={
+                        colorScheme === 'dark' ? '#efefef' : '#334155'
+                      }
+                    />
+                  )}
+                />
+                {errors?.experience?.[index]?.about && (
+                  <Text
+                    style={[
+                      tw`text-[10px] text-red-500 text-right mr-2`,
+                      {fontFamily: 'Poppins-Regular'},
+                    ]}>
+                    {errors.experience[index]?.about?.message}
+                  </Text>
+                )}
+              </View>
+
+              <View style={tw`mt-2 flex-row justify-between items-center`}>
+                <View style={tw`min-w-[60%]`}>
+                  <Text
+                    style={[
+                      tw`text-black dark:text-white my-1 mx-2`,
+                      {fontFamily: 'Regular-Poppins'},
+                    ]}>
+                    Employer/Organisation name:
+                  </Text>
+                  <Controller
+                    control={control}
+                    name={`experience.${index}.employer`}
+                    render={({field: {onChange, onBlur, value}}) => (
+                      <TextInput
+                        multiline={true}
+                        numberOfLines={1}
+                        value={value}
+                        onChangeText={onChange}
+                        onBlur={onBlur}
+                        placeholder="eg. KaamPay"
+                        style={[
+                          tw`px-4 py-3 h-10 text-gray-800 dark:text-white bg-white dark:bg-gray-700 rounded-2xl border-2 ${
+                            errors?.experience?.[index]?.employer
+                              ? 'border-red-500'
+                              : 'border-gray-300'
+                          }`,
+                          {textAlignVertical: 'top'},
+                        ]}
+                        placeholderTextColor={
+                          colorScheme === 'dark' ? '#efefef' : '#334155'
+                        }
+                      />
+                    )}
+                  />
+
+                  {errors?.experience?.[index]?.employer && (
+                    <Text
+                      style={[
+                        tw`text-[10px] text-red-500 text-right mr-2`,
+                        {fontFamily: 'Poppins-Regular'},
+                      ]}>
+                      {errors.experience[index]?.employer?.message}
+                    </Text>
+                  )}
+                </View>
+                <View style={tw`min-w-[35%]`}>
+                  <Text
+                    style={[
+                      tw`text-black dark:text-white my-1 mx-2`,
+                      {fontFamily: 'Regular-Poppins'},
+                    ]}>
+                    Years of experience:
+                  </Text>
+                  <Controller
+                    control={control}
+                    name={`experience.${index}.year`}
+                    render={({field: {onChange, onBlur, value}}) => (
+                      <TextInput
+                        multiline={true}
+                        numberOfLines={2}
+                        value={value}
+                        onChangeText={onChange}
+                        onBlur={onBlur}
+                        placeholder="eg. 2020 - 2023"
+                        style={[
+                          tw`px-4 py-3 h-10 text-gray-800 dark:text-white bg-white dark:bg-gray-700 rounded-2xl border-2 ${
+                            errors?.experience?.[index]?.year
+                              ? 'border-red-500'
+                              : 'border-gray-300'
+                          }`,
+                          {textAlignVertical: 'top'},
+                        ]}
+                        placeholderTextColor={
+                          colorScheme === 'dark' ? '#efefef' : '#334155'
+                        }
+                      />
+                    )}
+                  />
+
+                  {errors?.experience?.[index]?.year && (
+                    <Text
+                      style={[
+                        tw`text-[10px] text-red-500 text-right mr-2`,
+                        {fontFamily: 'Poppins-Regular'},
+                      ]}>
+                      {errors.experience[index].year.message}
+                    </Text>
+                  )}
+                </View>
+              </View>
+            </Animated.View>
+          ))}
+        </View>
       </ScrollView>
       <View style={tw`py-5 flex-row justify-around`}>
-        {/* <TouchableOpacity
-          style={tw`bg-slate-50 dark:bg-gray-800 w-32 p-3 rounded-md flex-row items-center justify-center`}
-          onPress={() => skipPreferenceScreens()}>
-          <Text style={[tw`text-black dark:text-white`,{fontFamily: 'Poppins-Regular'}]}>Skip</Text>
-        </TouchableOpacity> */}
         <TouchableOpacity
-          disabled={isSaveButtonDisabled}
+          disabled={shouldSubmitFormDisabled}
           style={tw`${
-            isSaveButtonDisabled
+            shouldSubmitFormDisabled
               ? 'bg-slate-50 dark:bg-gray-800'
               : 'bg-green-700'
-          }  w-32 p-3 rounded-md flex-row items-center justify-center`}
-          onPress={handleSubmitJobPreference}>
+          }  w-40 p-4 rounded-full flex-row items-center justify-center`}
+          onPress={handleSubmit(onSubmit)}>
           <Text
             style={[
               tw`mr-3 text-2xl ${
-                isSaveButtonDisabled ? 'text-slate-300' : 'text-white'
+                shouldSubmitFormDisabled ? 'text-slate-300' : 'text-white'
               }`,
               {fontFamily: 'Poppins-SemiBold'},
             ]}>
             Save
           </Text>
-          {/* <Icon
-            IconComponent={CircleArrowRight}
-            darkColor={isSaveButtonDisabled ? 'text-slate-300' : 'text-white'}
-            lightColor={isSaveButtonDisabled ? 'text-slate-300' : 'text-white'}
-            style="rounded-full items-center justify-center"
-          /> */}
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -206,3 +417,15 @@ const JobChip = ({item, isSelected, onPress}) => {
     </TouchableOpacity>
   );
 };
+
+{
+  /* <View style={tw`rounded-full bg-white dark:bg-gray-800`}>
+        <TextInput
+          placeholder="Search"
+          onChangeText={handleSearch}
+          value={searchQuery}
+          style={tw`mx-1 px-6 py-2 text-gray-800 dark:text-white`}
+          placeholderTextColor={colorScheme === 'dark' ? '#cbd5e1' : '#334155'}
+        />
+      </View> */
+}
