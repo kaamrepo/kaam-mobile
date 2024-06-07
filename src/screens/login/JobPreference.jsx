@@ -32,6 +32,18 @@ const validationSchema = yup.object().shape({
           if (!value) return true;
           const [startYear, endYear] = value.split('-').map(Number);
           return startYear <= endYear;
+        })
+        .test('validFirstYear', 'Invalid start year', value => {
+          if (!value) return true;
+          const [startYear] = value.split('-').map(Number);
+          const year = new Date().getFullYear();
+          return startYear <= year;
+        })
+        .test('validLastYear', 'Invalid end year', value => {
+          if (!value) return true;
+          const [startYear, lastYear] = value.split('-').map(Number);
+          const year = new Date().getFullYear();
+          return lastYear <= year;
         }),
     }),
   ),
@@ -89,10 +101,15 @@ const JobPreferences = ({navigation}) => {
     }
   }, [categories, searchQuery]);
 
-  const onSubmit = data => {
-    console.log('DATA========================onSubmit ==>', data);
-    // const tags = selectedJobs.map(job => job._id);
-    // await setCategories({tags});
+  const onSubmit = async data => {
+    const tags = selectedJobs.map(job => job._id);
+     const payload = {
+      aboutme: aboutMe,
+      tags,
+      ...data,
+      activeforjobs: isEnabled,
+    };
+    await setCategories(payload);
   };
 
   const shouldSubmitFormDisabled =
@@ -192,7 +209,7 @@ const JobPreferences = ({navigation}) => {
             <View style={tw`w-[65%] h-1 rounded-full bg-black dark:bg-white`} />
           </View>
           <TouchableOpacity
-            onPress={() => append({about: '', employer: '', year: ' - '})}
+            onPress={() => append({about: '', employer: '', year: '-'})}
             style={[
               tw`w-10 h-10 px-2 rounded-2xl bg-green-600 items-center justify-center`,
             ]}>
