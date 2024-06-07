@@ -32,7 +32,14 @@ const Categories = ({navigation, selectedSearchType}) => {
       return (
         <Pressable
           onPress={() => {
-            console.log('item Pressed', item.name);
+            if(selectedSearchType === 'jobs'){
+              navigation.navigate('SeeAllJobs');
+            }
+            if(selectedSearchType === 'staff'){
+              navigation.navigate('SeeAllStaffs',{category:item?._id});
+            }
+
+            
           }}
           key={item._id}
           style={tw`items-center justify-center w-[150px] h-[180px] mx-2`}>

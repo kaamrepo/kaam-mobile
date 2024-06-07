@@ -13,7 +13,7 @@ import Icon, {Icons} from '../../../../components/Icons';
 import {primaryBGColor} from '../../../../helper/utils/colors';
 import useJobStore from '../../../../store/jobs.store';
 import useLoginStore from '../../../../store/authentication/login.store';
-const AvailableJob = ({language, isLoading, navigation}) => {
+const AvailableJob = ({language, isLoading, navigation,category}) => {
   const {getJobs, job} = useJobStore();
   const {loggedInUser} = useLoginStore();
   useEffect(() => {

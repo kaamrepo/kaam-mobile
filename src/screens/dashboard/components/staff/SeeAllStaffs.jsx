@@ -34,7 +34,7 @@ export const SeeAllStaffs = ({ route, navigation }) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [selectedPills, setSelectedPills] = useState([]);
   const [searchInput, setSearchInput] = useState('');
-
+  console.log("route in see all jobs",route?.params?.category);
   useEffect(() => {
     fetchData(0);
   }, []);
