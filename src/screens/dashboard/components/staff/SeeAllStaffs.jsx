@@ -32,11 +32,11 @@ export const SeeAllStaffs = ({ route, navigation }) => {
   const [data, setData] = useState([]);
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
-  const [selectedPills, setSelectedPills] = useState([]);
+  const [selectedPills, setSelectedPills] = useState(route.params?.category ? [route.params.category] : []);
   const [searchInput, setSearchInput] = useState('');
-  console.log("route in see all jobs",route?.params?.category);
+
   useEffect(() => {
-    fetchData(0);
+    fetchData(0, searchInput, selectedPills);
   }, []);
 
   const handleBackPress = useCallback(() => {
