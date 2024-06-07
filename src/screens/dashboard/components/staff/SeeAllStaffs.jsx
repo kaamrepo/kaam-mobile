@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState, useRef, useMemo} from 'react';
+import React, { useCallback, useEffect, useState, useRef, useMemo } from 'react';
 import {
   Text,
   SafeAreaView,
@@ -12,20 +12,20 @@ import {
   Image,
 } from 'react-native';
 import tw from 'twrnc';
-import {RadioButton, Modal, Portal, Provider} from 'react-native-paper';
+import { RadioButton, Modal, Portal, Provider } from 'react-native-paper';
 import FilterIconSVG from '../../../../assets/svgs/FilterIcon.svg';
-import Icon, {Icons} from '../../../../components/Icons';
+import Icon, { Icons } from '../../../../components/Icons';
 import useStaffStore from '../../../../store/staff.store';
 import useLoaderStore from '../../../../store/loader.store';
 import useCategoriesStore from '../../../../store/categories.store';
 import useLoginStore from '../../../../store/authentication/login.store';
 import { debounce } from 'lodash';
 
-export const SeeAllStaffs = ({route,navigation}) => {
-  const {getStaff} = useStaffStore();
-  const {categories} = useCategoriesStore();
-  const {isLoading} = useLoaderStore();
-  const {loggedInUser} = useLoginStore();
+export const SeeAllStaffs = ({ route, navigation }) => {
+  const { getStaff } = useStaffStore();
+  const { categories } = useCategoriesStore();
+  const { isLoading } = useLoaderStore();
+  const { loggedInUser } = useLoginStore();
   const limit = 10;
   const loadMoreRef = useRef(true);
   const [skip, setSkip] = useState(0);
@@ -57,52 +57,50 @@ export const SeeAllStaffs = ({route,navigation}) => {
       setSkip(0);
       setData([]);
       loadMoreRef.current = true; // Reset the load more flag
-      fetchData(0, text);
+      fetchData(0, text, selectedPills);
     }, 500),
-    []
+    [selectedPills] // Depend on selectedPills to capture the latest selection
   );
 
-  const handlePillPress = useCallback(pill => {
-    setSelectedPills(prevSelectedPills => {
+  const handlePillPress = useCallback((pill) => {
+    setSelectedPills((prevSelectedPills) => {
       const newSelectedPills = prevSelectedPills.includes(pill)
-        ? prevSelectedPills.filter(item => item !== pill)
+        ? prevSelectedPills.filter((item) => item !== pill)
         : [...prevSelectedPills, pill];
       setSkip(0);
       setData([]);
       loadMoreRef.current = true; // Reset the load more flag
-      fetchData(0);
+      fetchData(0, searchInput, newSelectedPills);
       return newSelectedPills;
     });
-  }, []);
+  }, [searchInput]); // Depend on searchInput to capture the latest search term
 
   const renderCategories = useMemo(() => {
     return (
       <View style={tw`flex flex-wrap flex-row px-4 mb-2`}>
-       {categories?.map(item => {
-  return (
-    <Pressable
-      key={item._id}
-      onPress={() => handlePillPress(item._id)}
-      style={tw`px-4 py-2 m-1 rounded-full ${
-        selectedPills.includes(item._id) ? `bg-blue-500` : 'bg-gray-200'
-      }`}>
-      <Text
-        style={tw`text-sm ${
-          selectedPills.includes(item._id) ? 'text-white' : 'text-black'
-        }`}>
-        {item?.name}
-      </Text>
-    </Pressable>
-
-  );
-})}
-
+        {categories?.map((item) => {
+          return (
+            <Pressable
+              key={item._id}
+              onPress={() => handlePillPress(item._id)}
+              style={tw`px-4 py-2 m-1 rounded-full ${
+                selectedPills.includes(item._id) ? 'bg-blue-500' : 'bg-gray-200'
+              }`}>
+              <Text
+                style={tw`text-sm ${
+                  selectedPills.includes(item._id) ? 'text-white' : 'text-black'
+                }`}>
+                {item?.name}
+              </Text>
+            </Pressable>
+          );
+        })}
       </View>
     );
   }, [categories, selectedPills, handlePillPress]);
 
   const listFooterComponent = useCallback(() => {
-    return <ActivityIndicator size={'large'} style={{marginVertical: 16}} />;
+    return <ActivityIndicator size={'large'} style={{ marginVertical: 16 }} />;
   }, []);
 
   const ItemSeparatorComponent = useCallback(() => {
@@ -128,36 +126,35 @@ export const SeeAllStaffs = ({route,navigation}) => {
           text: searchText,
           categories: selectedCategories,
           excludeIds: [loggedInUser?._id],
-          exclude: '_id'
+          exclude: '_id',
         };
-        console.log("selectedCategories",selectedCategories);
+        console.log('Fetching data with payload:', payload); // Debug log
         const result = await getStaff(payload);
         if (result?.length === 0) {
           loadMoreRef.current = false; // No more data to load
         } else {
-          setData(prevData => {
-            const idSet = new Set(prevData?.map(item => item?._id));
-            const newData = result?.filter(item => !idSet?.has(item._id));
+          setData((prevData) => {
+            const idSet = new Set(prevData?.map((item) => item?._id));
+            const newData = result?.filter((item) => !idSet?.has(item._id));
             return [...prevData, ...newData];
           });
           setSkip(skipValue + limit);
         }
       } catch (error) {
-        console.log('error', error);
+        console.log('Error fetching data:', error);
       }
     },
     [limit, getStaff, searchInput, selectedPills, loggedInUser]
   );
-  
 
   const renderItem = useCallback(
-    ({item, index}) => (
+    ({ item, index }) => (
       <Pressable
         onPress={() => {
-          navigation.navigate('EmployeeDetails', {user: item});
+          navigation.navigate('EmployeeDetails', { user: item });
         }}
         key={index}
-        style={({pressed}) => [
+        style={({ pressed }) => [
           tw`my-1 flex-row justify-between border border-gray-200 rounded-3 py-3 px-5 ${
             pressed ? 'bg-green-100/10 border-0' : 'bg-white'
           }`,
@@ -178,7 +175,7 @@ export const SeeAllStaffs = ({route,navigation}) => {
           <Text
             style={[
               tw`text-black text-[14px]`,
-              {fontFamily: 'Poppins-SemiBold'},
+              { fontFamily: 'Poppins-SemiBold' },
             ]}
             numberOfLines={1}
             ellipsizeMode="tail">
@@ -187,7 +184,7 @@ export const SeeAllStaffs = ({route,navigation}) => {
           <Text
             style={[
               tw`text-neutral-600 text-[14px]`,
-              {fontFamily: 'Poppins-Regular'},
+              { fontFamily: 'Poppins-Regular' },
             ]}
             numberOfLines={1}
             ellipsizeMode="tail">
@@ -198,7 +195,7 @@ export const SeeAllStaffs = ({route,navigation}) => {
           <Text
             style={[
               tw`text-black text-[14px]`,
-              {fontFamily: 'Poppins-SemiBold'},
+              { fontFamily: 'Poppins-SemiBold' },
             ]}>
             {item?.address?.city || 'City - NA'}/
             {item?.address?.state || 'State - NA'}
@@ -206,7 +203,7 @@ export const SeeAllStaffs = ({route,navigation}) => {
         </View>
       </Pressable>
     ),
-    [navigation],
+    [navigation]
   );
 
   return (
@@ -215,7 +212,7 @@ export const SeeAllStaffs = ({route,navigation}) => {
         <View style={tw`flex-row items-center mb-4 mt-2`}>
           <Pressable
             onPress={handleBackPress}
-            style={({pressed}) => [
+            style={({ pressed }) => [
               tw`p-2 rounded-full ${pressed ? 'bg-black/20' : ''}`,
             ]}>
             <Icon
@@ -232,7 +229,7 @@ export const SeeAllStaffs = ({route,navigation}) => {
               style={tw`flex-1 text-sm text-black`}
               placeholder="Search"
               placeholderTextColor="gray"
-              onChangeText={wildString => handleSearch(wildString)}
+              onChangeText={(wildString) => handleSearch(wildString)}
             />
           </View>
           <TouchableOpacity
@@ -241,14 +238,14 @@ export const SeeAllStaffs = ({route,navigation}) => {
             <FilterIconSVG />
           </TouchableOpacity>
         </View>
-        {categories?.length != 0 ? (
+        {categories?.length !== 0 ? (
           renderCategories
         ) : (
           <View style={tw`justify-center items-center p-5`}>
-            <Text style={[tw`text-black`, {fontFamily: 'Poppins-Regular'}]}>
+            <Text style={[tw`text-black`, { fontFamily: 'Poppins-Regular' }]}>
               No Categories available
             </Text>
-            <Text style={[tw`text-black`, {fontFamily: 'Poppins-Regular'}]}>
+            <Text style={[tw`text-black`, { fontFamily: 'Poppins-Regular' }]}>
               Contact Admin to add categories
             </Text>
           </View>

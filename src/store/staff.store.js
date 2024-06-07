@@ -19,7 +19,7 @@ const useStaffStore = create((set, get) => ({
      payload?.excludeIds?.length !== 0 ? params.excludeIds = payload?.excludeIds:'';
      payload?.categories?.length !== 0 ? params.categories = payload?.categories:'';
      payload?.exclude ? params.exclude = payload?.exclude:'';
-     payload?.text ? params.text = payload?.text:'';
+     payload?.text ? params.wildString = payload?.text:'';
      params.sortDesc=['createdat'];
       if (payload?.text) {
         params.wildString = payload.text;
