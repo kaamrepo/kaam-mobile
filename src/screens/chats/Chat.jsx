@@ -68,7 +68,6 @@ const Chat = ({route, navigation}) => {
       };
       const updateResult = await updateJobStatus(payload);
       if (updateResult) {
-        console.log(' in the if');
         const application = await getJobApplication({_id: applicationId});
         setJobApplication(...application);
         setApprovalStatus(application?.status); // Update approval status
@@ -89,7 +88,7 @@ const Chat = ({route, navigation}) => {
       getApplication();
     }
   }, [applicationId, approvalStatus]);
-  console.log('Applciaiton . status', approvalStatus);
+
 
   return (
     <SafeAreaView style={tw`flex-1`} edges={['top']}>

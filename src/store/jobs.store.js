@@ -1,6 +1,10 @@
 import {create} from 'zustand';
 import API from '../helper/API';
-import {JOBS, JOBS_APPLICATIONS} from '../helper/endpoints';
+import {
+  JOBS,
+  JOBS_APPLICATIONS,
+  POSTAL_ADDRESS_API_URL,
+} from '../helper/endpoints';
 import Toast from 'react-native-toast-message';
 import useLoginStore, {getToken} from './authentication/login.store';
 
@@ -12,46 +16,57 @@ const useJobStore = create((set, get) => ({
   job: [],
   searchedJobs: [],
   jobApplicationForm: [],
+  address: {
+    cities: [],
+  },
 
   getJobs: async payload => {
     try {
       console.log('payload in getjobs', payload);
-      const params = {};
-      payload.skip ? (params.skip = skip) : '';
-      payload.limit ? (params.limit = payload.limit) : '';
-      payload.type ? (params.type = payload.type) : '';
-      payload?.coordinates?.length
-        ? (params.coordinates = payload.coordinates)
-        : '';
-      payload?.wildString ? (params.wildString = payload.wildString) : '';
-      payload?.excludeIds?.length
-        ? (params.excludeIds = payload.excludeIds)
-        : '';
-      payload?.createdby ? (params.createdby = payload.createdby) : '';
-      payload?.excludeIdsInJobSearch?.length
-        ? (params.excludeIdsInJobSearch = payload.excludeIdsInJobSearch)
-        : '';
-      console.log('params in get job', params);
+
+      const {
+        skip,
+        limit,
+        type,
+        coordinates,
+        wildString,
+        excludeIds,
+        createdby,
+        excludeIdsInJobSearch,
+      } = payload;
+
+      const params = Object.assign(
+        {},
+        skip && {skip},
+        limit && {limit},
+        type && {type},
+        coordinates?.length && {coordinates},
+        wildString && {wildString},
+        excludeIds?.length && {excludeIds},
+        excludeIdsInJobSearch?.length && {excludeIdsInJobSearch},
+        createdby && {createdby},
+      );
+
       const res = await API.get(`${JOBS}`, {
         headers: {Authorization: await getToken()},
         params: params,
       });
-      if (res && res.data && payload.type === 'nearby') {
-        console.log('in the nearby if');
-        set({nearbyjobs: res.data?.data});
-      } else if (res && res.data && payload.type === 'recommended') {
-        console.log('in the recommended if');
 
-        set({recommendedJobs: res.data?.data});
-      } else if (res && res.data?.data && payload.type === 'featured') {
-        console.log('in the featured if');
+      if (res && res.data) {
+        const data = res.data?.data;
+        const typeMapping = {
+          nearby: 'nearbyJobs',
+          recommended: 'recommendedJobs',
+          featured: 'featuredJobs',
+          myPostedJobs: 'myPostedJobs',
+        };
 
-        set({featuredJobs: res.data?.data});
-      } else if (res && res.data?.data && payload.type === 'myPostedJobs') {
-        console.log('in the myPOstedJobs if *********************');
-        set({myPostedJobs: res?.data?.data || []});
-      } else {
-        set({job: res.data?.data});
+        if (payload.type in typeMapping) {
+          console.log(`in the ${payload.type} if`);
+          set({[typeMapping[payload.type]]: data || []});
+        } else {
+          set({job: data});
+        }
       }
     } catch (error) {
       console.log(error);
@@ -366,6 +381,36 @@ const useJobStore = create((set, get) => ({
         text1: 'Application Failed!',
       });
       return false;
+    }
+  },
+  getAddressByPincode: async pincode => {
+    try {
+      const res = await API.get(`${POSTAL_ADDRESS_API_URL}/${pincode}`);
+      if (res.data[0].Status === 'Success') {
+        const allPinCodeAddress = res.data[0]?.PostOffice;
+        const {District, State} = allPinCodeAddress[0] || {};
+
+        let citiesSet = new Set();
+        allPinCodeAddress?.forEach(p => {
+          citiesSet.add(p?.Block);
+          citiesSet.add(p?.Division);
+          citiesSet.add(p?.Region);
+        });
+
+        const cities = Array.from(citiesSet).map((city, i) => ({
+          label: city,
+          value: city,
+        }));
+        set({address: {...get().address, cities}});
+
+        return {
+          district: District ?? '',
+          state: State ?? '',
+        };
+      }
+    } catch (error) {
+      
+      console.log('\n\n=======POSTAL ADDRESS error====>', error);
     }
   },
 }));

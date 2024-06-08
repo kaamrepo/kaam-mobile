@@ -11,12 +11,11 @@ export const useInitialDataStore = create((set, get) => ({
         headers: {Authorization: await getToken()},
         params: {
           isActive: true,
-          paginate:false
+          paginate: false,
         },
       });
 
       if (res && res.data) {
-        console.log(res.data);
         set({categories: res.data});
         return true;
       }
@@ -36,7 +35,7 @@ export const useInitialDataStore = create((set, get) => ({
         headers: {Authorization: await getToken()},
       });
       if (res?.data) {
-        useLoginStore.getState().setloggedInUser(res.data)
+        useLoginStore.getState().setloggedInUser(res.data);
         return true;
       } else return false;
     } catch (error) {

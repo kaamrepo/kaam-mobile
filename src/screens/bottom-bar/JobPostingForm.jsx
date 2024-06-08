@@ -7,8 +7,9 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   useColorScheme,
+  Dimensions,
 } from 'react-native';
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import tw from 'twrnc';
 import {useForm, Controller} from 'react-hook-form';
@@ -16,14 +17,14 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import Icon, {Icons} from '../../components/Icons';
 import useLoginStore from '../../store/authentication/login.store';
-import {requestLocationPermission} from '../../helper/utils/getGeoLocation';
-import Geolocation from 'react-native-geolocation-service';
+import {getCoordinates} from '../../helper/utils/getGeoLocation';
 import {primaryBGColor, primaryBGDarkColor} from '../../helper/utils/colors';
 import useJobStore from '../../store/jobs.store';
 import {useFocusEffect} from '@react-navigation/native';
 import wordsFilter from '../../helper/utils/profane';
 import useLoaderStore from '../../store/loader.store';
 import {useInitialDataStore} from '../../store/authentication/initial-data.store';
+import {Dropdown} from 'react-native-element-dropdown';
 
 let salaryBasisOptionsArray = [
   {label: 'Monthly', value: 'month'},
@@ -49,15 +50,6 @@ const createJobSchema = yup.object({
       'Inappropriate language detected',
       value => !wordsFilter.isProfane(value),
     ),
-  fulladdress: yup
-    .string()
-    .trim()
-    .required('Job location is required!')
-    .test(
-      'noBadWords',
-      'Inappropriate language detected',
-      value => !wordsFilter.isProfane(value),
-    ),
   salary: yup
     .number()
     .typeError('Job salary is required!')
@@ -69,59 +61,76 @@ const createJobSchema = yup.object({
     .min(1, 'At least 1 job opening should be available')
     .default(1),
   salarybasis: yup.string().trim().required('Please select a salary basis'),
-  tags: yup.string().required('Chip selection is required'),
+  tags: yup.string().required('Job category is required'),
+  location: yup.object().shape({
+    pincode: yup.string().required('Pincode is required!'),
+    district: yup.string().required('District is required!'),
+    city: yup.string().required('City is required!'),
+    state: yup.string().required('State is required!'),
+    fulladdress: yup
+      .string()
+      .trim()
+      .required('Job location is required!')
+      .test(
+        'noBadWords',
+        'Inappropriate language detected',
+        value => !wordsFilter.isProfane(value),
+      ),
+  }),
 });
 
+const defaultFormValues = {
+  jobtitle: 'House Of Billiards',
+  description: 'A helper boy in the cafe kitchen',
+
+  salary: '10000',
+  numberofopenings: '2',
+  salarybasis: 'month',
+  tags: 'Table Boy',
+  location: {pincode: '40006', fulladdress: 'Hinjewaid, Pune'},
+};
+
 const JobPostingForm = ({navigation}) => {
-  useColorScheme();
+  const colorScheme = useColorScheme();
   const {isLoading, setLoading} = useLoaderStore();
   const {loggedInUser} = useLoginStore();
   const {categories, getCategories} = useInitialDataStore();
-  const {postJobs} = useJobStore();
+  const {postJobs, getAddressByPincode, address} = useJobStore();
   const {
     control,
     handleSubmit,
     reset,
+    watch,
+    setValue,
     formState: {errors, isSubmitting},
   } = useForm({
     resolver: yupResolver(createJobSchema),
     mode: 'onChange',
+    defaultValues: defaultFormValues,
   });
 
   const createJob = async data => {
-    const result = requestLocationPermission();
-    result.then(res => {
-      if (res) {
-        setLoading(true);
-        Geolocation.getCurrentPosition(
-          async position => {
-            let payload = {
-              ...data,
-              tags: [data.tags],
-              createdby: loggedInUser?._id,
-              location: {
-                fulladdress: data?.fulladdress,
-                coordinates: [
-                  position?.coords?.longitude || null,
-                  position?.coords?.latitude || null,
-                ],
-              },
-            };
-            delete payload.fulladdress;
-            delete payload.tagtext;
-            const success = await postJobs(payload);
-            if (success) {
-              reset();
-              navigation.navigate('Dashboard');
-            }
-          },
-          error => {
-            console.log(error.code, error.message);
-          },
-          {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
-        );
+    try {
+      setLoading(true);
+      const result = await getCoordinates();
+      const {
+        coords: {longitude, latitude, altitude, altitudeAccuracy},
+      } = result;
+      if (longitude && latitude) {
+        data.location['coordinates'] = [longitude, latitude];
       }
-    });
+      data['createdby'] = loggedInUser?._id;
+      data.tags = [data.tags];
+    } catch (error) {
+      console.log('JobPostingForm.jsx::createJob::error', error);
+    }
+
+    const success = await postJobs(data);
+    if (success) {
+      reset();
+      navigation.navigate('Dashboard');
+    }
+    setLoading(false);
   };
 
   useFocusEffect(
@@ -130,6 +139,22 @@ const JobPostingForm = ({navigation}) => {
       return () => reset();
     }, []),
   );
+
+  const pincodeWatch = watch('location.pincode');
+
+  useEffect(() => {
+    if (pincodeWatch?.length >= 6) {
+      async function getPostalAddressDetails() {
+        const addressInfo = await getAddressByPincode(pincodeWatch);
+        if (addressInfo) {
+          for (const add in addressInfo) {
+            setValue(`location.${add}`, addressInfo[add]);
+          }
+        }
+      }
+      getPostalAddressDetails();
+    }
+  }, [pincodeWatch]);
 
   return (
     <SafeAreaView style={tw`flex-1 px-5 py-2 bg-white dark:bg-gray-950`}>
@@ -165,7 +190,11 @@ const JobPostingForm = ({navigation}) => {
                 onBlur={onBlur}
                 style={[
                   {fontFamily: 'Poppins-Regular'},
-                  tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] border-slate-300 w-full rounded-lg`,
+                  tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] ${
+                    errors?.jobtitle?.message
+                      ? 'border-red-500'
+                      : 'border-slate-300'
+                  } w-full rounded-lg`,
                 ]}
                 placeholder="eg. Maid"
                 placeholderTextColor={'rgb(163 163 163)'}
@@ -201,7 +230,11 @@ const JobPostingForm = ({navigation}) => {
                 onBlur={onBlur}
                 style={[
                   {fontFamily: 'Poppins-Regular'},
-                  tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] border-slate-300 w-full rounded-lg`,
+                  tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] ${
+                    errors?.description?.message
+                      ? 'border-red-500'
+                      : 'border-slate-300'
+                  } w-full rounded-lg`,
                 ]}
                 placeholder="eg. Who can cook healthy Veg Food"
                 placeholderTextColor={'rgb(163 163 163)'}
@@ -226,7 +259,7 @@ const JobPostingForm = ({navigation}) => {
           </Text>
           <Controller
             control={control}
-            name="fulladdress"
+            name="location.fulladdress"
             render={({field: {onChange, onBlur, value}}) => (
               <TextInput
                 value={value}
@@ -237,7 +270,11 @@ const JobPostingForm = ({navigation}) => {
                 onBlur={onBlur}
                 style={[
                   {fontFamily: 'Poppins-Regular'},
-                  tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] border-slate-300 w-full rounded-lg`,
+                  tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] ${
+                    errors?.location?.fulladdress?.message
+                      ? 'border-red-500'
+                      : 'border-slate-300'
+                  } w-full rounded-lg`,
                 ]}
                 placeholder="eg. Wing A, Ashok Deluxe Appartment, Andheri East."
                 placeholderTextColor={'rgb(163 163 163)'}
@@ -249,7 +286,7 @@ const JobPostingForm = ({navigation}) => {
               tw`text-red-600 w-full text-[10px] text-right px-2 py-1`,
               {fontFamily: 'Poppins-Regular'},
             ]}>
-            {errors?.fulladdress?.message}
+            {errors?.location?.fulladdress?.message}
           </Text>
         </View>
 
@@ -274,7 +311,11 @@ const JobPostingForm = ({navigation}) => {
                   onBlur={onBlur}
                   style={[
                     {fontFamily: 'Poppins-Regular'},
-                    tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] border-slate-300 w-full rounded-lg`,
+                    tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] ${
+                      errors?.salary?.message
+                        ? 'border-red-500'
+                        : 'border-slate-300'
+                    } w-full rounded-lg`,
                   ]}
                   placeholder="eg. ₹ 6,600"
                   placeholderTextColor={'rgb(163 163 163)'}
@@ -310,9 +351,55 @@ const JobPostingForm = ({navigation}) => {
                   onBlur={onBlur}
                   style={[
                     {fontFamily: 'Poppins-Regular'},
-                    tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] border-slate-300 w-full rounded-lg`,
+                    tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] ${
+                      errors?.numberofopenings?.message
+                        ? 'border-red-500'
+                        : 'border-slate-300'
+                    } w-full rounded-lg`,
                   ]}
                   placeholder="eg. 1"
+                  placeholderTextColor={'rgb(163 163 163)'}
+                />
+              )}
+            />
+            <Text
+              style={[
+                tw`text-red-500 w-full text-[10px] text-right px-2 py-1`,
+                {fontFamily: 'Poppins-Regular'},
+              ]}>
+              {errors?.numberofopenings?.message}
+            </Text>
+          </View>
+        </View>
+
+        <View style={[tw`w-full flex-row gap-2 `]}>
+          <View style={tw`flex-1`}>
+            <Text
+              style={[
+                tw`text-gray-600 dark:text-gray-300 w-full text-[12px] text-left px-2`,
+                {fontFamily: 'Poppins-Regular'},
+              ]}>
+              Pincode:
+            </Text>
+            <Controller
+              control={control}
+              name="location.pincode"
+              render={({field: {onChange, onBlur, value}}) => (
+                <TextInput
+                  value={value}
+                  keyboardType="decimal-pad"
+                  autoCapitalize="sentences"
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  style={[
+                    {fontFamily: 'Poppins-Regular'},
+                    tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] ${
+                      errors?.pincode?.message
+                        ? 'border-red-500'
+                        : 'border-slate-300'
+                    } w-full rounded-lg`,
+                  ]}
+                  placeholder="eg. 400021"
                   placeholderTextColor={'rgb(163 163 163)'}
                 />
               )}
@@ -322,11 +409,151 @@ const JobPostingForm = ({navigation}) => {
                 tw`text-red-600 w-full text-[10px] text-right px-2 py-1`,
                 {fontFamily: 'Poppins-Regular'},
               ]}>
-              {errors?.numberofopenings?.message}
+              {errors?.location?.pincode?.message}
+            </Text>
+          </View>
+
+          <View style={tw`flex-1`}>
+            <Text
+              style={[
+                tw`text-gray-600 dark:text-gray-300 w-full text-[12px] text-left px-2`,
+                {fontFamily: 'Poppins-Regular'},
+              ]}>
+              City/Town:
+            </Text>
+            <Controller
+              control={control}
+              name="location.city"
+              render={({field: {onChange, onBlur, value}}) => (
+                <Dropdown
+                  style={[
+                    tw`text-black dark:text-white px-2 border-[1px] border-slate-300 w-full rounded-lg py-1.1`,
+                  ]}
+                  mode="default"
+                  placeholder="Select City"
+                  placeholderStyle={[
+                    tw`text-[14px] px-2`,
+                    {fontFamily: 'Poppins-Regular', color: 'rgb(163 163 163)'},
+                  ]}
+                  selectedTextStyle={[
+                    tw`text-black dark:text-white text-[14px] px-2`,
+                    {fontFamily: 'Poppins-Regular'},
+                  ]}
+                  data={address?.cities}
+                  disable={address?.cities?.length <= 0 ? true : false}
+                  labelField="label"
+                  valueField="value"
+                  value={value}
+                  fontFamily={'Poppins-Regular'}
+                  activeColor={colorScheme == 'dark' ? '#2d3649' : '#edf2f7'}
+                  containerStyle={[
+                    tw`bg-white dark:bg-gray-950 rounded-lg w-full overflow-hidden`,
+                  ]}
+                  itemContainerStyle={[tw`rounded-lg`]}
+                  showsVerticalScrollIndicator={true}
+                  itemTextStyle={[
+                    tw`text-black text-sm dark:text-gray-300`,
+                    {fontFamily: 'Poppins-Regular'},
+                  ]}
+                  onChange={item => {
+                    onChange(item.value);
+                  }}
+                />
+              )}
+            />
+            <Text
+              style={[
+                tw`text-red-500 w-full text-[10px] text-right px-2 py-1`,
+                {fontFamily: 'Poppins-Regular'},
+              ]}>
+              {errors?.location?.city?.message}
             </Text>
           </View>
         </View>
 
+        <View style={[tw`w-full flex-row gap-2 `]}>
+          <View style={tw`flex-1`}>
+            <Text
+              style={[
+                tw`text-gray-600 dark:text-gray-300 w-full text-[12px] text-left px-2`,
+                {fontFamily: 'Poppins-Regular'},
+              ]}>
+              District:
+            </Text>
+            <Controller
+              control={control}
+              name="location.district"
+              render={({field: {onChange, onBlur, value}}) => (
+                <TextInput
+                  value={value}
+                  keyboardType="default"
+                  autoCapitalize="sentences"
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  style={[
+                    {fontFamily: 'Poppins-Regular'},
+                    tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] ${
+                      errors?.district?.message
+                        ? 'border-red-500'
+                        : 'border-slate-300'
+                    } w-full rounded-lg`,
+                  ]}
+                  placeholder="eg. Pune"
+                  placeholderTextColor={'rgb(163 163 163)'}
+                />
+              )}
+            />
+            <Text
+              style={[
+                tw`text-red-600 w-full text-[10px] text-right px-2 py-1`,
+                {fontFamily: 'Poppins-Regular'},
+              ]}>
+              {errors?.location?.district?.message}
+            </Text>
+          </View>
+
+          <View style={tw`flex-1`}>
+            <Text
+              style={[
+                tw`text-gray-600 dark:text-gray-300 w-full text-[12px] text-left px-2`,
+                {fontFamily: 'Poppins-Regular'},
+              ]}>
+              State:
+            </Text>
+            <Controller
+              control={control}
+              name="location.state"
+              render={({field: {onChange, onBlur, value}}) => (
+                <TextInput
+                  value={value}
+                  keyboardType="default"
+                  autoCapitalize="sentences"
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  style={[
+                    {fontFamily: 'Poppins-Regular'},
+                    tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] ${
+                      errors?.state?.message
+                        ? 'border-red-500'
+                        : 'border-slate-300'
+                    } w-full rounded-lg`,
+                  ]}
+                  placeholder="eg. Maharashtra"
+                  placeholderTextColor={'rgb(163 163 163)'}
+                />
+              )}
+            />
+            <Text
+              style={[
+                tw`text-red-500 w-full text-[10px] text-right px-2 py-1`,
+                {fontFamily: 'Poppins-Regular'},
+              ]}>
+              {errors?.location?.state?.message}
+            </Text>
+          </View>
+        </View>
+
+        {/* chips */}
         <View style={tw`w-full`}>
           <Text
             style={[
@@ -394,16 +621,15 @@ const JobPostingForm = ({navigation}) => {
             {errors?.tags?.message}
           </Text>
         </View>
+        {/* chips */}
 
         <View style={tw`w-full mt-5 items-center`}>
           <Pressable
             disabled={isSubmitting}
             onPress={handleSubmit(createJob)}
             style={({pressed}) =>
-              tw`my-3 px-5 py-2 w-1/2 flex-row gap-2 items-baseline justify-center rounded-xl shadow shadow-zinc-800 ${
-                pressed
-                  ? `bg-[${primaryBGDarkColor}]`
-                  : `bg-[${primaryBGColor}]`
+              tw`my-3 px-5 py-2 w-1/2 flex-row gap-2 items-center justify-center rounded-xl shadow shadow-zinc-800 ${
+                pressed ? `bg-emerald-600` : `bg-emerald-500`
               }`
             }>
             <Icon
@@ -460,34 +686,5 @@ const Chip = ({label, selected, onPress}) => {
         {label}
       </Text>
     </TouchableOpacity>
-  );
-};
-
-const TagsChips = ({tags, handleRemoveTag}) => {
-  return (
-    <View style={[tw`flex flex-row flex-wrap gap-2 mb-1`]}>
-      {tags?.map((tag, index) => (
-        <View
-          key={index}
-          style={tw`bg-orange-100 border border-orange-500 py-[2px] pl-2 pr-[2px] rounded-full flex-row gap-2 justify-between items-center `}>
-          <Text style={[tw`text-black mx-1`, {fontFamily: 'Poppins-Regular'}]}>
-            {tag?.length > 30 ? tag?.slice(0, 30) + '...' : tag}
-          </Text>
-          <View
-            style={tw`rounded-full bg-white  h-7 w-7 items-center justify-center`}>
-            <Icon
-              type={Icons.Ionicons}
-              name={'close'}
-              style={tw``}
-              onPress={() => {
-                handleRemoveTag(index);
-              }}
-              color={'black'}
-              size={15}
-            />
-          </View>
-        </View>
-      ))}
-    </View>
   );
 };

@@ -38,8 +38,6 @@ const CustomSidebarMenu = props => {
   const toggleSwitch = () => {
     setIsEnabled(previousState => {
       const value = !previousState;
-
-      console.log("toggle value",value)
       translateX.value = value ? withTiming(20) : withTiming(0); // Adjust the value based on the width of the switch
       return value;
     });

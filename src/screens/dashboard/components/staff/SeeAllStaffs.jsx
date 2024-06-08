@@ -128,7 +128,7 @@ export const SeeAllStaffs = ({ route, navigation }) => {
           excludeIds: [loggedInUser?._id],
           exclude: '_id',
         };
-        console.log('Fetching data with payload:', payload); // Debug log
+      
         const result = await getStaff(payload);
         if (result?.length === 0) {
           loadMoreRef.current = false; // No more data to load

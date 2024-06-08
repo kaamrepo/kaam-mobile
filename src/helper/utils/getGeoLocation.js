@@ -1,7 +1,6 @@
-import { Platform } from 'react-native';
-import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
+import {Platform} from 'react-native';
+import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import Geolocation from 'react-native-geolocation-service';
-
 
 export const requestLocationPermission = async () => {
   try {
@@ -16,14 +15,14 @@ export const requestLocationPermission = async () => {
 
     // If the permission is already granted, log a message and return true
     if (permissionStatus === RESULTS.GRANTED) {
-      console.log('Permission already granted');
+      console.log('geo location permission already granted');
       return true;
     }
 
     // If the permission is not granted, request the permission
     const requestResult = await request(locationPermission, {
       title: 'Geolocation Permission',
-      message: 'Can we access your location for hacking',
+      message: 'Can we access your location to suggest nearest job/staff',
       buttonNeutral: 'Ask Me Later',
       buttonNegative: 'Cancel',
       buttonPositive: 'OK',
@@ -54,11 +53,11 @@ export const getCoordinates = async () => {
 
     if (permissionGranted) {
       const position = await new Promise((resolve, reject) => {
-        Geolocation.getCurrentPosition(
-          resolve,
-          reject,
-          { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 },
-        );
+        Geolocation.getCurrentPosition(resolve, reject, {
+          enableHighAccuracy: true,
+          timeout: 20000,
+          maximumAge: 1000,
+        });
       });
 
       return position;
@@ -71,4 +70,3 @@ export const getCoordinates = async () => {
     return null;
   }
 };
-
