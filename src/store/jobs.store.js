@@ -10,9 +10,6 @@ import useLoginStore, {getToken} from './authentication/login.store';
 
 const useJobStore = create((set, get) => ({
   nearbyjobs: [],
-  recommendedJobs: [],
-  featuredJobs: [],
-  myPostedJobs: [],
   job: [],
   searchedJobs: [],
   jobApplicationForm: [],
@@ -22,8 +19,6 @@ const useJobStore = create((set, get) => ({
 
   getJobs: async payload => {
     try {
-      console.log('payload in getjobs', payload);
-
       const {
         skip,
         limit,
@@ -64,7 +59,6 @@ const useJobStore = create((set, get) => ({
         };
 
         if (payload.type in typeMapping) {
-          console.log(`in the ${payload.type} if`);
           set({[typeMapping[payload.type]]: data || []});
         } else {
           set({job: data});
@@ -72,120 +66,10 @@ const useJobStore = create((set, get) => ({
       }
     } catch (error) {
       console.log(error);
-      // Toast.show({
-      //     type: 'tomatoToast',
-      //     text1: 'Failed to get jobs!',
-      // });
     }
   },
-  getNearByJobs: async (skip = 0, limit = 5, coordinates) => {
-    try {
-      const userid = useLoginStore.getState().loggedInUser?._id;
-      let params = {
-        skip,
-        limit,
-        createdby: {
-          $nin: [userid],
-        },
-        coordinates,
-        sortDesc: ['createdat'],
-        type: 'nearby',
-      };
-      const res = await API.get(`${JOBS}`, {
-        headers: {Authorization: await getToken()},
-        params,
-      });
-      if (res && res.data) {
-        set({nearbyjobs: res.data});
-      }
-    } catch (error) {
-      console.log(JSON.stringify(error, null, 5));
-      // Toast.show({
-      //     type: 'tomatoToast',
-      //     text1: 'Failed to get jobs!',
-      // });
-    }
-  },
-  getRecommendedJobs: async (skip = 0, limit = 10) => {
-    try {
-      const userid = useLoginStore.getState().loggedInUser?._id;
-      let params = {
-        skip,
-        limit,
-        createdby: {
-          $nin: [userid],
-        },
-        type: 'recommended',
-      };
-      const res = await API.get(`${JOBS}`, {
-        headers: {Authorization: await getToken()},
-        params,
-      });
-      if (res && res.data) {
-        set({recommendedJobs: res.data});
-      }
-    } catch (error) {
-      console.log(JSON.stringify(error, null, 5));
-      // Toast.show({
-      //     type: 'tomatoToast',
-      //     text1: 'Failed to get jobs!',
-      // });
-    }
-  },
-  getFeaturedJobs: async (skip = 0, limit = 10) => {
-    try {
-      const userid = useLoginStore.getState().loggedInUser?._id;
-      let params = {
-        skip,
-        limit,
-        createdby: {
-          $nin: [userid],
-        },
-        type: 'featured',
-      };
-      const res = await API.get(`${JOBS}`, {
-        headers: {Authorization: await getToken()},
-        params,
-      });
-      if (res && res.data) {
-        set({featuredJobs: res.data});
-      }
-    } catch (error) {
-      console.log(JSON.stringify(error, null, 5));
-      // Toast.show({
-      //     type: 'tomatoToast',
-      //     text1: 'Failed to get jobs!',
-      // });
-    }
-  },
-  getMyPostedJobs: async payload => {
-    console.log('payload', payload);
-    try {
-      payload.skip ? (params.skip = skip) : '';
-      payload.limit ? (params.limit = limit) : '';
-      payload?.coordinates?.length
-        ? (params.coordinates = payload.coordinates)
-        : '';
-      params.createdby = payload.createdby;
-      const res = await API.get(`${JOBS}`, {
-        // headers: {Authorization: await getToken()},
-        params,
-      });
-      console.log('res,', res.data);
-      if (res && res.data) {
-        set({myPostedJobs: res.data});
-      }
-    } catch (error) {
-      console.log(JSON.stringify(error, null, 5));
-      // Toast.show({
-      //     type: 'tomatoToast',
-      //     text1: 'Failed to get jobs!',
-      // });
-    }
-  },
-  clearNearByJobs: () => set({nearbyjobs: {}}),
-  clearRecommendedJobs: () => set({recommendedJobs: []}),
-  clearFeaturedJobs: () => set({featuredJobs: []}),
+
+
   clearsearchedJobs: () => set({searchedJobs: []}),
   clearMypostedJobs: () => set({myPostedJobs: []}),
   clearJob: () => set({job: []}),

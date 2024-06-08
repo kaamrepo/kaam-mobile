@@ -29,13 +29,7 @@ const Dashboard = ({navigation}) => {
   const [location, setLocation] = useState(undefined);
   const {loggedInUser, language} = useLoginStore();
   const {updateUserCoordinates} = useUsersStore();
-  const {
-    getNearByJobs,
-    getRecommendedJobs,
-    clearRecommendedJobs,
-    clearFeaturedJobs,
-    getFeaturedJobs,
-  } = useJobStore();
+
   const {isLoading} = useLoaderStore();
 
   // Memoized Callbacks
@@ -86,29 +80,6 @@ const Dashboard = ({navigation}) => {
       });
     }, []),
   );
-
-  // Fetch nearby jobs when location changes
-  useEffect(() => {
-    if (location) {
-      getNearByJobs(0, 5, [
-        location?.coords?.longitude,
-        location?.coords?.latitude,
-      ]);
-    }
-  }, [location, getNearByJobs]);
-
-  // Fetch recommended and featured jobs
-  useEffect(() => {
-    clearRecommendedJobs();
-    clearFeaturedJobs();
-    getRecommendedJobs();
-    getFeaturedJobs();
-  }, [
-    clearRecommendedJobs,
-    clearFeaturedJobs,
-    getRecommendedJobs,
-    getFeaturedJobs,
-  ]);
 
   const SearchToggleComponent = useMemo(
     () => (
