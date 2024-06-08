@@ -61,7 +61,13 @@ const createJobSchema = yup.object({
   salary: yup
     .number()
     .typeError('Job salary is required!')
+    .min(100, 'A salary should be at least 100 rupees.')
     .required('Job salary is required!'),
+  numberofopenings: yup
+    .number()
+    .typeError('Available Job openings is required!')
+    .min(1, 'At least 1 job opening should be available')
+    .default(1),
   salarybasis: yup.string().trim().required('Please select a salary basis'),
   tags: yup.string().required('Chip selection is required'),
 });
@@ -91,6 +97,7 @@ const JobPostingForm = ({navigation}) => {
           async position => {
             let payload = {
               ...data,
+              tags: [data.tags],
               createdby: loggedInUser?._id,
               location: {
                 fulladdress: data?.fulladdress,
@@ -246,40 +253,78 @@ const JobPostingForm = ({navigation}) => {
           </Text>
         </View>
 
-        <View style={tw`w-full`}>
-          <Text
-            style={[
-              tw`text-gray-600 dark:text-gray-300 w-full text-[12px] text-left px-2`,
-              {fontFamily: 'Poppins-Regular'},
-            ]}>
-            Salary:
-          </Text>
-          <Controller
-            control={control}
-            name="salary"
-            render={({field: {onChange, onBlur, value}}) => (
-              <TextInput
-                value={value}
-                keyboardType="decimal-pad"
-                autoCapitalize="sentences"
-                onChangeText={onChange}
-                onBlur={onBlur}
-                style={[
-                  {fontFamily: 'Poppins-Regular'},
-                  tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] border-slate-300 w-full rounded-lg`,
-                ]}
-                placeholder="eg. ₹ 6,600"
-                placeholderTextColor={'rgb(163 163 163)'}
-              />
-            )}
-          />
-          <Text
-            style={[
-              tw`text-red-600 w-full text-[10px] text-right px-2 py-1`,
-              {fontFamily: 'Poppins-Regular'},
-            ]}>
-            {errors?.salary?.message}
-          </Text>
+        <View style={[tw`w-full flex-row gap-2 `]}>
+          <View style={tw`flex-1`}>
+            <Text
+              style={[
+                tw`text-gray-600 dark:text-gray-300 w-full text-[12px] text-left px-2`,
+                {fontFamily: 'Poppins-Regular'},
+              ]}>
+              Salary:
+            </Text>
+            <Controller
+              control={control}
+              name="salary"
+              render={({field: {onChange, onBlur, value}}) => (
+                <TextInput
+                  value={value}
+                  keyboardType="decimal-pad"
+                  autoCapitalize="sentences"
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  style={[
+                    {fontFamily: 'Poppins-Regular'},
+                    tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] border-slate-300 w-full rounded-lg`,
+                  ]}
+                  placeholder="eg. ₹ 6,600"
+                  placeholderTextColor={'rgb(163 163 163)'}
+                />
+              )}
+            />
+            <Text
+              style={[
+                tw`text-red-600 w-full text-[10px] text-right px-2 py-1`,
+                {fontFamily: 'Poppins-Regular'},
+              ]}>
+              {errors?.salary?.message}
+            </Text>
+          </View>
+
+          <View style={tw`flex-1`}>
+            <Text
+              style={[
+                tw`text-gray-600 dark:text-gray-300 w-full text-[12px] text-left px-2`,
+                {fontFamily: 'Poppins-Regular'},
+              ]}>
+              No. of Job Openings available:
+            </Text>
+            <Controller
+              control={control}
+              name="numberofopenings"
+              render={({field: {onChange, onBlur, value}}) => (
+                <TextInput
+                  value={value}
+                  keyboardType="decimal-pad"
+                  autoCapitalize="sentences"
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  style={[
+                    {fontFamily: 'Poppins-Regular'},
+                    tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] border-slate-300 w-full rounded-lg`,
+                  ]}
+                  placeholder="eg. 1"
+                  placeholderTextColor={'rgb(163 163 163)'}
+                />
+              )}
+            />
+            <Text
+              style={[
+                tw`text-red-600 w-full text-[10px] text-right px-2 py-1`,
+                {fontFamily: 'Poppins-Regular'},
+              ]}>
+              {errors?.numberofopenings?.message}
+            </Text>
+          </View>
         </View>
 
         <View style={tw`w-full`}>
@@ -293,7 +338,8 @@ const JobPostingForm = ({navigation}) => {
           <Controller
             control={control}
             render={({field}) => (
-              <View style={tw`flex flex-wrap flex-row justify-start gap-2 my-2`}>
+              <View
+                style={tw`flex flex-wrap flex-row justify-start gap-2 my-2`}>
                 {salaryBasisOptionsArray?.map(salaryBasis => (
                   <Chip
                     key={salaryBasis?.label}
@@ -326,7 +372,8 @@ const JobPostingForm = ({navigation}) => {
           <Controller
             control={control}
             render={({field}) => (
-              <View style={tw`flex flex-wrap flex-row justify-start gap-2 my-2`}>
+              <View
+                style={tw`flex flex-wrap flex-row justify-start gap-2 my-2`}>
                 {categories?.map(category => (
                   <Chip
                     key={category?.name}
