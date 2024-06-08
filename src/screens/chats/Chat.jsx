@@ -23,7 +23,7 @@ import useJobStore from '../../store/jobs.store';
 import dayjs from 'dayjs';
 
 const Chat = ({route, navigation}) => {
-  useColorScheme();
+  const colorTheme = useColorScheme();
   const applicationId = route?.params?.appliedJobId;
   const [messageText, setMessageText] = useState('');
   const [jobApplication, setJobApplication] = useState({});
@@ -41,7 +41,7 @@ const Chat = ({route, navigation}) => {
   };
 
   const chat = useMemo(() => chat1, [chat1]);
-  const bgColor = route?.params?.bgColor ?? '#000000';
+  const bgColor = route?.params?.bgColor ?? '#374151';
 
   const handleSendMessage = useCallback(() => {
     let chat_message = {
@@ -92,11 +92,11 @@ const Chat = ({route, navigation}) => {
   }, [applicationId, approvalStatus]);
 
   return (
-    <SafeAreaView style={tw`flex-1`} edges={['top']}>
+    <SafeAreaView style={tw`flex-1 bg-white dark:bg-gray-950`} edges={['top']}>
       <GeneralStatusBar />
       {/* Top Bar */}
       <View
-        style={tw`flex-row justify-between items-center p-4 shadow shadow-[#fcb603] bg-gray-900`}>
+        style={tw`flex-row justify-between items-center p-4 shadow bg-gray-900`}>
         {/* Left Column */}
         <View style={tw`flex-row items-center`}>
           <View>
@@ -108,7 +108,8 @@ const Chat = ({route, navigation}) => {
               />
             </TouchableOpacity>
           </View>
-          <View style={tw`rounded-full w-10 h-10 bg-gray-800 justify-center items-center`}>
+          <View
+            style={tw`rounded-full w-10 h-10 bg-gray-800 justify-center items-center`}>
             <Text
               style={[
                 tw`text-white text-xl`,
@@ -117,7 +118,11 @@ const Chat = ({route, navigation}) => {
               {route?.params?.name?.charAt(0)}
             </Text>
           </View>
-          <Text style={tw`ml-2 text-lg font-bold text-white`}>
+          <Text
+            style={[
+              tw`ml-2 text-lg text-white`,
+              {fontFamily: 'Poppins-SemiBold'},
+            ]}>
             {route?.params?.name}
           </Text>
         </View>
@@ -147,7 +152,7 @@ const Chat = ({route, navigation}) => {
       <View style={tw`flex-row justify-center items-center`}>
         <TouchableOpacity
           style={[
-            tw`bg-blue-500 px-8 py-2 my-2 rounded mx-3`,
+            tw`px-8 py-2 my-2 rounded-full mx-3`,
             {
               backgroundColor: primaryBGColor,
               opacity: approvalStatus === 'Approved' ? 0.5 : 1,
@@ -157,11 +162,14 @@ const Chat = ({route, navigation}) => {
             handlePress('Approved');
           }}
           disabled={approvalStatus === 'Approved'}>
-          <Text style={tw`text-white text-lg font-bold`}>Approve</Text>
+          <Text
+            style={[tw`text-white text-lg`, {fontFamily: 'Poppins-SemiBold'}]}>
+            Approve
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[
-            tw`bg-blue-500 px-8 py-2 my-2 rounded mx-3`,
+            tw`px-8 py-2 my-2 rounded-full mx-3`,
             {
               backgroundColor: primaryBGDangerColor,
               opacity: approvalStatus === 'Rejected' ? 0.5 : 1,
@@ -171,7 +179,10 @@ const Chat = ({route, navigation}) => {
             handlePress('Rejected');
           }}
           disabled={approvalStatus === 'Rejected'}>
-          <Text style={tw`text-white text-lg font-bold`}>Reject</Text>
+          <Text
+            style={[tw`text-white text-lg`, {fontFamily: 'Poppins-SemiBold'}]}>
+            Reject
+          </Text>
         </TouchableOpacity>
       </View>
       <View style={tw`flex-1 px-4 py-1`}>
@@ -193,7 +204,7 @@ const Chat = ({route, navigation}) => {
 
       <View
         style={[
-          tw`flex-row items-center justify-between gap-x-3 border-t border-slate-300 px-2 py-2 bg-white`,
+          tw`flex-row items-center justify-between gap-x-3 px-2 py-3 bg-gray-200 dark:bg-gray-900`,
           {
             opacity: approvalStatus === 'Rejected' ? 0.5 : 1,
             pointerEvents: approvalStatus === 'Rejected' ? 'none' : 'auto',
@@ -201,16 +212,24 @@ const Chat = ({route, navigation}) => {
         ]}>
         <Pressable
           style={({pressed}) => [
-            {
-              backgroundColor: pressed ? 'rgb(226 232 240)' : 'white',
-            },
-            tw`w-10 h-10 border border-slate-300 items-center justify-center rounded-full`,
+            tw`w-10 h-10 border border-gray-300 dark:border-gray-600 items-center justify-center rounded-full ${
+              pressed
+                ? 'bg-gray-300 dark:bg-gray-800'
+                : 'bg-white dark:bg-gray-900'
+            }`,
           ]}>
-          <Ionicons name="attach" size={24} style={tw`text-[#143449]`} />
+          <Ionicons
+            name="attach"
+            size={24}
+            style={tw`text-gray-900 dark:text-white`}
+          />
         </Pressable>
         <TextInput
-          style={tw`flex-grow border border-gray-300 text-black rounded-full max-h-15 bg-white px-4 py-1.5`}
+          style={tw`flex-grow border border-gray-300 dark:border-gray-600 text-black dark:text-white rounded-full max-h-15 bg-white dark:bg-gray-900 px-4 py-1.5`}
           placeholder="Type a message..."
+          placeholderTextColor={
+            colorTheme == 'dark' ? 'rgb(209 213 219)' : 'rgb(75 85 99)'
+          }
           multiline
           value={messageText}
           onChangeText={setMessageText}
@@ -219,14 +238,13 @@ const Chat = ({route, navigation}) => {
           <Pressable
             disabled={messageText.length ? false : true}
             style={({pressed}) => [
-              {
-                backgroundColor: pressed
-                  ? '#d7dbd8'
+              tw`w-14 h-10 items-center justify-center rounded-full ${
+                pressed
+                  ? 'bg-emerald-600'
                   : messageText.length
-                  ? 'green'
-                  : 'gray',
-              },
-              tw`w-14 h-10 items-center justify-center rounded-full`,
+                  ? 'bg-emerald-500'
+                  : 'bg-gray-500/50 dark:bg-gray-600'
+              }`,
             ]}
             onPress={handleSendMessage}>
             <Ionicons name="send" size={20} style={tw`ml-[3px] text-white`} />
@@ -246,96 +264,103 @@ export const MemoizedChat = React.memo(({item, index, bgColor}) => (
 ));
 
 const RenderChatMessage = ({item, index, bgColor}) => {
+  const colorScheme = useColorScheme();
   const {loggedInUser} = useLoginStore();
   switch (item?.messageType) {
     case 'initial':
-      return (
-        <View
-          style={tw`flex flex-row gap-3 mx-auto items-center justify-center w-[80%] rounded-lg bg-white border border-[${bgColor}] text-black px-5 py-3 mb-2`}>
-          <Icon
-            type={Icons.Ionicons}
-            size={30}
-            name={'briefcase-outline'}
-            style={tw`text-[${bgColor}]`}
-          />
-          <Text
-            style={[
-              tw`text-[${bgColor}] text-center px-2`,
-              {fontFamily: 'Poppins-Italic'},
-            ]}>
-            {loggedInUser?._id !== item?.senderid
-              ? item.text
-              : `You have applied for this job on ${dayjs(
-                  item?.createdat,
-                ).format('DD-MMM-YYYY')}`}
-          </Text>
-        </View>
+      return useMemo(
+        () => (
+          <View
+            style={tw`flex flex-row gap-3 mx-auto items-center justify-center w-[80%] rounded-lg bg-white dark:bg-gray-800 border border-[${bgColor}] text-black px-5 py-3 mb-2`}>
+            <Icon
+              type={Icons.Ionicons}
+              size={30}
+              name={'briefcase-outline'}
+              style={tw`text-black dark:text-white`}
+            />
+            <Text
+              style={[
+                tw`text-black dark:text-white text-center px-2`,
+                {fontFamily: 'Poppins-Italic'},
+              ]}>
+              {loggedInUser?._id !== item?.senderid
+                ? item.text
+                : `You have applied for this job on ${dayjs(
+                    item?.createdat,
+                  ).format('DD-MMM-YYYY')}`}
+            </Text>
+          </View>
+        ),
+        [colorScheme],
       );
 
     case 'text':
-      return (
-        <View
-          style={tw`flex flex-row justify-between items-end gap-2 py-2 pl-5 pr-3 max-w-[80%] rounded-3xl shadow ${
-            loggedInUser?._id === item?.senderid
-              ? `ml-auto bg-[${bgColor}]`
-              : `bg-white`
-          }`}>
-          <Text
-            style={[
-              tw`${
+      return useMemo(
+        () => (
+          <View
+            style={tw`flex flex-row justify-between items-end gap-2 py-2 pl-5 pr-3 max-w-[80%] rounded-3xl shadow ${
+              loggedInUser?._id === item?.senderid
+                ? `ml-auto bg-gray-900`
+                : `bg-gray-100 dark:bg-gray-800`
+            }`}>
+            <Text
+              style={[
+                tw`${
+                  loggedInUser?._id === item?.senderid
+                    ? 'text-white'
+                    : 'text-black dark:text-white'
+                }`,
+                {fontFamily: 'Poppins-Regular'},
+              ]}>
+              {item?.text}
+            </Text>
+
+            <Icon
+              size={14}
+              style={tw`${
                 loggedInUser?._id === item?.senderid
                   ? `text-white`
-                  : `text-[${bgColor}]`
-              }`,
-              {fontFamily: 'Poppins-Regular'},
-            ]}>
-            {item?.text}
-          </Text>
-
-          <Icon
-            size={14}
-            style={tw`${
-              loggedInUser?._id === item?.senderid
-                ? `text-white`
-                : `text-[${bgColor}]`
-            }`}
-            type={Icons.Ionicons}
-            name={item.isseen ? 'checkmark-done' : 'checkmark'}
-          />
-        </View>
+                  : `text-black dark:text-white`
+              }`}
+              type={Icons.Ionicons}
+              name={item.isseen ? 'checkmark-done' : 'checkmark'}
+            />
+          </View>
+        ),
+        [colorScheme],
       );
 
-    case 'image':
-      return (
-        <View
-          style={tw`px-2 py-2 items-end rounded-3xl shadow ${
-            loggedInUser?._id === item?.senderid
-              ? `ml-auto bg-[${bgColor}]`
-              : `bg-white`
-          }`}>
-          <Image
-            style={[tw`h-32 w-56 rounded-2xl`]}
-            source={{
-              uri: item?.url,
-            }}
-          />
+    // case 'image':
+    //   return (
+    //     <View
+    //       style={tw`px-2 py-2 items-end rounded-3xl shadow ${
+    //         loggedInUser?._id === item?.senderid
+    //           ? `ml-auto bg-[${bgColor}]`
+    //           : `bg-white`
+    //       }`}>
+    //       <Image
+    //         style={[tw`h-32 w-56 rounded-2xl`]}
+    //         source={{
+    //           uri: item?.url,
+    //         }}
+    //       />
 
-          <Icon
-            size={14}
-            style={tw`${
-              loggedInUser?._id === item?.senderid
-                ? `text-white`
-                : `text-[${bgColor}]`
-            }`}
-            type={Icons.Ionicons}
-            name={item.isseen ? 'checkmark-done' : 'checkmark'}
-          />
-        </View>
-      );
+    //       <Icon
+    //         size={14}
+    //         style={tw`${
+    //           loggedInUser?._id === item?.senderid
+    //             ? `text-white`
+    //             : `text-[${bgColor}]`
+    //         }`}
+    //         type={Icons.Ionicons}
+    //         name={item.isseen ? 'checkmark-done' : 'checkmark'}
+    //       />
+    //     </View>
+    //   );
     default:
       return (
         <>
-          <Text>Null</Text>
+          <Text>No chat found</Text>
         </>
       );
   }
