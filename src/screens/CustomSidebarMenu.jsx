@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import {
-  SafeAreaView,
   View,
   StyleSheet,
   Image,
@@ -8,7 +7,7 @@ import {
   Pressable,
   TouchableOpacity,
 } from 'react-native';
-
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {DrawerContentScrollView} from '@react-navigation/drawer';
 import tw from 'twrnc';
 import Icon, {Icons} from '../components/Icons';

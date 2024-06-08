@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState, useRef, useMemo } from 'react';
 import {
   Text,
-  SafeAreaView,
   StyleSheet,
   View,
   TextInput,
@@ -12,6 +11,7 @@ import {
   Image,
 } from 'react-native';
 import tw from 'twrnc';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { RadioButton, Modal, Portal, Provider } from 'react-native-paper';
 import FilterIconSVG from '../../../../assets/svgs/FilterIcon.svg';
 import Icon, { Icons } from '../../../../components/Icons';
@@ -151,64 +151,86 @@ export const SeeAllStaffs = ({ route, navigation }) => {
     ({ item, index }) => (
       <Pressable
         onPress={() => {
+          console.log("item in press", item);
           navigation.navigate('EmployeeDetails', { user: item });
         }}
-        key={index}
-        style={({ pressed }) => [
-          tw`my-1 flex-row justify-between border border-gray-200 rounded-3 py-3 px-5 ${
-            pressed ? 'bg-green-100/10 border-0' : 'bg-white'
-          }`,
-        ]}>
-        <View style={tw`h-auto w-auto flex`}>
-          {item?.profilepic ? (
-            <Image source={item?.profilepic} style={tw`h-12 w-12 rounded-xl`} />
-          ) : (
-            <Icon
-              type={Icons.Ionicons}
-              name={'person-circle-outline'}
-              size={55}
-              color={'green'}
-            />
-          )}
-        </View>
-        <View style={tw`flex w-35`}>
+        key={item._id} // Assuming _id is unique and stable
+        style={({ pressed }) =>
+          tw`my-1 w-full border border-gray-200 rounded-3 px-2.5 pb-2.5 pt-4 relative overflow-hidden ${
+            pressed ? 'bg-green-100/10' : 'bg-white'
+          }`
+        }>
+        <View style={tw`flex-row items-start justify-between`}>
+          <View style={tw`flex-row items-center`}>
+            <View style={tw`h-10 w-10 mr-2`}>
+              {item?.profilepic ? (
+                <Image source={{ uri: item.profilepic }} style={tw`h-10 w-10 rounded`} />
+              ) : (
+                <Icon
+                  type={Icons.Ionicons}
+                  name={'person'}
+                  size={45}
+                  color={'green'}
+                />
+              )}
+            </View>
+            <View>
+              <Text
+                style={[
+                  tw`text-black text-[14px]`,
+                  { fontFamily: 'Poppins-SemiBold' },
+                ]}
+                numberOfLines={1}
+                ellipsizeMode="tail">
+                {item?.firstname}
+              </Text>
+              <Text
+                style={[
+                  tw`text-neutral-600 text-[14px]`,
+                  { fontFamily: 'Poppins-Regular' },
+                ]}
+                numberOfLines={1}
+                ellipsizeMode="tail">
+                {item?.lastname}
+              </Text>
+            </View>
+          </View>
           <Text
             style={[
-              tw`text-black text-[14px]`,
-              { fontFamily: 'Poppins-SemiBold' },
-            ]}
-            numberOfLines={1}
-            ellipsizeMode="tail">
-            {item?.firstname}
-          </Text>
-          <Text
-            style={[
-              tw`text-neutral-600 text-[14px]`,
-              { fontFamily: 'Poppins-Regular' },
-            ]}
-            numberOfLines={1}
-            ellipsizeMode="tail">
-            {item?.lastname}
-          </Text>
-        </View>
-        <View style={tw`flex`}>
-          <Text
-            style={[
-              tw`text-black text-[14px]`,
+              tw`text-white text-[12px] px-2 rounded-bl-xl bg-green-500`, // Adjust the color as per your theme
               { fontFamily: 'Poppins-SemiBold' },
             ]}>
-            {item?.address?.city || 'City - NA'}/
-            {item?.address?.state || 'State - NA'}
+            {`${item?.address?.city || "City - NA"} / ${item?.address?.state || "State - NA"}`}
           </Text>
+        </View>
+        <View style={tw`flex-row flex-wrap mt-2`}>
+          {item?.tagsDetails?.length > 0 ? (
+            <>
+              {item.tagsDetails.map((tag) => (
+                <Text
+                  key={tag._id}
+                  style={tw`bg-gray-200 text-black text-[12px] px-2 py-1 rounded-full mr-2 mb-2`}>
+                  {tag.name}
+                </Text>
+              ))}
+              
+            </>
+          ) : (
+            <Text
+              style={tw`text-gray-500 text-[12px]`}>
+              No category selected by user
+            </Text>
+          )}
         </View>
       </Pressable>
     ),
     [navigation]
   );
+  
 
   return (
     <Provider>
-      <SafeAreaView style={tw`flex-1 bg-slate-50 mt-10`} edges={['top']}>
+      <SafeAreaView style={tw`flex-1 bg-slate-50`} edges={['top']}>
         <View style={tw`flex-row items-center mb-4 mt-2`}>
           <Pressable
             onPress={handleBackPress}
@@ -251,6 +273,14 @@ export const SeeAllStaffs = ({ route, navigation }) => {
           </View>
         )}
 
+        {data.length === 0 ? (
+        <View style={tw`flex-1 justify-center items-center p-5`}>
+          <Text style={[tw`text-black text-lg mb-2`, { fontFamily: 'Poppins-Bold' }]}>
+            No staff available for the selected categories
+          </Text>
+          
+        </View>
+      ) : (
         <FlatList
           data={data}
           renderItem={renderItem}
@@ -259,6 +289,7 @@ export const SeeAllStaffs = ({ route, navigation }) => {
           onEndReachedThreshold={0.5}
           ListFooterComponent={isLoading ? listFooterComponent : null}
         />
+      )}
 
         <Portal>
           <Modal
