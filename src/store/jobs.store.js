@@ -24,6 +24,7 @@ const useJobStore = create((set, get) => ({
         ? (params.coordinates = payload.coordinates)
         : '';
       payload?.wildString ? (params.wildString = payload.wildString) : '';
+      payload?.exclude ? (params.exclude = payload.exclude) : '';
       payload?.excludeIds?.length
         ? (params.excludeIds = payload.excludeIds)
         : '';

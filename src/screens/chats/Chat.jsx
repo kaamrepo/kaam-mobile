@@ -90,7 +90,7 @@ const Chat = ({route, navigation}) => {
     }
   }, [applicationId, approvalStatus]);
   console.log('Applciaiton . status', approvalStatus);
-
+  const {loggedInUser} = useLoginStore();
   return (
     <SafeAreaView style={tw`flex-1`} edges={['top']}>
       <GeneralStatusBar backgroundColor={bgColor} />
@@ -136,7 +136,7 @@ const Chat = ({route, navigation}) => {
           </TouchableOpacity>
         </View>
       </View>
-      <View style={tw`flex-row justify-center items-center`}>
+      {loggedInUser?._id !== chat?.messages?.at(0)?.senderid ? <View style={tw`flex-row justify-center items-center`}>
         <TouchableOpacity
           style={[
             tw`bg-blue-500 px-8 py-2 my-2 rounded mx-3`,
@@ -165,7 +165,7 @@ const Chat = ({route, navigation}) => {
           disabled={approvalStatus === 'Rejected'}>
           <Text style={tw`text-white text-lg font-bold`}>Reject</Text>
         </TouchableOpacity>
-      </View>
+      </View>:''}
       <View style={tw`flex-1 px-4 py-1`}>
         <FlatList
           ref={lastMessageRef}
