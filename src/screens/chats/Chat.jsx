@@ -6,8 +6,6 @@ import {
   FlatList,
   TouchableOpacity,
   Pressable,
-  StyleSheet,
-  Image,
   useColorScheme,
 } from 'react-native';
 import tw from 'twrnc';
