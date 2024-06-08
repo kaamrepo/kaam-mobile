@@ -1,5 +1,11 @@
 import React, {useEffect, useState, useCallback, useMemo} from 'react';
-import {View, Animated, ScrollView, TouchableOpacity, useColorScheme} from 'react-native';
+import {
+  View,
+  Animated,
+  ScrollView,
+  TouchableOpacity,
+  useColorScheme,
+} from 'react-native';
 import tw from 'twrnc';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import GeneralStatusBar from '../../components/GeneralStatusBar';
@@ -39,7 +45,6 @@ const Dashboard = ({navigation}) => {
 
   // Fetching user coordinates
   useEffect(() => {
-    
     const fetchCoordinates = async () => {
       const position = await getCoordinates();
       const {latitude: currentLat, longitude: currentLon} = position?.coords;
@@ -158,17 +163,17 @@ const Dashboard = ({navigation}) => {
         </Animated.View>
       </View>
     ),
-    [selectedSearchType, handlePress],
+    [selectedSearchType, handlePress, colorScheme],
   );
 
   return (
     <SafeAreaView style={[tw`h-full`]}>
+      <GeneralStatusBar />
       <HeaderBanner navigation={navigation} />
       <ScrollView
         showsVerticalScrollIndicator={false}
         nestedScrollEnabled
         style={[tw`bg-[#FAFAFD] dark:bg-gray-950`]}>
-        <GeneralStatusBar backgroundColor={'#d6d6d6'} />
         {SearchToggleComponent}
 
         <Categories

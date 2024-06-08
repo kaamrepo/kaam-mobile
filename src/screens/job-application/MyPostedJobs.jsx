@@ -6,25 +6,18 @@ import {
   FlatList,
   RefreshControl,
   ActivityIndicator,
+  useColorScheme,
 } from 'react-native';
 import useMenuStore from '../../store/menu.store';
 import useLoaderStore from '../../store/loader.store';
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import tw from 'twrnc';
 
 const MyPostedJobs = () => {
+  useColorScheme()
   const {postedJobs, getPostedJobs, clearPostedJobs} = useMenuStore();
   const {isLoading} = useLoaderStore();
   const [refreshing, setRefreshing] = useState(false);
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     getPostedJobs();
-  //     return () => {
-  //       clearPostedJobs();
-  //     };
-  //   }, []),
-  // );
-
   useEffect(() => {
     getPostedJobs();
     return () => {
@@ -60,11 +53,11 @@ export default MyPostedJobs;
 
 const MenuLoadingComponent = () => {
   return (
-    <View style={tw`w-full bg-white mt-5 gap-1 rounded`}>
+    <View style={tw`w-full bg-white dark:bg-gray-950 mt-5 gap-1 rounded`}>
       {Array.from({length: 10}, (_, i) => i)?.map(data => (
         <View
           key={data}
-          style={tw`w-full h-15 bg-slate-200/50 my-0.6 rounded-3`}></View>
+          style={tw`w-full h-15 bg-slate-200/50 dark:bg-gray-800 my-0.6 rounded-3`}></View>
       ))}
     </View>
   );
@@ -74,7 +67,7 @@ const NoDataMenuComponent = ({message}) => {
     <View style={tw`w-full h-full gap-4`}>
       <View style={tw`flex-1 justify-center items-center`}>
         <Text
-          style={[tw`text-lg text-zinc-700`, {fontFamily: 'Poppins-SemiBold'}]}>
+          style={[tw`text-lg text-zinc-700 dark:text-zinc-400`, {fontFamily: 'Poppins-SemiBold'}]}>
           {message}
         </Text>
       </View>
@@ -121,12 +114,12 @@ const JobPostedCard = ({job}) => {
   return (
     <TouchableOpacity
       key={job?._id}
-      style={tw`w-full bg-white px-5 my-0.6 gap-1 py-3 rounded border-l-4 border-r-4 shadow`}
+      style={tw`w-full bg-white dark:bg-gray-800 px-5 my-0.6 gap-1 py-3 rounded border-l-4 border-r-4 border-emerald-500 shadow`}
       onPress={() => handleNavigationToAppliacants(job)}>
       <View style={tw`flex flex-row justify-between items-start`}>
         <Text
           style={[
-            tw`text-[16px] text-black`,
+            tw`text-[16px] text-black dark:text-white`,
             {fontFamily: 'Poppins-SemiBold'},
           ]}>
           {job?.jobtitle}
@@ -149,7 +142,7 @@ const JobPostedCard = ({job}) => {
         <View style={tw`flex flex-row gap-2 items-center`}>
           <Text
             style={[
-              tw`text-xs text-gray-700`,
+              tw`text-xs text-gray-700 dark:text-gray-400`,
               {fontFamily: 'Poppins-Regular'},
             ]}>
             Applicants

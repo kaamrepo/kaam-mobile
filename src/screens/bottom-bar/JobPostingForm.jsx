@@ -79,17 +79,6 @@ const createJobSchema = yup.object({
   }),
 });
 
-const defaultFormValues = {
-  jobtitle: 'House Of Billiards',
-  description: 'A helper boy in the cafe kitchen',
-
-  salary: '10000',
-  numberofopenings: '2',
-  salarybasis: 'month',
-  tags: 'Table Boy',
-  location: {pincode: '40006', fulladdress: 'Hinjewaid, Pune'},
-};
-
 const JobPostingForm = ({navigation}) => {
   const colorScheme = useColorScheme();
   const {isLoading, setLoading} = useLoaderStore();
@@ -106,7 +95,6 @@ const JobPostingForm = ({navigation}) => {
   } = useForm({
     resolver: yupResolver(createJobSchema),
     mode: 'onChange',
-    defaultValues: defaultFormValues,
   });
 
   const createJob = async data => {

@@ -2,7 +2,8 @@ export const RegistrationTranslation = {
   मराठी: {
     Kaam: 'काम',
     Registration: 'नोंदणी',
-    "Let's log in. Apply to jobs!": 'चला नोंदणी करूया. नोकरी साठी अर्ज करूया !',
+    "Let's log in. Apply to jobs!": "Let's log in. Apply to jobs!",
+    "Let's Register. Apply to jobs!": "Let's Register. Apply to jobs!",
     'Have an account?': 'खाते आहे का ? ',
     'Log in': 'लॉग इन करा',
     'First Name': 'पहिले नाव',
@@ -17,7 +18,8 @@ export const RegistrationTranslation = {
   ગુજરાતી: {
     Kaam: 'કામ',
     Registration: 'નોંધણી',
-    'Let’s Register. Apply to jobs!': 'ચાલો નોંધણી કરીએ. નોકરીઓ માટે અરજી કરો!',
+    "Let's log in. Apply to jobs!": "Let's log in. Apply to jobs!",
+    "Let's Register. Apply to jobs!": "Let's Register. Apply to jobs!",
     'Have an account? Log in': 'તમારું એકાઉન્ટ છે? પ્રવેશ કરો',
     'First Name': 'પ્રથમ નામ',
     'Last Name': 'છેલ્લું નામ',
@@ -28,7 +30,8 @@ export const RegistrationTranslation = {
   தமிழ்: {
     Kaam: 'வரவேற்பு',
     Registration: 'அருகிலுள்ள வேலைகள்',
-    "Let's log in. Apply to jobs!": 'பரிந்துரைக்கப்பட்ட வேலைகள்',
+    "Let's log in. Apply to jobs!": "Let's log in. Apply to jobs!",
+    "Let's Register. Apply to jobs!": "Let's Register. Apply to jobs!",
     'Have an account ? Log in': 'பரிந்துரைக்கப்பட்ட வேலைகள்',
     'First Name': 'First Name',
     'Last Name': 'last Name',
@@ -38,7 +41,8 @@ export const RegistrationTranslation = {
   English: {
     Kaam: 'Kaam',
     Registration: 'Registration',
-    "Let's log in. Apply to jobs!": 'Let’s Register. Apply to jobs!',
+    "Let's log in. Apply to jobs!": "Let's log in. Apply to jobs!",
+    "Let's Register. Apply to jobs!": "Let's Register. Apply to jobs!",
     'Have an account?': 'Have an account?',
     'Log in': 'Log in',
     'First Name': 'First Name',
@@ -53,8 +57,8 @@ export const RegistrationTranslation = {
   हिंदी: {
     Kaam: 'काम',
     Registration: 'पंजीकरण',
-    "Let's log in. Apply to jobs!":
-      'आइये रजिस्टर करें. नौकरियों के लिए आवेदन करें!',
+    "Let's log in. Apply to jobs!": "Let's log in. Apply to jobs!",
+    "Let's Register. Apply to jobs!": "Let's Register. Apply to jobs!",
     'Have an account?': 'खाता है ?',
     'Log in': ' लॉग इन करें',
     'First Name': 'पहला नाम',
@@ -69,7 +73,8 @@ export const RegistrationTranslation = {
   اردو: {
     Kaam: 'خوش آمدید',
     Registration: 'قریبی نوکریاں',
-    'Let’s Register. Apply to jobs!': 'تجویز کردہ نوکریاں',
+    "Let's log in. Apply to jobs!": "Let's log in. Apply to jobs!",
+    "Let's Register. Apply to jobs!": "Let's Register. Apply to jobs!",
     'Have an account ? Log in': 'تجویز کردہ نوکریاں',
     'First Name': 'تمام دیکھیں',
     'Last Name': 'تمام دیکھیں',

@@ -1,20 +1,16 @@
 import {
   TouchableOpacity,
-  StyleSheet,
   View,
-  Text,
   useColorScheme,
 } from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {useNavigation} from '@react-navigation/native';
 import Icon, {Icons} from '../components/Icons';
 import * as Animatable from 'react-native-animatable';
 import tw from 'twrnc';
 import Dashboard from './dashboard/Dashboard';
 import JobPostingForm from './bottom-bar/JobPostingForm';
 import Menu from './bottom-bar/Menu';
-import LinearGradient from 'react-native-linear-gradient';
 
 // svg icons
 import HomeSVG from '../assets/svgs/home.svg';
@@ -22,50 +18,51 @@ import HomeInactiveSVG from '../assets/svgs/home_inactive.svg';
 
 import MenuSVG from '../assets/svgs/menu.svg';
 import MenuInactiveSVG from '../assets/svgs/menu_inactive.svg';
-import {primaryBGColor, primaryTextColor} from '../helper/utils/colors';
+import {primaryBGColor} from '../helper/utils/colors';
 const Tab = createBottomTabNavigator();
-
-const TabArr = [
-  {
-    route: 'Dashboard',
-    label: 'Dashboard',
-    component: Dashboard,
-    activeIcon: <HomeSVG width={24} height={24} />,
-    inactiveIcon: <HomeInactiveSVG width={18} height={18} />,
-  },
-  {
-    route: 'Plus',
-    label: '+',
-    component: JobPostingForm,
-    activeIcon: (
-      <Icon
-        type={Icons.FontAwesome5}
-        name="plus"
-        size={18}
-        style={[tw`text-black dark:text-white`]}
-      />
-    ),
-    inactiveIcon: (
-      <Icon
-        type={Icons.FontAwesome5}
-        name="plus"
-        size={18}
-        style={[tw`text-black dark:text-white`]}
-      />
-    ),
-  },
-  {
-    route: 'Menu',
-    label: 'Menu',
-    component: Menu,
-
-    activeIcon: <MenuSVG width={24} height={24} />,
-    inactiveIcon: <MenuInactiveSVG width={19} height={19} />,
-  },
-];
 
 const BottomTabNavigation = () => {
   const colorScheme = useColorScheme();
+  const TabArr = useMemo(
+    () => [
+      {
+        route: 'Dashboard',
+        label: 'Dashboard',
+        component: Dashboard,
+        activeIcon: <HomeSVG width={24} height={24} />,
+        inactiveIcon: <HomeInactiveSVG width={18} height={18} />,
+      },
+      {
+        route: 'Plus',
+        label: '+',
+        component: JobPostingForm,
+        activeIcon: (
+          <Icon
+            type={Icons.FontAwesome5}
+            name="plus"
+            size={18}
+            style={[tw`text-black dark:text-white`]}
+          />
+        ),
+        inactiveIcon: (
+          <Icon
+            type={Icons.FontAwesome5}
+            name="plus"
+            size={18}
+            style={[tw`text-black dark:text-white`]}
+          />
+        ),
+      },
+      {
+        route: 'Menu',
+        label: 'Menu',
+        component: Menu,
+        activeIcon: <MenuSVG width={24} height={24} />,
+        inactiveIcon: <MenuInactiveSVG width={19} height={19} />,
+      },
+    ],
+    [colorScheme],
+  );
   return (
     <Tab.Navigator
       initialRouteName="Dashboard"
@@ -73,6 +70,7 @@ const BottomTabNavigation = () => {
         headerShown: false,
         tabBarHideOnKeyboard: true,
         tabBarStyle: {
+          borderTopWidth: 0,
           borderTopLeftRadius: 40,
           borderTopRightRadius: 40,
           height: 60,
@@ -81,10 +79,6 @@ const BottomTabNavigation = () => {
           right: 0,
           left: 0,
           backgroundColor: colorScheme == 'dark' ? '#292d34' : 'white',
-        },
-
-        headerBackgroundContainerStyle: {
-          backgroundColor: 'transparent',
         },
       }}>
       {TabArr.map((item, index) => (
@@ -111,6 +105,7 @@ const BottomTabNavigation = () => {
 export default BottomTabNavigation;
 
 const TabButton = props => {
+  const colorScheme = useColorScheme();
   const {item, onPress, accessibilityState, isMiddleElement} = props;
   const viewRef = useRef(null);
   const [popupVisible, setPopupVisible] = useState(false);
@@ -119,9 +114,9 @@ const TabButton = props => {
   useEffect(() => {
     if (!isMiddleElement) {
       if (focused) {
-        viewRef.current.animate({0: {scale: 1}, 1: {scale: 1.3}});
+        viewRef.current.animate({0: {scale: 0.8}, 1: {scale: 1}});
       } else {
-        viewRef.current.animate({0: {scale: 1.3}, 1: {scale: 1}});
+        viewRef.current.animate({0: {scale: 1}, 1: {scale: 0.8}});
       }
     } else {
       // if this is middle tab button
@@ -134,37 +129,34 @@ const TabButton = props => {
   }, [focused]);
 
   return (
-    <>
-      <TouchableOpacity
-        onPress={onPress}
-        activeOpacity={1}
-        style={[tw`relative flex-1 justify-center items-center`]}>
-        <Animatable.View
-          ref={viewRef}
-          duration={1000}
-          style={[
-            tw`${
-              isMiddleElement
-                ? `${
-                    focused
-                      ? `bg-[${primaryBGColor}]`
-                      : `bg-white dark:bg-gray-800 border-2 border-[${primaryTextColor}]`
-                  } w-14 h-14 rounded-full shadow-lg absolute -top-[48%]`
-                : ''
-            } justify-center items-center z-20`,
-          ]}>
-          {focused ? item.activeIcon : item.inactiveIcon}
-          {!isMiddleElement && (
-            <View
-              style={tw`mt-[2px] w-[3px] h-[3px] rounded-full z-50 ${
-                focused
-                  ? `bg-emerald-500 shadow shadow-emerald-500`
-                  : 'bg-white'
-              }`}></View>
-          )}
-        </Animatable.View>
-      </TouchableOpacity>
-    </>
+    <TouchableOpacity
+      onPress={onPress}
+      activeOpacity={1}
+      style={[tw`relative flex-1 justify-center items-center`]}>
+      <Animatable.View
+        ref={viewRef}
+        duration={1000}
+        style={[
+          tw`${
+            isMiddleElement
+              ? `${
+                  focused
+                    ? `bg-[${primaryBGColor}]`
+                    : `bg-white dark:bg-gray-800`
+                } w-14 h-14 rounded-full shadow-lg absolute -top-[48%]`
+              : ''
+          } justify-center items-center z-20`,
+        ]}>
+        {focused ? item.activeIcon : item.inactiveIcon}
+        {!isMiddleElement && (
+          <View
+            style={tw`mt-[2px] w-[3px] h-[3px] rounded-full z-50 ${
+              focused ? `bg-emerald-500 shadow shadow-emerald-500` : 'bg-white'
+            }`}
+          />
+        )}
+      </Animatable.View>
+    </TouchableOpacity>
   );
 };
 
