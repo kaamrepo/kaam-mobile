@@ -32,18 +32,17 @@ const Categories = ({navigation, selectedSearchType}) => {
       return (
         <Pressable
           onPress={() => {
-            if(selectedSearchType === 'jobs'){
+            if (selectedSearchType === 'jobs') {
               navigation.navigate('SeeAllJobs');
             }
-            if(selectedSearchType === 'staff'){
-              navigation.navigate('SeeAllStaffs',{category:item?._id});
+            if (selectedSearchType === 'staff') {
+              navigation.navigate('SeeAllStaffs', {category: item?._id});
             }
-
-            
           }}
           key={item._id}
           style={tw`items-center justify-center w-[150px] h-[180px] mx-2`}>
-          <View style={tw`rounded-full overflow-hidden w-[148px] h-[148px]`}>
+          <View style={tw`rounded-full overflow-hidden w-24 h-24`}>
+            
             {item.bgurl ? (
               <ImageBackground
                 source={{uri: item.bgurl}}
@@ -68,11 +67,11 @@ const Categories = ({navigation, selectedSearchType}) => {
               </>
             )}
           </View>
-          <View style={tw`bg-opacity-50 w-full py-1 mt-2`}>
+          <View style={tw`bg-emerald-500 rounded-full w-3/4 py-1 mt-2`}>
             <Text
               style={[
-                tw`text-black text-center text-[14px]`,
-                {fontFamily: 'Poppins-Regular'},
+                tw`text-white text-center text-lg`,
+                {fontFamily: 'Poppins-SemiBold'},
               ]}
               numberOfLines={1}
               ellipsizeMode="tail">

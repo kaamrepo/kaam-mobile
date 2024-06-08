@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useCallback, useMemo} from 'react';
-import {View, Animated, ScrollView, TouchableOpacity} from 'react-native';
+import {View, Animated, ScrollView, TouchableOpacity, useColorScheme} from 'react-native';
 import tw from 'twrnc';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import GeneralStatusBar from '../../components/GeneralStatusBar';
@@ -18,6 +18,7 @@ import {HeaderBanner} from '../../components/HeaderBanner';
 import AvailableStaff from './components/staff/AvailableStaff';
 import AvailableJob from './components/jobs/AvailableJob';
 const Dashboard = ({navigation}) => {
+  const colorScheme = useColorScheme();
   const [selectedSearchType, setSelectedSearchType] = useState('staff');
   const [location, setLocation] = useState(undefined);
   const {loggedInUser, language} = useLoginStore();
@@ -38,6 +39,7 @@ const Dashboard = ({navigation}) => {
 
   // Fetching user coordinates
   useEffect(() => {
+    
     const fetchCoordinates = async () => {
       const position = await getCoordinates();
       const {latitude: currentLat, longitude: currentLon} = position?.coords;
@@ -103,65 +105,53 @@ const Dashboard = ({navigation}) => {
     getFeaturedJobs,
   ]);
 
-  const searchToggleComponent = useMemo(
+  const SearchToggleComponent = useMemo(
     () => (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <View
+        style={[
+          tw`w-[75%] p-1.5 mx-auto flex-row justify-center items-center my-2 rounded-xl bg-white dark:bg-slate-800 shadow`,
+        ]}>
         <Animated.View
-          style={{
-            width: '98%',
-            height: 60,
-            borderRadius: 15,
-            flexDirection: 'row',
-            alignItems: 'center',
-            backgroundColor: 'white',
-          }}>
+          style={[tw`flex flex-row items-center rounded-lg overflow-hidden`]}>
           <TouchableOpacity
-            style={{
-              width: '50%',
-              height: 50,
-              backgroundColor:
-                selectedSearchType === 'jobs' ? '#ffff' : '#E0FBE2',
-              borderWidth: selectedSearchType === 'jobs' ? 1 : 0,
-              borderColor:
-                selectedSearchType === 'jobs' ? 'grey' : 'transparent',
-              borderTopLeftRadius: 10,
-              borderBottomLeftRadius: 10,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
+            style={[
+              tw`flex-1 py-2 items-center justify-center rounded-lg ${
+                selectedSearchType == 'jobs'
+                  ? 'bg-emerald-500'
+                  : 'text-black/50'
+              } `,
+            ]}
             onPress={() => handlePress('jobs')}>
             <Animated.Text
-              style={{
-                color: 'black',
-                fontSize: 18,
-                fontWeight: '700',
-                opacity: selectedSearchType === 'jobs' ? 1 : 0.3,
-              }}>
+              style={[
+                tw`text-[15px] ${
+                  selectedSearchType == 'jobs'
+                    ? 'text-white'
+                    : 'text-black/50 dark:text-gray-300'
+                }`,
+                {fontFamily: 'Poppins-SemiBold'},
+              ]}>
               Search Jobs
             </Animated.Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={{
-              width: '50%',
-              height: 50,
-              backgroundColor:
-                selectedSearchType === 'staff' ? '#ffff' : '#E0FBE2',
-              borderWidth: selectedSearchType === 'staff' ? 1 : 0,
-              borderColor:
-                selectedSearchType === 'staff' ? 'grey' : 'transparent',
-              borderTopRightRadius: 10,
-              borderBottomRightRadius: 10,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
+            style={[
+              tw`flex-1 py-2 items-center justify-center rounded-lg ${
+                selectedSearchType == 'staff'
+                  ? 'bg-emerald-500'
+                  : 'text-black/50 '
+              }`,
+            ]}
             onPress={() => handlePress('staff')}>
             <Animated.Text
-              style={{
-                color: 'black',
-                fontSize: 18,
-                fontWeight: '700',
-                opacity: selectedSearchType === 'staff' ? 1 : 0.3,
-              }}>
+              style={[
+                tw`text-[15px] ${
+                  selectedSearchType == 'staff'
+                    ? 'text-white'
+                    : 'text-black/50 dark:text-gray-300'
+                }`,
+                {fontFamily: 'Poppins-SemiBold'},
+              ]}>
               Search Staff
             </Animated.Text>
           </TouchableOpacity>
@@ -177,9 +167,9 @@ const Dashboard = ({navigation}) => {
       <ScrollView
         showsVerticalScrollIndicator={false}
         nestedScrollEnabled
-        style={[tw`bg-[#FAFAFD]`]}>
+        style={[tw`bg-[#FAFAFD] dark:bg-gray-950`]}>
         <GeneralStatusBar backgroundColor={'#d6d6d6'} />
-        {searchToggleComponent}
+        {SearchToggleComponent}
 
         <Categories
           {...{

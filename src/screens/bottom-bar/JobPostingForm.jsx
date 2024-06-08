@@ -1,5 +1,4 @@
 import {
-  StyleSheet,
   Text,
   View,
   Pressable,
@@ -7,8 +6,9 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  useColorScheme,
 } from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import tw from 'twrnc';
 import {useForm, Controller} from 'react-hook-form';
@@ -23,6 +23,7 @@ import useJobStore from '../../store/jobs.store';
 import {useFocusEffect} from '@react-navigation/native';
 import wordsFilter from '../../helper/utils/profane';
 import useLoaderStore from '../../store/loader.store';
+import {useInitialDataStore} from '../../store/authentication/initial-data.store';
 
 let salaryBasisOptionsArray = [
   {label: 'Monthly', value: 'month'},
@@ -62,47 +63,27 @@ const createJobSchema = yup.object({
     .typeError('Job salary is required!')
     .required('Job salary is required!'),
   salarybasis: yup.string().trim().required('Please select a salary basis'),
-  // tags: yup
-  //   .array('Tags are required!')
-  //   .typeError('Tags are required!')
-  //   .of(yup.string().trim().required('Tag is required'))
-  //   .required('Tags are required!')
-  //   .min(3)
-  //   .max(3),
+  tags: yup.string().required('Chip selection is required'),
 });
 
- const JobPostingForm = ({navigation}) => {
+const JobPostingForm = ({navigation}) => {
+  useColorScheme();
   const {isLoading, setLoading} = useLoaderStore();
   const {loggedInUser} = useLoginStore();
+  const {categories, getCategories} = useInitialDataStore();
   const {postJobs} = useJobStore();
   const {
     control,
     handleSubmit,
     reset,
-    setValue,
-    watch,
-    getValues,
-    resetField,
-    setError,
-    clearErrors,
     formState: {errors, isSubmitting},
   } = useForm({
     resolver: yupResolver(createJobSchema),
     mode: 'onChange',
   });
 
-  // let tags = watch('tags');
-
   const createJob = async data => {
     const result = requestLocationPermission();
-    // const {tags} = data;
-    // if (tags?.length < 3) {
-    //   setError('tags', {
-    //     type: 'custom',
-    //     message: 'Atleas 3 tags are required',
-    //   });
-    //   return;
-    // }
     result.then(res => {
       if (res) {
         setLoading(true);
@@ -136,61 +117,23 @@ const createJobSchema = yup.object({
     });
   };
 
-  // const handleAddTag = value => {
-  //   if (value) {
-  //     if (value.length > 25) {
-  //       setError('tags', {
-  //         type: 'custom',
-  //         message: 'too many characters',
-  //       });
-  //       return;
-  //     }
-  //     if (tags && tags.findIndex(d => d === value) !== -1) {
-  //       console.log(tags?.findIndex(d => d === value) !== -1);
-  //       setError('tags', {
-  //         type: 'custom',
-  //         message: 'A unique tag is expected.',
-  //       });
-  //       return;
-  //     }
-  //     if (tags?.length < 3) {
-  //       setValue('tags', [...getValues('tags'), value]);
-  //     } else if (tags?.length === 0 || !tags) {
-  //       setValue('tags', [value]);
-  //     } else {
-  //       setError('tags', {type: 'custom', message: 'Maximum 3 tags allowed'});
-  //     }
-  //     resetField('tagtext');
-  //     clearErrors('tags');
-  //   } else {
-  //     setError('tags', {type: 'custom', message: 'Please add a tag'});
-  //   }
-  // };
-
-  // const handleRemoveTag = index => {
-  //   setValue(
-  //     'tags',
-  //     tags.filter((tag, i) => i !== index),
-  //   );
-  // };
-
   useFocusEffect(
     useCallback(() => {
+      getCategories();
       return () => reset();
     }, []),
   );
 
   return (
-    <SafeAreaView style={tw`flex-1 px-5 bg-white`}>
+    <SafeAreaView style={tw`flex-1 px-5 py-2 bg-white dark:bg-gray-950`}>
       <ScrollView
         style={[tw`my-5 mb-[75px]`]}
         contentContainerStyle={{alignItems: 'flex-start'}}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled">
-        {/* <Header title={'Be a Job Provider'} /> */}
         <Text
           style={[
-            tw`w-full text-black text-sm my-2 mt-10`,
+            tw`w-full text-black dark:text-white text-lg my-2`,
             {fontFamily: 'Poppins-Regular'},
           ]}>
           Fill out the following details to post the job.
@@ -198,7 +141,7 @@ const createJobSchema = yup.object({
         <View style={tw`w-full`}>
           <Text
             style={[
-              tw`text-gray-600 w-full text-[12px] text-left px-2`,
+              tw`text-gray-600 dark:text-gray-300 w-full text-[12px] text-left px-2`,
               {fontFamily: 'Poppins-Regular'},
             ]}>
             Job Title:
@@ -215,7 +158,7 @@ const createJobSchema = yup.object({
                 onBlur={onBlur}
                 style={[
                   {fontFamily: 'Poppins-Regular'},
-                  tw`text-black text-[14px] px-4 py-2 border-[1px] border-slate-300 w-full rounded-lg`,
+                  tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] border-slate-300 w-full rounded-lg`,
                 ]}
                 placeholder="eg. Maid"
                 placeholderTextColor={'rgb(163 163 163)'}
@@ -233,7 +176,7 @@ const createJobSchema = yup.object({
         <View style={tw`w-full`}>
           <Text
             style={[
-              tw`text-gray-600 w-full text-[12px] text-left px-2`,
+              tw`text-gray-600 dark:text-gray-300 w-full text-[12px] text-left px-2`,
               {fontFamily: 'Poppins-Regular'},
             ]}>
             Job Description:
@@ -251,7 +194,7 @@ const createJobSchema = yup.object({
                 onBlur={onBlur}
                 style={[
                   {fontFamily: 'Poppins-Regular'},
-                  tw`text-black text-[14px] px-4 py-2 border-[1px] border-slate-300 w-full rounded-lg`,
+                  tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] border-slate-300 w-full rounded-lg`,
                 ]}
                 placeholder="eg. Who can cook healthy Veg Food"
                 placeholderTextColor={'rgb(163 163 163)'}
@@ -269,10 +212,10 @@ const createJobSchema = yup.object({
         <View style={tw`w-full`}>
           <Text
             style={[
-              tw`text-gray-600 w-full text-[12px] text-left px-2`,
+              tw`text-gray-600 dark:text-gray-300 w-full text-[12px] text-left px-2`,
               {fontFamily: 'Poppins-Regular'},
             ]}>
-            Job Location:
+            Work Location:
           </Text>
           <Controller
             control={control}
@@ -287,7 +230,7 @@ const createJobSchema = yup.object({
                 onBlur={onBlur}
                 style={[
                   {fontFamily: 'Poppins-Regular'},
-                  tw`text-black text-[14px] px-4 py-2 border-[1px] border-slate-300 w-full rounded-lg`,
+                  tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] border-slate-300 w-full rounded-lg`,
                 ]}
                 placeholder="eg. Wing A, Ashok Deluxe Appartment, Andheri East."
                 placeholderTextColor={'rgb(163 163 163)'}
@@ -302,10 +245,11 @@ const createJobSchema = yup.object({
             {errors?.fulladdress?.message}
           </Text>
         </View>
+
         <View style={tw`w-full`}>
           <Text
             style={[
-              tw`text-gray-600 w-full text-[12px] text-left px-2`,
+              tw`text-gray-600 dark:text-gray-300 w-full text-[12px] text-left px-2`,
               {fontFamily: 'Poppins-Regular'},
             ]}>
             Salary:
@@ -322,7 +266,7 @@ const createJobSchema = yup.object({
                 onBlur={onBlur}
                 style={[
                   {fontFamily: 'Poppins-Regular'},
-                  tw`text-black text-[14px] px-4 py-2 border-[1px] border-slate-300 w-full rounded-lg`,
+                  tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] border-slate-300 w-full rounded-lg`,
                 ]}
                 placeholder="eg. ₹ 6,600"
                 placeholderTextColor={'rgb(163 163 163)'}
@@ -337,10 +281,11 @@ const createJobSchema = yup.object({
             {errors?.salary?.message}
           </Text>
         </View>
-        <View style={tw`w-full mb-3`}>
+
+        <View style={tw`w-full`}>
           <Text
             style={[
-              tw`text-gray-600 w-full text-[12px] text-left px-2`,
+              tw`text-gray-600 dark:text-gray-300 w-full text-[12px] text-left px-2`,
               {fontFamily: 'Poppins-Regular'},
             ]}>
             Salary basis:
@@ -348,7 +293,7 @@ const createJobSchema = yup.object({
           <Controller
             control={control}
             render={({field}) => (
-              <View style={tw`flex flex-row justify-start gap-2 my-2`}>
+              <View style={tw`flex flex-wrap flex-row justify-start gap-2 my-2`}>
                 {salaryBasisOptionsArray?.map(salaryBasis => (
                   <Chip
                     key={salaryBasis?.label}
@@ -369,66 +314,40 @@ const createJobSchema = yup.object({
             {errors?.salarybasis?.message}
           </Text>
         </View>
-        {/* <View style={[tw`w-full`]}>
+
+        <View style={tw`w-full`}>
           <Text
             style={[
-              tw`text-gray-600 w-full text-[12px] text-left px-2`,
+              tw`text-gray-600 dark:text-gray-300 w-full text-[12px] text-left px-2`,
               {fontFamily: 'Poppins-Regular'},
             ]}>
-            Tags:
+            Select job category:
           </Text>
-          <View style={[tw`w-full flex-row justify-between items-start`]}>
-            <View style={[tw`w-[85%]`]}>
-              <Controller
-                control={control}
-                name="tagtext"
-                render={({field: {onChange, onBlur, value}}) => (
-                  <TextInput
-                    value={value}
-                    multiline
-                    keyboardType="default"
-                    autoCapitalize="sentences"
-                    onChangeText={onChange}
-                    onBlur={onBlur}
-                    style={[
-                      {fontFamily: 'Poppins-Regular'},
-                      tw`text-black text-[14px] px-4 py-2 border-[1px] border-slate-300 w-full rounded-lg`,
-                    ]}
-                    placeholder="eg. Add tags here"
-                    placeholderTextColor={'rgb(163 163 163)'}
+          <Controller
+            control={control}
+            render={({field}) => (
+              <View style={tw`flex flex-wrap flex-row justify-start gap-2 my-2`}>
+                {categories?.map(category => (
+                  <Chip
+                    key={category?.name}
+                    label={category?.name}
+                    selected={field.value === category?.name}
+                    onPress={() => field.onChange(category?.name)}
                   />
-                )}
-              />
-              <Text
-                style={[
-                  tw`text-red-600 w-full text-[10px] text-right px-2 py-1`,
-                  {fontFamily: 'Poppins-Regular'},
-                ]}>
-                {errors?.tags?.message}
-              </Text>
-            </View>
-            <Pressable
-              onPress={() => {
-                handleAddTag(watch('tagtext'));
-              }}
-              style={({pressed}) =>
-                tw`flex-row items-center justify-center rounded-lg py-2.5 w-[12%] ${
-                  pressed
-                    ? `bg-[${primaryBGDarkColor}]`
-                    : `bg-[${primaryBGColor}]`
-                }`
-              }>
-              <Icon
-                type={Icons.FontAwesome5}
-                name={'plus'}
-                size={22}
-                color={'white'}
-              />
-            </Pressable>
-          </View>
-           <TagsChips tags={tags} handleRemoveTag={handleRemoveTag} /> 
+                ))}
+              </View>
+            )}
+            name="tags"
+          />
+          <Text
+            style={[
+              tw`text-red-600 w-full text-[10px] text-left px-2 py-1`,
+              {fontFamily: 'Poppins-Regular'},
+            ]}>
+            {errors?.tags?.message}
+          </Text>
         </View>
-        */}
+
         <View style={tw`w-full mt-5 items-center`}>
           <Pressable
             disabled={isSubmitting}
@@ -474,17 +393,15 @@ const createJobSchema = yup.object({
 
 export default JobPostingForm;
 
-const styles = StyleSheet.create({});
-
 const Chip = ({label, selected, onPress}) => {
   return (
     <TouchableOpacity
       onPress={onPress}
       style={[
-        tw`bg-white px-4 py-[6px] rounded-full border ${
+        tw`bg-white  px-4 py-[6px] rounded-full border ${
           selected
             ? `bg-[${primaryBGColor}] border-[${primaryBGColor}]`
-            : `border-[${primaryBGColor}]`
+            : `border-[${primaryBGColor}] dark:bg-gray-900`
         }`,
       ]}>
       <Text
