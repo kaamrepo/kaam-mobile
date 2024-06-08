@@ -26,7 +26,7 @@ const AvailableJob = ({language, isLoading, navigation,category}) => {
     getJobs(payload);
   }, []);
   const handleSeeAllPress = useCallback(() => {
-    navigation.navigate('SeeAllStaffs');
+    navigation.navigate('SeeAllJobs');
   }, [navigation]);
   const renderContent = useMemo(() => {
     if (isLoading) {

@@ -30,10 +30,6 @@ import { primaryBGColor } from '../../helper/utils/colors';
         };
       }, [route.params.id]),
     );
-
-    const handleBookmarkPress = () => {
-      console.log('Bookmark button pressed!');
-    };
     const handleChatNavigation = () => {
       console.log(" Chat", {
         appliedJobId: jobApplicationForm.jobAppliedDetails._id,

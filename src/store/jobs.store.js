@@ -28,7 +28,8 @@ const useJobStore = create((set, get) => ({
         excludeIds,
         createdby,
         excludeIdsInJobSearch,
-        exclude
+        exclude,
+        categories
       } = payload;
 
       const params = Object.assign(
@@ -40,29 +41,20 @@ const useJobStore = create((set, get) => ({
         coordinates?.length && {coordinates},
         wildString && {wildString},
         excludeIds?.length && {excludeIds},
+        categories?.length && {categories},
         excludeIdsInJobSearch?.length && {excludeIdsInJobSearch},
         createdby && {createdby},
       );
-
+console.log("params before sendign for job",params);
       const res = await API.get(`${JOBS}`, {
         headers: {Authorization: await getToken()},
         params: params,
       });
 
-      if (res && res.data) {
-        const data = res.data?.data;
-        const typeMapping = {
-          nearby: 'nearbyJobs',
-          recommended: 'recommendedJobs',
-          featured: 'featuredJobs',
-          myPostedJobs: 'myPostedJobs',
-        };
-
-        if (payload.type in typeMapping) {
-          set({[typeMapping[payload.type]]: data || []});
-        } else {
-          set({job: data});
-        }
+      if (res && res.data) {       
+        console.log("res.data?.data",res.data?.data);
+        set({job:  res.data?.data});
+        return res.data?.data;
       }
     } catch (error) {
       console.log(error);
