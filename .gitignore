@@ -134,4 +134,4 @@ ios/Podfile.user.lock
 
 # Environment variables
 .env*
-env.js
+.env

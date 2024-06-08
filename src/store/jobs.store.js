@@ -33,6 +33,7 @@ const useJobStore = create((set, get) => ({
         excludeIds,
         createdby,
         excludeIdsInJobSearch,
+        exclude
       } = payload;
 
       const params = Object.assign(
@@ -40,6 +41,7 @@ const useJobStore = create((set, get) => ({
         skip && {skip},
         limit && {limit},
         type && {type},
+        exclude && {exclude},
         coordinates?.length && {coordinates},
         wildString && {wildString},
         excludeIds?.length && {excludeIds},
