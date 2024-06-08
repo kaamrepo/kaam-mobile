@@ -15,6 +15,7 @@ const useMenuStore = create((set, get) => ({
         headers: {Authorization: await getToken()},
         params: {appliedby: userid, skip, limit},
       });
+
       if (res?.data) {
         if (skip === 0) {
           set({jobapplications: res?.data});
@@ -42,7 +43,7 @@ const useMenuStore = create((set, get) => ({
         headers: {Authorization: await getToken()},
         params: {createdby: userid, skip, limit},
       });
-      console.log("posted Jobs________",res?.data);
+
       if (res?.data) {
         if (skip === 0) {
           set({postedJobs: res?.data});
@@ -74,6 +75,7 @@ const useMenuStore = create((set, get) => ({
           limit,
         },
       });
+
       if (skip == 0) {
         set({applicantList: res.data});
       } else {

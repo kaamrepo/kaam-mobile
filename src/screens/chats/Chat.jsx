@@ -8,6 +8,7 @@ import {
   Pressable,
   StyleSheet,
   Image,
+  useColorScheme,
 } from 'react-native';
 import tw from 'twrnc';
 import {primaryBGColor} from '../../helper/utils/colors';
@@ -22,6 +23,7 @@ import useJobStore from '../../store/jobs.store';
 import dayjs from 'dayjs';
 
 const Chat = ({route, navigation}) => {
+  useColorScheme();
   const applicationId = route?.params?.appliedJobId;
   const [messageText, setMessageText] = useState('');
   const [jobApplication, setJobApplication] = useState({});
@@ -68,7 +70,6 @@ const Chat = ({route, navigation}) => {
       };
       const updateResult = await updateJobStatus(payload);
       if (updateResult) {
-        console.log(' in the if');
         const application = await getJobApplication({_id: applicationId});
         setJobApplication(...application);
         setApprovalStatus(application?.status); // Update approval status
@@ -93,10 +94,10 @@ const Chat = ({route, navigation}) => {
   const {loggedInUser} = useLoginStore();
   return (
     <SafeAreaView style={tw`flex-1`} edges={['top']}>
-      <GeneralStatusBar backgroundColor={bgColor} />
+      <GeneralStatusBar />
       {/* Top Bar */}
       <View
-        style={tw`flex-row justify-between items-center p-4 shadow shadow-[#fcb603] bg-[${bgColor}]`}>
+        style={tw`flex-row justify-between items-center p-4 shadow shadow-[#fcb603] bg-gray-900`}>
         {/* Left Column */}
         <View style={tw`flex-row items-center`}>
           <View>
@@ -108,7 +109,15 @@ const Chat = ({route, navigation}) => {
               />
             </TouchableOpacity>
           </View>
-          <View style={tw`rounded-full w-10 h-10 bg-gray-300`} />
+          <View style={tw`rounded-full w-10 h-10 bg-gray-800 justify-center items-center`}>
+            <Text
+              style={[
+                tw`text-white text-xl`,
+                {fontFamily: 'Poppins-SemiBold'},
+              ]}>
+              {route?.params?.name?.charAt(0)}
+            </Text>
+          </View>
           <Text style={tw`ml-2 text-lg font-bold text-white`}>
             {route?.params?.name}
           </Text>
@@ -184,11 +193,13 @@ const Chat = ({route, navigation}) => {
       </View>
 
       <View
-  style={[
-    tw`flex-row items-center justify-between gap-x-3 border-t border-slate-300 px-2 py-2 bg-white`,
-    { opacity: approvalStatus === 'Rejected' ? 0.5 : 1, pointerEvents: approvalStatus === 'Rejected' ? 'none' : 'auto' }
-  ]}
->
+        style={[
+          tw`flex-row items-center justify-between gap-x-3 border-t border-slate-300 px-2 py-2 bg-white`,
+          {
+            opacity: approvalStatus === 'Rejected' ? 0.5 : 1,
+            pointerEvents: approvalStatus === 'Rejected' ? 'none' : 'auto',
+          },
+        ]}>
         <Pressable
           style={({pressed}) => [
             {

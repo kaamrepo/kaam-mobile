@@ -50,7 +50,7 @@ import { primaryBGColor } from '../../helper/utils/colors';
     };
 
     const handleAppliedJob = async () => {
-      console.log("jobApplicationForm in apply before",jobApplicationForm);
+  
       const res = await applyForJob({
         jobid: jobApplicationForm?._id,
         employerid: jobApplicationForm?.createdby,

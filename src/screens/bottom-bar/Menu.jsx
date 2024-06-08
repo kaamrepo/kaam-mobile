@@ -3,6 +3,7 @@ import {
   Text,
   View,
   TouchableOpacity,
+  useColorScheme,
 } from 'react-native';
 import React, {useState} from 'react';
 import GeneralStatusBar from '../../components/GeneralStatusBar';
@@ -14,16 +15,19 @@ import MyAppliedJobs from '../job-application/MyAppliedJobs';
 import MyPostedJobs from '../job-application/MyPostedJobs';
 
 const TopTabItems = [<MyAppliedJobs />, <MyPostedJobs />];
-const Menu = ({navigation}) => {
+const Menu = () => {
+  useColorScheme();
   const [activeTab, setActiveTab] = useState(0);
-
   const navbarButtons = [{title: 'My Applied Jobs'}, {title: 'My Posted Jobs'}];
 
   return (
-    <SafeAreaView style={tw`flex-1 px-5 py-6 bg-white`} edges={['top']}>
-      <GeneralStatusBar backgroundColor={'#F0F0F0'} />
+    <SafeAreaView
+      style={tw`flex-1 px-5 py-6 bg-white dark:bg-gray-950`}
+      edges={['top']}>
+      <GeneralStatusBar />
 
-      <View style={tw`flex flex-row bg-zinc-100 p-1.5 rounded-xl`}>
+      <View
+        style={tw`flex flex-row bg-zinc-100 dark:bg-gray-800 p-1.5 rounded-xl`}>
         {navbarButtons.map((button, index) => (
           <TouchableOpacity
             key={index}

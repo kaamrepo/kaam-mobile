@@ -11,6 +11,7 @@ import {
   Pressable,
   KeyboardAvoidingView,
   ScrollView,
+  useColorScheme,
 } from 'react-native';
 import {useForm, Controller} from 'react-hook-form';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -35,6 +36,8 @@ const validationSchema = yup.object().shape({
     .trim(),
 });
 const RegisterScreen = ({navigation}) => {
+  const colorScheme = useColorScheme();
+
   const {
     control,
     handleSubmit,
@@ -92,244 +95,263 @@ const RegisterScreen = ({navigation}) => {
   }, []);
 
   return (
-    <SafeAreaView style={tw`flex-1 bg-white`}>
-      <GeneralStatusBar backgroundColor={'#FFFFFF'} />
-      <View style={[tw`w-full h-full`]}>
-        <View style={styles.topPanel}>
+    <SafeAreaView style={tw`flex-1 px-5 bg-white dark:bg-gray-950`}>
+      <GeneralStatusBar />
+      <View style={[tw`h-full`]}>
+        <View style={[tw`my-5`]}>
           <Text
             style={[
-              {fontFamily: 'Poppins-Bold', textAlignVertical: 'center'},
-              tw`text-black text-3xl`,
+              tw`text-black dark:text-white text-3xl`,
+              {
+                fontFamily: 'Poppins-Bold',
+              },
             ]}>
             {RegistrationTranslation[language]['Kaam']}
           </Text>
-          <View
-            style={tw`border-black border-[3px] w-[10%] bg-black ml-[2%]`}
-          />
+          <View style={tw`w-[12%] bg-black dark:bg-white h-[5px] rounded`} />
         </View>
         <ScrollView
-          contentContainerStyle={styles.contentContainer}
+          contentContainerStyle={[tw`my-5`]}
           keyboardShouldPersistTaps="handled">
-          <View style={styles.formContainer}>
-            <Text
-              style={[
-                {fontFamily: 'Poppins-SemiBold'},
-                tw`text-black text-2xl mb-2`,
-              ]}>
-              {RegistrationTranslation[language]['Registration']}
-            </Text>
-            <Text
-              style={[
-                {fontFamily: 'Poppins-Regular'},
-                tw`text-black text-sm font-normal ml-[2px] mb-6`,
-              ]}>
-              {
-                RegistrationTranslation[language][
-                  'Let\'s Register. Apply to jobs!'
-                ]
-              }
-            </Text>
-
-            <View style={tw`flex-row justify-between`}>
-              <View style={tw`mb-2 w-[49%]`}>
-                <View
-                  style={tw`${
-                    errors && errors.firstname
-                      ? 'border border-red-500'
-                      : 'border border-slate-500'
-                  } rounded-xl flex w-[100%]`}>
-                  <Controller
-                    control={control}
-                    name="firstname"
-                    render={({field: {onChange, onBlur, value}}) => (
-                      <TextInput
-                        value={value}
-                        onChangeText={onChange}
-                        onBlur={onBlur}
-                        keyboardType="ascii-capable"
-                        style={[
-                          {fontFamily: 'Poppins-Regular'},
-                          tw`w-full text-sm font-medium text-black px-4`,
-                        ]}
-                        placeholder={`${RegistrationTranslation[language]['First Name']}`}
-                        placeholderTextColor="gray"
-                      />
-                    )}
-                  />
-                </View>
-                {errors?.firstname && (
-                  <Text
-                    style={[
-                      tw`text-[10px] text-red-500 text-right mr-2`,
-                      {fontFamily: 'Poppins-Regular'},
-                    ]}>
-                    {errors?.firstname?.message}.
-                  </Text>
-                )}
-              </View>
-              <View style={tw`mb-2 w-[49%]`}>
-                <View
-                  style={tw`${
-                    errors && errors.lastname
-                      ? 'border border-red-500'
-                      : 'border border-slate-500'
-                  } rounded-xl flex w-[100%]`}>
-                  <Controller
-                    control={control}
-                    name="lastname"
-                    render={({field: {onChange, onBlur, value}}) => (
-                      <TextInput
-                        value={value}
-                        onChangeText={onChange}
-                        onBlur={onBlur}
-                        keyboardType="ascii-capable"
-                        style={[
-                          {fontFamily: 'Poppins-Regular'},
-                          tw`w-full text-sm font-medium text-black px-4`,
-                        ]}
-                        placeholder={`${RegistrationTranslation[language]['Last Name']}`}
-                        placeholderTextColor="gray"
-                      />
-                    )}
-                  />
-                </View>
-                {errors?.lastname && (
-                  <Text
-                    style={[
-                      tw`text-[10px] text-red-500 text-right mr-2`,
-                      {fontFamily: 'Poppins-Regular'},
-                    ]}>
-                    {errors?.lastname?.message}.
-                  </Text>
-                )}
-              </View>
+          <View style={[tw``]}>
+            <View style={[tw`my-5`]}>
+              <Text
+                style={[
+                  {fontFamily: 'Poppins-SemiBold'},
+                  tw`text-black dark:text-white text-[26px]`,
+                ]}>
+                {RegistrationTranslation[language]['Registration']}
+              </Text>
+              <Text
+                style={[
+                  tw`text-sm text-slate-500 dark:text-slate-300`,
+                  {fontFamily: 'Poppins-SemiBold'},
+                ]}>
+                {
+                  RegistrationTranslation[language][
+                    "Let's Register. Apply to jobs!"
+                  ]
+                }
+              </Text>
             </View>
 
-            <View style={tw`mb-2`}>
-              <View
-                style={tw`${
-                  errors && errors.email
-                    ? 'border border-red-500'
-                    : 'border border-slate-500'
-                } rounded-xl flex flex-row w-[100%]`}>
-                <View style={tw`w-[15%] justify-center items-center`}>
-                  <Image
-                    source={require('../../assets/images/mailIcon.png')}
-                    style={tw`w-6 h-6`}
-                  />
-                </View>
-                <Controller
-                  control={control}
-                  name="email"
-                  render={({field: {onChange, onBlur, value}}) => (
-                    <TextInput
-                      value={value}
-                      onChangeText={onChange}
-                      onBlur={onBlur}
-                      keyboardType="email-address"
-                      style={[
-                        {fontFamily: 'Poppins-Regular'},
-                        tw`w-[80%] text-sm font-medium text-black`,
-                      ]}
-                      placeholder={`${RegistrationTranslation[language]['Email']}`}
-                      placeholderTextColor="gray"
+            <View style={[tw`my-5`]}>
+              <View style={tw`flex-row justify-between`}>
+                <View style={tw`mb-2 w-[49%]`}>
+                  <View
+                    style={tw`${
+                      errors && errors.firstname
+                        ? 'border border-red-500'
+                        : 'border border-slate-500'
+                    } rounded-xl flex w-[100%]`}>
+                    <Controller
+                      control={control}
+                      name="firstname"
+                      render={({field: {onChange, onBlur, value}}) => (
+                        <TextInput
+                          autoComplete="off"
+                          value={value}
+                          onChangeText={onChange}
+                          onBlur={onBlur}
+                          keyboardType="ascii-capable"
+                          style={[
+                            {fontFamily: 'Poppins-Regular'},
+                            tw`w-full text-sm font-medium text-black dark:text-white px-4 overflow-hidden`,
+                          ]}
+                          placeholder={`${RegistrationTranslation[language]['First Name']}`}
+                          placeholderTextColor="gray"
+                        />
+                      )}
                     />
-                  )}
-                />
-              </View>
-              {errors?.email && (
-                <Text
-                  style={[
-                    tw`text-[10px] text-red-500 text-right mr-5`,
-                    {fontFamily: 'Poppins-Regular'},
-                  ]}>
-                  {errors?.email?.message}.
-                </Text>
-              )}
-            </View>
-
-            <View style={tw`mb-4`}>
-              <View style={tw`flex-row items-center justify-between`}>
-                <View
-                  style={tw`w-[23%] h-12 border border-slate-500 rounded-xl items-center justify-center`}>
-                  <TouchableOpacity
-                    onPress={() => setShow(true)}
-                    disabled={isFormButtonDisabled}>
+                  </View>
+                  {errors?.firstname && (
                     <Text
-                      style={[tw`text-black`, {fontFamily: 'Poppins-Regular'}]}>
-                      {`${countryCode.flag} ${countryCode.dialcode}`}
+                      style={[
+                        tw`text-[10px] text-red-500 text-right mr-2`,
+                        {fontFamily: 'Poppins-Regular'},
+                      ]}>
+                      {errors?.firstname?.message}.
                     </Text>
-                  </TouchableOpacity>
-                  <CountryPicker
-                    show={show}
-                    initialState={'+91'}
-                    inputPlaceholder="Select your country"
-                    onBackdropPress={() => setShow(false)}
-                    style={{
-                      modal: {
-                        height: '70%',
-                      },
-                    }}
-                    // when picker button press you will get the country object with dial code
-                    pickerButtonOnPress={item => {
-                      setCountryCode({
-                        flag: item.flag,
-                        dialcode: item.dial_code,
-                      });
-                      setShow(false);
-                    }}
-                  />
+                  )}
                 </View>
+                <View style={tw`mb-2 w-[49%]`}>
+                  <View
+                    style={tw`${
+                      errors && errors.lastname
+                        ? 'border border-red-500'
+                        : 'border border-slate-500'
+                    } rounded-xl flex w-[100%]`}>
+                    <Controller
+                      control={control}
+                      name="lastname"
+                      render={({field: {onChange, onBlur, value}}) => (
+                        <TextInput
+                          value={value}
+                          onChangeText={onChange}
+                          onBlur={onBlur}
+                          keyboardType="ascii-capable"
+                          style={[
+                            {fontFamily: 'Poppins-Regular'},
+                            tw`w-full text-sm font-medium text-black dark:text-white px-4`,
+                          ]}
+                          placeholder={`${RegistrationTranslation[language]['Last Name']}`}
+                          placeholderTextColor="gray"
+                        />
+                      )}
+                    />
+                  </View>
+                  {errors?.lastname && (
+                    <Text
+                      style={[
+                        tw`text-[10px] text-red-500 text-right mr-2`,
+                        {fontFamily: 'Poppins-Regular'},
+                      ]}>
+                      {errors?.lastname?.message}.
+                    </Text>
+                  )}
+                </View>
+              </View>
 
+              <View style={tw`mb-2`}>
                 <View
                   style={tw`${
-                    errors && errors.phone
+                    errors && errors.email
                       ? 'border border-red-500'
                       : 'border border-slate-500'
-                  } rounded-xl flex flex-row w-[75%]`}>
+                  } rounded-xl flex flex-row w-[100%]`}>
                   <View style={tw`w-[15%] justify-center items-center`}>
                     <Image
-                      source={require('../../assets/images/phoneIcon.png')}
+                      source={require('../../assets/images/mailIcon.png')}
                       style={tw`w-6 h-6`}
                     />
                   </View>
                   <Controller
                     control={control}
-                    name="phone"
+                    name="email"
                     render={({field: {onChange, onBlur, value}}) => (
                       <TextInput
                         value={value}
                         onChangeText={onChange}
                         onBlur={onBlur}
-                        keyboardType="phone-pad"
+                        keyboardType="email-address"
                         style={[
                           {fontFamily: 'Poppins-Regular'},
-                          tw`w-[80%] text-sm font-medium text-black`,
+                          tw`w-[80%] text-sm font-medium text-black dark:text-white`,
                         ]}
-                        placeholder={`${RegistrationTranslation[language]['Phone Number']}`}
+                        placeholder={`${RegistrationTranslation[language]['Email']}`}
                         placeholderTextColor="gray"
                       />
                     )}
                   />
                 </View>
+                {errors?.email && (
+                  <Text
+                    style={[
+                      tw`text-[10px] text-red-500 text-right mr-5`,
+                      {fontFamily: 'Poppins-Regular'},
+                    ]}>
+                    {errors?.email?.message}.
+                  </Text>
+                )}
               </View>
-              {errors?.phone && (
-                <Text
-                  style={[
-                    tw`text-[10px] text-red-500 text-right mr-5`,
-                    {fontFamily: 'Poppins-Regular'},
-                  ]}>
-                  {errors?.phone?.message}.
-                </Text>
-              )}
+
+              <View style={tw`mb-4`}>
+                <View style={tw`flex-row items-center justify-between`}>
+                  <View
+                    style={tw`w-[23%] h-12 border border-slate-500 rounded-xl items-center justify-center`}>
+                    <TouchableOpacity
+                      onPress={() => setShow(true)}
+                      disabled={isFormButtonDisabled}>
+                      <Text
+                        style={[
+                          tw`text-black dark:text-white`,
+                          {fontFamily: 'Poppins-Regular'},
+                        ]}>
+                        {`${countryCode.flag} ${countryCode.dialcode}`}
+                      </Text>
+                    </TouchableOpacity>
+                    <CountryPicker
+                      show={show}
+                      initialState={'+91'}
+                      inputPlaceholder="Select your country"
+                      onBackdropPress={() => setShow(false)}
+                      style={{
+                        textInput: [
+                          tw`text-black dark:text-white bg-white dark:bg-gray-900 px-3`,
+                        ],
+                        countryName: [tw`text-black dark:text-white`],
+                        searchMessageText: [tw`text-black dark:text-white`],
+                        countryButtonStyles: [tw`bg-white dark:bg-gray-900`],
+                        countryMessageContainer: [
+                          tw`bg-white dark:bg-gray-900`,
+                        ],
+                        modal: {
+                          height: '70%',
+                          backgroundColor:
+                            colorScheme === 'dark' ? '#2d3649' : 'white',
+                        },
+                      }}
+                      // when picker button press you will get the country object with dial code
+                      pickerButtonOnPress={item => {
+                        setCountryCode({
+                          flag: item.flag,
+                          dialcode: item.dial_code,
+                        });
+                        setShow(false);
+                      }}
+                    />
+                  </View>
+
+                  <View
+                    style={tw`${
+                      errors && errors.phone
+                        ? 'border border-red-500'
+                        : 'border border-slate-500'
+                    } rounded-xl flex flex-row w-[75%]`}>
+                    <View style={tw`w-[15%] justify-center items-center`}>
+                      <Image
+                        source={require('../../assets/images/phoneIcon.png')}
+                        style={tw`w-6 h-6`}
+                      />
+                    </View>
+                    <Controller
+                      control={control}
+                      name="phone"
+                      render={({field: {onChange, onBlur, value}}) => (
+                        <TextInput
+                          value={value}
+                          onChangeText={onChange}
+                          onBlur={onBlur}
+                          keyboardType="phone-pad"
+                          style={[
+                            {fontFamily: 'Poppins-Regular'},
+                            tw`w-[80%] text-sm font-medium text-black dark:text-white`,
+                          ]}
+                          placeholder={`${RegistrationTranslation[language]['Phone Number']}`}
+                          placeholderTextColor="gray"
+                        />
+                      )}
+                    />
+                  </View>
+                </View>
+                {errors?.phone && (
+                  <Text
+                    style={[
+                      tw`text-[10px] text-red-500 text-right mr-5`,
+                      {fontFamily: 'Poppins-Regular'},
+                    ]}>
+                    {errors?.phone?.message}.
+                  </Text>
+                )}
+              </View>
             </View>
+
             <Pressable
               onPress={handleSubmit(onSubmit)}
               style={({pressed}) => [
-                {
-                  backgroundColor: pressed ? '#418c4d' : '#4A9D58',
-                },
-                tw`w-full h-13 items-center justify-center rounded-xl`,
+                tw`w-full h-13 items-center justify-center rounded-xl ${
+                  pressed ? 'bg-emerald-600' : 'bg-emerald-500'
+                } `,
               ]}>
               <Text style={{color: 'white', fontFamily: 'Poppins-Regular'}}>
                 {`${RegistrationTranslation[language]['GET OTP']}`}
@@ -337,12 +359,18 @@ const RegisterScreen = ({navigation}) => {
             </Pressable>
           </View>
         </ScrollView>
-        <View style={styles.bottomPanel}>
+        <View style={[tw`mt-5 mb-20 flex-row justify-center gap-2`]}>
           <Text
-            style={tw`text-gray-500`}>{`${RegistrationTranslation[language]['Have an account?']}`}</Text>
+            style={[
+              tw`text-gray-500 dark:text-gray-300`,
+              {fontFamily: 'Poppins-Regular'},
+            ]}>{`${RegistrationTranslation[language]['Have an account?']}`}</Text>
           <Pressable onPress={() => navigation.navigate('Login')}>
             <Text
-              style={tw`text-[#4A9D58] font-medium`}>{`${RegistrationTranslation[language]['Log in']}`}</Text>
+              style={[
+                tw`text-emerald-500`,
+                {fontFamily: 'Poppins-Regular'},
+              ]}>{`${RegistrationTranslation[language]['Log in']}`}</Text>
           </Pressable>
         </View>
       </View>
@@ -351,7 +379,6 @@ const RegisterScreen = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
- 
   topPanel: {
     flex: 3,
     height: 100,

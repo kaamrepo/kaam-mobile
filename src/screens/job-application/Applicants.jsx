@@ -5,7 +5,7 @@ import {
   Text,
   TouchableOpacity,
   View,
-  StyleSheet
+  useColorScheme,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import GeneralStatusBar from '../../components/GeneralStatusBar';
@@ -15,17 +15,17 @@ import {useState, useEffect} from 'react';
 import dayjs from 'dayjs';
 import {useNavigation} from '@react-navigation/native';
 import useLoaderStore from '../../store/loader.store';
-import { primaryBGColor, primaryDangerColor } from '../../helper/utils/colors';
 
 export const ApplicantListScreen = ({
   route: {
     params: {job},
   },
 }) => {
+  useColorScheme();
   return (
     <SafeAreaView style={tw`flex-1`} edges={['top']}>
-      <GeneralStatusBar backgroundColor={'rgb(203 213 225)'} />
-      <View style={tw`flex-1 bg-white bg-slate-100 p-5`}>
+      <GeneralStatusBar />
+      <View style={tw`flex-1 bg-slate-100 dark:bg-gray-950 p-5`}>
         <JobCard job={job} />
         <ApplicantList job={job} />
       </View>
@@ -36,44 +36,66 @@ export const ApplicantListScreen = ({
 const JobCard = ({job}) => {
   const {applicantList} = useMenuStore();
   return (
-    <View style={tw`p-5 bg-white rounded-xl w-full`}>
+    <View style={tw`p-5 bg-white dark:bg-gray-800 rounded-xl w-full`}>
       <View style={tw`flex-row justify-between`}>
-        <Text style={[tw`text-black text-lg`, {fontFamily: 'Poppins-Bold'}]}>
+        <Text
+          style={[
+            tw`text-black dark:text-white text-lg`,
+            {fontFamily: 'Poppins-Bold'},
+          ]}>
           {job.jobtitle}
         </Text>
         <Text
           style={[
-            tw`text-black px-2 rounded ${
-              job.isactive
-                ? 'bg-green-600/20 text-green-600'
-                : 'bg-red-600/20 text-red-600'
+            tw`text-black dark:text-white px-2 rounded ${
+              job.isactive ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
             }`,
             {fontFamily: 'Poppins-SemiBold'},
           ]}>
           {job.isactive ? 'Active' : 'Inactive'}
         </Text>
       </View>
-      <View style={tw`mt-3 p-3 bg-slate-100 rounded`}>
+      <View style={tw`mt-3 p-3 bg-slate-100 dark:bg-gray-900 rounded`}>
         <View style={tw`flex-row gap-2`}>
-          <Text style={[tw`text-black`, {fontFamily: 'Poppins-Bold'}]}>
+          <Text
+            style={[
+              tw`text-black dark:text-gray-300`,
+              {fontFamily: 'Poppins-Bold'},
+            ]}>
             Location
           </Text>
-          <Text style={[tw`text-black`, {fontFamily: 'Poppins-Bold'}]}>
+          <Text
+            style={[
+              tw`text-black dark:text-gray-300`,
+              {fontFamily: 'Poppins-Bold'},
+            ]}>
             {job.location.fulladdress}
           </Text>
         </View>
         <View style={tw`flex-row gap-2`}>
-          <Text style={[tw`text-black`, {fontFamily: 'Poppins-Bold'}]}>
+          <Text
+            style={[
+              tw`text-black dark:text-gray-300`,
+              {fontFamily: 'Poppins-Bold'},
+            ]}>
             Salary
           </Text>
-          <Text style={[tw`text-black`, {fontFamily: 'Poppins-Bold'}]}>
+          <Text
+            style={[
+              tw`text-black dark:text-gray-300`,
+              {fontFamily: 'Poppins-Bold'},
+            ]}>
             {`₹ ${new Intl.NumberFormat('en-IN', {
               maximumSignificantDigits: 3,
             }).format(job.salary)}/${job.salarybasis}`}
           </Text>
         </View>
         <View style={tw`flex-row gap-2`}>
-          <Text style={[tw`text-black`, {fontFamily: 'Poppins-Bold'}]}>
+          <Text
+            style={[
+              tw`text-black dark:text-gray-300`,
+              {fontFamily: 'Poppins-Bold'},
+            ]}>
             Total {applicantList?.total ?? 0} Application(s)
           </Text>
         </View>
@@ -112,9 +134,10 @@ const ApplicantList = ({job}) => {
     }
   };
 
+
   return (
     <FlatList
-      style={tw`rounded-xl bg-white mt-5 mb-3 py-3 overflow-hidden`}
+      style={tw`rounded-xl bg-white dark:bg-gray-800 mt-5 mb-3 py-3 overflow-hidden`}
       data={applicantList?.data}
       renderItem={({item, index}) => <RenderItem item={item} index={index} />}
       keyExtractor={item => item._id.toString()}
@@ -144,24 +167,26 @@ const RenderItem = ({item, index}) => {
         navigation.navigate('Chat', {
           chatid: item.chatid,
           name: `${item.applicantDetails.firstname} ${item.applicantDetails.lastname}`,
-          item
+          item,
         });
       }}
-      style={tw`w-full p-2 flex-row gap-3 items-center justify-between bg-white border-b border-gray-200`}>
-      <View style={tw`w-10 h-10 rounded-full bg-slate-300`}></View>
-      <View style={tw`flex-grow`}>
-        <Text style={[tw`text-black`, {fontFamily: 'Poppins-SemiBold'}]}>
-          {item.applicantDetails.firstname} {item.applicantDetails.lastname}
+      style={tw`w-full p-2 flex-row gap-3 items-center justify-between bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-950`}>
+      <View style={tw`w-10 h-10 rounded-full items-center justify-center bg-slate-300 dark:bg-gray-900`}>
+        <Text style={[tw`text-black dark:text-white text-xl`, {fontFamily: 'Poppins-SemiBold'}]}>
+          {item?.applicantDetails?.firstname?.charAt(0)}
+          {item?.applicantDetails?.lastname?.charAt(0)}
         </Text>
-        <Text style={[tw`text-black`, {fontFamily: 'Poppins-Regular'}]}>
-          {item.applicantDetails.dialcode} {item.applicantDetails.phone}
+      </View>
+      <View style={tw`flex-grow`}>
+        <Text style={[tw`text-black dark:text-white`, {fontFamily: 'Poppins-SemiBold'}]}>
+          {item.applicantDetails.firstname} {item.applicantDetails.lastname}
         </Text>
       </View>
       <View style={tw`items-end`}>
-        <Text style={[tw`text-black`, {fontFamily: 'Poppins-Regular'}]}>
+        <Text style={[tw`text-black dark:text-white`, {fontFamily: 'Poppins-Regular'}]}>
           {item.status}
         </Text>
-        <Text style={[tw`text-black`, {fontFamily: 'Poppins-Regular'}]}>
+        <Text style={[tw`text-black dark:text-white`, {fontFamily: 'Poppins-Regular'}]}>
           Applied on: {dayjs(item.createdat).format('DD MMM YYYY')}
         </Text>
       </View>
@@ -186,32 +211,13 @@ const NoDataMenuComponent = ({message}) => {
     <View style={tw`w-full h-full gap-4`}>
       <View style={tw`flex-1 justify-center items-center`}>
         <Text
-          style={[tw`text-lg text-zinc-700`, {fontFamily: 'Poppins-SemiBold'}]}>
+          style={[
+            tw`text-lg text-zinc-700 dark:text-zinc-300`,
+            {fontFamily: 'Poppins-SemiBold'},
+          ]}>
           {message}
         </Text>
       </View>
     </View>
   );
 };
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  button: {
-    backgroundColor: 'blue',
-    paddingLeft: 10,
-    paddingRight: 10,
-    paddingTop: 10,
-    paddingBottom: 10,
-    marginVertical: 10,
-    borderRadius: 5,
-    margin:3
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-});

@@ -1,42 +1,22 @@
-import React, {useRef, useState, useEffect} from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  Image,
-  Pressable,
-  Keyboard,
-  ScrollView,
-} from 'react-native';
+import React, {useEffect} from 'react';
+import {View, Text, Image, ScrollView, useColorScheme} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import tw from 'twrnc';
-
 import useLoginStore from '../../store/authentication/login.store';
 import useRegistrationStore from '../../store/authentication/registration.store';
 import useUsersStore from '../../store/authentication/user.store';
 import {requestUserPermissionAndFcmToken} from '../../helper/notification-helper';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {getCoordinates} from '../../helper/utils/getGeoLocation';
+import {OtpInput} from 'react-native-otp-entry';
 
 const VerifyCode = () => {
-  const codeInputs = useRef([]);
-  const [code, setCode] = useState('');
-  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+  const colorScheme = useColorScheme();
   const {login, storeUserCoordinate} = useLoginStore();
   const {loginDetails} = useRegistrationStore();
   const {updateFcmDeviceToken} = useUsersStore();
 
-  const handleCodeInput = (index, text) => {
-    const newCode = code.substr(0, index) + text + code.substr(index + 1);
-    setCode(newCode);
-    if (text.length === 1 && index < codeInputs.current.length - 1) {
-      codeInputs.current[index + 1].focus();
-    } else if (text.length === 0 && index > 0) {
-      codeInputs.current[index - 1].focus();
-    }
-  };
-
-  const handleVerify = async () => {
+  const handleVerify = async code => {
     const success = await login(code);
     if (success) {
       const fcmToken = await EncryptedStorage.getItem('fcmToken');
@@ -53,29 +33,10 @@ const VerifyCode = () => {
           storeUserCoordinate(position);
         }
       } catch (error) {
-        console.log('VerifyCode:handeVerify:tryCatch:error', error)
+        console.log('VerifyCode:handeVerify:tryCatch:error', error);
       }
-
     }
   };
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
-      () => {
-        setIsKeyboardOpen(true);
-      },
-    );
-    const keyboardDidHideListener = Keyboard.addListener(
-      'keyboardDidHide',
-      () => {
-        setIsKeyboardOpen(false);
-      },
-    );
-    return () => {
-      keyboardDidShowListener.remove();
-      keyboardDidHideListener.remove();
-    };
-  }, []);
 
   useEffect(() => {
     (async () => {
@@ -85,62 +46,67 @@ const VerifyCode = () => {
 
   return (
     <ScrollView
-      style={tw`bg-white`}
+      style={tw`bg-white dark:bg-gray-950`}
       showsVerticalScrollIndicator={false}
       keyboardShouldPersistTaps="handled">
-      <SafeAreaView style={tw`flex-1 bg-white py-0`}>
-        <View style={tw`flex-1 py-2 justify-start items-center`}>
-          <View style={tw`flex`}>
+      <SafeAreaView style={tw`flex-1 py-0`}>
+        <View style={tw`flex-1 py-2 gap-6 justify-start items-center`}>
+          <View style={[tw`bg-white p-3 rounded-full`]}>
             <Image
               source={require('../../assets/images/kaam-logo-verify-code.png')}
               style={[tw`w-14 h-14`, {height: 100, width: 100}]}
               resizeMode="contain"
             />
           </View>
-          <Text style={tw`mt-10 font-bold text-black text-4xl`}>
-            Verify Code
+          <Text
+            style={[
+              tw`text-black dark:text-white text-3xl`,
+              {fontFamily: 'Poppins-Bold'},
+            ]}>
+            Verify One-Time-Password
           </Text>
-          <Text style={tw`py-5 text-sm leading-relaxed text-gray-600`}>
-            Enter verification code received on your phone
+          <Text
+            style={[
+              tw`text-black dark:text-white text-3xl`,
+              {fontFamily: 'Poppins-Bold'},
+            ]}>
+            (OTP)
           </Text>
-          <Text style={tw`py-2 text-sm leading-relaxed text-gray-600`}>
+          <Text
+            style={[
+              tw`my-2 text-sm leading-relaxed text-center text-gray-600 dark:text-gray-300`,
+              {fontFamily: 'Poppins-SemiBold'},
+            ]}>
+            Enter verification code received on your phone {'\n\n'}
             {loginDetails?.dialcode} {loginDetails?.phone}
           </Text>
-          <View style={tw`flex-1 mt-15`}>
-            <View style={tw`flex flex-row justify-center items-center`}>
-              {[0, 1, 2, 3].map(index => (
-                <TextInput
-                  key={index}
-                  ref={ref => (codeInputs.current[index] = ref)}
-                  style={[
-                    {fontFamily: 'Poppins-SemiBold'},
-                    tw`border border-gray-300 text-black rounded-md border-emerald-400 w-12 h-12 mx-2 text-center`,
-                  ]}
-                  keyboardType="numeric"
-                  maxLength={1}
-                  onChangeText={text => {
-                    handleCodeInput(index, text);
-                    setIsKeyboardOpen(true);
-                  }}
-                />
-              ))}
-            </View>
-            <Pressable
-              onPress={handleVerify}
-              style={({pressed}) => [
-                {
-                  backgroundColor: pressed ? '#418c4d' : '#4A9D58',
+          <View style={tw`w-full flex-row justify-center my-5 py-5`}>
+            <OtpInput
+              numberOfDigits={4}
+              focusColor=" rgb(5, 150, 105)"
+              focusStickBlinkingDuration={500}
+              onFilled={text => {
+                handleVerify(text);
+              }}
+              textInputProps={{
+                accessibilityLabel: 'One-Time Password',
+              }}
+              secureTextEntry
+              theme={{
+                containerStyle: [tw`w-2/3`],
+                pinCodeContainerStyle: [tw`w-15 h-15`],
+                filledPinCodeContainerStyle: {
+                  backgroundColor:
+                    colorScheme === 'dark' ? '#0f172a' : '#e2e8f0',
+                  borderColor: '#6ee7b7',
                 },
-                tw`px-8 py-2 ${
-                  isKeyboardOpen ? 'mt-10' : 'mt-15'
-                } flex justify-center items-center rounded-xl`,
-              ]}>
-              {({pressed}) => (
-                <Text style={tw`text-white text-[24px] py-2 font-medium`}>
-                  Verify
-                </Text>
-              )}
-            </Pressable>
+                pinCodeTextStyle: {
+                  color: colorScheme === 'dark' ? '#e2e8f0' : '#0f172a',
+                },
+                focusStickStyle: [tw`text-emerald-600`],
+                focusedPinCodeContainerStyle: [tw`border-emerald-300`],
+              }}
+            />
           </View>
         </View>
       </SafeAreaView>

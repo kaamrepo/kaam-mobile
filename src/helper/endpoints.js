@@ -38,3 +38,7 @@ export const CATEGORIES = `${COMMON_ENDPOINT}categories`;
 export const feathersServices = {
   chats: 'api/chats',
 };
+
+// Public APIs
+
+export const POSTAL_ADDRESS_API_URL = 'https://api.postalpincode.in/pincode';

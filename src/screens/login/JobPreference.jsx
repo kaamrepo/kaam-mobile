@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   useColorScheme,
 } from 'react-native';
-import React, {isValidElement, useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import tw from 'twrnc';
 
@@ -103,7 +103,7 @@ const JobPreferences = ({navigation}) => {
 
   const onSubmit = async data => {
     const tags = selectedJobs.map(job => job._id);
-     const payload = {
+    const payload = {
       aboutme: aboutMe,
       tags,
       ...data,
@@ -197,180 +197,188 @@ const JobPreferences = ({navigation}) => {
           <Text style={tw`text-right mr-5`}>{100 - aboutMe.length}/100</Text>
         </View>
 
-        <View style={tw`w-full my-5 flex flex-row justify-between`}>
-          <View style={tw``}>
-            <Text
-              style={[
-                tw`text-2xl text-black dark:text-white`,
-                {fontFamily: 'Poppins-Bold'},
-              ]}>
-              Experience
-            </Text>
-            <View style={tw`w-[65%] h-1 rounded-full bg-black dark:bg-white`} />
-          </View>
-          <TouchableOpacity
-            onPress={() => append({about: '', employer: '', year: '-'})}
-            style={[
-              tw`w-10 h-10 px-2 rounded-2xl bg-green-600 items-center justify-center`,
-            ]}>
-            <Text style={tw`text-white text-3xl`}>+</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View>
-          {fields.map((item, index) => (
-            <Animated.View
-              entering={ZoomInLeft}
-              exiting={ZoomOutRight}
-              key={item.id}
-              style={[
-                tw`my-3 p-2 rounded-3xl bg-gray-200 dark:bg-gray-800 relative`,
-              ]}>
-              <TouchableOpacity
-                onPress={() => remove(index)}
-                style={[
-                  tw`absolute z-10 right-1 -top-4 w-6 h-6  rounded-2xl bg-red-600 items-center justify-center`,
-                ]}>
-                <Text style={tw`text-white`}>—</Text>
-              </TouchableOpacity>
-
-              <View>
+        {isEnabled ? (
+          <>
+            <View style={tw`w-full my-5 flex flex-row justify-between`}>
+              <View style={tw``}>
                 <Text
                   style={[
-                    tw`text-black dark:text-white my-1 mx-2`,
-                    {fontFamily: 'Regular-Poppins'},
+                    tw`text-2xl text-black dark:text-white`,
+                    {fontFamily: 'Poppins-Bold'},
                   ]}>
-                  Your experience:
+                  Experience
                 </Text>
-                <Controller
-                  control={control}
-                  name={`experience.${index}.about`}
-                  render={({field: {onChange, onBlur, value}}) => (
-                    <TextInput
-                      multiline={true}
-                      numberOfLines={2}
-                      value={value}
-                      onChangeText={onChange}
-                      onBlur={onBlur}
-                      placeholder="Information about your work experience"
-                      style={[
-                        tw`px-4 py-3 h-15 text-gray-800 dark:text-white bg-white dark:bg-gray-700 rounded-2xl border-2 ${
-                          errors?.experience?.[index]?.about
-                            ? 'border-red-500'
-                            : 'border-gray-300'
-                        }`,
-                        {textAlignVertical: 'top'},
-                      ]}
-                      placeholderTextColor={
-                        colorScheme === 'dark' ? '#efefef' : '#334155'
-                      }
-                    />
-                  )}
+                <View
+                  style={tw`w-[65%] h-1 rounded-full bg-black dark:bg-white`}
                 />
-                {errors?.experience?.[index]?.about && (
-                  <Text
-                    style={[
-                      tw`text-[10px] text-red-500 text-right mr-2`,
-                      {fontFamily: 'Poppins-Regular'},
-                    ]}>
-                    {errors.experience[index]?.about?.message}
-                  </Text>
-                )}
               </View>
+              <TouchableOpacity
+                onPress={() => append({about: '', employer: '', year: '-'})}
+                style={[
+                  tw`w-10 h-10 px-2 rounded-2xl bg-green-600 items-center justify-center`,
+                ]}>
+                <Text style={tw`text-white text-3xl`}>+</Text>
+              </TouchableOpacity>
+            </View>
 
-              <View style={tw`mt-2 flex-row justify-between items-center`}>
-                <View style={tw`min-w-[60%]`}>
-                  <Text
+            <View>
+              {fields.map((item, index) => (
+                <Animated.View
+                  entering={ZoomInLeft}
+                  exiting={ZoomOutRight}
+                  key={item.id}
+                  style={[
+                    tw`my-3 p-2 rounded-3xl bg-gray-200 dark:bg-gray-800 relative`,
+                  ]}>
+                  <TouchableOpacity
+                    onPress={() => remove(index)}
                     style={[
-                      tw`text-black dark:text-white my-1 mx-2`,
-                      {fontFamily: 'Regular-Poppins'},
+                      tw`absolute z-10 right-1 -top-4 w-6 h-6  rounded-2xl bg-red-600 items-center justify-center`,
                     ]}>
-                    Employer/Organisation name:
-                  </Text>
-                  <Controller
-                    control={control}
-                    name={`experience.${index}.employer`}
-                    render={({field: {onChange, onBlur, value}}) => (
-                      <TextInput
-                        multiline={true}
-                        numberOfLines={1}
-                        value={value}
-                        onChangeText={onChange}
-                        onBlur={onBlur}
-                        placeholder="eg. KaamPay"
-                        style={[
-                          tw`px-4 py-3 h-10 text-gray-800 dark:text-white bg-white dark:bg-gray-700 rounded-2xl border-2 ${
-                            errors?.experience?.[index]?.employer
-                              ? 'border-red-500'
-                              : 'border-gray-300'
-                          }`,
-                          {textAlignVertical: 'top'},
-                        ]}
-                        placeholderTextColor={
-                          colorScheme === 'dark' ? '#efefef' : '#334155'
-                        }
-                      />
-                    )}
-                  />
+                    <Text style={tw`text-white`}>—</Text>
+                  </TouchableOpacity>
 
-                  {errors?.experience?.[index]?.employer && (
+                  <View>
                     <Text
                       style={[
-                        tw`text-[10px] text-red-500 text-right mr-2`,
-                        {fontFamily: 'Poppins-Regular'},
+                        tw`text-black dark:text-white my-1 mx-2`,
+                        {fontFamily: 'Regular-Poppins'},
                       ]}>
-                      {errors.experience[index]?.employer?.message}
+                      Your experience:
                     </Text>
-                  )}
-                </View>
-                <View style={tw`min-w-[35%]`}>
-                  <Text
-                    style={[
-                      tw`text-black dark:text-white my-1 mx-2`,
-                      {fontFamily: 'Regular-Poppins'},
-                    ]}>
-                    Years of experience:
-                  </Text>
-                  <Controller
-                    control={control}
-                    name={`experience.${index}.year`}
-                    render={({field: {onChange, onBlur, value}}) => (
-                      <TextInput
-                        multiline={true}
-                        numberOfLines={2}
-                        value={value}
-                        onChangeText={onChange}
-                        onBlur={onBlur}
-                        placeholder="eg. 2020 - 2023"
+                    <Controller
+                      control={control}
+                      name={`experience.${index}.about`}
+                      render={({field: {onChange, onBlur, value}}) => (
+                        <TextInput
+                          multiline={true}
+                          numberOfLines={2}
+                          value={value}
+                          onChangeText={onChange}
+                          onBlur={onBlur}
+                          placeholder="Information about your work experience"
+                          style={[
+                            tw`px-4 py-3 h-15 text-gray-800 dark:text-white bg-white dark:bg-gray-700 rounded-2xl border-2 ${
+                              errors?.experience?.[index]?.about
+                                ? 'border-red-500'
+                                : 'border-gray-300'
+                            }`,
+                            {textAlignVertical: 'top'},
+                          ]}
+                          placeholderTextColor={
+                            colorScheme === 'dark' ? '#efefef' : '#334155'
+                          }
+                        />
+                      )}
+                    />
+                    {errors?.experience?.[index]?.about && (
+                      <Text
                         style={[
-                          tw`px-4 py-3 h-10 text-gray-800 dark:text-white bg-white dark:bg-gray-700 rounded-2xl border-2 ${
-                            errors?.experience?.[index]?.year
-                              ? 'border-red-500'
-                              : 'border-gray-300'
-                          }`,
-                          {textAlignVertical: 'top'},
-                        ]}
-                        placeholderTextColor={
-                          colorScheme === 'dark' ? '#efefef' : '#334155'
-                        }
-                      />
+                          tw`text-[10px] text-red-500 text-right mr-2`,
+                          {fontFamily: 'Poppins-Regular'},
+                        ]}>
+                        {errors.experience[index]?.about?.message}
+                      </Text>
                     )}
-                  />
+                  </View>
 
-                  {errors?.experience?.[index]?.year && (
-                    <Text
-                      style={[
-                        tw`text-[10px] text-red-500 text-right mr-2`,
-                        {fontFamily: 'Poppins-Regular'},
-                      ]}>
-                      {errors.experience[index].year.message}
-                    </Text>
-                  )}
-                </View>
-              </View>
-            </Animated.View>
-          ))}
-        </View>
+                  <View style={tw`mt-2 flex-row justify-between items-center`}>
+                    <View style={tw`min-w-[60%]`}>
+                      <Text
+                        style={[
+                          tw`text-black dark:text-white my-1 mx-2`,
+                          {fontFamily: 'Regular-Poppins'},
+                        ]}>
+                        Employer/Organisation name:
+                      </Text>
+                      <Controller
+                        control={control}
+                        name={`experience.${index}.employer`}
+                        render={({field: {onChange, onBlur, value}}) => (
+                          <TextInput
+                            multiline={true}
+                            numberOfLines={1}
+                            value={value}
+                            onChangeText={onChange}
+                            onBlur={onBlur}
+                            placeholder="eg. KaamPay"
+                            style={[
+                              tw`px-4 py-3 h-10 text-gray-800 dark:text-white bg-white dark:bg-gray-700 rounded-2xl border-2 ${
+                                errors?.experience?.[index]?.employer
+                                  ? 'border-red-500'
+                                  : 'border-gray-300'
+                              }`,
+                              {textAlignVertical: 'top'},
+                            ]}
+                            placeholderTextColor={
+                              colorScheme === 'dark' ? '#efefef' : '#334155'
+                            }
+                          />
+                        )}
+                      />
+
+                      {errors?.experience?.[index]?.employer && (
+                        <Text
+                          style={[
+                            tw`text-[10px] text-red-500 text-right mr-2`,
+                            {fontFamily: 'Poppins-Regular'},
+                          ]}>
+                          {errors.experience[index]?.employer?.message}
+                        </Text>
+                      )}
+                    </View>
+                    <View style={tw`min-w-[35%]`}>
+                      <Text
+                        style={[
+                          tw`text-black dark:text-white my-1 mx-2`,
+                          {fontFamily: 'Regular-Poppins'},
+                        ]}>
+                        Years of experience:
+                      </Text>
+                      <Controller
+                        control={control}
+                        name={`experience.${index}.year`}
+                        render={({field: {onChange, onBlur, value}}) => (
+                          <TextInput
+                            multiline={true}
+                            numberOfLines={2}
+                            value={value}
+                            onChangeText={onChange}
+                            onBlur={onBlur}
+                            placeholder="eg. 2020 - 2023"
+                            style={[
+                              tw`px-4 py-3 h-10 text-gray-800 dark:text-white bg-white dark:bg-gray-700 rounded-2xl border-2 ${
+                                errors?.experience?.[index]?.year
+                                  ? 'border-red-500'
+                                  : 'border-gray-300'
+                              }`,
+                              {textAlignVertical: 'top'},
+                            ]}
+                            placeholderTextColor={
+                              colorScheme === 'dark' ? '#efefef' : '#334155'
+                            }
+                          />
+                        )}
+                      />
+
+                      {errors?.experience?.[index]?.year && (
+                        <Text
+                          style={[
+                            tw`text-[10px] text-red-500 text-right mr-2`,
+                            {fontFamily: 'Poppins-Regular'},
+                          ]}>
+                          {errors.experience[index].year.message}
+                        </Text>
+                      )}
+                    </View>
+                  </View>
+                </Animated.View>
+              ))}
+            </View>
+          </>
+        ) : (
+          ''
+        )}
       </ScrollView>
       <View style={tw`py-5 flex-row justify-around`}>
         <TouchableOpacity

@@ -126,7 +126,7 @@ const App = () => {
   }, []);
 
   if (!isLoggedIn) {
-    console.log("inside !isLoggedIn")
+    console.log('inside !isLoggedIn');
 
     return (
       <>
@@ -137,22 +137,40 @@ const App = () => {
             <Stack.Screen
               name="IntroSelectLanguage"
               component={IntroSelectLanguage}
-              options={{title: 'Kaam', headerShown: false}}
+              options={{
+                title: 'Kaam',
+                headerShown: false,
+              }}
             />
             <Stack.Screen
               name="Login"
               component={LoginScreen}
-              options={{title: 'Login', headerShown: true}}
+              options={{
+                title: 'Login',
+                headerShown: true,
+                headerStyle: [tw`bg-white dark:bg-slate-900`],
+                headerTitleStyle: [tw` text-black dark:text-white`],
+              }}
             />
             <Stack.Screen
               name="registerScreen"
               component={RegisterScreen}
-              options={{title: 'Register', headerShown: true}}
+              options={{
+                title: 'Register',
+                headerShown: true,
+                headerStyle: [tw`bg-white dark:bg-slate-900`],
+                headerTitleStyle: [tw` text-black dark:text-white`],
+              }}
             />
             <Stack.Screen
               name="VerifyCode"
               component={VerifyCode}
-              options={{title: 'Verify Code', headerShown: true}}
+              options={{
+                title: 'Verify Code',
+                headerShown: true,
+                headerStyle: [tw`bg-white dark:bg-slate-900`],
+                headerTitleStyle: [tw` text-black dark:text-white`],
+              }}
             />
           </Stack.Navigator>
         </NavigationContainer>
@@ -161,7 +179,7 @@ const App = () => {
     );
   }
   if (isLoggedIn && !Array.isArray(loggedInUser?.tags)) {
-    console.log("inside isLoggedIn && Array.isArray(loggedInUser?.tags)")
+    console.log('inside isLoggedIn && Array.isArray(loggedInUser?.tags)');
     return (
       <>
         <NavigationContainer>
@@ -185,7 +203,7 @@ const App = () => {
     );
   }
   if (isLoggedIn && Array.isArray(loggedInUser?.tags)) {
-    console.log("inside isLoggedIn && Array.isArray(loggedInUser?.tags)")
+    console.log('inside isLoggedIn && Array.isArray(loggedInUser?.tags)');
 
     return (
       <>
@@ -214,8 +232,8 @@ const App = () => {
               options={{headerShown: false}}
             />
             <Stack.Screen
-                   name="HeaderBanner"
-                   component={HeaderBanner}
+              name="HeaderBanner"
+              component={HeaderBanner}
               options={{headerShown: false}}
             />
             <Stack.Screen
@@ -263,7 +281,7 @@ const App = () => {
               component={ApplyNow}
               options={{headerShown: false}}
             />
-            
+
             <Stack.Screen
               name="AllJobsFlatlist"
               component={AllJobsFlatlist}
