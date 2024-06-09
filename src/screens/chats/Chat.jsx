@@ -88,7 +88,6 @@ const Chat = ({route, navigation}) => {
       getApplication();
     }
   }, [applicationId, approvalStatus]);
-  console.log('Applciaiton . status', approvalStatus);
   const {loggedInUser} = useLoginStore();
   return (
     <SafeAreaView style={tw`flex-1 bg-white dark:bg-gray-950`} edges={['top']}>

@@ -86,7 +86,6 @@ const App = () => {
 
   async function onMessageReceived(message) {
     await notifee.requestPermission();
-    console.log('Notifee', message);
     try {
       const notifyObj = JSON.parse(message.data.notifee);
       const channelId = await notifee.createChannel({
@@ -126,8 +125,6 @@ const App = () => {
   }, []);
 
   if (!isLoggedIn) {
-    console.log('inside !isLoggedIn');
-
     return (
       <>
         <NavigationContainer>

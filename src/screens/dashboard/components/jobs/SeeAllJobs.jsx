@@ -132,7 +132,6 @@ export const SeeAllJobs = ({ route, navigation }) => {
         };
       
         const result = await getJobs(payload);
-        console.log("recoedivmad; jfresult ========",result);
         if (result?.length === 0) {
           loadMoreRef.current = false; // No more data to load
         } else {
@@ -154,7 +153,6 @@ export const SeeAllJobs = ({ route, navigation }) => {
     ({ item, index }) => (
       <Pressable
         onPress={() => {
-          console.log("item in press", item);
           navigation.navigate('ApplyNow', { id: item._id });
         }}
         key={item._id} // Assuming _id is unique and stable
@@ -173,7 +171,7 @@ export const SeeAllJobs = ({ route, navigation }) => {
                   { fontFamily: 'Poppins-SemiBold' },
                 ]}
                 numberOfLines={1}
-                ellipsizeMode="tail">
+                ellipsizeMode="tail"> Employer : 
                 {item?.employerDetails?.firstname} {item?.employerDetails?.lastname}
               </Text>
               <Text
@@ -183,7 +181,7 @@ export const SeeAllJobs = ({ route, navigation }) => {
                 ]}
                 numberOfLines={1}
                 ellipsizeMode="tail">
-                Discription: {item?.description}
+                Job: {item?.jobtitle}
               </Text>
               <Text
                 style={[
@@ -207,14 +205,17 @@ export const SeeAllJobs = ({ route, navigation }) => {
         <View style={tw`flex-row flex-wrap mt-2`}>
           {item?.tags?.length > 0 ? (
             <>
-              {item.tags.map((tag, tagIndex) => (
-                <Text
-                  key={tagIndex}
-                  style={tw`bg-gray-200 text-black text-[12px] px-2 py-1 rounded-full mr-2 mb-2`}>
-                  {tag}
-                </Text>
-              ))}
-            </>
+      {item.tags.map((tag, tagIndex) => {
+        const category = categories.find(cat => cat._id === tag);
+        return (
+          <Text
+            key={tagIndex}
+            style={tw`bg-gray-200 text-black text-[12px] px-2 py-1 rounded-full mr-2 mb-2`}>
+            {category ? category.name : tag}
+          </Text>
+        );
+      })}
+    </>
           ) : (
             <Text
               style={tw`text-gray-500 text-[12px]`}>

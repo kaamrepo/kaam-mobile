@@ -16,9 +16,11 @@ import { primaryBGColor } from '../../helper/utils/colors';
   const jobDescription = {
     image: Image1,
   };
+  import useCategoriesStore from '../../store/categories.store';
 
   const ApplyNow = ({route, navigation}) => {
     const {isLoading} = useLoaderStore();
+    const { categories } = useCategoriesStore();
     const bgColor = primaryBGColor;
     const {getNearByJobById, jobApplicationForm, clearJob, applyForJob} = useJobStore();
 
@@ -99,16 +101,17 @@ import { primaryBGColor } from '../../helper/utils/colors';
             {/* jobApplicationForm tags */}
             <View
               style={tw`w-full flex-row flex-wrap gap-2 justify-around items-center`}>
-              {jobApplicationForm?.tags?.map(tag => (
-                <Text
+              {jobApplicationForm?.tags?.map(tag => {
+                const category = categories.find(cat => cat._id === tag);
+             return   <Text
                   key={tag}
                   style={[
                     tw`text-sm text-white px-5 py-[5px] shadow-lg bg-blue-200/30 rounded-full`,
                     {fontFamily: 'Poppins-Regular'},
                   ]}>
-                  {tag}
+                  {category ? category.name : tag}
                 </Text>
-              ))}
+              })}
             </View>
             {/* completed:jobApplicationForm tags */}
 

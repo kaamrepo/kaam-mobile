@@ -151,7 +151,6 @@ export const SeeAllStaffs = ({ route, navigation }) => {
     ({ item, index }) => (
       <Pressable
         onPress={() => {
-          console.log("item in press", item);
           navigation.navigate('EmployeeDetails', { user: item });
         }}
         key={item._id} // Assuming _id is unique and stable

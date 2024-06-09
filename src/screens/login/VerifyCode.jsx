@@ -28,7 +28,6 @@ const VerifyCode = () => {
       // Store coordinates Here
       try {
         const position = await getCoordinates();
-        console.log('poisition to get after verify', position);
         if (position?.length !== 0) {
           storeUserCoordinate(position);
         }

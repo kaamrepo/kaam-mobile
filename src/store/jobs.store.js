@@ -45,14 +45,12 @@ const useJobStore = create((set, get) => ({
         excludeIdsInJobSearch?.length && {excludeIdsInJobSearch},
         createdby && {createdby},
       );
-console.log("params before sendign for job",params);
       const res = await API.get(`${JOBS}`, {
         headers: {Authorization: await getToken()},
         params: params,
       });
 
       if (res && res.data) {       
-        console.log("res.data?.data",res.data?.data);
         set({job:  res.data?.data});
         return res.data?.data;
       }
@@ -116,7 +114,6 @@ console.log("params before sendign for job",params);
         set({jobApplicationForm: res.data});
       }
     } catch (error) {
-      console.log(error);
       console.log(JSON.stringify(error, null, 5));
       Toast.show({
         type: 'tomatoToast',
@@ -130,7 +127,6 @@ console.log("params before sendign for job",params);
     payload.employerid ? (params.employerid = payload.employerid) : '';
     payload.appliedby ? (params.appliedby = payload.appliedby) : '';
     try {
-      console.log('params before sending', params);
       const res = await API.get(`${JOBS_APPLICATIONS}`, {
         headers: {Authorization: await getToken()},
         params: params,
@@ -227,7 +223,6 @@ console.log("params before sendign for job",params);
       let params = {};
       payload.status ? (params.status = payload.status) : '';
       payload.applicationId ? (params._id = payload.applicationId) : '';
-      console.log('params before sending', params);
       const res = await API.patch(
         `${JOBS_APPLICATIONS}/${params._id}`,
         {status: params.status},

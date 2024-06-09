@@ -12,7 +12,6 @@ const useCategoriesStore = create((set, get) => ({
         payload?.isActive ? params.isActive = payload.isActive :''
         payload?.skip ? params.skip = payload.skip : ''
         payload?.limit ? params.limit = payload.limit : ''
-        console.log("params",params);
       const res = await API.get(CATEGORIES, {
         headers: {Authorization: await getToken()},
         params,

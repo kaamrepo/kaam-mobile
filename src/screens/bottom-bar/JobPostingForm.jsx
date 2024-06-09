@@ -593,8 +593,8 @@ const JobPostingForm = ({navigation}) => {
                   <Chip
                     key={category?.name}
                     label={category?.name}
-                    selected={field.value === category?.name}
-                    onPress={() => field.onChange(category?.name)}
+                    selected={field.value === category?._id}
+                    onPress={() => field.onChange(category?._id)}
                   />
                 ))}
               </View>

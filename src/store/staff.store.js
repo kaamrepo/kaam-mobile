@@ -11,7 +11,6 @@ const useStaffStore = create((set, get) => ({
   clearUsers: () => set({nearbyusers: [],stafflist:[]}),
   getStaff: async (payload) => {
     try {
-      console.log("payload in getStaff *************",payload);
       const params = {};
      payload.skip? params.skip = payload.skip : '';
      payload.limit? params.limit = payload.limit : '';
@@ -24,7 +23,6 @@ const useStaffStore = create((set, get) => ({
       if (payload?.text) {
         params.wildString = payload.text;
       }
-      console.log("params before sending===================",params);
       const res = await API.get(`${USER}`, {
         headers: {Authorization: await getToken()},
         params,

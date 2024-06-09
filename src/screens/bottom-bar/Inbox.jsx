@@ -76,7 +76,6 @@ const MessageList = ({isLoading, inboxList, loggedInUserId}) => {
 };
 
 const MessageListItem = ({item, loggedInUserId, isLastItem}) => {
-  console.log('item', JSON.stringify(item, null, 4));
   return (
     <View
       style={[
