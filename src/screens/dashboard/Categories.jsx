@@ -33,7 +33,7 @@ const Categories = ({navigation, selectedSearchType}) => {
         <Pressable
           onPress={() => {
             if (selectedSearchType === 'jobs') {
-              navigation.navigate('SeeAllJobs');
+              navigation.navigate('SeeAllJobs',{category: item?._id});
             }
             if (selectedSearchType === 'staff') {
               navigation.navigate('SeeAllStaffs', {category: item?._id});
