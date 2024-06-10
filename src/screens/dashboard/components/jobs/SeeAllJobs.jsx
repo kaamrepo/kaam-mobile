@@ -125,7 +125,7 @@ export const SeeAllJobs = ({ route, navigation }) => {
         const payload = {
           skip: skipValue,
           limit,
-          text: searchText,
+          wildStringForJobs: searchText,
           categories: selectedCategories,
           excludeIds: [loggedInUser?._id],
           exclude: '_id',

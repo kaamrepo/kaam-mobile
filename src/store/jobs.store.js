@@ -24,7 +24,7 @@ const useJobStore = create((set, get) => ({
         limit,
         type,
         coordinates,
-        wildString,
+        wildStringForJobs,
         excludeIds,
         createdby,
         excludeIdsInJobSearch,
@@ -39,12 +39,13 @@ const useJobStore = create((set, get) => ({
         type && {type},
         exclude && {exclude},
         coordinates?.length && {coordinates},
-        wildString && {wildString},
+        wildStringForJobs && {wildStringForJobs},
         excludeIds?.length && {excludeIds},
         categories?.length && {categories},
         excludeIdsInJobSearch?.length && {excludeIdsInJobSearch},
         createdby && {createdby},
       );
+      console.log("params beofre sneding for job search",params);
       const res = await API.get(`${JOBS}`, {
         headers: {Authorization: await getToken()},
         params: params,
