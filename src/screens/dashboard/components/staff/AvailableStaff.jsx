@@ -1,4 +1,5 @@
 import React, { useMemo, useCallback, useEffect } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { View, Text, Pressable, Image, ScrollView, TouchableOpacity } from 'react-native';
 import tw from 'twrnc';
 import { Translation } from '../../Translation';
@@ -9,15 +10,17 @@ import useLoginStore from '../../../../store/authentication/login.store';
 const AvailableStaff = ({ language, isLoading, navigation}) => {
   const {getStaff,stafflist} = useStaffStore();
   const {loggedInUser} = useLoginStore();
-  useEffect(()=>{
-    const payload = {
-      skip:0,
-      limit:10,
-      excludeIds:[loggedInUser?._id],
-      exclude:'_id'
-    }
-    getStaff(payload);
-  },[])
+  useFocusEffect(
+    useCallback(() => {
+      const payload = {
+        skip: 0,
+        limit: 10,
+        excludeIds: [loggedInUser?._id],
+        exclude: '_id'
+      };
+      getStaff(payload);
+    }, [getStaff, loggedInUser])
+  );
   const handleSeeAllPress = useCallback(() => {
     navigation.navigate('SeeAllStaffs',{param:'all'});
 

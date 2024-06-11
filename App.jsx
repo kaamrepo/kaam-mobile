@@ -36,6 +36,9 @@ import {EngagmentInitiation} from './src/screens/job-application/EngagmentInitia
 import EmployeeDetails from './src/screens/job-application/EmployeeDetails';
 import JobPostingForm from './src/screens/bottom-bar/JobPostingForm';
 import {ApplicantListScreen} from './src/screens/job-application/Applicants';
+import { ContactSupport } from './src/screens/drawer-screens/ContactSupport';
+import { TermsAndConditions } from './src/screens/drawer-screens/settings/TermsAndConditions';
+import { AboutUs } from './src/screens/drawer-screens/AboutUs';
 import client from './client';
 import messaging from '@react-native-firebase/messaging';
 import notifee, {AndroidImportance} from '@notifee/react-native';
@@ -287,6 +290,21 @@ const App = () => {
             <Stack.Screen
               name="SeeAllStaffs"
               component={SeeAllStaffs}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="ContactSupport"
+              component={ContactSupport}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="TermsAndConditions"
+              component={TermsAndConditions}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="AboutUs"
+              component={AboutUs}
               options={{headerShown: false}}
             />
             <Stack.Screen

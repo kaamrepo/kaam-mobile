@@ -1,6 +1,6 @@
 import {create} from 'zustand';
 import API from '../../helper/API';
-import {LOGIN_USER, GET_OTP} from '../../helper/endpoints';
+import {LOGIN_USER, GET_OTP,CONFIG} from '../../helper/endpoints';
 import Toast from 'react-native-toast-message';
 import useRegistrationStore from './registration.store.js';
 import EncryptedStorage from 'react-native-encrypted-storage';
@@ -11,11 +11,19 @@ const useLoginStore = create((set, get) => ({
   isLoggedIn: false,
   language: 'English',
   coordinates:[],
+  appconfig:{},
   getLanguage: async () => {
     (async () => {
       let response = await retrieveLanguage();
       if (response) set({language: response});
     })();
+  },
+  getAppConfig: async () => {
+    const res = await API.get(`${CONFIG}`, {
+      headers: {Authorization: await getToken()},
+    });
+    set({appconfig: res?.data?.data[0]});
+    
   },
   setLoggedInUserDetails: async (user, isLoggedIn) => {
     set({isLoggedIn: isLoggedIn, loggedInUser: user});

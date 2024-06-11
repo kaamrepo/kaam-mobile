@@ -1079,5 +1079,3 @@ const PersonalInfo = ({navigation}) => {
 };
 
 export default PersonalInfo;
-
-const styles = StyleSheet.create({});

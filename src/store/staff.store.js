@@ -7,22 +7,21 @@ import useLoginStore, {getToken} from './authentication/login.store';
 const useStaffStore = create((set, get) => ({
   nearbyusers: [],
   stafflist: [],
-  selectedstaff:[],
-  clearUsers: () => set({nearbyusers: [],stafflist:[]}),
-  getStaff: async (payload) => {
+  selectedstaff: [],
+  clearUsers: () => set({nearbyusers: [], stafflist: []}),
+  getStaff: async payload => {
     try {
-      const params = {};
-     payload.skip? params.skip = payload.skip : '';
-     payload.limit? params.limit = payload.limit : '';
-     payload.limit? params.limit = payload.limit : '';
-     payload?.excludeIds?.length !== 0 ? params.excludeIds = payload?.excludeIds:'';
-     payload?.categories?.length !== 0 ? params.categories = payload?.categories:'';
-     payload?.exclude ? params.exclude = payload?.exclude:'';
-     payload?.text ? params.wildString = payload?.text:'';
-     params.sortDesc=['createdat'];
-      if (payload?.text) {
-        params.wildString = payload.text;
-      }
+      const params = {
+        skip: payload.skip || undefined,
+        limit: payload.limit || undefined,
+        excludeIds: payload.excludeIds?.length ? payload.excludeIds : undefined,
+        categories: payload.categories?.length ? payload.categories : undefined,
+        exclude: payload.exclude || undefined,
+        wildString: payload.text || undefined,
+        activeforjobs: payload.activeforjobs || true,
+        sortDesc: ['createdat'],
+      };
+  
       const res = await API.get(`${USER}`, {
         headers: {Authorization: await getToken()},
         params,
@@ -32,7 +31,7 @@ const useStaffStore = create((set, get) => ({
           stafflist: res?.data?.data,
         });
         return res.data?.data;
-      }else{
+      } else {
         return false;
       }
     } catch (error) {
@@ -46,9 +45,9 @@ const useStaffStore = create((set, get) => ({
         headers: {Authorization: await getToken()},
       });
       if (res && res.data) {
-        return res.data
-      }else{
-        return false
+        return res.data;
+      } else {
+        return false;
       }
     } catch (error) {
       console.log(error);

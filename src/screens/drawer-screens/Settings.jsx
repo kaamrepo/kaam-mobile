@@ -29,24 +29,7 @@ const Settings = ({navigation}) => {
   };
 
   const applcationOptions = [
-    {
-      icon: <ProfileSVG />,
-      title: 'Profile Visibility',
-      titleClass: 'text-[#0D0D26]',
-      handleNavigation: () => {},
-    },
-    {
-      icon: <NotificationsSVG />,
-      title: 'Notification',
-      titleClass: 'text-[#0D0D26]',
-      handleNavigation: () => {},
-    },
-    {
-      icon: <ChangePasswordSVG />,
-      title: 'Change Password',
-      titleClass: 'text-[#0D0D26]',
-      handleNavigation: () => {},
-    },
+  
     {
       icon: <LanguageSVG />,
       title: 'Language',
@@ -55,12 +38,7 @@ const Settings = ({navigation}) => {
         bottomSheetSelectLanguageRef.current.snapToIndex(1);
       },
     },
-    {
-      icon: <ThemeSVG />,
-      title: 'Theme',
-      titleClass: 'text-[#0D0D26]',
-      handleNavigation: () => {},
-    },
+
     {
       icon: <DeleteAccountSVG />,
       title: 'Delete Account',
@@ -69,30 +47,15 @@ const Settings = ({navigation}) => {
     },
   ];
   const aboutOptions = [
-    {
-      icon: <PrivacySVG />,
-      title: 'Privacy',
-      titleClass: 'text-[#0D0D26]',
-      handleNavigation: () => {},
-    },
+  
     {
       icon: <TermsAndCondtionsSVG />,
       title: 'Terms and conditions',
       titleClass: 'text-[#0D0D26]',
       handleNavigation: () => {},
     },
-    {
-      icon: <HelpCenterSVG />,
-      title: 'Help Center',
-      titleClass: 'text-[#0D0D26]',
-      handleNavigation: () => {},
-    },
-    {
-      icon: <SupportSVG />,
-      title: 'Support',
-      titleClass: 'text-[#0D0D26]',
-      handleNavigation: () => {},
-    },
+  
+  
     {
       icon: <AboutSVG />,
       title: 'About',

@@ -244,20 +244,20 @@ export const SeeAllStaffs = ({ route, navigation }) => {
             />
           </Pressable>
           <View
-            style={tw`px-2 flex-1 bg-[#F2F2F3] rounded-lg h-10 flex-row items-center pr-2 shadow-2xl`}>
+            style={tw`mt-2 mx-2 px-2 flex-1 bg-[#F2F2F3] rounded-lg h-10 flex-row items-center pr-2 shadow-2xl`}>
             <Icon name="search" size={20} color="gray" style={tw`mx-2`} />
             <TextInput
-              style={tw`flex-1 text-sm text-black`}
-              placeholder="Search"
+              style={tw`text-sm text-black mx-3`}
+              placeholder="Search staff"
               placeholderTextColor="gray"
               onChangeText={(wildString) => handleSearch(wildString)}
             />
           </View>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={showModal}
             style={tw`w-10 h-10 bg-[#F2F2F3] rounded-lg items-center justify-center ml-2 shadow-2xl`}>
             <FilterIconSVG />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
         {categories?.length !== 0 ? (
           renderCategories

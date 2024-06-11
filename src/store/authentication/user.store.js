@@ -175,6 +175,28 @@ const useUsersStore = create((set, get) => ({
       return false;
     }
   },
+  updateActiveForJobsStatus: async (userid, status) => {
+    const data = {activeforjobs:status}
+    try {
+      console.log("STATUS CALLED TO UPDATE",status);
+      console.log("STATUS CALLED TO DATAaaaaaaaa",data);
+      const res = await API.patch(`${USER}/${userid}`, data, {
+        headers: {
+          Authorization: await getToken(),
+        },
+      });
+
+      if (res?.data) {
+        useLoginStore.getState().setloggedInUser(res.data);
+       
+        return true;
+      }
+    } catch (error) {
+      console.log(JSON.stringify(error, null, 4));
+      
+      return false;
+    }
+  },
 }));
 
 export default useUsersStore;

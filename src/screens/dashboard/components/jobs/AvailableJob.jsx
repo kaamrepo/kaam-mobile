@@ -1,4 +1,5 @@
 import React, {useMemo, useCallback, useEffect} from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import {
   View,
   Text,
@@ -16,15 +17,18 @@ import useLoginStore from '../../../../store/authentication/login.store';
 const AvailableJob = ({language, isLoading, navigation,category}) => {
   const {getJobs, job} = useJobStore();
   const {loggedInUser} = useLoginStore();
-  useEffect(() => {
-    const payload = {
-      skip: 0,
-      limit: 10,
-      excludeIds: [loggedInUser._id],
-      exclude:'createdby'
-    };
-    getJobs(payload);
-  }, []);
+ 
+  useFocusEffect(
+    useCallback(() => {
+      const payload = {
+        skip: 0,
+        limit: 10,
+        excludeIds: [loggedInUser._id],
+        exclude: 'createdby'
+      };
+      getJobs(payload);
+    }, [getJobs, loggedInUser]) // Update the dependency array to include getJobs and loggedInUser
+  );
   const handleSeeAllPress = useCallback(() => {
     navigation.navigate('SeeAllJobs');
   }, [navigation]);
