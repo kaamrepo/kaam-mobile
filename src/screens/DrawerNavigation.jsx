@@ -11,6 +11,9 @@ import PersonalInfo from './drawer-screens/PersonalInfo';
 import Settings from './drawer-screens/Settings';
 import Icon, {Icons} from '../components/Icons';
 import tw from 'twrnc';
+import { ContactSupport } from './drawer-screens/ContactSupport';
+import { TermsAndConditions } from './drawer-screens/settings/TermsAndConditions';
+import { AboutUs } from './drawer-screens/AboutUs';
 
 function DrawerNavigation() {
   return (
@@ -26,6 +29,9 @@ function DrawerNavigation() {
         options={{headerShown: false, drawerItemStyle: {display: 'none'}}}
       />
       <Drawer.Screen name="View Profile" component={PersonalInfo} />
+      <Drawer.Screen name="ContactSupport" component={ContactSupport} />
+      <Drawer.Screen name="TermsAndConditions" component={TermsAndConditions} />
+      <Drawer.Screen name="AboutUs" component={AboutUs} />
       {/* <Drawer.Screen name="View Profile" component={ViewProfile} /> */}
       <Drawer.Screen
         name="Settings"

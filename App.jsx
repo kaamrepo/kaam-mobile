@@ -293,21 +293,6 @@ const App = () => {
               options={{headerShown: false}}
             />
             <Stack.Screen
-              name="ContactSupport"
-              component={ContactSupport}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen
-              name="TermsAndConditions"
-              component={TermsAndConditions}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen
-              name="AboutUs"
-              component={AboutUs}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen
               name="ApplicantListScreen"
               component={ApplicantListScreen}
               options={{headerShown: false}}
