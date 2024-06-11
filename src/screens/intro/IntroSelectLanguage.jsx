@@ -14,6 +14,7 @@ import tw from 'twrnc';
 import Languages from '../../components/Languages.json';
 import GeneralStatusBar from '../../components/GeneralStatusBar';
 import useLoginStore from '../../store/authentication/login.store';
+import Icon, {Icons} from '../../components/Icons';
 const IntroSelectLanguage = ({navigation}) => {
   const {selectLanguage} = useLoginStore();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -29,25 +30,36 @@ const IntroSelectLanguage = ({navigation}) => {
       <View style={styles.separator} />
     </View>
   );
-  const renderLanguageItem = ({ item }) => {
-    const isClickable = ["मराठी", "हिंदी", "English"].includes(item.lang);
-    return (<View >
-      <TouchableOpacity  onPress={() => {
-          if (isClickable) {
-            handleDropdownChange(item.lang);
-            toggleModal();
-          }
-        }} style={[
-          tw`flex flex-row justify-between bg-white rounded-lg py-2 px-6`,
-          !isClickable && tw`opacity-50`, // Add opacity for non-clickable items
-        ]}
-        disabled={!isClickable}>
-        <Text style={tw`text-black text-base text-center font-bold mr-5`}>{item.lang}</Text>
-        {item.lang === selectedOption  && isClickable  && <View style={tw`w-4 h-4 mt-1`}>
-          <Image source={require('../../assets/images/right_tik.png')} style={tw`w-[100%] h-[100%]`} />
-        </View>}
-      </TouchableOpacity>
-    </View>)
+  const renderLanguageItem = ({item}) => {
+    const isClickable = ['मराठी', 'हिंदी', 'English'].includes(item.lang);
+    return (
+      <View>
+        <TouchableOpacity
+          onPress={() => {
+            if (isClickable) {
+              handleDropdownChange(item.lang);
+              toggleModal();
+            }
+          }}
+          style={[
+            tw`flex flex-row justify-between bg-white rounded-lg py-2 px-6`,
+            !isClickable && tw`opacity-50`, // Add opacity for non-clickable items
+          ]}
+          disabled={!isClickable}>
+          <Text style={tw`text-black text-base text-center font-bold mr-5`}>
+            {item.lang}
+          </Text>
+          {item.lang === selectedOption && isClickable && (
+            <View style={tw`w-4 h-4 mt-1`}>
+              <Image
+                source={require('../../assets/images/right_tik.png')}
+                style={tw`w-[100%] h-[100%]`}
+              />
+            </View>
+          )}
+        </TouchableOpacity>
+      </View>
+    );
   };
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -79,36 +91,38 @@ const IntroSelectLanguage = ({navigation}) => {
           <View style={styles.bottomBottomPanel}>
             <TouchableOpacity
               onPress={toggleModal}
-              style={tw`flex flex-row border-2 border-green-500  bg-white rounded-lg py-2 px-4`}>
-              <Text style={tw`text-black text-base font-bold mr-20`}>
+              style={tw`w-2/4 mx-auto flex flex-row justify-between items-center border-2 border-emerald-500  bg-white rounded-lg py-3 px-5`}>
+              <Text
+                style={[
+                  tw`text-black text-base`,
+                  {fontFamily: 'Poppins-SemiBold'},
+                ]}>
                 {selectedOption}
               </Text>
-              <View style={tw`w-4 h-4 mt-1`}>
+              <View style={tw`w-4 h-4`}>
                 <Image
                   source={require('../../assets/images/right_tik.png')}
                   style={tw`w-[100%] h-[100%]`}
                 />
               </View>
             </TouchableOpacity>
-            <View style={tw`my-14`}>
+            <View style={tw`mt-15 w-full h-15 flex-row justify-center`}>
               <Pressable
                 onPress={() => {
-                  // navigation.replace('IntroJobSearch');
                   navigation.replace('Login');
                   selectLanguage(selectedOption);
                 }}
                 style={({pressed}) => [
-                  {
-                    backgroundColor: pressed ? '#d7dbd8' : 'transparent',
-                  },
-                  tw`w-1/2 items-center justify-center rounded-full`,
+                  tw`w-15 h-full items-center justify-center rounded-full shadow-lg ${
+                    pressed ? 'bg-emerald-600' : 'bg-emerald-500'
+                  }`,
                 ]}>
-                {({pressed}) => (
-                  <Image
-                    source={require('../../assets/images/gotonextScreen.png')}
-                    style={tw`w-12 h-12`}
-                  />
-                )}
+                <Icon
+                  type={Icons.Entypo}
+                  name={'chevron-right'}
+                  size={35}
+                  style={[tw`text-white`]}
+                />
               </Pressable>
             </View>
           </View>

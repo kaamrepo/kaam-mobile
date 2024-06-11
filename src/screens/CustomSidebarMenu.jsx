@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -7,31 +7,30 @@ import {
   Pressable,
   TouchableOpacity,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { DrawerContentScrollView } from '@react-navigation/drawer';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {DrawerContentScrollView} from '@react-navigation/drawer';
 import tw from 'twrnc';
-import Icon, { Icons } from '../components/Icons';
+import Icon, {Icons} from '../components/Icons';
 import Toast from 'react-native-toast-message';
 import {Switch} from 'react-native-switch';
 import PersonalInformationSVG from '../assets/svgs/Personal Information.svg';
 import SettingsSVG from '../assets/svgs/Settings.svg';
 import LogoutSVG from '../assets/svgs/Logout.svg';
-import BlueTickSVG from '../assets/svgs/Blue Tick.svg';
 // import TermsAndCondtionsSVG '../../'
 import useLoginStore from '../store/authentication/login.store';
 import capitalizeFirstLetter from '../helper/utils/capitalizeFirstLetter';
 import useUsersStore from '../store/authentication/user.store';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import Animated, {
+import {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
 
 const CustomSidebarMenu = props => {
-  const { logout, loggedInUser } = useLoginStore();
-  const { updateFcmDeviceToken, updateActiveForJobsStatus } = useUsersStore();
-  
+  const {logout, loggedInUser} = useLoginStore();
+  const {updateFcmDeviceToken, updateActiveForJobsStatus} = useUsersStore();
+
   const [isEnabled, setIsEnabled] = useState(false);
   const translateX = useSharedValue(0);
 
@@ -41,13 +40,16 @@ const CustomSidebarMenu = props => {
     translateX.value = withTiming(initialStatus ? 20 : 0);
   }, [loggedInUser?.activeforjobs]); // Run only when loggedInUser?.activeforjobs changes
 
-  const toggleSwitch = async (value) => {
+  const toggleSwitch = async value => {
     setIsEnabled(value);
     translateX.value = withTiming(value ? 20 : 0);
 
     try {
-      console.log("isEnabled", isEnabled);
-      const update = await updateActiveForJobsStatus(loggedInUser?._id, isEnabled);
+      console.log('isEnabled', isEnabled);
+      const update = await updateActiveForJobsStatus(
+        loggedInUser?._id,
+        isEnabled,
+      );
       if (update) {
         Toast.show({
           type: 'success',
@@ -74,20 +76,21 @@ const CustomSidebarMenu = props => {
   };
 
   const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: translateX.value }],
+    transform: [{translateX: translateX.value}],
   }));
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{flex: 1}}>
       <View style={[tw`p-3 mt-4 h-[35%] items-center justify-center relative`]}>
         <Pressable
-          style={({ pressed }) =>
-            tw`absolute rounded-full p-1 top-5 right-5 ${pressed ? 'bg-slate-200' : ''}`
+          style={({pressed}) =>
+            tw`absolute rounded-full p-1 top-5 right-5 ${
+              pressed ? 'bg-slate-200' : ''
+            }`
           }
           onPress={() => {
             props.navigation.closeDrawer();
-          }}
-        >
+          }}>
           <Icon
             type={Icons.MaterialCommunityIcons}
             name={'close'}
@@ -97,7 +100,7 @@ const CustomSidebarMenu = props => {
         </Pressable>
         {loggedInUser?.profilepic ? (
           <Image
-            source={{ uri: loggedInUser.profilepic }}
+            source={{uri: loggedInUser.profilepic}}
             style={styles.sideMenuProfileIcon}
           />
         ) : (
@@ -106,12 +109,22 @@ const CustomSidebarMenu = props => {
             style={styles.sideMenuProfileIcon}
           />
         )}
-        <Text style={[tw`text-black text-[24px]`, { fontFamily: 'Poppins-SemiBold' }]}>
-          {`${capitalizeFirstLetter(loggedInUser?.firstname)} ${capitalizeFirstLetter(loggedInUser?.lastname)}`}
+        <Text
+          style={[
+            tw`text-black text-[24px]`,
+            {fontFamily: 'Poppins-SemiBold'},
+          ]}>
+          {`${capitalizeFirstLetter(
+            loggedInUser?.firstname,
+          )} ${capitalizeFirstLetter(loggedInUser?.lastname)}`}
         </Text>
       </View>
       <View style={[tw`flex flex-row py-2  justify-center items-center gap-2`]}>
-        <Text style={[tw`text-zinc-600 text-[14px]`, { fontFamily: 'Poppins-Light' }]}>
+        <Text
+          style={[
+            tw`text-zinc-600 text-[14px]`,
+            {fontFamily: 'Poppins-Light'},
+          ]}>
           Active for jobs
         </Text>
         {/* <TouchableOpacity
@@ -181,7 +194,7 @@ const CustomSidebarMenu = props => {
           <CustomDrawerItem
             title="Logout"
             id={4}
-            titleStyle={{ color: '#E30000' }}
+            titleStyle={{color: '#E30000'}}
             index={props?.state?.index}
             icon={<LogoutSVG />}
             onPress={async () => {
@@ -199,7 +212,11 @@ const CustomSidebarMenu = props => {
       </DrawerContentScrollView>
 
       <View style={tw``}>
-        <Text style={[tw`text-center text-black mb-10`, { fontFamily: 'Poppins-SemiBold' }]}>
+        <Text
+          style={[
+            tw`text-center text-black mb-10`,
+            {fontFamily: 'Poppins-SemiBold'},
+          ]}>
           kaam app LLC
         </Text>
       </View>

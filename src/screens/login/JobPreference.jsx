@@ -21,6 +21,7 @@ import Animated, {ZoomInLeft, ZoomOutRight} from 'react-native-reanimated';
 import {Dropdown} from 'react-native-element-dropdown';
 import useJobStore from '../../store/jobs.store';
 import useLoaderStore from '../../store/loader.store';
+import {getCoordinates} from '../../helper/utils/getGeoLocation';
 
 const validationSchema = yup.object().shape({
   location: yup.object().shape({
@@ -141,7 +142,10 @@ const JobPreferences = ({navigation}) => {
         data.location['coordinates'] = [longitude, latitude];
       }
     } catch (error) {
-      console.log('JobPostingForm.jsx::onSubmit ::error', error);
+      console.log(
+        'JobPostingForm.jsx::onSubmit::error on fetching location',
+        error,
+      );
     } finally {
       await setCategories(payload);
       setLoading(false);

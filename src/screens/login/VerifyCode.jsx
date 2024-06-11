@@ -7,12 +7,11 @@ import useRegistrationStore from '../../store/authentication/registration.store'
 import useUsersStore from '../../store/authentication/user.store';
 import {requestUserPermissionAndFcmToken} from '../../helper/notification-helper';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import {getCoordinates} from '../../helper/utils/getGeoLocation';
 import {OtpInput} from 'react-native-otp-entry';
 
 const VerifyCode = () => {
   const colorScheme = useColorScheme();
-  const {login, storeUserCoordinate} = useLoginStore();
+  const {login} = useLoginStore();
   const {loginDetails} = useRegistrationStore();
   const {updateFcmDeviceToken} = useUsersStore();
 
@@ -24,15 +23,6 @@ const VerifyCode = () => {
         updateFcmDeviceToken({
           firebasetokens: [fcmToken],
         });
-      }
-      // Store coordinates Here
-      try {
-        const position = await getCoordinates();
-        if (position?.length !== 0) {
-          storeUserCoordinate(position);
-        }
-      } catch (error) {
-        console.log('VerifyCode:handeVerify:tryCatch:error', error);
       }
     }
   };

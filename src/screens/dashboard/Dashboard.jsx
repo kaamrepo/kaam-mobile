@@ -38,6 +38,7 @@ const Dashboard = ({navigation}) => {
   }, []);
 
   // Fetching user coordinates
+  /*
   useEffect(() => {
     const fetchCoordinates = async () => {
       const position = await getCoordinates();
@@ -64,7 +65,8 @@ const Dashboard = ({navigation}) => {
     };
     fetchCoordinates();
   }, [loggedInUser, updateUserCoordinates]);
-
+  */
+ 
   // Fetching nearby jobs on focus
   useFocusEffect(
     useCallback(() => {
