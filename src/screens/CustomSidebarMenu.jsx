@@ -17,7 +17,7 @@ import PersonalInformationSVG from '../assets/svgs/Personal Information.svg';
 import SettingsSVG from '../assets/svgs/Settings.svg';
 import LogoutSVG from '../assets/svgs/Logout.svg';
 import BlueTickSVG from '../assets/svgs/Blue Tick.svg';
-
+// import TermsAndCondtionsSVG '../../'
 import useLoginStore from '../store/authentication/login.store';
 import capitalizeFirstLetter from '../helper/utils/capitalizeFirstLetter';
 import useUsersStore from '../store/authentication/user.store';
@@ -109,14 +109,8 @@ const CustomSidebarMenu = props => {
         <Text style={[tw`text-black text-[24px]`, { fontFamily: 'Poppins-SemiBold' }]}>
           {`${capitalizeFirstLetter(loggedInUser?.firstname)} ${capitalizeFirstLetter(loggedInUser?.lastname)}`}
         </Text>
-        <View style={tw`flex-row`}>
-          <Text style={[tw`text-zinc-600 text-[14px]`, { fontFamily: 'Poppins-Light' }]}>
-            Comming soon...
-          </Text>
-          <BlueTickSVG width={20} height={20} />
-        </View>
       </View>
-      <View style={[tw`flex flex-row py-2 border-t-2 border-b-2 justify-center items-center gap-2`]}>
+      <View style={[tw`flex flex-row py-2  justify-center items-center gap-2`]}>
         <Text style={[tw`text-zinc-600 text-[14px]`, { fontFamily: 'Poppins-Light' }]}>
           Active for jobs
         </Text>
@@ -148,11 +142,11 @@ const CustomSidebarMenu = props => {
       <DrawerContentScrollView {...props}>
         <View style={tw`px-4`}>
           <CustomDrawerItem
-            title="View Profile"
+            title="Profile"
             id={1}
             index={props?.state?.index}
             icon={<PersonalInformationSVG />}
-            subtitle={'80% complete'}
+            // subtitle={'80% complete'}
             subtitleStyle={tw`text-[#FE6D73] text-[12px]`}
             onPress={() => props.navigation.navigate('View Profile')}
           />
@@ -161,7 +155,7 @@ const CustomSidebarMenu = props => {
             id={2}
             index={props?.state?.index}
             icon={<SettingsSVG />}
-            onPress={() => props.navigation.navigate('Contact And Support')}
+            onPress={() => props.navigation.navigate('ContactSupport')}
           />
           <CustomDrawerItem
             title="Settings"
@@ -169,6 +163,20 @@ const CustomSidebarMenu = props => {
             index={props?.state?.index}
             icon={<SettingsSVG />}
             onPress={() => props.navigation.navigate('Settings')}
+          />
+          <CustomDrawerItem
+            title="Terms and conditions"
+            id={3}
+            index={props?.state?.index}
+            icon={<SettingsSVG />}
+            onPress={() => props.navigation.navigate('TermsAndConditions')}
+          />
+          <CustomDrawerItem
+            title="About Us"
+            id={3}
+            index={props?.state?.index}
+            icon={<SettingsSVG />}
+            onPress={() => props.navigation.navigate('AboutUs')}
           />
           <CustomDrawerItem
             title="Logout"
