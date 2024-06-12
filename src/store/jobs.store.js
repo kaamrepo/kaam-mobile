@@ -179,6 +179,7 @@ const useJobStore = create((set, get) => ({
       let params = {};
       payload.status ? (params.status = payload.status) : '';
       payload.applicationId ? (params._id = payload.applicationId) : '';
+      console.log("params before sending",params._id);
       const res = await API.patch(
         `${JOBS_APPLICATIONS}/${params._id}`,
         {status: params.status},

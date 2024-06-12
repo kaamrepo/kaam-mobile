@@ -1,7 +1,8 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {View, Text, Image, Pressable} from 'react-native';
 import tw from 'twrnc';
 import Icon, {Icons} from '../../components/Icons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import useStaffStore from '../../store/staff.store';
 import {primaryBGColor, primaryBGDarkColor} from '../../helper/utils/colors';
 const staticStaffImage = require('../../assets/images/profession-employee.png');
@@ -31,20 +32,8 @@ const EmployeeDetails = ({route, navigation}) => {
     </Pressable>
   );
   return (
-    <View style={tw`flex-1 p-4 mt-6`}>
-      <Pressable
-        onPress={handleBackPress}
-        style={({pressed}) => [
-          tw`p-2 rounded-full ${pressed ? 'bg-black/20' : ''}`,
-        ]}>
-        <Icon
-          type={Icons.Ionicons}
-          name="chevron-back"
-          size={25}
-          color={'black'}
-        />
-      </Pressable>
-      {/* Profile Picture */}
+    <SafeAreaView>
+    <View style={tw`px-4 mt-6`}>
       <View style={tw`flex items-center mb-4`}>
         {staff?.profilepic ? (
           <Image source={staff?.profilepic} style={tw`h-12 w-12 rounded-xl`} />
@@ -108,6 +97,7 @@ const EmployeeDetails = ({route, navigation}) => {
         />
       )}
     </View>
+    </SafeAreaView>
   );
 };
 

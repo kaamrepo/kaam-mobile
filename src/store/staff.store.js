@@ -11,6 +11,7 @@ const useStaffStore = create((set, get) => ({
   clearUsers: () => set({nearbyusers: [], stafflist: []}),
   getStaff: async payload => {
     try {
+      console.log("loggedInUser in store get staff",useLoginStore.getState().loggedInUser?.location);
       const params = {
         skip: payload.skip || undefined,
         limit: payload.limit || undefined,
@@ -20,6 +21,7 @@ const useStaffStore = create((set, get) => ({
         wildString: payload.text || undefined,
         activeforjobs: payload.activeforjobs || true,
         sortDesc: ['createdat'],
+        location:useLoginStore.getState().loggedInUser?.location
       };
   
       const res = await API.get(`${USER}`, {
