@@ -1,4 +1,4 @@
-import {Pressable} from 'react-native';
+import {Pressable, useColorScheme} from 'react-native';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 
 const Drawer = createDrawerNavigator();
@@ -11,11 +11,12 @@ import PersonalInfo from './drawer-screens/PersonalInfo';
 import Settings from './drawer-screens/Settings';
 import Icon, {Icons} from '../components/Icons';
 import tw from 'twrnc';
-import { ContactSupport } from './drawer-screens/ContactSupport';
-import { TermsAndConditions } from './drawer-screens/settings/TermsAndConditions';
-import { AboutUs } from './drawer-screens/AboutUs';
+import {ContactSupport} from './drawer-screens/ContactSupport';
+import {TermsAndConditions} from './drawer-screens/settings/TermsAndConditions';
+import {AboutUs} from './drawer-screens/AboutUs';
 
 function DrawerNavigation() {
+  useColorScheme()
   return (
     <Drawer.Navigator
       drawerStyle={{
@@ -41,7 +42,7 @@ function DrawerNavigation() {
             <Pressable
               style={({pressed}) =>
                 tw`mx-2 h-10 w-10 items-center justify-center rounded-full ${
-                  pressed ? 'bg-gray-200' : ''
+                  pressed ? 'bg-gray-200 dark:bg-gray-800' : ''
                 } `
               }
               onPress={() => {
@@ -51,18 +52,22 @@ function DrawerNavigation() {
               <Icon
                 type={Icons.Ionicons}
                 name={'chevron-back'}
-                size={25}
-                color={'black'}
+                size={20}
+               style={tw`text-black dark:text-white`}
               />
             </Pressable>
           ),
-          headerStyle: {backgroundColor: '#FAFAFD'},
+
           headerTransparent: false,
           headerShadowVisible: false,
           headerTitle: 'Settings',
           headerTitleAlign: 'center',
-          headerTitleStyle: {fontFamily: 'Poppins-SemiBold'},
           headerShown: true,
+          headerStyle: [tw`bg-[#FAFAFD] dark:bg-slate-900`],
+          headerTitleStyle: [
+            tw`text-black dark:text-white`,
+            {fontFamily: 'Poppins-SemiBold'},
+          ],
         })}
       />
     </Drawer.Navigator>

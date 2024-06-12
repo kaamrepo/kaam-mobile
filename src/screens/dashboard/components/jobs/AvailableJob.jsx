@@ -1,5 +1,5 @@
 import React, {useMemo, useCallback, useEffect} from 'react';
-import { useFocusEffect } from '@react-navigation/native';
+import {useFocusEffect} from '@react-navigation/native';
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
+  useColorScheme,
 } from 'react-native';
 import tw from 'twrnc';
 import {Translation} from '../../Translation';
@@ -14,20 +15,20 @@ import Icon, {Icons} from '../../../../components/Icons';
 import {primaryBGColor} from '../../../../helper/utils/colors';
 import useJobStore from '../../../../store/jobs.store';
 import useLoginStore from '../../../../store/authentication/login.store';
-const AvailableJob = ({language, isLoading, navigation,category}) => {
+const AvailableJob = ({language, isLoading, navigation, category}) => {
   const {getJobs, job} = useJobStore();
   const {loggedInUser} = useLoginStore();
- 
+
   useFocusEffect(
     useCallback(() => {
       const payload = {
         skip: 0,
         limit: 10,
         excludeIds: [loggedInUser._id],
-        exclude: 'createdby'
+        exclude: 'createdby',
       };
       getJobs(payload);
-    }, [getJobs, loggedInUser]) // Update the dependency array to include getJobs and loggedInUser
+    }, [getJobs, loggedInUser]), // Update the dependency array to include getJobs and loggedInUser
   );
   const handleSeeAllPress = useCallback(() => {
     navigation.navigate('SeeAllJobs');
@@ -39,18 +40,18 @@ const AvailableJob = ({language, isLoading, navigation,category}) => {
           <View
             style={tw`flex-row justify-between items-center mt-5 mb-4 mx-5`}>
             <Text
-              style={[tw`text-black text-xl`, {fontFamily: 'Poppins-Bold'}]}>
+              style={[tw`text-black dark:text-white text-xl`, {fontFamily: 'Poppins-Bold'}]}>
               {Translation[language]['Fetching Staffs...']}
             </Text>
           </View>
           <View style={tw`px-5 mb-14 w-full`}>
             <View
               style={[
-                tw`w-full h-30 bg-gray-200 rounded-3 items-center justify-center`,
+                tw`w-full h-30 bg-gray-200 dark:bg-gray-800 rounded-3 items-center justify-center`,
               ]}>
               <Text
                 style={[
-                  tw`text-neutral-700 text-sm`,
+                  tw`text-gray-700 dark:text-gray-400 text-sm`,
                   {fontFamily: 'Poppins-Regular'},
                 ]}>
                 Fetching Staffs...
@@ -66,17 +67,17 @@ const AvailableJob = ({language, isLoading, navigation,category}) => {
           <View
             style={tw`flex-row justify-between items-center mt-5 mb-4 mx-5`}>
             <Text
-              style={[tw`text-black text-xl`, {fontFamily: 'Poppins-Bold'}]}>
+              style={[tw`text-black dark:text-white text-xl`, {fontFamily: 'Poppins-Bold'}]}>
               {/* {Translation[language]['No Available Staffs']} */}
               Available Jobs
             </Text>
           </View>
           <View style={tw`px-5 mb-14 w-full`}>
             <View
-              style={tw`w-full h-30 bg-gray-200 rounded-3 items-center justify-center`}>
+              style={tw`w-full h-30 bg-gray-200 dark:bg-gray-800 rounded-3 items-center justify-center`}>
               <Text
                 style={[
-                  tw`text-neutral-700 text-sm`,
+                  tw`text-neutral-700 dark:text-gray-400 text-sm`,
                   {fontFamily: 'Poppins-Regular'},
                 ]}>
                 There are no Available Jobs
@@ -86,13 +87,14 @@ const AvailableJob = ({language, isLoading, navigation,category}) => {
         </>
       );
     }
+
     return (
       <View style={tw`flex-1`}>
         <ScrollView contentContainerStyle={tw`pb-14`}>
           <View
             style={tw`flex-row justify-between items-center mt-5 mb-4 mx-5`}>
             <Text
-              style={[tw`text-black text-xl`, {fontFamily: 'Poppins-Bold'}]}>
+              style={[tw`text-black dark:text-white text-xl`, {fontFamily: 'Poppins-Bold'}]}>
               Available Jobs
               {/* {Translation[language]['Available Staff']} */}
             </Text>
@@ -107,8 +109,7 @@ const AvailableJob = ({language, isLoading, navigation,category}) => {
             </TouchableOpacity>
           </View>
           <View style={tw`px-5 mb-10`}>
-            {job &&
-              job?.length !== 0 &&
+            {job?.length &&
               job?.map(item => (
                 <Pressable
                   key={item._id}
@@ -119,29 +120,34 @@ const AvailableJob = ({language, isLoading, navigation,category}) => {
                     });
                   }}
                   style={({pressed}) =>
-                    tw`my-1 w-full flex-row items-center gap-1 border border-gray-200 rounded-3 px-2.5 pb-2.5 pt-4 relative overflow-hidden ${
-                      pressed ? 'bg-green-100/10' : 'bg-white'
+                    tw`my-1 w-full flex-row items-center gap-3 border border-gray-200 dark:border-gray-700 rounded-3 px-2.5 pb-2.5 pt-4 relative overflow-hidden ${
+                      pressed ? 'bg-green-100/10' : 'bg-white dark:bg-gray-900'
                     }`
                   }>
-                  <View style={tw`h-10 w-10 flex-1`}>
-                    {item.employerDetails.profilepic ? (
+                  <View
+                    style={tw`h-10 w-10 border border-gray-300 dark:border-gray-700 justify-center items-center rounded-full overflow-hidden`}>
+                    {item?.employerDetails?.profilepic ? (
                       <Image
-                        source={{uri: item.employerDetails.profilepic}}
-                        style={tw`h-10 w-10 rounded`}
+                        source={{uri: item?.employerDetails?.profilepic}}
+                        style={tw`h-10 w-10`}
                       />
                     ) : (
-                      <Icon
-                        type={Icons.Ionicons}
-                        name={'person'}
-                        size={45}
-                        color={primaryBGColor}
-                      />
+                      <View
+                        style={tw`h-10 w-10 justify-center items-center bg-slate-200 dark:bg-gray-800`}>
+                        <Icon
+                          type={Icons.Ionicons}
+                          name={'person'}
+                          size={20}
+                          color={primaryBGColor}
+                        />
+                      </View>
                     )}
                   </View>
+
                   <View style={tw`flex-5`}>
                     <Text
                       style={[
-                        tw`text-black text-[14px]`,
+                        tw`text-black dark:text-white text-[14px]`,
                         {fontFamily: 'Poppins-SemiBold'},
                       ]}
                       numberOfLines={1}
@@ -150,7 +156,7 @@ const AvailableJob = ({language, isLoading, navigation,category}) => {
                     </Text>
                     <Text
                       style={[
-                        tw`text-neutral-600 text-[14px]`,
+                        tw`text-slate-600 dark:text-slate-300 text-[14px]`,
                         {fontFamily: 'Poppins-Regular'},
                       ]}
                       numberOfLines={1}
@@ -171,7 +177,14 @@ const AvailableJob = ({language, isLoading, navigation,category}) => {
         </ScrollView>
       </View>
     );
-  }, [isLoading, job, language, navigation, handleSeeAllPress]);
+  }, [
+    isLoading,
+    job,
+    language,
+    navigation,
+    handleSeeAllPress,
+    useColorScheme(),
+  ]);
 
   return renderContent;
 };

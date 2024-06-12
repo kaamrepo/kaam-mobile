@@ -31,14 +31,11 @@ import ApplyNow from './src/screens/job-application/ApplyNow';
 import Chat from './src/screens/chats/Chat';
 import TrackApplication from './src/screens/chats/TrackApplication';
 import DrawerNavigation from './src/screens/DrawerNavigation';
-import { SeeAllJobs } from './src/screens/dashboard/components/jobs/SeeAllJobs';
+import {SeeAllJobs} from './src/screens/dashboard/components/jobs/SeeAllJobs';
 import {EngagmentInitiation} from './src/screens/job-application/EngagmentInitiation';
 import EmployeeDetails from './src/screens/job-application/EmployeeDetails';
 import JobPostingForm from './src/screens/bottom-bar/JobPostingForm';
 import {ApplicantListScreen} from './src/screens/job-application/Applicants';
-import { ContactSupport } from './src/screens/drawer-screens/ContactSupport';
-import { TermsAndConditions } from './src/screens/drawer-screens/settings/TermsAndConditions';
-import { AboutUs } from './src/screens/drawer-screens/AboutUs';
 import client from './client';
 import messaging from '@react-native-firebase/messaging';
 import notifee, {AndroidImportance} from '@notifee/react-native';
@@ -47,10 +44,10 @@ import {useDeviceContext, useAppColorScheme} from 'twrnc';
 
 const Stack = createNativeStackNavigator();
 const App = () => {
-  useDeviceContext(tw, {
-    observeDeviceColorSchemeChanges: true,
-    initialColorScheme: 'light', // 'light' | 'dark' | 'device'
-  });
+  // useDeviceContext(tw, {
+  //   observeDeviceColorSchemeChanges: true,
+  //   initialColorScheme: 'device', // 'light' | 'dark' | 'device'
+  // });
 
   const colorScheme = useColorScheme();
   const [twColorScheme, toggleColorScheme, setColorScheme] =

@@ -64,9 +64,23 @@ const createJobSchema = yup.object({
   tags: yup.string().required('Job category is required'),
   location: yup.object().shape({
     pincode: yup.string().required('Pincode is required!'),
-    district: yup.string().required('District is required!'),
+    district: yup
+      .string()
+      .required('District is required!')
+      .test(
+        'noBadWords',
+        'Inappropriate language detected',
+        value => !wordsFilter.isProfane(value),
+      ),
     city: yup.string().required('City is required!'),
-    state: yup.string().required('State is required!'),
+    state: yup
+      .string()
+      .required('State is required!')
+      .test(
+        'noBadWords',
+        'Inappropriate language detected',
+        value => !wordsFilter.isProfane(value),
+      ),
     fulladdress: yup
       .string()
       .trim()
@@ -325,7 +339,7 @@ const JobPostingForm = ({navigation}) => {
                 tw`text-gray-600 dark:text-gray-300 w-full text-[12px] text-left px-2`,
                 {fontFamily: 'Poppins-Regular'},
               ]}>
-              No. of Job Openings available:
+              Job openings available:
             </Text>
             <Controller
               control={control}
@@ -337,6 +351,7 @@ const JobPostingForm = ({navigation}) => {
                   autoCapitalize="sentences"
                   onChangeText={onChange}
                   onBlur={onBlur}
+                  defaultValue="1"
                   style={[
                     {fontFamily: 'Poppins-Regular'},
                     tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] ${
@@ -382,7 +397,7 @@ const JobPostingForm = ({navigation}) => {
                   style={[
                     {fontFamily: 'Poppins-Regular'},
                     tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] ${
-                      errors?.pincode?.message
+                      errors?.location?.pincode?.message
                         ? 'border-red-500'
                         : 'border-slate-300'
                     } w-full rounded-lg`,
@@ -415,7 +430,11 @@ const JobPostingForm = ({navigation}) => {
               render={({field: {onChange, onBlur, value}}) => (
                 <Dropdown
                   style={[
-                    tw`text-black dark:text-white px-2 border-[1px] border-slate-300 w-full rounded-lg py-1.1`,
+                    tw`text-black dark:text-white px-2 border-[1px] ${
+                      errors?.location?.city?.message
+                        ? 'border-red-500'
+                        : 'border-slate-300'
+                    } w-full rounded-lg py-1.1`,
                   ]}
                   mode="default"
                   placeholder="Select City"
@@ -481,7 +500,7 @@ const JobPostingForm = ({navigation}) => {
                   style={[
                     {fontFamily: 'Poppins-Regular'},
                     tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] ${
-                      errors?.district?.message
+                      errors?.location?.district?.message
                         ? 'border-red-500'
                         : 'border-slate-300'
                     } w-full rounded-lg`,
@@ -521,7 +540,7 @@ const JobPostingForm = ({navigation}) => {
                   style={[
                     {fontFamily: 'Poppins-Regular'},
                     tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] ${
-                      errors?.state?.message
+                      errors?.location?.state?.message
                         ? 'border-red-500'
                         : 'border-slate-300'
                     } w-full rounded-lg`,

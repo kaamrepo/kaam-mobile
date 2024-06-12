@@ -29,7 +29,7 @@ export const HeaderBanner = ({navigation}) => {
                 onPress={() => navigation.openDrawer()}
                 style={({pressed}) => [
                   tw`p-2 h-12 w-12 rounded-full flex-row justify-center items-center ${
-                    pressed ? 'bg-slate-200' : ''
+                    pressed ? 'bg-slate-200 dark:bg-slate-800' : ''
                   }`,
                 ]}>
                 <Icon
