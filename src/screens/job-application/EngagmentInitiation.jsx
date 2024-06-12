@@ -147,18 +147,6 @@ export const EngagmentInitiation = ({route, navigation}) => {
   return (
     <Provider>
       <SafeAreaView style={tw`flex-1`}>
-        <Pressable
-          onPress={handleBackPress}
-          style={({pressed}) => [
-            tw`p-2 rounded-full ${pressed ? 'bg-black/20' : ''}`,
-          ]}>
-          <Icon
-            type={Icons.Ionicons}
-            name="chevron-back"
-            size={25}
-            color={'black'}
-          />
-        </Pressable>
         <View style={tw`p-4 bg-gray-100`}>
           <Text style={tw`text-xl font-bold`}>Please Select Job to Hire</Text>
         </View>
