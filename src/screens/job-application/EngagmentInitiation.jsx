@@ -15,12 +15,12 @@ export const EngagmentInitiation = ({route, navigation}) => {
   const [visible, setVisible] = useState(false);
   const [selectedJob, setSelectedJob] = useState(null);
   const [jobApplication, setJobApplication] = useState([]);
-  const {myPostedJobs, getJobs, getJobApplication, applyForJob} = useJobStore();
+  const {job, getJobs, getJobApplication, applyForJob} = useJobStore();
   const isFocused = useIsFocused(); // Get the focus status of the screen
 
   useEffect(() => {
     const fetchJobsAndApplications = async () => {
-      await getJobs({createdby: userid, type: 'myPostedJobs'});
+      await getJobs({createdby: userid, type: 'job'});
       const applications = await getJobApplication({
         employerid: userid,
         appliedby: staffid,
@@ -136,14 +136,13 @@ export const EngagmentInitiation = ({route, navigation}) => {
   }, [navigation]);
 
   const hideDialog = useCallback(() => setVisible(false), []);
-
   const jobContent = useMemo(() => {
-    return myPostedJobs && myPostedJobs.length !== 0 ? (
-      myPostedJobs.map(job => renderJobs(job))
+    return job && job.length !== 0 ? (
+      job.map(job => renderJobs(job))
     ) : (
       <PostJob />
     );
-  }, [myPostedJobs, renderJobs, PostJob]);
+  }, [job, renderJobs, PostJob]);
 
   return (
     <Provider>

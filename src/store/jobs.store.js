@@ -11,7 +11,6 @@ import useLoginStore, {getToken} from './authentication/login.store';
 const useJobStore = create((set, get) => ({
   nearbyjobs: [],
   job: [],
-  searchedJobs: [],
   jobApplicationForm: [],
   address: {
     cities: [],
@@ -50,7 +49,6 @@ const useJobStore = create((set, get) => ({
         headers: {Authorization: await getToken()},
         params: params,
       });
-
       if (res && res.data) {       
         set({job:  res.data?.data});
         return res.data?.data;
@@ -59,50 +57,7 @@ const useJobStore = create((set, get) => ({
       console.log(error);
     }
   },
-
-
-  clearsearchedJobs: () => set({searchedJobs: []}),
-  clearMypostedJobs: () => set({myPostedJobs: []}),
   clearJob: () => set({job: []}),
-  getSearchedJobs: async (
-    skip = 0,
-    limit = 10,
-    {type, coordinates, searchText, salary},
-  ) => {
-    try {
-      const userid = useLoginStore.getState().loggedInUser?._id;
-      let params = {
-        skip,
-        limit,
-        createdby: {
-          $nin: [userid],
-        },
-        type,
-      };
-      if (salary === -1) params.sortDesc = ['salary'];
-      if (salary === 1) params.sortAsc = ['salary'];
-      if (coordinates?.length) {
-        params.coordinates = coordinates;
-      }
-      if (searchText?.length) {
-        params.wildString = searchText;
-      }
-      const res = await API.get(`${JOBS}`, {
-        headers: {Authorization: await getToken()},
-        params,
-      });
-      let currentSearchedJobs = get().searchedJobs;
-      if (res && res.data) {
-        set({
-          searchedJobs: currentSearchedJobs?.length
-            ? [...currentSearchedJobs, ...res?.data?.data]
-            : [...res?.data?.data],
-        });
-      }
-    } catch (error) {
-      console.log('error', error);
-    }
-  },
   getNearByJobById: async id => {
     try {
       let params = {};

@@ -1,12 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {
-  View,
-  StyleSheet,
-  Image,
-  Text,
-  Pressable,
-  TouchableOpacity,
-} from 'react-native';
+import {View, StyleSheet, Image, Text, Pressable} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {DrawerContentScrollView} from '@react-navigation/drawer';
 import tw from 'twrnc';
@@ -16,7 +9,6 @@ import {Switch} from 'react-native-switch';
 import PersonalInformationSVG from '../assets/svgs/Personal Information.svg';
 import SettingsSVG from '../assets/svgs/Settings.svg';
 import LogoutSVG from '../assets/svgs/Logout.svg';
-// import TermsAndCondtionsSVG '../../'
 import useLoginStore from '../store/authentication/login.store';
 import capitalizeFirstLetter from '../helper/utils/capitalizeFirstLetter';
 import useUsersStore from '../store/authentication/user.store';
@@ -31,25 +23,17 @@ const CustomSidebarMenu = props => {
   const {logout, loggedInUser} = useLoginStore();
   const {updateFcmDeviceToken, updateActiveForJobsStatus} = useUsersStore();
 
-  const [isEnabled, setIsEnabled] = useState(false);
   const translateX = useSharedValue(0);
 
   useEffect(() => {
     const initialStatus = loggedInUser?.activeforjobs || false;
-    setIsEnabled(initialStatus);
     translateX.value = withTiming(initialStatus ? 20 : 0);
-  }, [loggedInUser?.activeforjobs]); // Run only when loggedInUser?.activeforjobs changes
-
+  }, [loggedInUser?.activeforjobs]);
   const toggleSwitch = async value => {
-    setIsEnabled(value);
     translateX.value = withTiming(value ? 20 : 0);
 
     try {
-      console.log('isEnabled', isEnabled);
-      const update = await updateActiveForJobsStatus(
-        loggedInUser?._id,
-        isEnabled,
-      );
+      const update = await updateActiveForJobsStatus(loggedInUser?._id, value);
       if (update) {
         Toast.show({
           type: 'success',
@@ -75,9 +59,6 @@ const CustomSidebarMenu = props => {
     }
   };
 
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{translateX: translateX.value}],
-  }));
 
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -122,26 +103,13 @@ const CustomSidebarMenu = props => {
       <View style={[tw`flex flex-row py-2  justify-center items-center gap-2`]}>
         <Text
           style={[
-            tw`text-zinc-600 text-[14px]`,
+            tw`text-zinc-600 text-[14px] mx-2`,
             {fontFamily: 'Poppins-Light'},
           ]}>
           Active for jobs
         </Text>
-        {/* <TouchableOpacity
-          onPress={toggleSwitch}
-          style={[
-            tw`w-10 h-6 justify-center rounded-full ${isEnabled ? 'bg-green-100 ' : 'bg-gray-300'}`,
-          ]}
-        >
-          <Animated.View
-            style={[
-              tw`w-6 h-6 rounded-full shadow-md ${isEnabled ? 'bg-green-700 ' : 'bg-white'}`,
-              animatedStyle,
-            ]}
-          />
-        </TouchableOpacity> */}
         <Switch
-          value={isEnabled}
+          value={loggedInUser?.activeforjobs}
           onValueChange={toggleSwitch}
           circleSize={30}
           barHeight={20}
