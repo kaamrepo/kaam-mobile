@@ -7,7 +7,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import tw from 'twrnc';
 
-const KToggle = ({isEnabled, setIsEnabled}) => {
+const KToggle = ({isEnabled, setIsEnabled, onPress}) => {
   const translateX = useSharedValue(isEnabled ? 30 : 0);
 
   const toggleSwitch = () => {
@@ -16,6 +16,7 @@ const KToggle = ({isEnabled, setIsEnabled}) => {
       translateX.value = value ? withTiming(30) : withTiming(0); // Adjust the value based on the width of the switch
       return value;
     });
+    if (onPress) onPress();
   };
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -30,13 +31,14 @@ const KToggle = ({isEnabled, setIsEnabled}) => {
         onPress={toggleSwitch}
         style={[
           tw`w-[60px] h-[30px] p-1 justify-center rounded-full ${
-            isEnabled ? 'bg-green-600 dark:bg-green-700' : 'bg-gray-400/70 dark:bg-gray-700'
+            isEnabled
+              ? 'bg-emerald-500 dark:bg-emerald-600'
+              : 'bg-gray-400/70 dark:bg-gray-700'
           }`,
         ]}>
         <Animated.View
           style={[
-            tw`w-[20px] h-[20px] rounded-full shadow-md bg-white
-            `,
+            tw`w-[20px] h-[20px] rounded-full shadow-md bg-white`,
             animatedStyle,
           ]}
         />

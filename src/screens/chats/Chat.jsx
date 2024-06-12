@@ -20,6 +20,8 @@ import Icon, {Icons} from '../../components/Icons';
 import useJobStore from '../../store/jobs.store';
 import dayjs from 'dayjs';
 
+//requried parameters:  chatid, bgColor,appliedJobId,name
+
 const Chat = ({route, navigation}) => {
   const colorTheme = useColorScheme();
   const applicationId = route?.params?.appliedJobId;

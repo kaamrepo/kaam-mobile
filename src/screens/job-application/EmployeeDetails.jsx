@@ -47,7 +47,7 @@ const EmployeeDetails = ({route, navigation}) => {
       {/* Profile Picture */}
       <View style={tw`flex items-center mb-4`}>
         {staff?.profilepic ? (
-          <Image source={staff?.profilepic} style={tw`h-12 w-12 rounded-xl`} />
+          <Image source={{uri:staff?.profilepic}} style={tw`h-12 w-12 rounded-xl`} />
         ) : (
           <Image source={staticStaffImage} style={tw`h-12 w-12 rounded-xl`} />
         )}
