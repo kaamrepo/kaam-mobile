@@ -115,6 +115,7 @@ const JobApplicationsComponent = ({refreshing, refreshJobData, isLoading}) => {
 
 export const JobCard = ({job}) => {
   const navigation = useNavigation();
+
   return (
     <TouchableOpacity
       key={job?._id}
@@ -122,7 +123,7 @@ export const JobCard = ({job}) => {
         navigation.navigate('Chat', {
           chatid: job.chatid,
           appliedJobId: job._id,
-          name: `${job?.applicantDetails?.firstname} ${job?.applicantDetails?.lastname}`,
+          name: `${job?.employerDetails?.firstname} ${job?.employerDetails?.lastname}`,
         });
       }}
       style={tw`w-full bg-white dark:bg-gray-800 my-0.6 px-5 gap-1 py-3 rounded relative border-l-4 border-r-4 shadow border-emerald-500`}>
