@@ -24,7 +24,7 @@ import dayjs from 'dayjs';
 
 const Chat = ({route, navigation}) => {
   const colorTheme = useColorScheme();
-  const applicationId = route?.params?.appliedJobId;
+  const applicationId = route?.params?.item?._id;
   const [messageText, setMessageText] = useState('');
   const [jobApplication, setJobApplication] = useState({});
   const [approvalStatus, setApprovalStatus] = useState(null);
