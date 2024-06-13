@@ -64,7 +64,7 @@ const CustomSidebarMenu = props => {
   };
 
   return (
-    <SafeAreaView style={[tw`flex-1 bg-slate-200 dark:bg-gray-900`]}>
+    <SafeAreaView style={[tw`flex-1 dark:bg-gray-900`]}>
       <View style={[tw`p-3 mt-4 h-[35%] items-center justify-center relative`]}>
         <Pressable
           style={({pressed}) =>
