@@ -6,6 +6,9 @@ import {
   TouchableOpacity,
   View,
   useColorScheme,
+  Alert,
+  Modal,
+  Pressable,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import GeneralStatusBar from '../../components/GeneralStatusBar';
@@ -161,36 +164,90 @@ const ApplicantList = ({job}) => {
 
 const RenderItem = ({item, index}) => {
   const navigation = useNavigation();
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const handleCompletePress = () => {
+    setModalVisible(true);
+  };
+
+  const handleConfirmComplete = () => {
+    setModalVisible(false);
+    // Handle the complete action here
+  };
+
+  const handleCancelComplete = () => {
+    setModalVisible(false);
+  };
+
   return (
-    <TouchableOpacity
-      onPress={() => {
-        navigation.navigate('Chat', {
-          chatid: item.chatid,
-          name: `${item.applicantDetails.firstname} ${item.applicantDetails.lastname}`,
-          item,
-        });
-      }}
-      style={tw`w-full p-2 flex-row gap-3 items-center justify-between bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-950`}>
-      <View style={tw`w-10 h-10 rounded-full items-center justify-center bg-slate-300 dark:bg-gray-900`}>
-        <Text style={[tw`text-black dark:text-white text-xl`, {fontFamily: 'Poppins-SemiBold'}]}>
-          {item?.applicantDetails?.firstname?.charAt(0)}
-          {item?.applicantDetails?.lastname?.charAt(0)}
+    <>
+    <View style={tw`shadow-2xl mb-2 border-dotted border-2 border-sky-500 bg-white`}>
+
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('Chat', {
+            chatid: item.chatid,
+            name: `${item.applicantDetails.firstname} ${item.applicantDetails.lastname}`,
+            item,
+          });
+        }}
+        style={tw`w-full p-2 flex-row gap-3 items-center justify-between bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-950`}>
+        <View style={tw`w-10 h-10 rounded-full items-center justify-center bg-slate-300 dark:bg-gray-900`}>
+          <Text style={[tw`text-black dark:text-white text-xl`, {fontFamily: 'Poppins-SemiBold'}]}>
+            {item?.applicantDetails?.firstname?.charAt(0)}
+            {item?.applicantDetails?.lastname?.charAt(0)}
+          </Text>
+        </View>
+        <View style={tw`flex-grow`}>
+          <Text style={[tw`text-black dark:text-white`, {fontFamily: 'Poppins-SemiBold'}]}>
+            {item.applicantDetails.firstname} {item.applicantDetails.lastname}
+          </Text>
+        </View>
+        <View style={tw`items-end`}>
+          <Text style={[tw`text-black dark:text-white`, {fontFamily: 'Poppins-Regular'}]}>
+            {item.status}
+          </Text>
+          <Text style={[tw`text-black dark:text-white`, {fontFamily: 'Poppins-Regular'}]}>
+            Applied on: {dayjs(item.createdat).format('DD MMM YYYY')}
+          </Text>
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={tw`px-8 py-2 my-2 rounded-full mx-3 bg-emerald-500 text-center`}
+        onPress={handleCompletePress}>
+        <Text style={[tw`text-lg text-white text-center`, {fontFamily: 'Poppins-SemiBold'}]}>
+          Mark Complete
         </Text>
-      </View>
-      <View style={tw`flex-grow`}>
-        <Text style={[tw`text-black dark:text-white`, {fontFamily: 'Poppins-SemiBold'}]}>
-          {item.applicantDetails.firstname} {item.applicantDetails.lastname}
-        </Text>
-      </View>
-      <View style={tw`items-end`}>
-        <Text style={[tw`text-black dark:text-white`, {fontFamily: 'Poppins-Regular'}]}>
-          {item.status}
-        </Text>
-        <Text style={[tw`text-black dark:text-white`, {fontFamily: 'Poppins-Regular'}]}>
-          Applied on: {dayjs(item.createdat).format('DD MMM YYYY')}
-        </Text>
-      </View>
-    </TouchableOpacity>
+      </TouchableOpacity>
+      
+     
+    </View>
+    <Modal
+        transparent={true}
+        animationType="slide"
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}>
+        <View style={tw`flex-1 justify-center items-center bg-black bg-opacity-50`}>
+          <View style={tw`bg-white p-5 rounded-lg w-80`}>
+            <Text style={[tw`text-lg mb-4`, {fontFamily: 'Poppins-SemiBold'}]}>
+              Are you sure you want to mark this application as complete?
+            </Text>
+            <View style={tw`flex-row justify-between`}>
+              <Pressable
+                style={[tw`px-4 py-2 rounded-lg bg-green-500`, {fontFamily: 'Poppins-SemiBold'}]}
+                onPress={handleConfirmComplete}>
+                <Text style={tw`text-white`}>Yes</Text>
+              </Pressable>
+              <Pressable
+                style={[tw`px-4 py-2 rounded-lg bg-red-500`, {fontFamily: 'Poppins-SemiBold'}]}
+                onPress={handleCancelComplete}>
+                <Text style={tw`text-white`}>No</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    </>
   );
 };
 

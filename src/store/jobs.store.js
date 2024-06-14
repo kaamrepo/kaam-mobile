@@ -192,7 +192,7 @@ const useJobStore = create((set, get) => ({
           },
         },
       );
-
+console.log("RESSSS OUT",res?.data);
       if (res?.data && payload.status === 'Rejected') {
         Toast.show({
           type: 'success',
@@ -208,10 +208,10 @@ const useJobStore = create((set, get) => ({
         return true;
       }
     } catch (error) {
-      console.log(JSON.stringify(error, null, 4));
+      console.log("EEERRRRRR - ",JSON.stringify(error.response.data.message, null, 4));
       Toast.show({
         type: 'tomatoToast',
-        text1: 'Application Failed!',
+        text1: `${error?.response?.data?.message ?? 'something went wrong'}`,
       });
       return false;
     }

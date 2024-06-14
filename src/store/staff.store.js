@@ -11,7 +11,7 @@ const useStaffStore = create((set, get) => ({
   clearUsers: () => set({nearbyusers: [], stafflist: []}),
   getStaff: async payload => {
     try {
-      console.log("loggedInUser in store get staff",useLoginStore.getState().loggedInUser?.location);
+      console.log("payload before sending gegtStaff",payload);
       const params = {
         skip: payload.skip || undefined,
         limit: payload.limit || undefined,

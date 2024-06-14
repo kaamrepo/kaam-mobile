@@ -162,10 +162,16 @@ const Chat = ({route, navigation}) => {
             handlePress('Approved');
           }}
           disabled={approvalStatus === 'Approved'}>
+          {approvalStatus === 'Approved'?
+          <Text
+            style={[tw`text-white text-lg`, {fontFamily: 'Poppins-SemiBold'}]}>
+            Approved
+          </Text>:
           <Text
             style={[tw`text-white text-lg`, {fontFamily: 'Poppins-SemiBold'}]}>
             Approve
           </Text>
+          }
         </TouchableOpacity>
         <TouchableOpacity
           style={[
