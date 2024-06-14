@@ -180,9 +180,6 @@ const useJobStore = create((set, get) => ({
       let params = {};
       payload.status ? (params.status = payload.status) : '';
       payload.applicationId ? (params._id = payload.applicationId) : '';
-      console.log("params before sending",params._id);
-
-      console.log(" `${JOBS_APPLICATIONS}/${params._id}`", `${JOBS_APPLICATIONS}/${params._id}`);
       const res = await API.patch(
         `${JOBS_APPLICATIONS}/${params._id}`,
         {status: params.status},
@@ -192,7 +189,6 @@ const useJobStore = create((set, get) => ({
           },
         },
       );
-console.log("RESSSS OUT",res?.data);
       if (res?.data && payload.status === 'Rejected') {
         Toast.show({
           type: 'success',

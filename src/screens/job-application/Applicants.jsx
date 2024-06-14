@@ -9,6 +9,7 @@ import {
   Alert,
   Modal,
   Pressable,
+  
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import GeneralStatusBar from '../../components/GeneralStatusBar';
@@ -18,7 +19,7 @@ import {useState, useEffect} from 'react';
 import dayjs from 'dayjs';
 import {useNavigation} from '@react-navigation/native';
 import useLoaderStore from '../../store/loader.store';
-
+import { Portal, Dialog,Provider,Button } from 'react-native-paper';
 export const ApplicantListScreen = ({
   route: {
     params: {job},
@@ -26,6 +27,7 @@ export const ApplicantListScreen = ({
 }) => {
   useColorScheme();
   return (
+    <Provider>
     <SafeAreaView style={tw`flex-1`} edges={['top']}>
       <GeneralStatusBar />
       <View style={tw`flex-1 bg-slate-100 dark:bg-gray-950 p-5`}>
@@ -33,6 +35,7 @@ export const ApplicantListScreen = ({
         <ApplicantList job={job} />
       </View>
     </SafeAreaView>
+    </Provider>
   );
 };
 
@@ -164,19 +167,18 @@ const ApplicantList = ({job}) => {
 
 const RenderItem = ({item, index}) => {
   const navigation = useNavigation();
-  const [modalVisible, setModalVisible] = useState(false);
-
+  const [visible, setVisible] = useState(false);
   const handleCompletePress = () => {
-    setModalVisible(true);
+    setVisible(true);
   };
 
   const handleConfirmComplete = () => {
-    setModalVisible(false);
+    setVisible(false);
     // Handle the complete action here
   };
 
   const handleCancelComplete = () => {
-    setModalVisible(false);
+    setVisible(false);
   };
 
   return (
@@ -222,31 +224,20 @@ const RenderItem = ({item, index}) => {
       
      
     </View>
-    <Modal
-        transparent={true}
-        animationType="slide"
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}>
-        <View style={tw`flex-1 justify-center items-center bg-black bg-opacity-50`}>
-          <View style={tw`bg-white p-5 rounded-lg w-80`}>
-            <Text style={[tw`text-lg mb-4`, {fontFamily: 'Poppins-SemiBold'}]}>
-              Are you sure you want to mark this application as complete?
+    <Portal>
+        <Dialog visible={visible} onDismiss={handleCancelComplete}>
+          <Dialog.Title>Confirmation</Dialog.Title>
+          <Dialog.Content>
+            <Text style={tw`text-lg mb-4`}>
+              Are you sure you want to mark the work complete with {item?.applicantDetails?.firstname} {item?.applicantDetails?.lastname}?
             </Text>
-            <View style={tw`flex-row justify-between`}>
-              <Pressable
-                style={[tw`px-4 py-2 rounded-lg bg-green-500`, {fontFamily: 'Poppins-SemiBold'}]}
-                onPress={handleConfirmComplete}>
-                <Text style={tw`text-white`}>Yes</Text>
-              </Pressable>
-              <Pressable
-                style={[tw`px-4 py-2 rounded-lg bg-red-500`, {fontFamily: 'Poppins-SemiBold'}]}
-                onPress={handleCancelComplete}>
-                <Text style={tw`text-white`}>No</Text>
-              </Pressable>
-            </View>
-          </View>
-        </View>
-      </Modal>
+          </Dialog.Content>
+          <Dialog.Actions style={tw`flex`}>
+            <Button onPress={handleConfirmComplete}>Yes</Button>
+            <Button onPress={handleCancelComplete}>Cancel</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
     </>
   );
 };

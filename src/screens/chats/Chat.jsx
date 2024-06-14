@@ -155,13 +155,13 @@ const Chat = ({route, navigation}) => {
             tw`px-8 py-2 my-2 rounded-full mx-3`,
             {
               backgroundColor: primaryBGColor,
-              opacity: approvalStatus === 'Approved' ? 0.5 : 1,
+              opacity: approvalStatus === 'Approved' ? 0.5 : 0.1,
             },
           ]}
           onPress={() => {
             handlePress('Approved');
           }}
-          disabled={approvalStatus === 'Approved'}>
+          disabled={!(approvalStatus === 'Applied')}>
           {approvalStatus === 'Approved'?
           <Text
             style={[tw`text-white text-lg`, {fontFamily: 'Poppins-SemiBold'}]}>
@@ -172,23 +172,6 @@ const Chat = ({route, navigation}) => {
             Approve
           </Text>
           }
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            tw`px-8 py-2 my-2 rounded-full mx-3`,
-            {
-              backgroundColor: primaryBGDangerColor,
-              opacity: approvalStatus === 'Rejected' ? 0.5 : 1,
-            },
-          ]}
-          onPress={() => {
-            handlePress('Rejected');
-          }}
-          disabled={approvalStatus === 'Rejected'}>
-          <Text
-            style={[tw`text-white text-lg`, {fontFamily: 'Poppins-SemiBold'}]}>
-            Reject
-          </Text>
         </TouchableOpacity>
       </View>:''}
       <View style={tw`flex-1 px-4 py-1`}>
