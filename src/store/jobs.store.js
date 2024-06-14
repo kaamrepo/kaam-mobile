@@ -203,6 +203,13 @@ const useJobStore = create((set, get) => ({
         });
         return true;
       }
+      if (res?.data && payload.status === 'Completed') {
+        Toast.show({
+          type: 'success',
+          text1: 'Work closed',
+        });
+        return true;
+      }
     } catch (error) {
       console.log("EEERRRRRR - ",JSON.stringify(error.response.data.message, null, 4));
       Toast.show({

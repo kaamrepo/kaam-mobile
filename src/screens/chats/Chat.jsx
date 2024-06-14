@@ -152,10 +152,9 @@ const Chat = ({route, navigation}) => {
       {loggedInUser?._id !== chat?.messages?.at(0)?.senderid ? <View style={tw`flex-row justify-center items-center`}>
         <TouchableOpacity
           style={[
-            tw`px-8 py-2 my-2 rounded-full mx-3`,
+            tw`px-8 py-2 my-2 rounded-full mx-3 bg-emerald-500`,
             {
-              backgroundColor: primaryBGColor,
-              opacity: approvalStatus === 'Approved' ? 0.5 : 0.1,
+              opacity: approvalStatus === 'Applied' ? 1 : 0.5,
             },
           ]}
           onPress={() => {

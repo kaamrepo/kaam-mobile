@@ -20,6 +20,7 @@ import dayjs from 'dayjs';
 import {useNavigation} from '@react-navigation/native';
 import useLoaderStore from '../../store/loader.store';
 import { Portal, Dialog,Provider,Button } from 'react-native-paper';
+import useJobStore from '../../store/jobs.store';
 export const ApplicantListScreen = ({
   route: {
     params: {job},
@@ -111,9 +112,11 @@ const JobCard = ({job}) => {
 };
 
 const ApplicantList = ({job}) => {
+
   const {applicantList, getApplicantsList, clearApplicantList} = useMenuStore();
   const [refreshing, setRefreshing] = useState(false);
   const {isLoading} = useLoaderStore();
+
 
   useEffect(() => {
     if (job?._id) {
@@ -167,14 +170,25 @@ const ApplicantList = ({job}) => {
 
 const RenderItem = ({item, index}) => {
   const navigation = useNavigation();
+  const {updateJobStatus,getJobApplication} = useJobStore();
   const [visible, setVisible] = useState(false);
   const handleCompletePress = () => {
     setVisible(true);
   };
-
-  const handleConfirmComplete = () => {
+const isDisabled = item?.status === "Approved"
+  const handleConfirmComplete = async(status,applicationId) => {
     setVisible(false);
-    // Handle the complete action here
+    try {
+      const payload = {
+        status,
+        applicationId,
+      };
+      const updateResult = await updateJobStatus(payload);
+      console.log("updateResult",updateResult);
+         await getJobApplication({_id: applicationId});
+    } catch (error) {
+      console.error('Error updating job status:', error);
+    }
   };
 
   const handleCancelComplete = () => {
@@ -215,8 +229,16 @@ const RenderItem = ({item, index}) => {
         </View>
       </TouchableOpacity>
       <TouchableOpacity
-        style={tw`px-8 py-2 my-2 rounded-full mx-3 bg-emerald-500 text-center`}
-        onPress={handleCompletePress}>
+       style={[
+            tw`px-8 py-2 my-2 rounded-full mx-3 bg-emerald-500 text-center`,
+            {
+              opacity: !isDisabled ? 0.5 : 1,
+            },
+          ]}
+        onPress={handleCompletePress}
+        disabled={!isDisabled}
+
+        >
         <Text style={[tw`text-lg text-white text-center`, {fontFamily: 'Poppins-SemiBold'}]}>
           Mark Complete
         </Text>
@@ -233,7 +255,7 @@ const RenderItem = ({item, index}) => {
             </Text>
           </Dialog.Content>
           <Dialog.Actions style={tw`flex`}>
-            <Button onPress={handleConfirmComplete}>Yes</Button>
+            <Button onPress={()=>{handleConfirmComplete("Completed",item?._id)}}>Yes</Button>
             <Button onPress={handleCancelComplete}>Cancel</Button>
           </Dialog.Actions>
         </Dialog>
