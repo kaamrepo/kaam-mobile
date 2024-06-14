@@ -194,8 +194,8 @@ const Chat = ({route, navigation}) => {
         style={[
           tw`flex-row items-center justify-between gap-x-3 px-2 py-3 bg-gray-200 dark:bg-gray-900`,
           {
-            opacity: approvalStatus === 'Rejected' ? 0.5 : 1,
-            pointerEvents: approvalStatus === 'Rejected' ? 'none' : 'auto',
+            opacity: approvalStatus === 'Completed' ? 0.5 : 1,
+            pointerEvents: approvalStatus === 'Completed' ? 'none' : 'auto',
           },
         ]}>
         <Pressable
