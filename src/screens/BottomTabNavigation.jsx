@@ -10,6 +10,7 @@ import * as Animatable from 'react-native-animatable';
 import tw from 'twrnc';
 import Dashboard from './dashboard/Dashboard';
 import JobPostingForm from './bottom-bar/JobPostingForm';
+import { IncrementalRequestScreen } from './incremental/IncrementalRequestScreen';
 import Menu from './bottom-bar/Menu';
 
 // svg icons
@@ -20,8 +21,9 @@ import MenuSVG from '../assets/svgs/menu.svg';
 import MenuInactiveSVG from '../assets/svgs/menu_inactive.svg';
 import {primaryBGColor} from '../helper/utils/colors';
 const Tab = createBottomTabNavigator();
-
+import useLoginStore from '../store/authentication/login.store';
 const BottomTabNavigation = () => {
+  const {loggedInUser} = useLoginStore();
   const colorScheme = useColorScheme();
   const TabArr = useMemo(
     () => [
@@ -35,7 +37,7 @@ const BottomTabNavigation = () => {
       {
         route: 'Plus',
         label: '+',
-        component: JobPostingForm,
+        component: loggedInUser?.allowedjobposting <=0 ? IncrementalRequestScreen : JobPostingForm,
         activeIcon: (
           <Icon
             type={Icons.FontAwesome5}

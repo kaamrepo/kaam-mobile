@@ -18,7 +18,7 @@ import * as yup from 'yup';
 import Icon, {Icons} from '../../components/Icons';
 import useLoginStore from '../../store/authentication/login.store';
 import {getCoordinates} from '../../helper/utils/getGeoLocation';
-import {primaryBGColor, primaryBGDarkColor} from '../../helper/utils/colors';
+import {primaryBGColor} from '../../helper/utils/colors';
 import useJobStore from '../../store/jobs.store';
 import {useFocusEffect} from '@react-navigation/native';
 import wordsFilter from '../../helper/utils/profane';
