@@ -486,7 +486,7 @@ const JobPreferences = ({navigation}) => {
               <TouchableOpacity
                 onPress={() => append({about: '', employer: '', year: '-'})}
                 style={[
-                  tw`w-10 h-10 px-2 rounded-2xl bg-green-600 items-center justify-center`,
+                  tw`w-10 h-10 px-2 rounded-2xl bg-emerald-600 items-center justify-center`,
                 ]}>
                 <Text style={tw`text-white text-3xl`}>+</Text>
               </TouchableOpacity>
@@ -661,7 +661,7 @@ const JobPreferences = ({navigation}) => {
           style={tw`${
             shouldSubmitFormDisabled
               ? 'bg-slate-50 dark:bg-gray-800'
-              : 'bg-green-700'
+              : 'bg-emerald-700'
           }  w-40 p-4 rounded-full flex-row items-center justify-center`}
           onPress={handleSubmit(onSubmit)}>
           <Text
@@ -697,7 +697,7 @@ const JobChip = ({item, isSelected, onPress}) => {
   return (
     <TouchableOpacity
       style={tw`px-4 py-1.5 mx-1 flex self-start my-1 rounded-full ${
-        isSelected ? 'bg-green-600' : 'bg-white dark:bg-transparent'
+        isSelected ? 'bg-emerald-600' : 'bg-white dark:bg-transparent'
       } border border-white`}
       onPress={() => onPress(item)}>
       <Text
