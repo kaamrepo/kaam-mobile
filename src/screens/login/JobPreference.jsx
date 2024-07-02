@@ -24,6 +24,11 @@ import useLoaderStore from '../../store/loader.store';
 import {getCoordinates} from '../../helper/utils/getGeoLocation';
 
 const validationSchema = yup.object().shape({
+  aboutme: yup.string().max(100, 'Maximum 100 characters allowed'),
+  tags: yup
+    .array()
+    .of(yup.string())
+    .min(1, 'Select at least one category'),
   location: yup.object().shape({
     pincode: yup.string().required('Pincode is required!'),
     district: yup.string().required('District is required!'),
@@ -69,17 +74,18 @@ const validationSchema = yup.object().shape({
   ),
 });
 
+const steps = [
+  {
+    fields: ['cate'],
+  },
+];
+
 const JobPreferences = ({navigation}) => {
   const [isEnabled, setIsEnabled] = useState(true);
   const {categories, getCategories, setCategories} = useInitialDataStore();
   const colorScheme = useColorScheme();
   const {isLoading, setLoading} = useLoaderStore();
-  const [allJobRoles, setAllJobRoles] = useState(categories);
-  const [selectedJobs, setSelectedJobs] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [aboutMe, setAboutMe] = useState('');
   const {getAddressByPincode, address} = useJobStore();
-  const maxSelection = categories?.length;
 
   const {
     control,
@@ -101,37 +107,13 @@ const JobPreferences = ({navigation}) => {
     getCategories();
   }, []);
 
-  const handleToggleJob = job => {
-    if (selectedJobs.some(selectedJob => selectedJob.name === job.name)) {
-      setSelectedJobs(
-        selectedJobs.filter(selectedJob => selectedJob.name !== job.name),
-      );
-    } else {
-      if (selectedJobs.length < maxSelection) {
-        setSelectedJobs([...selectedJobs, job]);
-      } else {
-      }
-    }
-  };
-
-  useMemo(() => {
-    if (categories && Array.isArray(categories)) {
-      const filteredJobRoles =
-        categories?.filter(job =>
-          job?.name?.toLowerCase().includes(searchQuery.toLowerCase()),
-        ) ?? [];
-      setAllJobRoles(filteredJobRoles);
-    }
-  }, [categories, searchQuery]);
-
   const onSubmit = async data => {
-    const tags = selectedJobs.map(job => job._id);
     const payload = {
-      aboutme: aboutMe,
-      tags,
       ...data,
       activeforjobs: isEnabled,
     };
+    console.log("🚀 ~ onSubmit ~ payload:", payload)
+    
     try {
       setLoading(true);
       const result = await getCoordinates();
@@ -152,8 +134,7 @@ const JobPreferences = ({navigation}) => {
     }
   };
 
-  const shouldSubmitFormDisabled =
-    selectedJobs.length < 1 || !isValid || isSubmitting;
+  const shouldSubmitFormDisabled = !isValid || isSubmitting;
 
   const pincodeWatch = watch('location.pincode');
 
@@ -205,22 +186,43 @@ const JobPreferences = ({navigation}) => {
           <View style={tw`w-[25%] h-1 rounded-full bg-black dark:bg-white`} />
         </View>
 
-        <View style={tw`pb-4 flex-row flex-wrap`}>
-          {allJobRoles?.length ? (
-            allJobRoles.map(jobRole => (
-              <JobChip
-                key={jobRole._id}
-                item={jobRole}
-                isSelected={selectedJobs.some(
-                  selectedJob => selectedJob.name === jobRole.name,
-                )}
-                onPress={handleToggleJob}
-              />
-            ))
-          ) : (
-            <></>
+        <Controller
+          name="tags"
+          control={control}
+          defaultValue={[]}
+          render={({field: {onChange, value}}) => (
+            <View style={tw`flex-row flex-wrap`}>
+              {categories?.length ? (
+                categories.map(category => (
+                  <JobChip
+                    key={category._id}
+                    item={category}
+                    isSelected={value.includes(category._id)}
+                    onPress={() => {
+                      if (value.includes(category._id)) {
+                        onChange(value.filter(c => c !== category._id));
+                      } else {
+                        onChange([...value, category._id]);
+                      }
+                    }}
+                    style={{margin: 4}}>
+                    {category.name}
+                  </JobChip>
+                ))
+              ) : (
+                <></>
+              )}
+            </View>
           )}
-        </View>
+        />
+
+        <Text
+          style={[
+            tw`text-red-600 w-full text-[10px] text-right px-2 py-1`,
+            {fontFamily: 'Poppins-Regular'},
+          ]}>
+          {errors?.tags?.message}
+        </Text>
 
         <View style={tw`w-full my-5`}>
           <Text
@@ -234,27 +236,49 @@ const JobPreferences = ({navigation}) => {
         </View>
 
         <View style={[tw``]}>
-          <TextInput
-            multiline={true}
-            numberOfLines={4}
-            onChangeText={text => {
-              if (text.length <= 100) setAboutMe(text);
-            }}
-            value={aboutMe}
-            placeholder="Brief information about you."
-            style={[
-              tw`px-4 py-4 h-24 text-gray-800 dark:text-white bg-white dark:bg-gray-800 rounded-3xl`,
-              {textAlignVertical: 'top'},
-            ]}
-            placeholderTextColor={
-              colorScheme === 'dark' ? '#efefef' : 'rgb(156 163 175)'
-            }
+          <Controller
+            control={control}
+            name="aboutme"
+            render={({field: {onChange, onBlur, value}}) => (
+              <>
+                <TextInput
+                  value={value}
+                  multiline={true}
+                  numberOfLines={4}
+                  autoCapitalize="sentences"
+                  onChangeText={text => {
+                    if (text.length <= 100) onChange(text);
+                  }}
+                  onBlur={onBlur}
+                  style={[
+                    {fontFamily: 'Poppins-Regular'},
+                    tw`px-4 py-4 h-24 text-gray-800 dark:text-white bg-white dark:bg-gray-800 rounded-3xl ${
+                      errors?.aboutme?.message
+                        ? 'border-red-500'
+                        : 'border-slate-300'
+                    } w-full`,
+                    {textAlignVertical: 'top'},
+                  ]}
+                  placeholder="Brief information about you."
+                  placeholderTextColor={
+                    colorScheme === 'dark' ? '#efefef' : 'rgb(156 163 175)'
+                  }
+                />
+                <Text
+                  style={tw`text-right mr-5 text-gray-700 dark:text-gray-400`}>
+                  {value ? 100 - value.length : 0}/100
+                </Text>
+              </>
+            )}
           />
-          <Text style={tw`text-right mr-5 text-gray-700 dark:text-gray-400`}>
-            {100 - aboutMe.length}/100
+          <Text
+            style={[
+              tw`text-red-600 w-full text-[10px] text-right px-2 py-1`,
+              {fontFamily: 'Poppins-Regular'},
+            ]}>
+            {errors?.aboutme?.message}
           </Text>
         </View>
-
         {/* Location fetch form started */}
 
         <View style={tw`w-full my-5`}>
@@ -699,7 +723,7 @@ const JobChip = ({item, isSelected, onPress}) => {
       style={tw`px-4 py-1.5 mx-1 flex self-start my-1 rounded-full ${
         isSelected ? 'bg-emerald-600' : 'bg-white dark:bg-transparent'
       } border border-white`}
-      onPress={() => onPress(item)}>
+      onPress={onPress}>
       <Text
         numberOfLines={1}
         style={[
