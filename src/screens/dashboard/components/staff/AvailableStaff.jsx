@@ -16,7 +16,6 @@ import {primaryBGColor} from '../../../../helper/utils/colors';
 import useStaffStore from '../../../../store/staff.store';
 import useLoginStore from '../../../../store/authentication/login.store';
 const AvailableStaff = ({language, isLoading, navigation}) => {
-
   const {getStaff, stafflist} = useStaffStore();
   const {loggedInUser} = useLoginStore();
   useFocusEffect(
@@ -41,7 +40,10 @@ const AvailableStaff = ({language, isLoading, navigation}) => {
           <View
             style={tw`flex-row justify-between items-center mt-5 mb-4 mx-5`}>
             <Text
-              style={[tw`text-black dark:text-white text-xl`, {fontFamily: 'Poppins-Bold'}]}>
+              style={[
+                tw`text-black dark:text-white text-xl`,
+                {fontFamily: 'Poppins-Bold'},
+              ]}>
               {Translation[language]['Fetching Staffs...']}
             </Text>
           </View>
@@ -68,7 +70,10 @@ const AvailableStaff = ({language, isLoading, navigation}) => {
           <View
             style={tw`flex-row justify-between items-center mt-5 mb-4 mx-5`}>
             <Text
-              style={[tw`text-black dark:text-white text-xl`, {fontFamily: 'Poppins-Bold'}]}>
+              style={[
+                tw`text-black dark:text-white text-xl`,
+                {fontFamily: 'Poppins-Bold'},
+              ]}>
               {/* {Translation[language]['No Available Staffs']} */}
               Available Staffs
             </Text>
@@ -94,7 +99,10 @@ const AvailableStaff = ({language, isLoading, navigation}) => {
           <View
             style={tw`flex-row justify-between items-center mt-5 mb-4 mx-5`}>
             <Text
-              style={[tw`text-black dark:text-white text-xl`, {fontFamily: 'Poppins-Bold'}]}>
+              style={[
+                tw`text-black dark:text-white text-xl`,
+                {fontFamily: 'Poppins-Bold'},
+              ]}>
               {Translation[language]['Available Staff']}
             </Text>
             <TouchableOpacity onPress={handleSeeAllPress}>
@@ -122,7 +130,8 @@ const AvailableStaff = ({language, isLoading, navigation}) => {
                   }>
                   <View style={tw`flex-row items-start justify-between`}>
                     <View style={tw`flex-row gap-4 items-center`}>
-                      <View style={tw`h-10 w-10 border border-gray-300 dark:border-gray-700 justify-center items-center rounded-full overflow-hidden`}>
+                      <View
+                        style={tw`h-10 w-10 border border-gray-300 dark:border-gray-700 justify-center items-center rounded-full overflow-hidden`}>
                         {item?.profilepic ? (
                           <Image
                             source={{uri: item?.profilepic}}
@@ -177,19 +186,32 @@ const AvailableStaff = ({language, isLoading, navigation}) => {
                         {item.tagsDetails.slice(0, 2).map(tag => (
                           <Text
                             key={tag._id}
-                            style={[tw`text-black dark:text-white border border-emerald-600 bg-gray-100 dark:bg-gray-700 text-[12px] px-2 py-1 rounded-full mr-2`,{fontFamily:'Poppins-Regular'}]}>
+                            style={[
+                              tw`text-black dark:text-white dark:border dark:border-emerald-600 bg-slate-200 dark:bg-transparent text-[12px] px-2 py-0.5 rounded-full mr-2`,
+                              {fontFamily: 'Poppins-Regular', textAlignVertical: 'center',},
+                            ]}>
                             {tag.name}
                           </Text>
                         ))}
                         {item.tagsDetails.length > 2 && (
                           <Text
-                            style={[tw`text-black dark:text-white border border-emerald-600 bg-gray-100 dark:bg-gray-700 text-[12px] px-2 py-1 rounded-full mr-2`,{fontFamily:'Poppins-Regular'}]}>
+                            style={[
+                              tw`text-black dark:text-white dark:border dark:border-emerald-600 bg-slate-200 dark:bg-transparent text-[12px] px-2 py-0.5 rounded-full mr-2`,
+                              {
+                                fontFamily: 'Poppins-Regular',
+                                textAlignVertical: 'center',
+                              },
+                            ]}>
                             +{item.tagsDetails.length - 2} more
                           </Text>
                         )}
                       </>
                     ) : (
-                      <Text style={[tw`text-gray-500 text-[12px]`,{fontFamily:'Poppins-Regular'}]}>
+                      <Text
+                        style={[
+                          tw`text-gray-500 text-[12px]`,
+                          {fontFamily: 'Poppins-Regular'},
+                        ]}>
                         No category selected by user
                       </Text>
                     )}
@@ -201,7 +223,14 @@ const AvailableStaff = ({language, isLoading, navigation}) => {
         </ScrollView>
       </View>
     );
-  }, [isLoading, stafflist, language, navigation, handleSeeAllPress, useColorScheme()]);
+  }, [
+    isLoading,
+    stafflist,
+    language,
+    navigation,
+    handleSeeAllPress,
+    useColorScheme(),
+  ]);
 
   return renderContent;
 };
