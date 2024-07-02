@@ -62,16 +62,15 @@ const IntroSelectLanguage = ({navigation}) => {
     );
   };
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={[tw`flex-1 bg-white dark:bg-gray-900`]}>
       <GeneralStatusBar backgroundColor={'#F2BB13'} />
-      <View style={styles.container}>
-        <View style={styles.topPanel}>
+        <View style={[tw`flex-6`]}>
           <Image
             source={require('../../assets/images/select_lnguage.png')}
             style={styles.image}
           />
         </View>
-        <View style={styles.bottomPanel}>
+        <View style={[tw`flex-4`]}>
           <Modal
             visible={isModalVisible}
             animationType="slide"
@@ -88,7 +87,7 @@ const IntroSelectLanguage = ({navigation}) => {
               </View>
             </View>
           </Modal>
-          <View style={styles.bottomBottomPanel}>
+          <View style={[tw`justify-center h-full`]}>
             <TouchableOpacity
               onPress={toggleModal}
               style={tw`w-2/4 mx-auto flex flex-row justify-between items-center border-2 border-emerald-500  bg-white rounded-lg py-3 px-5`}>
@@ -127,15 +126,11 @@ const IntroSelectLanguage = ({navigation}) => {
             </View>
           </View>
         </View>
-      </View>
+      
     </SafeAreaView>
   );
 };
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
   topPanel: {
     flex: 6,
     alignItems: 'center',

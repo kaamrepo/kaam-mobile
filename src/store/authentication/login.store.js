@@ -1,6 +1,6 @@
 import {create} from 'zustand';
 import API from '../../helper/API';
-import {LOGIN_USER, GET_OTP,CONFIG} from '../../helper/endpoints';
+import {LOGIN_USER, GET_OTP, CONFIG} from '../../helper/endpoints';
 import Toast from 'react-native-toast-message';
 import useRegistrationStore from './registration.store.js';
 import EncryptedStorage from 'react-native-encrypted-storage';
@@ -10,8 +10,8 @@ const useLoginStore = create((set, get) => ({
   loggedInUser: undefined,
   isLoggedIn: false,
   language: 'English',
-  coordinates:[],
-  appconfig:{},
+  coordinates: [],
+  appconfig: {},
   getLanguage: async () => {
     (async () => {
       let response = await retrieveLanguage();
@@ -23,7 +23,6 @@ const useLoginStore = create((set, get) => ({
       headers: {Authorization: await getToken()},
     });
     set({appconfig: res?.data?.data[0]});
-    
   },
   setLoggedInUserDetails: async (user, isLoggedIn) => {
     set({isLoggedIn: isLoggedIn, loggedInUser: user});
@@ -65,8 +64,8 @@ const useLoginStore = create((set, get) => ({
       const res = await API.patch(GET_OTP, data);
       if (res && res.status === 200) {
         useRegistrationStore.getState().setLoginDetails({
-          phone: res.data.phone,
-          dialcode: res.data.dialcode,
+          phone: data.phone,
+          dialcode: data.dialcode.slice(1),
         });
         return true;
       }
@@ -74,7 +73,7 @@ const useLoginStore = create((set, get) => ({
       console.log('getOTP error', JSON.stringify(error, null, 4));
       Toast.show({
         type: 'tomatoToast',
-        text1: error.response.data.message ?? 'ERROR::getOTP',
+        text1: error?.response?.data?.message ?? 'ERROR::getOTP',
       });
       return false;
     }
@@ -127,11 +126,10 @@ export const storeUserSession = async data => {
 
 export const storeUserCoordinate = async data => {
   try {
-    await EncryptedStorage.setItem('coordinates',data);
-    } catch (error) {
-      console.log('client error', error);
-      return false;
-    
+    await EncryptedStorage.setItem('coordinates', data);
+  } catch (error) {
+    console.log('client error', error);
+    return false;
   }
 };
 export const storeUserlanguage = async data => {
@@ -140,7 +138,6 @@ export const storeUserlanguage = async data => {
     try {
       const dataAsString = JSON.stringify(input);
       await EncryptedStorage.setItem('setLanguage', dataAsString);
-      
     } catch (error) {
       console.error('Error storing data:', error);
     }
