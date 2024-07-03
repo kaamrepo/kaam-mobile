@@ -9,7 +9,7 @@ import {
   useColorScheme,
   Dimensions,
 } from 'react-native';
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import tw from 'twrnc';
 import {useForm, Controller} from 'react-hook-form';
@@ -25,7 +25,7 @@ import wordsFilter from '../../helper/utils/profane';
 import useLoaderStore from '../../store/loader.store';
 import {useInitialDataStore} from '../../store/authentication/initial-data.store';
 import {Dropdown} from 'react-native-element-dropdown';
-
+import { IncrementalRequestScreen } from '../incremental/IncrementalRequestScreen';
 let salaryBasisOptionsArray = [
   {label: 'Monthly', value: 'month'},
   {label: 'Weekly', value: 'week'},
@@ -99,6 +99,7 @@ const JobPostingForm = ({navigation}) => {
   const {loggedInUser} = useLoginStore();
   const {categories, getCategories} = useInitialDataStore();
   const {postJobs, getAddressByPincode, address} = useJobStore();
+
   const {
     control,
     handleSubmit,
@@ -160,336 +161,39 @@ const JobPostingForm = ({navigation}) => {
 
   return (
     <SafeAreaView style={tw`flex-1 px-5 py-2 bg-white dark:bg-gray-950`}>
-      <ScrollView
-        style={[tw`my-5 mb-[75px]`]}
-        contentContainerStyle={{alignItems: 'flex-start'}}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled">
-        <Text
-          style={[
-            tw`w-full text-black dark:text-white text-lg my-2`,
-            {fontFamily: 'Poppins-Regular'},
-          ]}>
-          Fill out the following details to post the job.
-        </Text>
-        <View style={tw`w-full`}>
-          <Text
-            style={[
-              tw`text-gray-600 dark:text-gray-300 w-full text-[12px] text-left px-2`,
-              {fontFamily: 'Poppins-Regular'},
-            ]}>
-            Job Title:
-          </Text>
-          <Controller
-            control={control}
-            name="jobtitle"
-            render={({field: {onChange, onBlur, value}}) => (
-              <TextInput
-                value={value}
-                keyboardType="default"
-                autoCapitalize="sentences"
-                onChangeText={onChange}
-                onBlur={onBlur}
-                style={[
-                  {fontFamily: 'Poppins-Regular'},
-                  tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] ${
-                    errors?.jobtitle?.message
-                      ? 'border-red-500'
-                      : 'border-slate-300'
-                  } w-full rounded-lg`,
-                ]}
-                placeholder="eg. Maid"
-                placeholderTextColor={'rgb(163 163 163)'}
-              />
-            )}
-          />
-          <Text
-            style={[
-              tw`text-red-600 w-full text-[10px] text-right px-2 py-1`,
-              {fontFamily: 'Poppins-Regular'},
-            ]}>
-            {errors?.jobtitle?.message}
-          </Text>
-        </View>
-        <View style={tw`w-full`}>
-          <Text
-            style={[
-              tw`text-gray-600 dark:text-gray-300 w-full text-[12px] text-left px-2`,
-              {fontFamily: 'Poppins-Regular'},
-            ]}>
-            Job Description:
-          </Text>
-          <Controller
-            control={control}
-            name="description"
-            render={({field: {onChange, onBlur, value}}) => (
-              <TextInput
-                value={value}
-                multiline
-                keyboardType="default"
-                autoCapitalize="sentences"
-                onChangeText={onChange}
-                onBlur={onBlur}
-                style={[
-                  {fontFamily: 'Poppins-Regular'},
-                  tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] ${
-                    errors?.description?.message
-                      ? 'border-red-500'
-                      : 'border-slate-300'
-                  } w-full rounded-lg`,
-                ]}
-                placeholder="eg. Who can cook healthy Veg Food"
-                placeholderTextColor={'rgb(163 163 163)'}
-              />
-            )}
-          />
-          <Text
-            style={[
-              tw`text-red-600 w-full text-[10px] text-right px-2 py-1`,
-              {fontFamily: 'Poppins-Regular'},
-            ]}>
-            {errors?.description?.message}
-          </Text>
-        </View>
-        <View style={tw`w-full`}>
-          <Text
-            style={[
-              tw`text-gray-600 dark:text-gray-300 w-full text-[12px] text-left px-2`,
-              {fontFamily: 'Poppins-Regular'},
-            ]}>
-            Work Location:
-          </Text>
-          <Controller
-            control={control}
-            name="location.fulladdress"
-            render={({field: {onChange, onBlur, value}}) => (
-              <TextInput
-                value={value}
-                multiline
-                keyboardType="default"
-                autoCapitalize="sentences"
-                onChangeText={onChange}
-                onBlur={onBlur}
-                style={[
-                  {fontFamily: 'Poppins-Regular'},
-                  tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] ${
-                    errors?.location?.fulladdress?.message
-                      ? 'border-red-500'
-                      : 'border-slate-300'
-                  } w-full rounded-lg`,
-                ]}
-                placeholder="eg. Wing A, Ashok Deluxe Appartment, Andheri East."
-                placeholderTextColor={'rgb(163 163 163)'}
-              />
-            )}
-          />
-          <Text
-            style={[
-              tw`text-red-600 w-full text-[10px] text-right px-2 py-1`,
-              {fontFamily: 'Poppins-Regular'},
-            ]}>
-            {errors?.location?.fulladdress?.message}
-          </Text>
-        </View>
+      {Number(user?.allowedjobposting) == 0 ? (
+        <ScrollView
+          style={[tw`my-5 mb-[75px]`]}
+          contentContainerStyle={{alignItems: 'flex-start'}}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled">
+       <IncrementalRequestScreen></IncrementalRequestScreen>
 
-        <View style={[tw`w-full flex-row gap-2 `]}>
-          <View style={tw`flex-1`}>
+        </ScrollView>
+      ) : (
+        <ScrollView
+          style={[tw`my-5 mb-[75px]`]}
+          contentContainerStyle={{alignItems: 'flex-start'}}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled">
+          <Text
+            style={[
+              tw`w-full text-black dark:text-white text-lg my-2`,
+              {fontFamily: 'Poppins-Regular'},
+            ]}>
+            Fill out the following details to post the job.
+          </Text>
+          <View style={tw`w-full`}>
             <Text
               style={[
                 tw`text-gray-600 dark:text-gray-300 w-full text-[12px] text-left px-2`,
                 {fontFamily: 'Poppins-Regular'},
               ]}>
-              Salary:
+              Job Title:
             </Text>
             <Controller
               control={control}
-              name="salary"
-              render={({field: {onChange, onBlur, value}}) => (
-                <TextInput
-                  value={value}
-                  keyboardType="decimal-pad"
-                  autoCapitalize="sentences"
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                  style={[
-                    {fontFamily: 'Poppins-Regular'},
-                    tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] ${
-                      errors?.salary?.message
-                        ? 'border-red-500'
-                        : 'border-slate-300'
-                    } w-full rounded-lg`,
-                  ]}
-                  placeholder="eg. ₹ 6,600"
-                  placeholderTextColor={'rgb(163 163 163)'}
-                />
-              )}
-            />
-            <Text
-              style={[
-                tw`text-red-600 w-full text-[10px] text-right px-2 py-1`,
-                {fontFamily: 'Poppins-Regular'},
-              ]}>
-              {errors?.salary?.message}
-            </Text>
-          </View>
-
-          <View style={tw`flex-1`}>
-            <Text
-              style={[
-                tw`text-gray-600 dark:text-gray-300 w-full text-[12px] text-left px-2`,
-                {fontFamily: 'Poppins-Regular'},
-              ]}>
-              Job openings available:
-            </Text>
-            <Controller
-              control={control}
-              name="numberofopenings"
-              render={({field: {onChange, onBlur, value}}) => (
-                <TextInput
-                  value={value}
-                  keyboardType="decimal-pad"
-                  autoCapitalize="sentences"
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                  defaultValue="1"
-                  style={[
-                    {fontFamily: 'Poppins-Regular'},
-                    tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] ${
-                      errors?.numberofopenings?.message
-                        ? 'border-red-500'
-                        : 'border-slate-300'
-                    } w-full rounded-lg`,
-                  ]}
-                  placeholder="eg. 1"
-                  placeholderTextColor={'rgb(163 163 163)'}
-                />
-              )}
-            />
-            <Text
-              style={[
-                tw`text-red-500 w-full text-[10px] text-right px-2 py-1`,
-                {fontFamily: 'Poppins-Regular'},
-              ]}>
-              {errors?.numberofopenings?.message}
-            </Text>
-          </View>
-        </View>
-
-        <View style={[tw`w-full flex-row gap-2 `]}>
-          <View style={tw`flex-1`}>
-            <Text
-              style={[
-                tw`text-gray-600 dark:text-gray-300 w-full text-[12px] text-left px-2`,
-                {fontFamily: 'Poppins-Regular'},
-              ]}>
-              Pincode:
-            </Text>
-            <Controller
-              control={control}
-              name="location.pincode"
-              render={({field: {onChange, onBlur, value}}) => (
-                <TextInput
-                  value={value}
-                  keyboardType="decimal-pad"
-                  autoCapitalize="sentences"
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                  style={[
-                    {fontFamily: 'Poppins-Regular'},
-                    tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] ${
-                      errors?.location?.pincode?.message
-                        ? 'border-red-500'
-                        : 'border-slate-300'
-                    } w-full rounded-lg`,
-                  ]}
-                  placeholder="eg. 400021"
-                  placeholderTextColor={'rgb(163 163 163)'}
-                />
-              )}
-            />
-            <Text
-              style={[
-                tw`text-red-600 w-full text-[10px] text-right px-2 py-1`,
-                {fontFamily: 'Poppins-Regular'},
-              ]}>
-              {errors?.location?.pincode?.message}
-            </Text>
-          </View>
-
-          <View style={tw`flex-1`}>
-            <Text
-              style={[
-                tw`text-gray-600 dark:text-gray-300 w-full text-[12px] text-left px-2`,
-                {fontFamily: 'Poppins-Regular'},
-              ]}>
-              City/Town:
-            </Text>
-            <Controller
-              control={control}
-              name="location.city"
-              render={({field: {onChange, onBlur, value}}) => (
-                <Dropdown
-                  style={[
-                    tw`text-black dark:text-white px-2 border-[1px] ${
-                      errors?.location?.city?.message
-                        ? 'border-red-500'
-                        : 'border-slate-300'
-                    } w-full rounded-lg py-1.1`,
-                  ]}
-                  mode="default"
-                  placeholder="Select City"
-                  placeholderStyle={[
-                    tw`text-[14px] px-2`,
-                    {fontFamily: 'Poppins-Regular', color: 'rgb(163 163 163)'},
-                  ]}
-                  selectedTextStyle={[
-                    tw`text-black dark:text-white text-[14px] px-2`,
-                    {fontFamily: 'Poppins-Regular'},
-                  ]}
-                  data={address?.cities}
-                  disable={address?.cities?.length <= 0 ? true : false}
-                  labelField="label"
-                  valueField="value"
-                  value={value}
-                  fontFamily={'Poppins-Regular'}
-                  activeColor={colorScheme == 'dark' ? '#2d3649' : '#edf2f7'}
-                  containerStyle={[
-                    tw`bg-white dark:bg-gray-950 rounded-lg w-full overflow-hidden`,
-                  ]}
-                  itemContainerStyle={[tw`rounded-lg`]}
-                  showsVerticalScrollIndicator={true}
-                  itemTextStyle={[
-                    tw`text-black text-sm dark:text-gray-300`,
-                    {fontFamily: 'Poppins-Regular'},
-                  ]}
-                  onChange={item => {
-                    onChange(item.value);
-                  }}
-                />
-              )}
-            />
-            <Text
-              style={[
-                tw`text-red-500 w-full text-[10px] text-right px-2 py-1`,
-                {fontFamily: 'Poppins-Regular'},
-              ]}>
-              {errors?.location?.city?.message}
-            </Text>
-          </View>
-        </View>
-
-        <View style={[tw`w-full flex-row gap-2 `]}>
-          <View style={tw`flex-1`}>
-            <Text
-              style={[
-                tw`text-gray-600 dark:text-gray-300 w-full text-[12px] text-left px-2`,
-                {fontFamily: 'Poppins-Regular'},
-              ]}>
-              District:
-            </Text>
-            <Controller
-              control={control}
-              name="location.district"
+              name="jobtitle"
               render={({field: {onChange, onBlur, value}}) => (
                 <TextInput
                   value={value}
@@ -500,12 +204,12 @@ const JobPostingForm = ({navigation}) => {
                   style={[
                     {fontFamily: 'Poppins-Regular'},
                     tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] ${
-                      errors?.location?.district?.message
+                      errors?.jobtitle?.message
                         ? 'border-red-500'
                         : 'border-slate-300'
                     } w-full rounded-lg`,
                   ]}
-                  placeholder="eg. Pune"
+                  placeholder="eg. Maid"
                   placeholderTextColor={'rgb(163 163 163)'}
                 />
               )}
@@ -515,24 +219,24 @@ const JobPostingForm = ({navigation}) => {
                 tw`text-red-600 w-full text-[10px] text-right px-2 py-1`,
                 {fontFamily: 'Poppins-Regular'},
               ]}>
-              {errors?.location?.district?.message}
+              {errors?.jobtitle?.message}
             </Text>
           </View>
-
-          <View style={tw`flex-1`}>
+          <View style={tw`w-full`}>
             <Text
               style={[
                 tw`text-gray-600 dark:text-gray-300 w-full text-[12px] text-left px-2`,
                 {fontFamily: 'Poppins-Regular'},
               ]}>
-              State:
+              Job Description:
             </Text>
             <Controller
               control={control}
-              name="location.state"
+              name="description"
               render={({field: {onChange, onBlur, value}}) => (
                 <TextInput
                   value={value}
+                  multiline
                   keyboardType="default"
                   autoCapitalize="sentences"
                   onChangeText={onChange}
@@ -540,132 +244,443 @@ const JobPostingForm = ({navigation}) => {
                   style={[
                     {fontFamily: 'Poppins-Regular'},
                     tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] ${
-                      errors?.location?.state?.message
+                      errors?.description?.message
                         ? 'border-red-500'
                         : 'border-slate-300'
                     } w-full rounded-lg`,
                   ]}
-                  placeholder="eg. Maharashtra"
+                  placeholder="eg. Who can cook healthy Veg Food"
                   placeholderTextColor={'rgb(163 163 163)'}
                 />
               )}
             />
             <Text
               style={[
-                tw`text-red-500 w-full text-[10px] text-right px-2 py-1`,
+                tw`text-red-600 w-full text-[10px] text-right px-2 py-1`,
                 {fontFamily: 'Poppins-Regular'},
               ]}>
-              {errors?.location?.state?.message}
+              {errors?.description?.message}
             </Text>
           </View>
-        </View>
-
-        {/* chips */}
-        <View style={tw`w-full`}>
-          <Text
-            style={[
-              tw`text-gray-600 dark:text-gray-300 w-full text-[12px] text-left px-2`,
-              {fontFamily: 'Poppins-Regular'},
-            ]}>
-            Salary basis:
-          </Text>
-          <Controller
-            control={control}
-            render={({field}) => (
-              <View
-                style={tw`flex flex-wrap flex-row justify-start gap-2 my-2`}>
-                {salaryBasisOptionsArray?.map(salaryBasis => (
-                  <Chip
-                    key={salaryBasis?.label}
-                    label={salaryBasis?.label}
-                    selected={field.value === salaryBasis?.value}
-                    onPress={() => field.onChange(salaryBasis?.value)}
-                  />
-                ))}
-              </View>
-            )}
-            name="salarybasis"
-          />
-          <Text
-            style={[
-              tw`text-red-600 w-full text-[10px] text-left px-2 py-1`,
-              {fontFamily: 'Poppins-Regular'},
-            ]}>
-            {errors?.salarybasis?.message}
-          </Text>
-        </View>
-
-        <View style={tw`w-full`}>
-          <Text
-            style={[
-              tw`text-gray-600 dark:text-gray-300 w-full text-[12px] text-left px-2`,
-              {fontFamily: 'Poppins-Regular'},
-            ]}>
-            Select job category:
-          </Text>
-          <Controller
-            control={control}
-            render={({field}) => (
-              <View
-                style={tw`flex flex-wrap flex-row justify-start gap-2 my-2`}>
-                {categories?.map(category => (
-                  <Chip
-                    key={category?.name}
-                    label={category?.name}
-                    selected={field.value === category?._id}
-                    onPress={() => field.onChange(category?._id)}
-                  />
-                ))}
-              </View>
-            )}
-            name="tags"
-          />
-          <Text
-            style={[
-              tw`text-red-600 w-full text-[10px] text-left px-2 py-1`,
-              {fontFamily: 'Poppins-Regular'},
-            ]}>
-            {errors?.tags?.message}
-          </Text>
-        </View>
-        {/* chips */}
-
-        <View style={tw`w-full mt-5 items-center`}>
-          <Pressable
-            disabled={isSubmitting}
-            onPress={handleSubmit(createJob)}
-            style={({pressed}) =>
-              tw`my-3 px-5 py-2 w-1/2 flex-row gap-2 items-center justify-center rounded-xl shadow shadow-zinc-800 ${
-                pressed ? `bg-emerald-600` : `bg-emerald-500`
-              }`
-            }>
-            <Icon
-              type={Icons.Ionicons}
-              name={'briefcase'}
-              size={22}
-              color={'white'}
+          <View style={tw`w-full`}>
+            <Text
+              style={[
+                tw`text-gray-600 dark:text-gray-300 w-full text-[12px] text-left px-2`,
+                {fontFamily: 'Poppins-Regular'},
+              ]}>
+              Work Location:
+            </Text>
+            <Controller
+              control={control}
+              name="location.fulladdress"
+              render={({field: {onChange, onBlur, value}}) => (
+                <TextInput
+                  value={value}
+                  multiline
+                  keyboardType="default"
+                  autoCapitalize="sentences"
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  style={[
+                    {fontFamily: 'Poppins-Regular'},
+                    tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] ${
+                      errors?.location?.fulladdress?.message
+                        ? 'border-red-500'
+                        : 'border-slate-300'
+                    } w-full rounded-lg`,
+                  ]}
+                  placeholder="eg. Wing A, Ashok Deluxe Appartment, Andheri East."
+                  placeholderTextColor={'rgb(163 163 163)'}
+                />
+              )}
             />
             <Text
               style={[
-                tw`text-white text-[20px]`,
-                {fontFamily: 'Poppins-SemiBold'},
+                tw`text-red-600 w-full text-[10px] text-right px-2 py-1`,
+                {fontFamily: 'Poppins-Regular'},
               ]}>
-              Post a Job
+              {errors?.location?.fulladdress?.message}
             </Text>
-          </Pressable>
-        </View>
-      </ScrollView>
-      {isLoading && (
-        <View
-          style={[
-            tw`absolute top-0 right-0 bottom-0 left-0 bg-transparent justify-center items-center`,
-          ]}>
-          <ActivityIndicator
-            animating={isLoading}
-            size={35}
-            style={tw`text-red-400`}
-          />
-        </View>
+          </View>
+
+          <View style={[tw`w-full flex-row gap-2 `]}>
+            <View style={tw`flex-1`}>
+              <Text
+                style={[
+                  tw`text-gray-600 dark:text-gray-300 w-full text-[12px] text-left px-2`,
+                  {fontFamily: 'Poppins-Regular'},
+                ]}>
+                Salary:
+              </Text>
+              <Controller
+                control={control}
+                name="salary"
+                render={({field: {onChange, onBlur, value}}) => (
+                  <TextInput
+                    value={value}
+                    keyboardType="decimal-pad"
+                    autoCapitalize="sentences"
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    style={[
+                      {fontFamily: 'Poppins-Regular'},
+                      tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] ${
+                        errors?.salary?.message
+                          ? 'border-red-500'
+                          : 'border-slate-300'
+                      } w-full rounded-lg`,
+                    ]}
+                    placeholder="eg. ₹ 6,600"
+                    placeholderTextColor={'rgb(163 163 163)'}
+                  />
+                )}
+              />
+              <Text
+                style={[
+                  tw`text-red-600 w-full text-[10px] text-right px-2 py-1`,
+                  {fontFamily: 'Poppins-Regular'},
+                ]}>
+                {errors?.salary?.message}
+              </Text>
+            </View>
+
+            <View style={tw`flex-1`}>
+              <Text
+                style={[
+                  tw`text-gray-600 dark:text-gray-300 w-full text-[12px] text-left px-2`,
+                  {fontFamily: 'Poppins-Regular'},
+                ]}>
+                Job openings available:
+              </Text>
+              <Controller
+                control={control}
+                name="numberofopenings"
+                render={({field: {onChange, onBlur, value}}) => (
+                  <TextInput
+                    value={value}
+                    keyboardType="decimal-pad"
+                    autoCapitalize="sentences"
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    defaultValue="1"
+                    style={[
+                      {fontFamily: 'Poppins-Regular'},
+                      tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] ${
+                        errors?.numberofopenings?.message
+                          ? 'border-red-500'
+                          : 'border-slate-300'
+                      } w-full rounded-lg`,
+                    ]}
+                    placeholder="eg. 1"
+                    placeholderTextColor={'rgb(163 163 163)'}
+                  />
+                )}
+              />
+              <Text
+                style={[
+                  tw`text-red-500 w-full text-[10px] text-right px-2 py-1`,
+                  {fontFamily: 'Poppins-Regular'},
+                ]}>
+                {errors?.numberofopenings?.message}
+              </Text>
+            </View>
+          </View>
+
+          <View style={[tw`w-full flex-row gap-2 `]}>
+            <View style={tw`flex-1`}>
+              <Text
+                style={[
+                  tw`text-gray-600 dark:text-gray-300 w-full text-[12px] text-left px-2`,
+                  {fontFamily: 'Poppins-Regular'},
+                ]}>
+                Pincode:
+              </Text>
+              <Controller
+                control={control}
+                name="location.pincode"
+                render={({field: {onChange, onBlur, value}}) => (
+                  <TextInput
+                    value={value}
+                    keyboardType="decimal-pad"
+                    autoCapitalize="sentences"
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    style={[
+                      {fontFamily: 'Poppins-Regular'},
+                      tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] ${
+                        errors?.location?.pincode?.message
+                          ? 'border-red-500'
+                          : 'border-slate-300'
+                      } w-full rounded-lg`,
+                    ]}
+                    placeholder="eg. 400021"
+                    placeholderTextColor={'rgb(163 163 163)'}
+                  />
+                )}
+              />
+              <Text
+                style={[
+                  tw`text-red-600 w-full text-[10px] text-right px-2 py-1`,
+                  {fontFamily: 'Poppins-Regular'},
+                ]}>
+                {errors?.location?.pincode?.message}
+              </Text>
+            </View>
+
+            <View style={tw`flex-1`}>
+              <Text
+                style={[
+                  tw`text-gray-600 dark:text-gray-300 w-full text-[12px] text-left px-2`,
+                  {fontFamily: 'Poppins-Regular'},
+                ]}>
+                City/Town:
+              </Text>
+              <Controller
+                control={control}
+                name="location.city"
+                render={({field: {onChange, onBlur, value}}) => (
+                  <Dropdown
+                    style={[
+                      tw`text-black dark:text-white px-2 border-[1px] ${
+                        errors?.location?.city?.message
+                          ? 'border-red-500'
+                          : 'border-slate-300'
+                      } w-full rounded-lg py-1.1`,
+                    ]}
+                    mode="default"
+                    placeholder="Select City"
+                    placeholderStyle={[
+                      tw`text-[14px] px-2`,
+                      {
+                        fontFamily: 'Poppins-Regular',
+                        color: 'rgb(163 163 163)',
+                      },
+                    ]}
+                    selectedTextStyle={[
+                      tw`text-black dark:text-white text-[14px] px-2`,
+                      {fontFamily: 'Poppins-Regular'},
+                    ]}
+                    data={address?.cities}
+                    disable={address?.cities?.length <= 0 ? true : false}
+                    labelField="label"
+                    valueField="value"
+                    value={value}
+                    fontFamily={'Poppins-Regular'}
+                    activeColor={colorScheme == 'dark' ? '#2d3649' : '#edf2f7'}
+                    containerStyle={[
+                      tw`bg-white dark:bg-gray-950 rounded-lg w-full overflow-hidden`,
+                    ]}
+                    itemContainerStyle={[tw`rounded-lg`]}
+                    showsVerticalScrollIndicator={true}
+                    itemTextStyle={[
+                      tw`text-black text-sm dark:text-gray-300`,
+                      {fontFamily: 'Poppins-Regular'},
+                    ]}
+                    onChange={item => {
+                      onChange(item.value);
+                    }}
+                  />
+                )}
+              />
+              <Text
+                style={[
+                  tw`text-red-500 w-full text-[10px] text-right px-2 py-1`,
+                  {fontFamily: 'Poppins-Regular'},
+                ]}>
+                {errors?.location?.city?.message}
+              </Text>
+            </View>
+          </View>
+
+          <View style={[tw`w-full flex-row gap-2 `]}>
+            <View style={tw`flex-1`}>
+              <Text
+                style={[
+                  tw`text-gray-600 dark:text-gray-300 w-full text-[12px] text-left px-2`,
+                  {fontFamily: 'Poppins-Regular'},
+                ]}>
+                District:
+              </Text>
+              <Controller
+                control={control}
+                name="location.district"
+                render={({field: {onChange, onBlur, value}}) => (
+                  <TextInput
+                    value={value}
+                    keyboardType="default"
+                    autoCapitalize="sentences"
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    style={[
+                      {fontFamily: 'Poppins-Regular'},
+                      tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] ${
+                        errors?.location?.district?.message
+                          ? 'border-red-500'
+                          : 'border-slate-300'
+                      } w-full rounded-lg`,
+                    ]}
+                    placeholder="eg. Pune"
+                    placeholderTextColor={'rgb(163 163 163)'}
+                  />
+                )}
+              />
+              <Text
+                style={[
+                  tw`text-red-600 w-full text-[10px] text-right px-2 py-1`,
+                  {fontFamily: 'Poppins-Regular'},
+                ]}>
+                {errors?.location?.district?.message}
+              </Text>
+            </View>
+
+            <View style={tw`flex-1`}>
+              <Text
+                style={[
+                  tw`text-gray-600 dark:text-gray-300 w-full text-[12px] text-left px-2`,
+                  {fontFamily: 'Poppins-Regular'},
+                ]}>
+                State:
+              </Text>
+              <Controller
+                control={control}
+                name="location.state"
+                render={({field: {onChange, onBlur, value}}) => (
+                  <TextInput
+                    value={value}
+                    keyboardType="default"
+                    autoCapitalize="sentences"
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    style={[
+                      {fontFamily: 'Poppins-Regular'},
+                      tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] ${
+                        errors?.location?.state?.message
+                          ? 'border-red-500'
+                          : 'border-slate-300'
+                      } w-full rounded-lg`,
+                    ]}
+                    placeholder="eg. Maharashtra"
+                    placeholderTextColor={'rgb(163 163 163)'}
+                  />
+                )}
+              />
+              <Text
+                style={[
+                  tw`text-red-500 w-full text-[10px] text-right px-2 py-1`,
+                  {fontFamily: 'Poppins-Regular'},
+                ]}>
+                {errors?.location?.state?.message}
+              </Text>
+            </View>
+          </View>
+
+          {/* chips */}
+          <View style={tw`w-full`}>
+            <Text
+              style={[
+                tw`text-gray-600 dark:text-gray-300 w-full text-[12px] text-left px-2`,
+                {fontFamily: 'Poppins-Regular'},
+              ]}>
+              Salary basis:
+            </Text>
+            <Controller
+              control={control}
+              render={({field}) => (
+                <View
+                  style={tw`flex flex-wrap flex-row justify-start gap-2 my-2`}>
+                  {salaryBasisOptionsArray?.map(salaryBasis => (
+                    <Chip
+                      key={salaryBasis?.label}
+                      label={salaryBasis?.label}
+                      selected={field.value === salaryBasis?.value}
+                      onPress={() => field.onChange(salaryBasis?.value)}
+                    />
+                  ))}
+                </View>
+              )}
+              name="salarybasis"
+            />
+            <Text
+              style={[
+                tw`text-red-600 w-full text-[10px] text-left px-2 py-1`,
+                {fontFamily: 'Poppins-Regular'},
+              ]}>
+              {errors?.salarybasis?.message}
+            </Text>
+          </View>
+
+          <View style={tw`w-full`}>
+            <Text
+              style={[
+                tw`text-gray-600 dark:text-gray-300 w-full text-[12px] text-left px-2`,
+                {fontFamily: 'Poppins-Regular'},
+              ]}>
+              Select job category:
+            </Text>
+            <Controller
+              control={control}
+              render={({field}) => (
+                <View
+                  style={tw`flex flex-wrap flex-row justify-start gap-2 my-2`}>
+                  {categories?.map(category => (
+                    <Chip
+                      key={category?.name}
+                      label={category?.name}
+                      selected={field.value === category?._id}
+                      onPress={() => field.onChange(category?._id)}
+                    />
+                  ))}
+                </View>
+              )}
+              name="tags"
+            />
+            <Text
+              style={[
+                tw`text-red-600 w-full text-[10px] text-left px-2 py-1`,
+                {fontFamily: 'Poppins-Regular'},
+              ]}>
+              {errors?.tags?.message}
+            </Text>
+          </View>
+          {/* chips */}
+
+          <View style={tw`w-full mt-5 items-center`}>
+            <Pressable
+              disabled={isSubmitting}
+              onPress={handleSubmit(createJob)}
+              style={({pressed}) =>
+                tw`my-3 px-5 py-2 w-1/2 flex-row gap-2 items-center justify-center rounded-xl shadow shadow-zinc-800 ${
+                  pressed ? `bg-emerald-600` : `bg-emerald-500`
+                }`
+              }>
+              <Icon
+                type={Icons.Ionicons}
+                name={'briefcase'}
+                size={22}
+                color={'white'}
+              />
+              <Text
+                style={[
+                  tw`text-white text-[20px]`,
+                  {fontFamily: 'Poppins-SemiBold'},
+                ]}>
+                Post a Job
+              </Text>
+            </Pressable>
+          </View>
+          {isLoading && (
+            <View
+              style={[
+                tw`absolute top-0 right-0 bottom-0 left-0 bg-transparent justify-center items-center`,
+              ]}>
+              <ActivityIndicator
+                animating={isLoading}
+                size={35}
+                style={tw`text-red-400`}
+              />
+            </View>
+          )}
+        </ScrollView>
       )}
     </SafeAreaView>
   );

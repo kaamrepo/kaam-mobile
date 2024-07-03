@@ -6,6 +6,25 @@ import useLoginStore, {getToken} from './login.store';
 // import { getTimeZone } from "react-native-localize";
 
 const useUsersStore = create((set, get) => ({
+  getUser: async data => {
+    try {
+      const userid = useLoginStore.getState().loggedInUser?._id;
+      console.log();
+    const response =  await API.get(`${USER}/${userid}`, data, {
+        headers: {Authorization: await getToken()},
+      });
+      return{
+        status:true,
+        user: response?.data
+      }
+    } catch (error) {
+      console.log(`Error updating user location ${JSON.stringify(error)}`);
+      return{
+        status:true,
+        user: []
+      }
+    }
+  },
   updateUserCoordinates: async data => {
     try {
       const userid = useLoginStore.getState().loggedInUser?._id;
