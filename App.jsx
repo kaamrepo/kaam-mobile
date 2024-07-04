@@ -40,15 +40,29 @@ import client from './client';
 import messaging from '@react-native-firebase/messaging';
 import notifee, {AndroidImportance} from '@notifee/react-native';
 import {HeaderBanner} from './src/components/HeaderBanner';
-import { IncrementalRequestScreen } from './src/screens/incremental/IncrementalRequestScreen';
+import {IncrementalRequestScreen} from './src/screens/incremental/IncrementalRequestScreen';
 import {useDeviceContext, useAppColorScheme} from 'twrnc';
+
+
+async function onMessageReceived(message) {
+  await notifee.requestPermission();
+  try {
+    const notifyObj = JSON.parse(message.data.notifee);
+    const channelId = await notifee.createChannel({
+      id: 'default',
+      name: 'Important Notifications',
+      importance: AndroidImportance.HIGH,
+    });
+    notifyObj.android.channelId = channelId;
+    await notifee.displayNotification(notifyObj);
+  } catch (error) {
+    console.log('notifee.displayNotification', error);
+  }
+}
+messaging().onMessage(onMessageReceived);
 
 const Stack = createNativeStackNavigator();
 const App = () => {
-  // useDeviceContext(tw, {
-  //   observeDeviceColorSchemeChanges: true,
-  //   initialColorScheme: 'device', // 'light' | 'dark' | 'device'
-  // });
 
   const colorScheme = useColorScheme();
   const [twColorScheme, toggleColorScheme, setColorScheme] =
@@ -85,45 +99,17 @@ const App = () => {
     getLanguage();
   }, [isLoggedIn]);
 
-  async function onMessageReceived(message) {
-    await notifee.requestPermission();
-    try {
-      const notifyObj = JSON.parse(message.data.notifee);
-      const channelId = await notifee.createChannel({
-        id: 'default',
-        name: 'Important Notifications',
-        importance: AndroidImportance.HIGH,
-      });
+  
 
-      notifyObj.android.channelId = channelId;
-
-      await notifee.displayNotification(notifyObj);
-    } catch (error) {
-      console.log('notifee.displayNotification', error);
-    }
-  }
-
-  useEffect(() => {
-    const message1 = messaging().onMessage(onMessageReceived);
-
-    return message1;
-  }, []);
-  useEffect(() => {
-    const message2 = messaging().setBackgroundMessageHandler(onMessageReceived);
-
-    return message2;
-  }, []);
-
-  useEffect(() => {
-    const backgroundNotifeeUnsubscribe = notifee.onBackgroundEvent(
-      async remoteMessage => {
-        console.log(
-          'HEADLESS BACKGROUND: Notifee ' + JSON.stringify(remoteMessage),
-        );
-      },
-    );
-    return backgroundNotifeeUnsubscribe;
-  }, []);
+  // useEffect(() => {
+  //   const fgMessage = messaging().onMessage(onMessageReceived);
+  //   return fgMessage;
+  // });
+  // useEffect(() => {
+  //   const bgMessage =
+  //     messaging().setBackgroundMessageHandler(onMessageReceived);
+  //   return bgMessage;
+  // });
 
   if (!isLoggedIn) {
     return (
