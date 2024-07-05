@@ -42,7 +42,7 @@ import notifee, {AndroidImportance} from '@notifee/react-native';
 import {HeaderBanner} from './src/components/HeaderBanner';
 import {IncrementalRequestScreen} from './src/screens/incremental/IncrementalRequestScreen';
 import {useDeviceContext, useAppColorScheme} from 'twrnc';
-
+import {navigationRef} from './navigation';
 
 async function onMessageReceived(message) {
   await notifee.requestPermission();
@@ -54,6 +54,7 @@ async function onMessageReceived(message) {
       importance: AndroidImportance.HIGH,
     });
     notifyObj.android.channelId = channelId;
+    delete notifyObj.android.actions;
     await notifee.displayNotification(notifyObj);
   } catch (error) {
     console.log('notifee.displayNotification', error);
@@ -99,8 +100,6 @@ const App = () => {
     getLanguage();
   }, [isLoggedIn]);
 
-  
-
   // useEffect(() => {
   //   const fgMessage = messaging().onMessage(onMessageReceived);
   //   return fgMessage;
@@ -114,7 +113,7 @@ const App = () => {
   if (!isLoggedIn) {
     return (
       <>
-        <NavigationContainer>
+        <NavigationContainer ref={navigationRef}>
           <Stack.Navigator
             keyboardHandlingEnabled={true}
             initialRouteName="IntroSelectLanguage">
