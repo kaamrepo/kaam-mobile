@@ -9,7 +9,7 @@ import tw from 'twrnc';
 
 const KToggle = ({isEnabled, setIsEnabled, onPress}) => {
   const translateX = useSharedValue(isEnabled ? 30 : 0);
-
+  console.log('are yaar');
   const toggleSwitch = () => {
     setIsEnabled(previousState => {
       const value = !previousState;
