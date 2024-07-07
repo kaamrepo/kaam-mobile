@@ -1,5 +1,8 @@
 module.exports = {
   root: true,
   extends: '@react-native-community',
-  rules: [],
+  ignorePatterns: ['.eslintrc.js'],
+  rules: {
+    'no-inline-comments': 'error',
+  },
 };
