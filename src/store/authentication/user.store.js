@@ -3,26 +3,26 @@ import API from '../../helper/API';
 import {USER} from '../../helper/endpoints';
 import Toast from 'react-native-toast-message';
 import useLoginStore, {getToken} from './login.store';
-// import { getTimeZone } from "react-native-localize";
 
 const useUsersStore = create((set, get) => ({
+  user: undefined,
   getUser: async data => {
     try {
       const userid = useLoginStore.getState().loggedInUser?._id;
-      console.log();
-    const response =  await API.get(`${USER}/${userid}`, data, {
+      const response = await API.get(`${USER}/${userid}`, data, {
         headers: {Authorization: await getToken()},
       });
-      return{
-        status:true,
-        user: response?.data
-      }
+      set({user: response?.data});
+      return {
+        status: true,
+        user: response?.data,
+      };
     } catch (error) {
       console.log(`Error updating user location ${JSON.stringify(error)}`);
-      return{
-        status:true,
-        user: []
-      }
+      return {
+        status: true,
+        user: [],
+      };
     }
   },
   updateUserCoordinates: async data => {
@@ -195,10 +195,10 @@ const useUsersStore = create((set, get) => ({
     }
   },
   updateActiveForJobsStatus: async (userid, status) => {
-    const data = {activeforjobs:status}
+    const data = {activeforjobs: status};
     try {
-      console.log("STATUS CALLED TO UPDATE",status);
-      console.log("STATUS CALLED TO DATAaaaaaaaa",data);
+      console.log('STATUS CALLED TO UPDATE', status);
+      console.log('STATUS CALLED TO DATAaaaaaaaa', data);
       const res = await API.patch(`${USER}/${userid}`, data, {
         headers: {
           Authorization: await getToken(),
@@ -207,12 +207,12 @@ const useUsersStore = create((set, get) => ({
 
       if (res?.data) {
         useLoginStore.getState().setloggedInUser(res.data);
-       
+
         return true;
       }
     } catch (error) {
       console.log(JSON.stringify(error, null, 4));
-      
+
       return false;
     }
   },

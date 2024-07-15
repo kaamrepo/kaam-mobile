@@ -80,13 +80,14 @@ export const IncrementalRequestScreen = ({navigation}) => {
 
   const fullName = `${loggedInUser?.firstname} ${loggedInUser?.lastname}`;
   return (
-    <SafeAreaView style={tw`flex-1  bg-white dark:bg-gray-950`}>
+    <SafeAreaView style={tw`flex-1  bg-gray-100 dark:bg-gray-950`}>
       <ScrollView
-        style={[tw`my-5 mb-[75px]`]}
+        style={[tw`p-5`]}
         contentContainerStyle={{alignItems: 'flex-start'}}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled">
-        <View style={tw`flex-row w-full justify-between mb-5`}>
+        <View
+          style={tw`flex-row w-full justify-between mb-5 p-2 bg-white rounded-xl`}>
           <Pressable
             onPress={() => setRequestType('postingrequest')}
             style={[
@@ -144,7 +145,7 @@ export const IncrementalRequestScreen = ({navigation}) => {
             editable={false}
             style={[
               {fontFamily: 'Poppins-Regular'},
-              tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] w-full rounded-lg`,
+              tw`text-black dark:text-white bg-white text-[14px] px-4 py-2 border border-gray-300 w-full rounded-2xl`,
             ]}
             placeholder="Name"
             placeholderTextColor={'rgb(163 163 163)'}
@@ -168,7 +169,7 @@ export const IncrementalRequestScreen = ({navigation}) => {
                   editable={false}
                   style={[
                     {fontFamily: 'Poppins-Regular'},
-                    tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] w-full rounded-lg`,
+                    tw`text-black dark:text-white bg-white text-[14px] px-4 py-2 border border-gray-300 w-full rounded-2xl`,
                   ]}
                   placeholder="10"
                   placeholderTextColor={'rgb(163 163 163)'}
@@ -196,11 +197,11 @@ export const IncrementalRequestScreen = ({navigation}) => {
                       defaultValue="1"
                       style={[
                         {fontFamily: 'Poppins-Regular'},
-                        tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] ${
+                        tw`text-black dark:text-white text-[14px] px-4 py-2 border ${
                           errors?.requestnumberofopenings?.message
                             ? 'border-red-500'
-                            : 'border-slate-300'
-                        } w-full rounded-lg`,
+                            : 'border-gray-300'
+                        } w-full rounded-2xl bg-white`,
                       ]}
                       placeholder="eg. 1"
                       placeholderTextColor={'rgb(163 163 163)'}
