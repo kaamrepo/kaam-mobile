@@ -104,7 +104,7 @@ export const SeeAllStaffs = ({route, navigation}) => {
               </Text>
             </Pressable>
           )}
-          contentContainerStyle={[tw`py-1 gap-1 bg-gray-200`]}
+          contentContainerStyle={[tw`py-1.5 gap-1 bg-gray-200`]}
           showsHorizontalScrollIndicator={false}
         />
       </View>
@@ -113,10 +113,6 @@ export const SeeAllStaffs = ({route, navigation}) => {
 
   const listFooterComponent = useCallback(() => {
     return <ActivityIndicator size={'large'} style={{marginVertical: 16}} />;
-  }, []);
-
-  const ItemSeparatorComponent = useCallback(() => {
-    return <View style={tw`justify-center`} />;
   }, []);
 
   const onEndReached = useCallback(
@@ -245,7 +241,7 @@ export const SeeAllStaffs = ({route, navigation}) => {
 
   return (
     <Provider>
-      <SafeAreaView style={tw`flex-1 bg-slate-50 py-5`} edges={['top']}>
+      <SafeAreaView style={tw`flex-1 bg-slate-100 py-5`} edges={['top']}>
         <View style={tw`mx-5 my-2 gap-2 flex-row items-center justify-between`}>
           <Pressable
             onPress={handleBackPress}
