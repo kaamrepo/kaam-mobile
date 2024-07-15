@@ -1,15 +1,13 @@
 import React, {useEffect, useState, useMemo, useCallback} from 'react';
 import {
   View,
-  Dimensions,
-  Pressable,
   ImageBackground,
   Text,
   StyleSheet,
+  TouchableOpacity,
+  FlatList,
 } from 'react-native';
 import tw from 'twrnc';
-import Carousel from 'react-native-snap-carousel';
-import Icon, {Icons} from '../../components/Icons';
 import useCategoriesStore from '../../store/categories.store';
 import staticEmployeeImage from '../../assets/images/profession-employee.png';
 import staticWorkImage from '../../assets/images/internship.png';
@@ -27,22 +25,22 @@ const Categories = ({navigation, selectedSearchType}) => {
       .catch(error => console.error('Error while fetching categories:', error));
   }, [getCategories]);
 
-  const renderCategories = useCallback(
+  const RenderCategories = useCallback(
     ({item}) => {
       return (
-        <Pressable
+        <TouchableOpacity
           onPress={() => {
             if (selectedSearchType === 'jobs') {
-              navigation.navigate('SeeAllJobs',{category: item?._id});
+              navigation.navigate('SeeAllJobs', {category: item?._id});
             }
             if (selectedSearchType === 'staff') {
               navigation.navigate('SeeAllStaffs', {category: item?._id});
             }
           }}
           key={item._id}
-          style={tw`items-center justify-center w-[150px] h-[180px] mx-2`}>
-          <View style={tw`rounded-full overflow-hidden w-24 h-24`}>
-            
+          style={tw`flex-row items-center justify-between p-1 gap-2 rounded-full bg-gray-200`}>
+          <View
+            style={tw`rounded-full bg-white border border-gray-300 overflow-hidden w-6 h-6`}>
             {item.bgurl ? (
               <ImageBackground
                 source={{uri: item.bgurl}}
@@ -67,18 +65,18 @@ const Categories = ({navigation, selectedSearchType}) => {
               </>
             )}
           </View>
-          <View style={tw`bg-emerald-500 rounded-full w-3/4 py-1 mt-2`}>
+          <View style={tw`px-1`}>
             <Text
               style={[
-                tw`text-white text-center text-lg`,
-                {fontFamily: 'Poppins-SemiBold'},
+                tw`text-black text-center text-sm`,
+                {fontFamily: 'Poppins-Regular'},
               ]}
               numberOfLines={1}
               ellipsizeMode="tail">
               {item?.name}
             </Text>
           </View>
-        </Pressable>
+        </TouchableOpacity>
       );
     },
     [selectedSearchType],
@@ -91,14 +89,12 @@ const Categories = ({navigation, selectedSearchType}) => {
       <View style={tw`flex-row justify-between items-center mt-2 mx-5`} />
       <View style={tw`flex-1 justify-center items-center`}>
         {memoizedCategories.length > 0 ? (
-          <Carousel
-            layout={'default'}
-            autoplay={false}
-            loop={false}
+          <FlatList
             data={memoizedCategories}
-            renderItem={renderCategories}
-            sliderWidth={Dimensions.get('window').width}
-            itemWidth={150}
+            horizontal={true}
+            renderItem={({item}) => <RenderCategories item={item} />}
+            contentContainerStyle={[tw`px-5 py-2 gap-2`]}
+            showsHorizontalScrollIndicator={false}
           />
         ) : (
           <View style={tw`justify-center items-center p-5`}>
