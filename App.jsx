@@ -64,6 +64,12 @@ messaging().onMessage(onMessageReceived);
 
 const Stack = createNativeStackNavigator();
 const App = () => {
+  useDeviceContext(tw, {
+    // 1️⃣  opt OUT of listening to DEVICE color scheme events
+    observeDeviceColorSchemeChanges: false,
+    // 2️⃣  and supply an initial color scheme
+    initialColorScheme: `light`, // 'light' | 'dark' | 'device'
+  });
 
   const colorScheme = useColorScheme();
   const [twColorScheme, toggleColorScheme, setColorScheme] =

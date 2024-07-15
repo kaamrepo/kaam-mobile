@@ -22,13 +22,11 @@ import {Dropdown} from 'react-native-element-dropdown';
 import useJobStore from '../../store/jobs.store';
 import useLoaderStore from '../../store/loader.store';
 import {getCoordinates} from '../../helper/utils/getGeoLocation';
+import Title from '../../components/Title';
 
 const validationSchema = yup.object().shape({
   aboutme: yup.string().max(100, 'Maximum 100 characters allowed'),
-  tags: yup
-    .array()
-    .of(yup.string())
-    .min(1, 'Select at least one category'),
+  tags: yup.array().of(yup.string()).min(1, 'Select at least one category'),
   location: yup.object().shape({
     pincode: yup.string().required('Pincode is required!'),
     district: yup.string().required('District is required!'),
@@ -112,8 +110,8 @@ const JobPreferences = ({navigation}) => {
       ...data,
       activeforjobs: isEnabled,
     };
-    console.log("🚀 ~ onSubmit ~ payload:", payload)
-    
+    console.log('🚀 ~ onSubmit ~ payload:', payload);
+
     try {
       setLoading(true);
       const result = await getCoordinates();
@@ -153,7 +151,7 @@ const JobPreferences = ({navigation}) => {
   }, [pincodeWatch]);
 
   return (
-    <SafeAreaView style={tw`w-full h-full px-5 dark:bg-gray-900`}>
+    <SafeAreaView style={tw`w-full h-full px-5 pt-5 dark:bg-gray-900`}>
       <GeneralStatusBar
         backgroundColor={colorScheme === 'dark' ? '#000' : '#1F1F1F'}
       />
@@ -162,29 +160,11 @@ const JobPreferences = ({navigation}) => {
         style={tw`my-2`}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}>
-        <View style={tw`w-full my-5`}>
-          <Text
-            style={[
-              tw`text-2xl text-black dark:text-white`,
-              {fontFamily: 'Poppins-Bold'},
-            ]}>
-            Active for jobs?
-          </Text>
-          <View style={tw`w-[30%] h-1 rounded-full bg-black dark:bg-white`} />
-        </View>
+        <Title title={'Active for jobs?'} />
 
         <KToggle isEnabled={isEnabled} setIsEnabled={setIsEnabled} />
 
-        <View style={tw`w-full my-5`}>
-          <Text
-            style={[
-              tw`text-2xl text-black dark:text-white`,
-              {fontFamily: 'Poppins-Bold'},
-            ]}>
-            {isEnabled ? 'Categories' : 'Post jobs of'}
-          </Text>
-          <View style={tw`w-[25%] h-1 rounded-full bg-black dark:bg-white`} />
-        </View>
+        <Title title={isEnabled ? 'Categories' : 'Post jobs of'} />
 
         <Controller
           name="tags"
@@ -224,16 +204,9 @@ const JobPreferences = ({navigation}) => {
           {errors?.tags?.message}
         </Text>
 
-        <View style={tw`w-full my-5`}>
-          <Text
-            style={[
-              tw`text-2xl text-black dark:text-white`,
-              {fontFamily: 'Poppins-Bold'},
-            ]}>
-            About you
-          </Text>
-          <View style={tw`w-[25%] h-1 rounded-full bg-black dark:bg-white`} />
-        </View>
+        {/* <View style={tw`w-[25%] h-1 rounded-full bg-black dark:bg-white`} /> */}
+
+        <Title title={'About you'} />
 
         <View style={[tw``]}>
           <Controller
@@ -281,16 +254,7 @@ const JobPreferences = ({navigation}) => {
         </View>
         {/* Location fetch form started */}
 
-        <View style={tw`w-full my-5`}>
-          <Text
-            style={[
-              tw`text-2xl text-black dark:text-white`,
-              {fontFamily: 'Poppins-Bold'},
-            ]}>
-            Let's locate you
-          </Text>
-          <View style={tw`w-[35%] h-1 rounded-full bg-black dark:bg-white`} />
-        </View>
+        <Title title={"Let's locate you"} />
 
         <View
           style={[
@@ -495,18 +459,7 @@ const JobPreferences = ({navigation}) => {
         {isEnabled ? (
           <>
             <View style={tw`w-full my-5 flex flex-row justify-between`}>
-              <View style={tw``}>
-                <Text
-                  style={[
-                    tw`text-2xl text-black dark:text-white`,
-                    {fontFamily: 'Poppins-Bold'},
-                  ]}>
-                  Experience
-                </Text>
-                <View
-                  style={tw`w-[65%] h-1 rounded-full bg-black dark:bg-white`}
-                />
-              </View>
+              <Title title="Experience" />
               <TouchableOpacity
                 onPress={() => append({about: '', employer: '', year: '-'})}
                 style={[
