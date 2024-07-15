@@ -90,7 +90,7 @@ const EmployeeDetails = ({route, navigation}) => {
                   tw`text-base text-black`,
                   {fontFamily: 'Poppins-Regular'},
                 ]}>
-                {staff?.aboutme ? staff.aboutme : 'No Data'}
+                {staff?.aboutme ? staff.aboutme : '- No Data'}
               </Text>
             </View>
 
@@ -117,10 +117,10 @@ const EmployeeDetails = ({route, navigation}) => {
                 ) : (
                   <Text
                     style={[
-                      tw`text-lg text-gray-600 mb-4`,
+                      tw`text-base text-black`,
                       {fontFamily: 'Poppins-Regular'},
                     ]}>
-                    No Category selected by user
+                    - No Category selected by user
                   </Text>
                 )}
               </View>
@@ -134,38 +134,54 @@ const EmployeeDetails = ({route, navigation}) => {
                 ]}>
                 Work Experience
               </Text>
-              {staff?.experience?.map((item, index) => (
-                <View key={index} style={tw`flex flex-row`}>
-                  <View style={tw`flex-shrink-0 mr-4`}>
-                    <View
-                      style={tw`h-5 w-5 items-center justify-center rounded-full border-2 border-cyan-500`}>
+              {staff?.experience?.length ? (
+                staff?.experience?.map((item, index) => (
+                  <View key={index} style={tw`flex flex-row`}>
+                    <View style={tw`flex-shrink-0 mr-4`}>
                       <View
-                        style={tw`bg-cyan-500 h-2.5 w-2.5 rounded-full`}></View>
+                        style={tw`h-5 w-5 items-center justify-center rounded-full border-2 border-cyan-500`}>
+                        <View
+                          style={tw`bg-cyan-500 h-2.5 w-2.5 rounded-full`}></View>
+                      </View>
+                      {index < staff?.experience.length - 1 && (
+                        <View
+                          style={tw`w-0 flex-1 mx-auto border-l-2 border-dashed border-cyan-500 `}></View>
+                      )}
                     </View>
-                    {index < staff?.experience.length - 1 && (
-                      <View
-                        style={tw`w-0 flex-1 mx-auto border-l-2 border-dashed border-cyan-500 `}></View>
-                    )}
+                    <View style={tw`flex-1 pb-2`}>
+                      <Text
+                        style={[
+                          tw`text-lg text-black`,
+                          {fontFamily: 'Poppins-SemiBold'},
+                        ]}>
+                        {item.employer}
+                      </Text>
+                      <Text
+                        style={[
+                          tw`text-black`,
+                          {fontFamily: 'Poppins-Regular'},
+                        ]}>
+                        {item.year}
+                      </Text>
+                      <Text
+                        style={[
+                          tw`text-black`,
+                          {fontFamily: 'Poppins-Regular'},
+                        ]}>
+                        {item.about}
+                      </Text>
+                    </View>
                   </View>
-                  <View style={tw`flex-1 pb-2`}>
-                    <Text
-                      style={[
-                        tw`text-lg text-black`,
-                        {fontFamily: 'Poppins-SemiBold'},
-                      ]}>
-                      {item.employer}
-                    </Text>
-                    <Text
-                      style={[tw`text-black`, {fontFamily: 'Poppins-Regular'}]}>
-                      {item.year}
-                    </Text>
-                    <Text
-                      style={[tw`text-black`, {fontFamily: 'Poppins-Regular'}]}>
-                      {item.about}
-                    </Text>
-                  </View>
-                </View>
-              ))}
+                ))
+              ) : (
+                <Text
+                  style={[
+                    tw`text-base text-black`,
+                    {fontFamily: 'Poppins-Regular'},
+                  ]}>
+                  - No experience
+                </Text>
+              )}
             </View>
           </View>
 
