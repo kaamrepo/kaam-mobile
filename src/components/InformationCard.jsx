@@ -1,5 +1,5 @@
 import tw from 'twrnc';
-import Icon, {Icons} from './Icons';
+import Icon from './Icons';
 import {Text, View} from 'react-native';
 
 const InformationCard = props => {

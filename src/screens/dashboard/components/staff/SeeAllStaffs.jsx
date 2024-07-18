@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState, useRef, useMemo } from 'react';
+import React, {useCallback, useEffect, useState, useRef, useMemo} from 'react';
 import {
   Text,
   StyleSheet,
@@ -11,28 +11,29 @@ import {
   Image,
 } from 'react-native';
 import tw from 'twrnc';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { RadioButton, Modal, Portal, Provider } from 'react-native-paper';
-import FilterIconSVG from '../../../../assets/svgs/FilterIcon.svg';
-import Icon, { Icons } from '../../../../components/Icons';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {RadioButton, Modal, Portal, Provider} from 'react-native-paper';
+import Icon, {Icons} from '../../../../components/Icons';
 import useStaffStore from '../../../../store/staff.store';
 import useLoaderStore from '../../../../store/loader.store';
 import useCategoriesStore from '../../../../store/categories.store';
 import useLoginStore from '../../../../store/authentication/login.store';
-import { debounce } from 'lodash';
+import {debounce} from 'lodash';
 
-export const SeeAllStaffs = ({ route, navigation }) => {
-  const { getStaff } = useStaffStore();
-  const { categories } = useCategoriesStore();
-  const { isLoading } = useLoaderStore();
-  const { loggedInUser } = useLoginStore();
+export const SeeAllStaffs = ({route, navigation}) => {
+  const {getStaff} = useStaffStore();
+  const {categories} = useCategoriesStore();
+  const {isLoading} = useLoaderStore();
+  const {loggedInUser} = useLoginStore();
   const limit = 10;
   const loadMoreRef = useRef(true);
   const [skip, setSkip] = useState(0);
   const [data, setData] = useState([]);
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
-  const [selectedPills, setSelectedPills] = useState(route.params?.category ? [route.params.category] : []);
+  const [selectedPills, setSelectedPills] = useState(
+    route.params?.category ? [route.params.category] : [],
+  );
   const [searchInput, setSearchInput] = useState('');
 
   useEffect(() => {
@@ -52,39 +53,48 @@ export const SeeAllStaffs = ({ route, navigation }) => {
   }, []);
 
   const handleSearch = useCallback(
-    debounce((text) => {
+    debounce(text => {
       setSearchInput(text);
       setSkip(0);
       setData([]);
       loadMoreRef.current = true; // Reset the load more flag
       fetchData(0, text, selectedPills);
     }, 500),
-    [selectedPills] // Depend on selectedPills to capture the latest selection
+    [selectedPills], // Depend on selectedPills to capture the latest selection
   );
 
-  const handlePillPress = useCallback((pill) => {
-    setSelectedPills((prevSelectedPills) => {
-      const newSelectedPills = prevSelectedPills.includes(pill)
-        ? prevSelectedPills.filter((item) => item !== pill)
-        : [...prevSelectedPills, pill];
-      setSkip(0);
-      setData([]);
-      loadMoreRef.current = true; // Reset the load more flag
-      fetchData(0, searchInput, newSelectedPills);
-      return newSelectedPills;
-    });
-  }, [searchInput]); // Depend on searchInput to capture the latest search term
+  const handlePillPress = useCallback(
+    pill => {
+      setSelectedPills(prevSelectedPills => {
+        const newSelectedPills = prevSelectedPills.includes(pill)
+          ? prevSelectedPills.filter(item => item !== pill)
+          : [...prevSelectedPills, pill];
+        setSkip(0);
+        setData([]);
+        loadMoreRef.current = true; // Reset the load more flag
+        fetchData(0, searchInput, newSelectedPills);
+        return newSelectedPills;
+      });
+    },
+    [searchInput],
+  ); // Depend on searchInput to capture the latest search term
 
   const renderCategories = useMemo(() => {
     return (
-      <View style={tw`flex flex-wrap flex-row px-4 mb-2`}>
-        {categories?.map((item) => {
-          return (
+      <View style={tw`flex flex-wrap flex-row`}>
+        <FlatList
+          data={categories?.length ? categories : []}
+          horizontal={true}
+          renderItem={({item, index}) => (
             <Pressable
               key={item._id}
               onPress={() => handlePillPress(item._id)}
-              style={tw`px-4 py-2 m-1 rounded-full ${
-                selectedPills.includes(item._id) ? 'bg-blue-500' : 'bg-gray-200'
+              style={tw`px-5 ${
+                index == 0 ? 'ml-1' : ''
+              } py-1.5 rounded-full border  ${
+                selectedPills.includes(item._id)
+                  ? 'bg-emerald-500 border-emerald-500'
+                  : 'bg-white border-gray-300'
               }`}>
               <Text
                 style={tw`text-sm ${
@@ -93,18 +103,16 @@ export const SeeAllStaffs = ({ route, navigation }) => {
                 {item?.name}
               </Text>
             </Pressable>
-          );
-        })}
+          )}
+          contentContainerStyle={[tw`py-1.5 gap-1 bg-gray-200`]}
+          showsHorizontalScrollIndicator={false}
+        />
       </View>
     );
   }, [categories, selectedPills, handlePillPress]);
 
   const listFooterComponent = useCallback(() => {
-    return <ActivityIndicator size={'large'} style={{ marginVertical: 16 }} />;
-  }, []);
-
-  const ItemSeparatorComponent = useCallback(() => {
-    return <View style={tw`justify-center`} />;
+    return <ActivityIndicator size={'large'} style={{marginVertical: 16}} />;
   }, []);
 
   const onEndReached = useCallback(
@@ -113,11 +121,15 @@ export const SeeAllStaffs = ({ route, navigation }) => {
         await fetchData(skip);
       }
     }, 500),
-    [fetchData, skip, isLoading]
+    [fetchData, skip, isLoading],
   );
 
   const fetchData = useCallback(
-    async (skipValue, searchText = searchInput, selectedCategories = selectedPills) => {
+    async (
+      skipValue,
+      searchText = searchInput,
+      selectedCategories = selectedPills,
+    ) => {
       if (!loadMoreRef.current) return; // Prevent API call if no more data
       try {
         const payload = {
@@ -128,14 +140,14 @@ export const SeeAllStaffs = ({ route, navigation }) => {
           excludeIds: [loggedInUser?._id],
           exclude: '_id',
         };
-      
+
         const result = await getStaff(payload);
         if (result?.length === 0) {
           loadMoreRef.current = false; // No more data to load
         } else {
-          setData((prevData) => {
-            const idSet = new Set(prevData?.map((item) => item?._id));
-            const newData = result?.filter((item) => !idSet?.has(item._id));
+          setData(prevData => {
+            const idSet = new Set(prevData?.map(item => item?._id));
+            const newData = result?.filter(item => !idSet?.has(item._id));
             return [...prevData, ...newData];
           });
           setSkip(skipValue + limit);
@@ -144,32 +156,33 @@ export const SeeAllStaffs = ({ route, navigation }) => {
         console.log('Error fetching data:', error);
       }
     },
-    [limit, getStaff, searchInput, selectedPills, loggedInUser]
+    [limit, getStaff, searchInput, selectedPills, loggedInUser],
   );
 
   const renderItem = useCallback(
-    ({ item, index }) => (
+    ({item, index}) => (
       <Pressable
         onPress={() => {
-          navigation.navigate('EmployeeDetails', { user: item });
+          navigation.navigate('EmployeeDetails', {user: item});
         }}
         key={item._id} // Assuming _id is unique and stable
-        style={({ pressed }) =>
-          tw`my-1 w-full border border-gray-200 rounded-3 px-2.5 pb-2.5 pt-4 relative overflow-hidden ${
+        style={({pressed}) =>
+          tw`my-1 w-full gap-2 border border-gray-200 rounded-3 p-2 relative overflow-hidden ${
             pressed ? 'bg-green-100/10' : 'bg-white'
           }`
         }>
         <View style={tw`flex-row items-start justify-between`}>
-          <View style={tw`flex-row items-center`}>
-            <View style={tw`h-10 w-10 mr-2`}>
+          <View style={tw`flex-row items-center gap-3`}>
+            <View
+              style={tw`h-10 w-10 border-2 border-gray-200 items-center justify-center rounded-full overflow-hidden`}>
               {item?.profilepic ? (
-                <Image source={{ uri: item.profilepic }} style={tw`h-10 w-10 rounded`} />
+                <Image source={{uri: item.profilepic}} style={tw`h-10 w-10`} />
               ) : (
                 <Icon
                   type={Icons.Ionicons}
                   name={'person'}
-                  size={45}
-                  color={'green'}
+                  size={40}
+                  color={'teal'}
                 />
               )}
             </View>
@@ -177,7 +190,7 @@ export const SeeAllStaffs = ({ route, navigation }) => {
               <Text
                 style={[
                   tw`text-black text-[14px]`,
-                  { fontFamily: 'Poppins-SemiBold' },
+                  {fontFamily: 'Poppins-SemiBold'},
                 ]}
                 numberOfLines={1}
                 ellipsizeMode="tail">
@@ -186,7 +199,7 @@ export const SeeAllStaffs = ({ route, navigation }) => {
               <Text
                 style={[
                   tw`text-neutral-600 text-[14px]`,
-                  { fontFamily: 'Poppins-Regular' },
+                  {fontFamily: 'Poppins-Regular'},
                 ]}
                 numberOfLines={1}
                 ellipsizeMode="tail">
@@ -197,44 +210,45 @@ export const SeeAllStaffs = ({ route, navigation }) => {
           <Text
             style={[
               tw`text-white text-[12px] px-2 rounded-bl-xl bg-green-500`, // Adjust the color as per your theme
-              { fontFamily: 'Poppins-SemiBold' },
+              {fontFamily: 'Poppins-Regular'},
             ]}>
-            {`${item?.address?.city || "City - NA"} / ${item?.address?.state || "State - NA"}`}
+            {`${item?.address?.city || 'City - NA'} / ${
+              item?.address?.state || 'State - NA'
+            }`}
           </Text>
         </View>
-        <View style={tw`flex-row flex-wrap mt-2`}>
+        <View style={tw`flex-row flex-wrap gap-2`}>
           {item?.tagsDetails?.length > 0 ? (
             <>
-              {item.tagsDetails.map((tag) => (
+              {item.tagsDetails.map(tag => (
                 <Text
                   key={tag._id}
-                  style={tw`bg-gray-200 text-black text-[12px] px-2 py-1 rounded-full mr-2 mb-2`}>
+                  style={tw`bg-white border border-gray-300 text-black text-xs px-3 py-1 rounded-full`}>
                   {tag.name}
                 </Text>
               ))}
-              
             </>
           ) : (
-            <Text
-              style={tw`text-gray-500 text-[12px]`}>
+            <Text style={tw`text-gray-500 text-[12px]`}>
               No category selected by user
             </Text>
           )}
         </View>
       </Pressable>
     ),
-    [navigation]
+    [navigation],
   );
-  
 
   return (
     <Provider>
-      <SafeAreaView style={tw`flex-1 bg-slate-50`} edges={['top']}>
-        <View style={tw`flex-row items-center mb-4 mt-2`}>
+      <SafeAreaView style={tw`flex-1 bg-slate-100 py-5`} edges={['top']}>
+        <View style={tw`mx-5 my-2 gap-2 flex-row items-center justify-between`}>
           <Pressable
             onPress={handleBackPress}
-            style={({ pressed }) => [
-              tw`p-2 rounded-full ${pressed ? 'bg-black/20' : ''}`,
+            style={({pressed}) => [
+              tw`p-2 rounded-full border border-gray-100 ${
+                pressed ? 'bg-black/20' : 'bg-white'
+              }`,
             ]}>
             <Icon
               type={Icons.Ionicons}
@@ -244,51 +258,56 @@ export const SeeAllStaffs = ({ route, navigation }) => {
             />
           </Pressable>
           <View
-            style={tw`mt-2 mx-2 px-2 flex-1 bg-[#F2F2F3] rounded-lg h-10 flex-row items-center pr-2 shadow-2xl`}>
+            style={tw`bg-white rounded-full border border-gray-100 h-10 flex-row flex-grow items-center`}>
             <Icon name="search" size={20} color="gray" style={tw`mx-2`} />
             <TextInput
-              style={tw`text-sm text-black mx-3`}
-              placeholder="Search staff"
+              style={tw`text-sm text-black px-3`}
+              placeholder="Search staff..."
               placeholderTextColor="gray"
-              onChangeText={(wildString) => handleSearch(wildString)}
+              onChangeText={wildString => handleSearch(wildString)}
             />
           </View>
-          {/* <TouchableOpacity
-            onPress={showModal}
-            style={tw`w-10 h-10 bg-[#F2F2F3] rounded-lg items-center justify-center ml-2 shadow-2xl`}>
-            <FilterIconSVG />
-          </TouchableOpacity> */}
         </View>
+        <Text
+          style={[
+            tw`text-black text-[10px] ml-5 `,
+            {fontFamily: 'Poppins-Regular'},
+          ]}>
+          Filter by categories:
+        </Text>
         {categories?.length !== 0 ? (
           renderCategories
         ) : (
           <View style={tw`justify-center items-center p-5`}>
-            <Text style={[tw`text-black`, { fontFamily: 'Poppins-Regular' }]}>
+            <Text style={[tw`text-black`, {fontFamily: 'Poppins-Regular'}]}>
               No Categories available
             </Text>
-            <Text style={[tw`text-black`, { fontFamily: 'Poppins-Regular' }]}>
+            <Text style={[tw`text-black`, {fontFamily: 'Poppins-Regular'}]}>
               Contact Admin to add categories
             </Text>
           </View>
         )}
 
         {data.length === 0 ? (
-        <View style={tw`flex-1 justify-center items-center p-5`}>
-          <Text style={[tw`text-black text-lg mb-2`, { fontFamily: 'Poppins-Bold' }]}>
-            No staff available for the selected categories
-          </Text>
-          
-        </View>
-      ) : (
-        <FlatList
-          data={data}
-          renderItem={renderItem}
-          ItemSeparatorComponent={ItemSeparatorComponent}
-          onEndReached={onEndReached}
-          onEndReachedThreshold={0.5}
-          ListFooterComponent={isLoading ? listFooterComponent : null}
-        />
-      )}
+          <View style={tw`flex-1 justify-center items-center p-5`}>
+            <Text
+              style={[
+                tw`text-black text-lg mb-2`,
+                {fontFamily: 'Poppins-Bold'},
+              ]}>
+              No staff available for the selected categories
+            </Text>
+          </View>
+        ) : (
+          <FlatList
+            data={data}
+            renderItem={renderItem}
+            onEndReached={onEndReached}
+            onEndReachedThreshold={0.5}
+            ListFooterComponent={isLoading ? listFooterComponent : null}
+            contentContainerStyle={tw`m-5`}
+          />
+        )}
 
         <Portal>
           <Modal

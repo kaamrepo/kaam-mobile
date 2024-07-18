@@ -25,7 +25,8 @@ import wordsFilter from '../../helper/utils/profane';
 import useLoaderStore from '../../store/loader.store';
 import {useInitialDataStore} from '../../store/authentication/initial-data.store';
 import {Dropdown} from 'react-native-element-dropdown';
-import { IncrementalRequestScreen } from '../incremental/IncrementalRequestScreen';
+import {IncrementalRequestScreen} from '../incremental/IncrementalRequestScreen';
+import useUsersStore from '../../store/authentication/user.store';
 let salaryBasisOptionsArray = [
   {label: 'Monthly', value: 'month'},
   {label: 'Weekly', value: 'week'},
@@ -99,6 +100,7 @@ const JobPostingForm = ({navigation}) => {
   const {loggedInUser} = useLoginStore();
   const {categories, getCategories} = useInitialDataStore();
   const {postJobs, getAddressByPincode, address} = useJobStore();
+  const {getUser, user} = useUsersStore();
 
   const {
     control,
@@ -139,6 +141,7 @@ const JobPostingForm = ({navigation}) => {
   useFocusEffect(
     useCallback(() => {
       getCategories();
+      getUser();
       return () => reset();
     }, []),
   );
@@ -161,14 +164,13 @@ const JobPostingForm = ({navigation}) => {
 
   return (
     <SafeAreaView style={tw`flex-1 px-5 py-2 bg-white dark:bg-gray-950`}>
-      {Number(user?.allowedjobposting) == 0 ? (
+      {user && Number(user?.allowedjobposting) == 0 ? (
         <ScrollView
           style={[tw`my-5 mb-[75px]`]}
           contentContainerStyle={{alignItems: 'flex-start'}}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled">
-       <IncrementalRequestScreen></IncrementalRequestScreen>
-
+          <IncrementalRequestScreen />
         </ScrollView>
       ) : (
         <ScrollView
