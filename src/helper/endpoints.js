@@ -35,6 +35,7 @@ export const JOBS_APPLICATIONS = `${COMMON_ENDPOINT}jobapplications`;
 export const CHATS = `${COMMON_ENDPOINT}chats`;
 export const CATEGORIES = `${COMMON_ENDPOINT}categories`;
 export const CONFIG = `${COMMON_ENDPOINT}appconfig`;
+export const APPROVAL = `${COMMON_ENDPOINT}approval`;
 
 export const feathersServices = {
   chats: 'api/chats',

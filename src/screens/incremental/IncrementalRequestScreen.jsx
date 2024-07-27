@@ -5,31 +5,26 @@ import {
   TextInput,
   ScrollView,
   ActivityIndicator,
-  useColorScheme,
-  Dimensions,
 } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import tw from 'twrnc';
-import { useForm, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 import Icon, { Icons } from '../../components/Icons';
 import useLoginStore from '../../store/authentication/login.store';
 import useLoaderStore from '../../store/loader.store';
 import useUsersStore from '../../store/authentication/user.store';
-
-const requestJobPostingSchema = yup.object({
-  requestjobpostings: yup.number().typeError('Enter valid number!').required('This field is required'),
-  requestnumberofapplication: yup.number().typeError('Enter valid number!').required('This field is required'),
-});
+import useApprovalStore from '../../store/approval.store';
 
 export const IncrementalRequestScreen = ({ navigation }) => {
   const { getUser } = useUsersStore();
+  const { postApproval } = useApprovalStore();
   const { isLoading, setLoading } = useLoaderStore();
   const { loggedInUser } = useLoginStore();
-  const [requestType, setRequestType] = useState('postingrequest');
+  const [requestType, setRequestType] = useState('jobposting');
   const [user, setUser] = useState({});
+  const [requestJobPostings, setRequestJobPostings] = useState('');
+  const [requestNumberOfApplication, setRequestNumberOfApplication] = useState('');
+  const [errors, setErrors] = useState({});
   const fullName = `${loggedInUser?.firstname} ${loggedInUser?.lastname}`;
 
   useEffect(() => {
@@ -43,35 +38,48 @@ export const IncrementalRequestScreen = ({ navigation }) => {
     getUserFunction();
   }, []);
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm({
-    resolver: yupResolver(requestJobPostingSchema),
-    mode: 'onChange',
-  });
+  const validate = () => {
+    let valid = true;
+    const errors = {};
 
-  const postRequest = async data => {
-    console.log("int he post");
+    if (requestType === 'jobposting' && !requestJobPostings) {
+      errors.requestJobPostings = 'This field is required';
+      valid = false;
+    } else if (requestType === 'jobposting' && isNaN(requestJobPostings)) {
+      errors.requestJobPostings = 'Enter a valid number';
+      valid = false;
+    }
+
+    if (requestType === 'jobapplication' && !requestNumberOfApplication) {
+      errors.requestNumberOfApplication = 'This field is required';
+      valid = false;
+    } else if (requestType === 'jobapplication' && isNaN(requestNumberOfApplication)) {
+      errors.requestNumberOfApplication = 'Enter a valid number';
+      valid = false;
+    }
+
+    setErrors(errors);
+    return valid;
+  };
+
+  const postRequest = async () => {
+    if (!validate()) return;
+
+    const data = {
+      requestor: loggedInUser?._id,
+      requesttype: requestType,
+    };
+
+    if (requestType === 'jobposting') {
+      data.requestedjobposting = Number(requestJobPostings);
+    } else {
+      data.requestedjobapplication = Number(requestNumberOfApplication);    }
     try {
       setLoading(true);
-      data['userid'] = loggedInUser?._id;
-      data['type'] = requestType;
-
-      if (requestType === 'postingrequest') {
-        data['requestedjobpostingcount'] = data.requestjobpostings;
-        data['prevjobpostingcount'] = user.allowedjobposting;
-      } else {
-        data['requestjobapplicationcount'] = data.requestnumberofapplication;
-        data['prevjobapplicationcount'] = user.allowedjobapplication;
-      }
-
-      console.log('data latest after adding posts', data);
-      const success = undefined;
-      // const success = await postJobs(data);
+      const success = postApproval(data); // const success = await postJobs(data);
       if (success) {
-        // navigation.navigate('Dashboard');
+        console.log("in the");
+        navigation.navigate('Dashboard');
       }
       setLoading(false);
     } catch (error) {
@@ -90,10 +98,10 @@ export const IncrementalRequestScreen = ({ navigation }) => {
       >
         <View style={tw`flex-row w-full justify-between mb-5`}>
           <Pressable
-            onPress={() => setRequestType('postingrequest')}
+            onPress={() => setRequestType('jobposting')}
             style={[
               tw`flex-1 py-2 rounded-lg mr-2`,
-              requestType === 'postingrequest' ? tw`bg-emerald-500` : tw`bg-gray-300`,
+              requestType === 'jobposting' ? tw`bg-emerald-500` : tw`bg-gray-300`,
             ]}
           >
             <Text
@@ -106,10 +114,10 @@ export const IncrementalRequestScreen = ({ navigation }) => {
             </Text>
           </Pressable>
           <Pressable
-            onPress={() => setRequestType('applicationrequest')}
+            onPress={() => setRequestType('jobapplication')}
             style={[
               tw`flex-1 py-2 rounded-lg ml-2`,
-              requestType === 'applicationrequest' ? tw`bg-emerald-500` : tw`bg-gray-300`,
+              requestType === 'jobapplication' ? tw`bg-emerald-500` : tw`bg-gray-300`,
             ]}
           >
             <Text
@@ -154,7 +162,7 @@ export const IncrementalRequestScreen = ({ navigation }) => {
           />
         </View>
 
-        {requestType === 'postingrequest' ? (
+        {requestType === 'jobposting' ? (
           <View style={tw`w-full flex-row gap-2 mt-4`}>
             <View style={tw`flex-1`}>
               <Text
@@ -187,29 +195,18 @@ export const IncrementalRequestScreen = ({ navigation }) => {
               >
                 Requested Postings:
               </Text>
-              <Controller
-                control={control}
-                name="requestjobpostings"
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    value={value}
-                    keyboardType="decimal-pad"
-                    autoCapitalize="sentences"
-                    onChangeText={onChange}
-                    onBlur={onBlur}
-                    defaultValue="1"
-                    style={[
-                      { fontFamily: 'Poppins-Regular' },
-                      tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] ${
-                        errors?.requestjobpostings?.message
-                          ? 'border-red-500'
-                          : 'border-slate-300'
-                      } w-full rounded-lg`,
-                    ]}
-                    placeholder="eg. 1"
-                    placeholderTextColor={'rgb(163 163 163)'}
-                  />
-                )}
+              <TextInput
+                value={requestJobPostings}
+                onChangeText={setRequestJobPostings}
+                keyboardType="decimal-pad"
+                style={[
+                  { fontFamily: 'Poppins-Regular' },
+                  tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] ${
+                    errors?.requestJobPostings ? 'border-red-500' : 'border-slate-300'
+                  } w-full rounded-lg`,
+                ]}
+                placeholder="e.g. 1"
+                placeholderTextColor={'rgb(163 163 163)'}
               />
               <Text
                 style={[
@@ -217,7 +214,7 @@ export const IncrementalRequestScreen = ({ navigation }) => {
                   { fontFamily: 'Poppins-Regular' },
                 ]}
               >
-                {errors?.requestjobpostings?.message}
+                {errors?.requestJobPostings}
               </Text>
             </View>
           </View>
@@ -254,29 +251,18 @@ export const IncrementalRequestScreen = ({ navigation }) => {
               >
                 Requested Applications:
               </Text>
-              <Controller
-                control={control}
-                name="requestnumberofapplication"
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    value={value}
-                    keyboardType="decimal-pad"
-                    autoCapitalize="sentences"
-                    onChangeText={onChange}
-                    onBlur={onBlur}
-                    defaultValue="1"
-                    style={[
-                      { fontFamily: 'Poppins-Regular' },
-                      tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] ${
-                        errors?.requestnumberofapplication?.message
-                          ? 'border-red-500'
-                          : 'border-slate-300'
-                      } w-full rounded-lg`,
-                    ]}
-                    placeholder="eg. 1"
-                    placeholderTextColor={'rgb(163 163 163)'}
-                  />
-                )}
+              <TextInput
+                value={requestNumberOfApplication}
+                onChangeText={setRequestNumberOfApplication}
+                keyboardType="decimal-pad"
+                style={[
+                  { fontFamily: 'Poppins-Regular' },
+                  tw`text-black dark:text-white text-[14px] px-4 py-2 border-[1px] ${
+                    errors?.requestNumberOfApplication ? 'border-red-500' : 'border-slate-300'
+                  } w-full rounded-lg`,
+                ]}
+                placeholder="e.g. 1"
+                placeholderTextColor={'rgb(163 163 163)'}
               />
               <Text
                 style={[
@@ -284,7 +270,7 @@ export const IncrementalRequestScreen = ({ navigation }) => {
                   { fontFamily: 'Poppins-Regular' },
                 ]}
               >
-                {errors?.requestnumberofapplication?.message}
+                {errors?.requestNumberOfApplication}
               </Text>
             </View>
           </View>
@@ -292,11 +278,8 @@ export const IncrementalRequestScreen = ({ navigation }) => {
 
         <View style={tw`w-full mt-5 items-center`}>
           <Pressable
-            disabled={isSubmitting}
-            onPress={()=>{
-              
-              console.log("pressed");
-              handleSubmit(postRequest)}}
+            disabled={isLoading}
+            onPress={postRequest}
             style={({ pressed }) =>
               tw`my-3 px-5 py-2 w-1/2 flex-row gap-2 items-center justify-center rounded-xl shadow shadow-zinc-800 ${
                 pressed ? `bg-emerald-600` : `bg-emerald-500`
@@ -336,5 +319,3 @@ export const IncrementalRequestScreen = ({ navigation }) => {
     </SafeAreaView>
   );
 };
-
-

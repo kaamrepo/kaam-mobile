@@ -28,7 +28,6 @@ const Dashboard = ({navigation}) => {
   const [selectedSearchType, setSelectedSearchType] = useState('staff');
   const [location, setLocation] = useState(undefined);
   const {loggedInUser, language} = useLoginStore();
-  const {updateUserCoordinates} = useUsersStore();
 
   const {isLoading} = useLoaderStore();
 
