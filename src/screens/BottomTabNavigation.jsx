@@ -1,8 +1,4 @@
-import {
-  TouchableOpacity,
-  View,
-  useColorScheme,
-} from 'react-native';
+import {TouchableOpacity, View, useColorScheme} from 'react-native';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Icon, {Icons} from '../components/Icons';
@@ -10,7 +6,7 @@ import * as Animatable from 'react-native-animatable';
 import tw from 'twrnc';
 import Dashboard from './dashboard/Dashboard';
 import JobPostingForm from './bottom-bar/JobPostingForm';
-import { IncrementalRequestScreen } from './incremental/IncrementalRequestScreen';
+import {IncrementalRequestScreen} from './incremental/IncrementalRequestScreen';
 import Menu from './bottom-bar/Menu';
 
 // svg icons
@@ -37,7 +33,9 @@ const BottomTabNavigation = () => {
       {
         route: 'Plus',
         label: '+',
-        component: loggedInUser?.allowedjobposting <=0 ? IncrementalRequestScreen : JobPostingForm,
+        component: JobPostingForm,
+        // loggedInUser?.allowedjobposting <=0 ? IncrementalRequestScreen :
+        // JobPostingForm,
         activeIcon: (
           <Icon
             type={Icons.FontAwesome5}

@@ -6,10 +6,10 @@ import useLoginStore, {getToken} from './login.store';
 
 const useUsersStore = create((set, get) => ({
   user: undefined,
-  getUser: async data => {
+  getUser: async () => {
     try {
       const userid = useLoginStore.getState().loggedInUser?._id;
-      const response = await API.get(`${USER}/${userid}`, data, {
+      const response = await API.get(`${USER}/${userid}`, {
         headers: {Authorization: await getToken()},
       });
       set({user: response?.data});
@@ -18,10 +18,11 @@ const useUsersStore = create((set, get) => ({
         user: response?.data,
       };
     } catch (error) {
-      console.log(`Error updating user location ${JSON.stringify(error)}`);
+      console.log(JSON.stringify(error, null, 4));
+      console.log(`Error getting user location ${JSON.stringify(error)}`);
       return {
         status: true,
-        user: [],
+        user: {},
       };
     }
   },
