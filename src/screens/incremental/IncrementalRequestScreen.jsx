@@ -15,7 +15,8 @@ import useLoaderStore from '../../store/loader.store';
 import useUsersStore from '../../store/authentication/user.store';
 import useApprovalStore from '../../store/approval.store';
 
-export const IncrementalRequestScreen = ({ navigation }) => {
+export const IncrementalRequestScreen = ({navigation }) => {
+  console.log("navigation",navigation);
   const { getUser } = useUsersStore();
   const { postApproval } = useApprovalStore();
   const { isLoading, setLoading } = useLoaderStore();
@@ -78,7 +79,7 @@ export const IncrementalRequestScreen = ({ navigation }) => {
       setLoading(true);
       const success = postApproval(data); // const success = await postJobs(data);
       if (success) {
-        console.log("in the");
+        console.log("in the",navigation);
         navigation.navigate('Dashboard');
       }
       setLoading(false);
