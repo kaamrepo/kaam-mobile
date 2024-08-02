@@ -40,6 +40,7 @@ import client from './client';
 import messaging from '@react-native-firebase/messaging';
 import notifee, {AndroidImportance} from '@notifee/react-native';
 import {HeaderBanner} from './src/components/HeaderBanner';
+import RequestScreen from './src/screens/incremental/RequestScreen';
 import {IncrementalRequestScreen} from './src/screens/incremental/IncrementalRequestScreen';
 import {useDeviceContext, useAppColorScheme} from 'twrnc';
 import {navigationRef} from './navigation';
@@ -284,6 +285,11 @@ const App = () => {
             <Stack.Screen
               name="IncrementalRequestScreen"
               component={IncrementalRequestScreen}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="RequestScreen"
+              component={RequestScreen}
               options={{headerShown: false}}
             />
             <Stack.Screen

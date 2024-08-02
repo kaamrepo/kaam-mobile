@@ -130,6 +130,13 @@ const CustomSidebarMenu = props => {
             onPress={() => props.navigation.navigate('View Profile')}
           />
           <CustomDrawerItem
+            title="My Request"
+            id={1}
+            index={props?.state?.index}
+            icon={<PersonalInformationSVG />}
+            onPress={() => props.navigation.navigate('RequestScreen')}
+          />
+          <CustomDrawerItem
             title="Contact & Support"
             id={2}
             index={props?.state?.index}

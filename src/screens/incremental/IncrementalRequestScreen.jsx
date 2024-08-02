@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import React, { useState, useEffect } from 'react';
+import {useNavigation} from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import tw from 'twrnc';
 import Icon, { Icons } from '../../components/Icons';
@@ -14,9 +15,10 @@ import useLoginStore from '../../store/authentication/login.store';
 import useLoaderStore from '../../store/loader.store';
 import useUsersStore from '../../store/authentication/user.store';
 import useApprovalStore from '../../store/approval.store';
+import Toast from 'react-native-toast-message';
 
-export const IncrementalRequestScreen = ({navigation }) => {
-  console.log("navigation",navigation);
+export const IncrementalRequestScreen = () => {
+  const navigation = useNavigation();
   const { getUser } = useUsersStore();
   const { postApproval } = useApprovalStore();
   const { isLoading, setLoading } = useLoaderStore();
@@ -69,6 +71,7 @@ export const IncrementalRequestScreen = ({navigation }) => {
     const data = {
       requestor: loggedInUser?._id,
       requesttype: requestType,
+      createdat:new Date()
     };
 
     if (requestType === 'jobposting') {
@@ -77,9 +80,19 @@ export const IncrementalRequestScreen = ({navigation }) => {
       data.requestedjobapplication = Number(requestNumberOfApplication);    }
     try {
       setLoading(true);
-      const success = postApproval(data); // const success = await postJobs(data);
-      if (success) {
-        console.log("in the",navigation);
+      const success = await postApproval(data); // const success = await postJobs(data);
+      console.log("resoinse",success);
+      if (success === true) {
+        Toast.show({
+          type: 'success',
+          text1: 'Request posted successfully!',
+        });
+        navigation.navigate('Dashboard');
+      }else{
+        Toast.show({
+          type: 'tomatoToast',
+          text1: 'Failed to post request!',
+        });
         navigation.navigate('Dashboard');
       }
       setLoading(false);

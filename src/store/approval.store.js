@@ -3,13 +3,11 @@ import API from '../helper/API';
 import {
     APPROVAL,
 } from '../helper/endpoints';
-import Toast from 'react-native-toast-message';
 import  {getToken} from './authentication/login.store';
-
+import useLoginStore from './authentication/login.store';
 const useApprovalStore = create((set, get) => ({
   approval: [],
   postApproval: async payload => {
-    console.log("payload in the store",payload);
     try {
       const res = await API.post(`${APPROVAL}`, payload, {
         headers: {
@@ -18,18 +16,30 @@ const useApprovalStore = create((set, get) => ({
       });
 
       if (res?.data) {
-        Toast.show({
-          type: 'success',
-          text1: 'Request posted successfully!',
-        });
         return true;
       }
     } catch (error) {
       console.log(JSON.stringify(error, null, 4));
-      Toast.show({
-        type: 'tomatoToast',
-        text1: 'Failed to post request!',
+      return false;
+    }
+  },
+  clearApproval: () => set({approval: []}),
+  getRequests: async (skip = 0, limit = 10) => {
+    try {
+      const userid = useLoginStore.getState().loggedInUser?._id;
+
+      const res = await API.get(`${APPROVAL}`, {
+        headers: {
+          Authorization: await getToken(),
+        },
+        params: {requestor: userid, skip, limit,sortDesc:['createdat']},
       });
+
+      if (res?.data) {
+        return true;
+      }
+    } catch (error) {
+      console.log(JSON.stringify(error, null, 4));
       return false;
     }
   },
