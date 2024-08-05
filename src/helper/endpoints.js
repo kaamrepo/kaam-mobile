@@ -37,6 +37,8 @@ export const CATEGORIES = `${COMMON_ENDPOINT}categories`;
 export const CONFIG = `${COMMON_ENDPOINT}appconfig`;
 export const APPROVAL = `${COMMON_ENDPOINT}approval`;
 
+export const TERMS_AND_CONDITIONS = `${COMMON_ENDPOINT}terms-and-conditions`;
+
 export const feathersServices = {
   chats: 'api/chats',
 };

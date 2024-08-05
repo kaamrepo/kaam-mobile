@@ -13,6 +13,7 @@ import {
   ScrollView,
   useColorScheme,
 } from 'react-native';
+import CheckBox from '@react-native-community/checkbox';
 import {useForm, Controller} from 'react-hook-form';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {yupResolver} from '@hookform/resolvers/yup';
@@ -23,6 +24,8 @@ import {CountryPicker} from 'react-native-country-codes-picker';
 import {RegistrationTranslation} from './loginTranslation';
 import useRegistrationStore from '../../store/authentication/registration.store';
 import useLoginStore from '../../store/authentication/login.store';
+import {useNavigation} from '@react-navigation/native';
+
 const validationSchema = yup.object().shape({
   firstname: yup.string().required('First Name is required').trim(),
   lastname: yup.string().required('Last Name is required').trim(),
@@ -34,24 +37,34 @@ const validationSchema = yup.object().shape({
     .required('Mobile number is required')
     .matches(/^[0-9]{10}$/, 'Invalid mobile number')
     .trim(),
+  isTermsAndConditionsChecked: yup
+    .boolean()
+    .oneOf([true], 'Please accept the terms and conditions.'),
+  termsAndConditionsId: yup
+    .string()
+    .required('Please accept the terms and conditions.'),
 });
-const RegisterScreen = ({navigation}) => {
+const RegisterScreen = () => {
   const colorScheme = useColorScheme();
+  const navigation = useNavigation();
 
   const {
     control,
     handleSubmit,
-    formState: {errors},
+    setValue,
+    watch,
+    formState: {errors, isSubmitting},
   } = useForm({
     resolver: yupResolver(validationSchema),
     mode: 'onChange',
   });
-  const {loggedInUser, language} = useLoginStore();
+  const {language} = useLoginStore();
   const [show, setShow] = useState(false);
   const [countryCode, setCountryCode] = useState({dialcode: '+91', flag: '🇮🇳'});
-  const {registerUser} = useRegistrationStore();
+  const {registerUser, termAndConditions} = useRegistrationStore();
   const [isFormButtonDisabled, setFormButtonDisabled] = useState(false);
   const onSubmit = async data => {
+    console.log('data', data);
     setFormButtonDisabled(true);
     const success = await registerUser({
       ...data,
@@ -94,6 +107,11 @@ const RegisterScreen = ({navigation}) => {
     return () => backHandler.remove();
   }, []);
 
+  const isTermsAndConditionsChecked = watch('isTermsAndConditionsChecked');
+
+  const handleTermsAndConditionNavigation = () => {
+    navigation.navigate('TermsAndConditions');
+  };
   return (
     <SafeAreaView style={tw`flex-1 px-5 bg-white dark:bg-gray-950`}>
       <GeneralStatusBar />
@@ -135,7 +153,7 @@ const RegisterScreen = ({navigation}) => {
               </Text>
             </View>
 
-            <View style={[tw`my-5`]}>
+            <View style={[tw`mt-5`]}>
               <View style={tw`flex-row justify-between`}>
                 <View style={tw`mb-2 w-[49%]`}>
                   <View
@@ -346,8 +364,70 @@ const RegisterScreen = ({navigation}) => {
               </View>
             </View>
 
+            <View style={tw`mb-5`}>
+              {/* isTermsAndConditionsChecked */}
+              {/* termsAndConditionsId */}
+
+              <View style={tw`flex-row items-center`}>
+                <Controller
+                  control={control}
+                  name="isTermsAndConditionsChecked"
+                  defaultValue={false}
+                  render={({field: {value, onChange}}) => (
+                    <CheckBox
+                      disabled={false}
+                      value={value}
+                      onValueChange={val => {
+                        onChange(val);
+                        setValue(
+                          'termsAndConditionsId',
+                          termAndConditions?._id,
+                        );
+                      }}
+                      tintColor="#10b982"
+                    />
+                  )}
+                />
+
+                <Text
+                  onPress={() => {
+                    setValue(
+                      'isTermsAndConditionsChecked',
+                      !isTermsAndConditionsChecked,
+                    );
+                    setValue('termsAndConditionsId', termAndConditions?._id);
+                  }}
+                  style={[
+                    tw`text-sm font-medium text-black dark:text-white`,
+                    {fontFamily: 'Poppins-Regular'},
+                  ]}>
+                  I accept the{' '}
+                  <Text
+                    onPress={handleTermsAndConditionNavigation}
+                    style={[
+                      tw`text-sm font-medium text-emerald-500 dark:text-white`,
+                      {fontFamily: 'Poppins-Regular'},
+                    ]}>
+                    terms and conditions
+                  </Text>
+                </Text>
+              </View>
+              {(errors?.isTermsAndConditionsChecked ||
+                errors?.termsAndConditionsId) && (
+                <Text
+                  style={[
+                    tw`text-[10px] text-red-500 text-left mr-2 ml-[8%]`,
+                    {fontFamily: 'Poppins-Regular'},
+                  ]}>
+                  {errors?.isTermsAndConditionsChecked?.message ||
+                    errors?.termsAndConditionsId?.message}
+                </Text>
+              )}
+            </View>
+
             <Pressable
               onPress={handleSubmit(onSubmit)}
+              disabled={isSubmitting}
               style={({pressed}) => [
                 tw`w-full h-13 items-center justify-center rounded-xl ${
                   pressed ? 'bg-emerald-600' : 'bg-emerald-500'

@@ -44,6 +44,7 @@ import RequestScreen from './src/screens/incremental/RequestScreen';
 import {IncrementalRequestScreen} from './src/screens/incremental/IncrementalRequestScreen';
 import {useDeviceContext, useAppColorScheme} from 'twrnc';
 import {navigationRef} from './navigation';
+import {TermsAndConditions} from './src/screens/drawer-screens/settings/TermsAndConditions';
 
 async function onMessageReceived(message) {
   await notifee.requestPermission();
@@ -160,6 +161,13 @@ const App = () => {
                 headerShown: true,
                 headerStyle: [tw`bg-white dark:bg-slate-900`],
                 headerTitleStyle: [tw` text-black dark:text-white`],
+              }}
+            />
+            <Stack.Screen
+              name="TermsAndConditions"
+              component={TermsAndConditions}
+              options={{
+                headerShown: false,
               }}
             />
           </Stack.Navigator>
