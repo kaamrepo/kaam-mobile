@@ -61,9 +61,12 @@ const RegisterScreen = () => {
   const {language} = useLoginStore();
   const [show, setShow] = useState(false);
   const [countryCode, setCountryCode] = useState({dialcode: '+91', flag: '🇮🇳'});
-  const {registerUser, termAndConditions} = useRegistrationStore();
+  const {registerUser, getTermsAndConditions, termAndConditions} =
+    useRegistrationStore();
   const [isFormButtonDisabled, setFormButtonDisabled] = useState(false);
+
   const onSubmit = async data => {
+    data.role = 'KAAM_EMPLOYEE';
     console.log('data', data);
     setFormButtonDisabled(true);
     const success = await registerUser({
@@ -107,11 +110,16 @@ const RegisterScreen = () => {
     return () => backHandler.remove();
   }, []);
 
+  useEffect(() => {
+    getTermsAndConditions();
+  }, []);
+
   const isTermsAndConditionsChecked = watch('isTermsAndConditionsChecked');
 
   const handleTermsAndConditionNavigation = () => {
     navigation.navigate('TermsAndConditions');
   };
+
   return (
     <SafeAreaView style={tw`flex-1 px-5 bg-white dark:bg-gray-950`}>
       <GeneralStatusBar />
@@ -365,9 +373,6 @@ const RegisterScreen = () => {
             </View>
 
             <View style={tw`mb-5`}>
-              {/* isTermsAndConditionsChecked */}
-              {/* termsAndConditionsId */}
-
               <View style={tw`flex-row items-center`}>
                 <Controller
                   control={control}

@@ -32,15 +32,6 @@ const validationSchema = yup.object().shape({
     district: yup.string().required('District is required!'),
     city: yup.string().required('City is required!'),
     state: yup.string().required('State is required!'),
-    // fulladdress: yup
-    //   .string()
-    //   .trim()
-    //   .required('Job location is required!')
-    //   .test(
-    //     'noBadWords',
-    //     'Inappropriate language detected',
-    //     value => !wordsFilter.isProfane(value),
-    //   ),
   }),
   experience: yup.array().of(
     yup.object().shape({
@@ -110,7 +101,6 @@ const JobPreferences = ({navigation}) => {
       ...data,
       activeforjobs: isEnabled,
     };
-    console.log('🚀 ~ onSubmit ~ payload:', payload);
 
     try {
       setLoading(true);

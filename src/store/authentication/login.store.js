@@ -46,6 +46,7 @@ const useLoginStore = create((set, get) => ({
       const res = await API.post(LOGIN_USER, payload);
 
       if (res && res.status === 201) {
+        console.log('user session info:', res.data);
         await storeUserSession(res.data);
         set({loggedInUser: res.data.user, isLoggedIn: true});
       }

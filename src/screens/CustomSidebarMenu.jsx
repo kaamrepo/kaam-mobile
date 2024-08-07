@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -20,22 +20,17 @@ import useLoginStore from '../store/authentication/login.store';
 import capitalizeFirstLetter from '../helper/utils/capitalizeFirstLetter';
 import useUsersStore from '../store/authentication/user.store';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import {useSharedValue, withTiming} from 'react-native-reanimated';
+import KToggle from '../components/KToggle';
 
 const CustomSidebarMenu = props => {
   useColorScheme();
   const {logout, loggedInUser} = useLoginStore();
+  const [isEnabled, setIsEnabled] = useState(
+    loggedInUser?.activeforjobs ?? false,
+  );
   const {updateFcmDeviceToken, updateActiveForJobsStatus} = useUsersStore();
 
-  const translateX = useSharedValue(0);
-
-  useEffect(() => {
-    const initialStatus = loggedInUser?.activeforjobs || false;
-    translateX.value = withTiming(initialStatus ? 20 : 0);
-  }, [loggedInUser?.activeforjobs]);
   const toggleSwitch = async value => {
-    translateX.value = withTiming(value ? 20 : 0);
-
     try {
       const update = await updateActiveForJobsStatus(loggedInUser?._id, value);
       if (update) {
@@ -108,16 +103,11 @@ const CustomSidebarMenu = props => {
           ]}>
           Active for jobs
         </Text>
-        <Switch
-          value={loggedInUser?.activeforjobs}
-          onValueChange={toggleSwitch}
-          circleSize={30}
-          barHeight={20}
-          circleBorderWidth={0}
-          backgroundActive={'#86d3ff'}
-          backgroundInactive={'#d3d3d3'}
-          circleActiveColor={'#009688'}
-          circleInActiveColor={'#ffffff'}
+
+        <KToggle
+          isEnabled={isEnabled}
+          setIsEnabled={setIsEnabled}
+          onPress={() => toggleSwitch(isEnabled)}
         />
       </View>
       <DrawerContentScrollView {...props}>
@@ -216,7 +206,9 @@ const CustomDrawerItem = props => {
         <View style={tw`px-1`}>{props.icon}</View>
         <Text
           style={[
-            props.titleStyle ? props.titleStyle : tw`text-black dark:text-white`,
+            props.titleStyle
+              ? props.titleStyle
+              : tw`text-black dark:text-white`,
             {fontFamily: 'Poppins-Regular'},
           ]}>
           {props.title}

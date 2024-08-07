@@ -11,13 +11,8 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import GeneralStatusBar from '../../components/GeneralStatusBar';
 import {useFocusEffect} from '@react-navigation/native';
 import useLoginStore from '../../store/authentication/login.store';
-import useJobStore from '../../store/jobs.store';
 import useLoaderStore from '../../store/loader.store';
-import useUsersStore from '../../store/authentication/user.store';
-import {
-  requestLocationPermission,
-  getCoordinates,
-} from '../../helper/utils/getGeoLocation';
+import {requestLocationPermission} from '../../helper/utils/getGeoLocation';
 import Geolocation from 'react-native-geolocation-service';
 import Categories from './Categories';
 import {HeaderBanner} from '../../components/HeaderBanner';
@@ -27,7 +22,7 @@ const Dashboard = ({navigation}) => {
   const colorScheme = useColorScheme();
   const [selectedSearchType, setSelectedSearchType] = useState('staff');
   const [location, setLocation] = useState(undefined);
-  const {loggedInUser, language} = useLoginStore();
+  const {language} = useLoginStore();
 
   const {isLoading} = useLoaderStore();
 
@@ -65,7 +60,7 @@ const Dashboard = ({navigation}) => {
     fetchCoordinates();
   }, [loggedInUser, updateUserCoordinates]);
   */
- 
+
   // Fetching nearby jobs on focus
   useFocusEffect(
     useCallback(() => {

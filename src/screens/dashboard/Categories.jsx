@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useMemo, useCallback} from 'react';
+import React, {useState, useMemo, useCallback} from 'react';
 import {
   View,
   ImageBackground,
@@ -11,19 +11,24 @@ import tw from 'twrnc';
 import useCategoriesStore from '../../store/categories.store';
 import staticEmployeeImage from '../../assets/images/profession-employee.png';
 import staticWorkImage from '../../assets/images/internship.png';
+import {useFocusEffect} from '@react-navigation/native';
 
 const Categories = ({navigation, selectedSearchType}) => {
   const {categories, getCategories} = useCategoriesStore();
-  const [isLoading, setIsLoading] = useState(true);
+  const [_, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const payload = {
-      isActive: true,
-    };
-    getCategories(payload)
-      .then(() => setIsLoading(false))
-      .catch(error => console.error('Error while fetching categories:', error));
-  }, [getCategories]);
+  useFocusEffect(
+    useCallback(() => {
+      const payload = {
+        isActive: true,
+      };
+      getCategories(payload)
+        .then(() => setIsLoading(false))
+        .catch(error =>
+          console.error('Error while fetching categories:', error),
+        );
+    }, [getCategories]),
+  );
 
   const RenderCategories = useCallback(
     ({item}) => {
