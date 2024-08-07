@@ -27,16 +27,22 @@ const useApprovalStore = create((set, get) => ({
   getRequests: async (skip = 0, limit = 10) => {
     try {
       const userid = useLoginStore.getState().loggedInUser?._id;
-
+      const params = {requestor: userid, 
+        //  skip,
+        //  limit,
+        //  sortDesc:['createdat']
+        }
+      console.log("Params before sending",params);
       const res = await API.get(`${APPROVAL}`, {
         headers: {
           Authorization: await getToken(),
         },
-        params: {requestor: userid, skip, limit,sortDesc:['createdat']},
+        params,
       });
-
-      if (res?.data) {
+      if (res?.data?.data?.length) {
+        set({approval: res?.data?.data})
         return true;
+        
       }
     } catch (error) {
       console.log(JSON.stringify(error, null, 4));
