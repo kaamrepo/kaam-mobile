@@ -66,7 +66,7 @@ const RegisterScreen = () => {
   const [isFormButtonDisabled, setFormButtonDisabled] = useState(false);
 
   const onSubmit = async data => {
-    data.role = 'KAAM_EMPLOYEE';
+    data.role = 'KAAM_USER';
     console.log('data', data);
     setFormButtonDisabled(true);
     const success = await registerUser({
